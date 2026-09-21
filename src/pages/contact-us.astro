@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/inner-pages.css';
+
+const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
+---
+
+<BaseLayout
+  title="Contact Us | Scrap My Car UAE"
+  description="Contact Scrap My Car UAE for help with vehicle valuations, selling a scrap car, collection and the vehicle handover process."
+  canonical="https://www.scrapmycaruae.com/contact-us"
+>
+  <main>
+    <section class="inner-hero">
+      <div class="smc-container inner-hero-grid">
+        <div>
+          <div class="smc-kicker">Contact Scrap My Car UAE</div>
+          <h1>Need help selling your car?</h1>
+          <p>
+            Reach out to our customer service team with questions about valuations, vehicle collection or the process of selling your scrap car.
+          </p>
+        </div>
+        <aside class="inner-hero-aside">
+          <strong>Direct support</strong>
+          <span>Call or WhatsApp us and our team can help with your vehicle request.</span>
+        </aside>
+      </div>
+    </section>
+
+    <section class="page-shell">
+      <div class="smc-container content-grid">
+        <aside class="side-card">
+          <div class="smc-kicker">Contact details</div>
+          <h2>Talk to the team.</h2>
+          <div class="contact-methods">
+            <div class="contact-method">
+              <span>Phone</span>
+              <a href="tel:+971557458322">055 745 83 22</a>
+            </div>
+            <div class="contact-method">
+              <span>WhatsApp</span>
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">+971 55 745 8322</a>
+            </div>
+            <div class="contact-method">
+              <span>Email</span>
+              <a href="mailto:info@scrapmycaruae.com">info@scrapmycaruae.com</a>
+            </div>
+            <div class="contact-method">
+              <span>Address</span>
+              <strong>Al Sajaa Industrial Area, Sajaa, Sharjah</strong>
+            </div>
+          </div>
+        </aside>
+
+        <div class="prose">
+          <section>
+            <h2>Get help with your vehicle valuation</h2>
+            <p>
+              If you are unsure whether your vehicle can be sold, send us the make, model and year and tell us about its condition. We deal with running and non-running vehicles as well as cars with mechanical, electrical or accident damage.
+            </p>
+          </section>
+
+          <section>
+            <h2>Free vehicle collection</h2>
+            <p>
+              If you accept the offer, our team can arrange collection from supported locations across the UAE. Contact us if you need to confirm coverage for your area.
+            </p>
+          </section>
+
+          <section>
+            <h2>Questions about paperwork</h2>
+            <p>
+              The documents required can depend on the vehicle and its situation. Contact the team before handover if the registration has expired or there are other ownership or finance-related circumstances that need to be clarified.
+            </p>
+          </section>
+
+          <section>
+            <h2>Prefer to start online?</h2>
+            <p>
+              You can use our free valuation form to select your vehicle and send the request directly to our team.
+            </p>
+            <a class="smc-button smc-button-primary" href="/free-quote">Get Your Vehicle Price</a>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-cta">
+      <div class="smc-container page-cta-inner">
+        <div>
+          <div class="smc-kicker">Quick contact</div>
+          <h2>Send us a message about your car.</h2>
+          <p>WhatsApp is the quickest way to contact the team directly.</p>
+        </div>
+        <div class="page-cta-actions">
+          <a class="smc-button smc-button-primary" href={whatsappUrl} target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
+          <a class="smc-button smc-button-secondary" href="tel:+971557458322">Call Now</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
