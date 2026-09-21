@@ -1,0 +1,353 @@
+---
+export const prerender = false;
+
+import { media } from '@wix/sdk';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { wixClient } from '../lib/wix';
+
+const PAGE_SIZE = 12;
+
+const rawPage = Number(Astro.url.searchParams.get('page') || '1');
+const requestedPage = Number.isFinite(rawPage) && rawPage > 0
+  ? Math.floor(rawPage)
+  : 1;
+
+let posts: any[] = [];
+let totalCount = 0;
+let errorMessage = '';
+
+try {
+  const result = await wixClient.posts.queryPosts({
+    paging: {
+      limit: PAGE_SIZE,
+      offset: (requestedPage - 1) * PAGE_SIZE
+    },
+    sort: [
+      {
+        fieldName: 'firstPublishedDate',
+        order: 'DESC'
+      }
+    ]
+  });
+
+  posts = result.posts ?? [];
+  totalCount = result.pagingMetadata?.total ?? posts.length;
+} catch (error) {
+  Astro.response.status = 500;
+  errorMessage = error instanceof Error ? error.message : String(error);
+}
+
+const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+const page = Math.min(requestedPage, totalPages);
+
+if (!errorMessage && requestedPage > totalPages && totalCount > 0) {
+  return Astro.redirect('/blogs');
+}
+
+const canonical =
+  page > 1
+    ? `https://www.scrapmycaruae.com/blogs?page=${page}`
+    : 'https://www.scrapmycaruae.com/blogs';
+
+const previousUrl =
+  page > 2
+    ? `https://www.scrapmycaruae.com/blogs?page=${page - 1}`
+    : page === 2
+      ? 'https://www.scrapmycaruae.com/blogs'
+      : '';
+
+const nextUrl =
+  page < totalPages
+    ? `https://www.scrapmycaruae.com/blogs?page=${page + 1}`
+    : '';
+
+const seoTitle =
+  page === 1
+    ? 'Blogs | Scrap My Car Uae'
+    : `Blogs - Page ${page} | Scrap My Car UAE`;
+
+const seoDescription =
+  'Discover expert insights and tips on selling your faulty car hassle-free with Scrap My Car UAE. Get valuable information on dealing with mechanical issues, accident damage, and more. Sell your car easily in the UAE today!';
+
+const getImage = (post: any) => {
+  const image = post?.media?.wixMedia?.image;
+  if (!image) return null;
+
+  if (typeof image === 'string') {
+    try {
+      return media.getImageUrl(image);
+    } catch {
+      return null;
+    }
+  }
+
+  if (image?.url) return image;
+  return null;
+};
+
+const formatDate = (value: string | Date | undefined) => {
+  if (!value) return '';
+  return new Intl.DateTimeFormat('en-AE', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  }).format(new Date(value));
+};
+
+const pageNumbers = (() => {
+  const numbers: number[] = [];
+  const start = Math.max(1, page - 2);
+  const end = Math.min(totalPages, page + 2);
+  for (let i = start; i <= end; i++) numbers.push(i);
+  return numbers;
+})();
+---
+
+<BaseLayout
+  title={seoTitle}
+  description={seoDescription}
+  canonical={canonical}
+  prevUrl={previousUrl}
+  nextUrl={nextUrl}
+>
+  <main class="smc-container page-shell">
+    <section class="intro">
+      <div class="smc-kicker">Scrap My Car UAE</div>
+      <h1>Blogs</h1>
+      <p>
+        Guides, practical advice and useful information about selling,
+        scrapping and understanding vehicles in the UAE.
+      </p>
+    </section>
+
+    {errorMessage ? (
+      <div class="error">
+        <strong>Unable to load the blog right now.</strong>
+        {import.meta.env.DEV && <pre>{errorMessage}</pre>}
+      </div>
+    ) : (
+      <>
+        <section class="grid" aria-label="Blog posts">
+          {posts.map((post: any) => {
+            const image = getImage(post);
+            const postUrl = `/post/${post.slug}`;
+
+            return (
+              <article class="card">
+                <a class="card-link" href={postUrl}>
+                  <div class="image-wrap">
+                    {image?.url ? (
+                      <img
+                        src={image.url}
+                        alt={post?.media?.altText || post.title || ''}
+                        width={image.width}
+                        height={image.height}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : null}
+                  </div>
+
+                  <div class="card-body">
+                    <div class="date">{formatDate(post.firstPublishedDate)}</div>
+                    <h2>{post.title}</h2>
+                    {post.excerpt && <p>{post.excerpt}</p>}
+                  </div>
+                </a>
+              </article>
+            );
+          })}
+        </section>
+
+        {totalPages > 1 && (
+          <nav class="pagination" aria-label="Blog pagination">
+            {page > 1 && (
+              <a
+                class="direction"
+                href={page === 2 ? '/blogs' : `/blogs?page=${page - 1}`}
+                rel="prev"
+              >
+                Previous
+              </a>
+            )}
+
+            {pageNumbers[0] > 1 && (
+              <>
+                <a href="/blogs">1</a>
+                {pageNumbers[0] > 2 && <span aria-hidden="true">…</span>}
+              </>
+            )}
+
+            {pageNumbers.map((number) =>
+              number === page ? (
+                <span class="current" aria-current="page">{number}</span>
+              ) : (
+                <a href={number === 1 ? '/blogs' : `/blogs?page=${number}`}>
+                  {number}
+                </a>
+              )
+            )}
+
+            {pageNumbers[pageNumbers.length - 1] < totalPages && (
+              <>
+                {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
+                  <span aria-hidden="true">…</span>
+                )}
+                <a href={`/blogs?page=${totalPages}`}>{totalPages}</a>
+              </>
+            )}
+
+            {page < totalPages && (
+              <a class="direction" href={`/blogs?page=${page + 1}`} rel="next">
+                Next
+              </a>
+            )}
+          </nav>
+        )}
+      </>
+    )}
+  </main>
+</BaseLayout>
+
+<style>
+  .page-shell {
+    padding: 66px 0 30px;
+  }
+
+  .intro {
+    max-width: 760px;
+    margin-bottom: 44px;
+  }
+
+  .intro h1 {
+    margin: 8px 0 15px;
+    font-size: clamp(44px, 7vw, 72px);
+    line-height: 1;
+    letter-spacing: -.055em;
+  }
+
+  .intro p {
+    margin: 0;
+    color: var(--smc-muted);
+    font-size: 18px;
+    line-height: 1.65;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 36px 24px;
+  }
+
+  .card-link {
+    display: block;
+    text-decoration: none;
+  }
+
+  .image-wrap {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: var(--smc-radius);
+    background: #eef0ec;
+  }
+
+  .image-wrap img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 220ms ease;
+  }
+
+  .card-link:hover .image-wrap img {
+    transform: scale(1.025);
+  }
+
+  .card-body {
+    padding-top: 15px;
+  }
+
+  .date {
+    color: #7a7f79;
+    font-size: 12px;
+    font-weight: 750;
+  }
+
+  .card h2 {
+    margin: 7px 0 9px;
+    font-size: 22px;
+    line-height: 1.22;
+    letter-spacing: -.025em;
+  }
+
+  .card p {
+    margin: 0;
+    color: var(--smc-muted);
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .pagination {
+    margin-top: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .pagination a,
+  .pagination span {
+    min-width: 42px;
+    height: 42px;
+    padding: 0 13px;
+    border: 1px solid var(--smc-line);
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .pagination .current {
+    background: var(--smc-green-dark);
+    border-color: var(--smc-green-dark);
+    color: #fff;
+  }
+
+  .pagination .direction {
+    min-width: auto;
+  }
+
+  .error {
+    padding: 22px;
+    border: 1px solid #f0c9c9;
+    border-radius: 12px;
+    background: #fff6f6;
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    .page-shell {
+      padding-top: 42px;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .intro h1 {
+      font-size: 46px;
+    }
+  }
+</style>
