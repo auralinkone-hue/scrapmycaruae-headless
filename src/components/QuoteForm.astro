@@ -1,0 +1,336 @@
+---
+const years = Array.from({ length: 41 }, (_, i) => 2025 - i);
+---
+
+<div class="quote-card" data-quote-form>
+  <div class="quote-head">
+    <span>Free vehicle valuation</span>
+    <h2>Get your vehicle price</h2>
+    <p>Tell us about your car. It only takes a moment.</p>
+  </div>
+
+  <div class="steps" aria-hidden="true">
+    <span class="step active" data-step-dot="1">1</span>
+    <span class="step-line"></span>
+    <span class="step" data-step-dot="2">2</span>
+  </div>
+
+  <form novalidate>
+    <div class="panel active" data-step-panel="1">
+      <label>
+        <span>Make</span>
+        <input
+          name="make"
+          autocomplete="off"
+          placeholder="e.g. Toyota"
+          required
+        />
+      </label>
+
+      <label>
+        <span>Model</span>
+        <input
+          name="model"
+          autocomplete="off"
+          placeholder="e.g. Land Cruiser"
+          required
+        />
+      </label>
+
+      <label>
+        <span>Year</span>
+        <select name="year" required>
+          <option value="">Select year</option>
+          {years.map((year) => <option value={year}>{year}</option>)}
+        </select>
+      </label>
+
+      <button type="button" class="continue" data-next>
+        Continue
+        <span aria-hidden="true">→</span>
+      </button>
+    </div>
+
+    <div class="panel" data-step-panel="2">
+      <button type="button" class="back" data-back>← Back</button>
+
+      <label>
+        <span>Your name</span>
+        <input
+          name="name"
+          autocomplete="name"
+          placeholder="Enter your name"
+          required
+        />
+      </label>
+
+      <label>
+        <span>WhatsApp number</span>
+        <div class="phone-wrap">
+          <span>+971</span>
+          <input
+            name="whatsapp"
+            inputmode="tel"
+            autocomplete="tel"
+            placeholder="50 123 4567"
+            required
+          />
+        </div>
+      </label>
+
+      <button type="submit" class="submit">
+        Get Your Vehicle Price
+      </button>
+
+      <p class="fine-print">
+        No obligation. Your details will only be used to contact you about your vehicle valuation.
+      </p>
+    </div>
+  </form>
+
+  <div class="dev-note" data-dev-note hidden>
+    Form UI is ready. Wix CMS submission + email notification will be connected next.
+  </div>
+</div>
+
+<script>
+  const forms = document.querySelectorAll('[data-quote-form]');
+
+  forms.forEach((root) => {
+    const panels = root.querySelectorAll('[data-step-panel]');
+    const dots = root.querySelectorAll('[data-step-dot]');
+    const form = root.querySelector('form');
+    const note = root.querySelector('[data-dev-note]');
+
+    const setStep = (step) => {
+      panels.forEach((panel) => {
+        panel.classList.toggle('active', panel.getAttribute('data-step-panel') === String(step));
+      });
+      dots.forEach((dot) => {
+        dot.classList.toggle('active', Number(dot.getAttribute('data-step-dot')) <= step);
+      });
+    };
+
+    root.querySelector('[data-next]')?.addEventListener('click', () => {
+      const firstPanel = root.querySelector('[data-step-panel="1"]');
+      const required = firstPanel?.querySelectorAll('input[required], select[required]') || [];
+      const invalid = Array.from(required).find((field) => !field.checkValidity());
+      if (invalid) {
+        invalid.reportValidity();
+        return;
+      }
+      setStep(2);
+      root.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    root.querySelector('[data-back]')?.addEventListener('click', () => setStep(1));
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const required = form.querySelectorAll('input[required], select[required]');
+      const invalid = Array.from(required).find((field) => !field.checkValidity());
+      if (invalid) {
+        invalid.reportValidity();
+        return;
+      }
+      if (note) note.hidden = false;
+    });
+  });
+</script>
+
+<style>
+  .quote-card {
+    width: 100%;
+    padding: 28px;
+    border: 1px solid rgba(24, 71, 28, .13);
+    border-radius: 24px;
+    background: rgba(255,255,255,.96);
+    box-shadow: 0 28px 70px rgba(19, 45, 18, .13);
+  }
+
+  .quote-head span {
+    color: var(--smc-green);
+    font-size: 12px;
+    font-weight: 850;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+
+  .quote-head h2 {
+    margin: 7px 0 8px;
+    font-size: 30px;
+    line-height: 1.08;
+    letter-spacing: -.035em;
+  }
+
+  .quote-head p {
+    margin: 0;
+    color: var(--smc-muted);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .steps {
+    margin: 24px 0 20px;
+    display: grid;
+    grid-template-columns: 28px 1fr 28px;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .step {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #d7ddd3;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: #899087;
+    background: #fff;
+    font-size: 12px;
+    font-weight: 850;
+  }
+
+  .step.active {
+    border-color: var(--smc-green-dark);
+    background: var(--smc-green-dark);
+    color: #fff;
+  }
+
+  .step-line {
+    height: 1px;
+    background: #dfe4dc;
+  }
+
+  .panel {
+    display: none;
+    gap: 15px;
+  }
+
+  .panel.active {
+    display: grid;
+  }
+
+  label {
+    display: grid;
+    gap: 7px;
+  }
+
+  label > span {
+    color: #363a35;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  input,
+  select {
+    width: 100%;
+    min-height: 52px;
+    padding: 0 14px;
+    border: 1px solid #d9ded6;
+    border-radius: 12px;
+    outline: none;
+    background: #fff;
+    color: #151715;
+    font: inherit;
+    font-size: 15px;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+  }
+
+  input:focus,
+  select:focus {
+    border-color: #77a76e;
+    box-shadow: 0 0 0 4px rgba(63, 122, 54, .10);
+  }
+
+  .phone-wrap {
+    display: grid;
+    grid-template-columns: 62px 1fr;
+    align-items: center;
+    border: 1px solid #d9ded6;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .phone-wrap:focus-within {
+    border-color: #77a76e;
+    box-shadow: 0 0 0 4px rgba(63, 122, 54, .10);
+  }
+
+  .phone-wrap > span {
+    min-height: 52px;
+    display: grid;
+    place-items: center;
+    border-right: 1px solid #e4e7e1;
+    background: #f6f8f4;
+    color: #4f554e;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .phone-wrap input {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none !important;
+  }
+
+  .continue,
+  .submit {
+    min-height: 54px;
+    margin-top: 3px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--smc-green-dark);
+    color: #fff;
+    font: inherit;
+    font-weight: 850;
+    cursor: pointer;
+  }
+
+  .continue {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .back {
+    width: fit-content;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--smc-green-dark);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .fine-print {
+    margin: 0;
+    color: #7a8078;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .dev-note {
+    margin-top: 14px;
+    padding: 12px 13px;
+    border-radius: 10px;
+    background: #fff7d8;
+    color: #67591a;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  @media (max-width: 620px) {
+    .quote-card {
+      padding: 22px;
+      border-radius: 20px;
+    }
+
+    .quote-head h2 {
+      font-size: 26px;
+    }
+  }
+</style>
