@@ -1,0 +1,57 @@
+---
+export const prerender = false;
+
+import { wixClient } from '../lib/wix';
+
+let blogPosts = [];
+let errorMessage = '';
+
+try {
+  const result = await wixClient.posts
+    .queryPosts()
+    .limit(10)
+    .find();
+
+  blogPosts = result.items ?? [];
+} catch (error) {
+  errorMessage =
+    error instanceof Error ? error.message : String(error);
+}
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Wix Blog Connection Test</title>
+  </head>
+
+  <body>
+    <main>
+      <h1>Wix Blog Connection Test</h1>
+
+      {errorMessage && (
+        <div>
+          <strong>Error:</strong>
+          <pre>{errorMessage}</pre>
+        </div>
+      )}
+
+      {!errorMessage && (
+        <>
+          <p>Posts returned: {blogPosts.length}</p>
+
+          <ul>
+            {blogPosts.map((post) => (
+              <li>
+                <strong>{post.title}</strong>
+                <br />
+                <span>/post/{post.slug}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </main>
+  </body>
+</html>

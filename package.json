@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.2",
+    "@wix/blog": "^1.0.661",
+    "@wix/sdk": "^1.21.16",
     "astro": "^7.3.3"
   },
   "allowScripts": {
