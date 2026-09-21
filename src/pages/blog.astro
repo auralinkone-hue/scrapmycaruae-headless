@@ -15,14 +15,21 @@ let totalCount = 0;
 let errorMessage = '';
 
 try {
-  const result = await wixClient.posts
-    .queryPosts()
-    .limit(PAGE_SIZE)
-    .skip((requestedPage - 1) * PAGE_SIZE)
-    .find();
+  const result = await wixClient.posts.queryPosts({
+    paging: {
+      limit: PAGE_SIZE,
+      offset: (requestedPage - 1) * PAGE_SIZE
+    },
+    sort: [
+      {
+        fieldName: 'firstPublishedDate',
+        order: 'DESC'
+      }
+    ]
+  });
 
-  posts = result.items ?? [];
-  totalCount = result.totalCount ?? posts.length;
+  posts = result.posts ?? [];
+  totalCount = result.pagingMetadata?.total ?? posts.length;
 } catch (error) {
   Astro.response.status = 500;
   errorMessage = error instanceof Error ? error.message : String(error);
