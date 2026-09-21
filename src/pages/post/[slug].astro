@@ -2,6 +2,7 @@
 export const prerender = false;
 
 import { media } from '@wix/sdk';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { wixClient } from '../../lib/wix';
 import { renderRicosDocument } from '../../lib/rich-content';
 
@@ -106,70 +107,58 @@ const jsonLd = post
   : null;
 ---
 
-<html lang={post?.language || 'en'}>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{seoTitle}</title>
-    {seoDescription && <meta name="description" content={seoDescription} />}
-    <link rel="canonical" href={canonical} />
-
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content={seoTitle} />
-    {seoDescription && <meta property="og:description" content={seoDescription} />}
-    <meta property="og:url" content={canonical} />
-    {coverImage && <meta property="og:image" content={coverImage} />}
-
-    <meta name="twitter:card" content={coverImage ? 'summary_large_image' : 'summary'} />
-    <meta name="twitter:title" content={seoTitle} />
-    {seoDescription && <meta name="twitter:description" content={seoDescription} />}
-    {coverImage && <meta name="twitter:image" content={coverImage} />}
-
-    {jsonLd && (
+<BaseLayout
+  title={seoTitle}
+  description={seoDescription}
+  canonical={canonical}
+  ogImage={coverImage}
+  ogType="article"
+>
+  {jsonLd && (
+    <Fragment slot="head">
       <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-    )}
+    </Fragment>
+  )}
 
-    <style>
-      :root {
-        font-family: Arial, Helvetica, sans-serif;
-        color: #171717;
-        background: #fff;
-      }
+  {post ? (
+    <main class="article-shell">
+      <div class="smc-kicker">Scrap My Car UAE Blog</div>
+      <h1>{post.title}</h1>
 
-      * { box-sizing: border-box; }
+      <div class="meta">
+        {publishedDate && <span>{formatDate(publishedDate)}</span>}
+        {post.minutesToRead && <span>• {post.minutesToRead} min read</span>}
+        {updatedDate &&
+          publishedDate &&
+          updatedDate.getTime() !== publishedDate.getTime() && (
+            <span>• Updated {formatDate(updatedDate)}</span>
+          )}
+      </div>
 
-      body {
-        margin: 0;
-        line-height: 1.7;
-      }
+      {coverImage && (
+        <img
+          class="cover"
+          src={coverImage}
+          alt={coverAlt}
+          width={normalizedCover?.width}
+          height={normalizedCover?.height}
+          fetchpriority="high"
+        />
+      )}
 
-      .site-header {
-        border-bottom: 1px solid #e8e8e8;
-        background: #fff;
-      }
+      <article class="article-content" set:html={articleHtml} />
+    </main>
+  ) : (
+    <main class="not-found">
+      <h1>Article not found</h1>
+      <p>The article may have been moved or is no longer available.</p>
+      <p><a href="/blogs">Return to the blogs</a></p>
+      {import.meta.env.DEV && loadError && <pre>{loadError}</pre>}
+    </main>
+  )}
+</BaseLayout>
 
-      .site-header-inner {
-        width: min(1180px, calc(100% - 36px));
-        margin: 0 auto;
-        height: 72px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .brand {
-        color: #111;
-        text-decoration: none;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-      }
-
-      .blog-link {
-        color: #3b6f2c;
-        text-decoration: none;
-        font-weight: 700;
-      }
-
+<style>
       .article-shell {
         width: min(900px, calc(100% - 36px));
         margin: 0 auto;
@@ -317,51 +306,3 @@ const jsonLd = post
         }
       }
     </style>
-  </head>
-
-  <body>
-    <header class="site-header">
-      <div class="site-header-inner">
-        <a class="brand" href="/">Scrap My Car UAE</a>
-        <a class="blog-link" href="/blog">Blog</a>
-      </div>
-    </header>
-
-    {post ? (
-      <main class="article-shell">
-        <div class="eyebrow">Scrap My Car UAE Blog</div>
-        <h1>{post.title}</h1>
-
-        <div class="meta">
-          {publishedDate && <span>{formatDate(publishedDate)}</span>}
-          {post.minutesToRead && <span>• {post.minutesToRead} min read</span>}
-          {updatedDate &&
-            publishedDate &&
-            updatedDate.getTime() !== publishedDate.getTime() && (
-              <span>• Updated {formatDate(updatedDate)}</span>
-            )}
-        </div>
-
-        {coverImage && (
-          <img
-            class="cover"
-            src={coverImage}
-            alt={coverAlt}
-            width={normalizedCover?.width}
-            height={normalizedCover?.height}
-            fetchpriority="high"
-          />
-        )}
-
-        <article class="article-content" set:html={articleHtml} />
-      </main>
-    ) : (
-      <main class="not-found">
-        <h1>Article not found</h1>
-        <p>The article may have been moved or is no longer available.</p>
-        <p><a href="/blog">Return to the blog</a></p>
-        {import.meta.env.DEV && loadError && <pre>{loadError}</pre>}
-      </main>
-    )}
-  </body>
-</html>
