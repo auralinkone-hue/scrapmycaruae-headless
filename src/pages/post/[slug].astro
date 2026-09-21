@@ -1,0 +1,351 @@
+---
+export const prerender = false;
+
+import { wixClient } from '../../lib/wix';
+import { renderRicosDocument } from '../../lib/rich-content';
+
+const slug = Astro.params.slug ?? '';
+let post: any = null;
+let loadError = '';
+
+try {
+  const result = await wixClient.posts.getPostBySlug(slug, {
+    fieldsets: ['URL', 'SEO', 'RICH_CONTENT', 'CONTENT_TEXT']
+  });
+  post = result.post;
+} catch (error) {
+  Astro.response.status = 404;
+  loadError = error instanceof Error ? error.message : String(error);
+}
+
+const tags = post?.seoData?.tags ?? [];
+const seoTitle =
+  tags.find((tag: any) => tag.type === 'title' && !tag.disabled)?.children ||
+  post?.title ||
+  'Scrap My Car UAE';
+
+const seoDescription =
+  tags.find(
+    (tag: any) =>
+      tag.type === 'meta' &&
+      tag.props?.name === 'description' &&
+      !tag.disabled
+  )?.props?.content ||
+  post?.excerpt ||
+  '';
+
+const canonical = post?.slug
+  ? `https://www.scrapmycaruae.com/post/${post.slug}`
+  : 'https://www.scrapmycaruae.com/blog';
+
+const coverImage =
+  post?.media?.wixMedia?.image?.url ||
+  post?.heroImage?.url ||
+  '';
+
+const coverAlt =
+  post?.media?.altText ||
+  post?.title ||
+  '';
+
+const articleHtml = post?.richContent
+  ? renderRicosDocument(post.richContent)
+  : post?.contentText
+    ? `<p>${post.contentText}</p>`
+    : '';
+
+const publishedDate = post?.firstPublishedDate
+  ? new Date(post.firstPublishedDate)
+  : null;
+
+const updatedDate = post?.lastPublishedDate
+  ? new Date(post.lastPublishedDate)
+  : publishedDate;
+
+const formatDate = (date: Date | null) =>
+  date
+    ? new Intl.DateTimeFormat('en-AE', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }).format(date)
+    : '';
+
+const jsonLd = post
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: seoDescription,
+      datePublished: post.firstPublishedDate,
+      dateModified: post.lastPublishedDate || post.firstPublishedDate,
+      mainEntityOfPage: canonical,
+      image: coverImage ? [coverImage] : undefined,
+      publisher: {
+        '@type': 'Organization',
+        name: 'Scrap My Car UAE',
+        url: 'https://www.scrapmycaruae.com'
+      }
+    }
+  : null;
+---
+
+<html lang={post?.language || 'en'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{seoTitle}</title>
+    {seoDescription && <meta name="description" content={seoDescription} />}
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={seoTitle} />
+    {seoDescription && <meta property="og:description" content={seoDescription} />}
+    <meta property="og:url" content={canonical} />
+    {coverImage && <meta property="og:image" content={coverImage} />}
+
+    <meta name="twitter:card" content={coverImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={seoTitle} />
+    {seoDescription && <meta name="twitter:description" content={seoDescription} />}
+    {coverImage && <meta name="twitter:image" content={coverImage} />}
+
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
+
+    <style>
+      :root {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #171717;
+        background: #fff;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        line-height: 1.7;
+      }
+
+      .site-header {
+        border-bottom: 1px solid #e8e8e8;
+        background: #fff;
+      }
+
+      .site-header-inner {
+        width: min(1180px, calc(100% - 36px));
+        margin: 0 auto;
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand {
+        color: #111;
+        text-decoration: none;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+
+      .blog-link {
+        color: #3b6f2c;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      .article-shell {
+        width: min(900px, calc(100% - 36px));
+        margin: 0 auto;
+        padding: 54px 0 90px;
+      }
+
+      .eyebrow {
+        color: #497d39;
+        font-size: 14px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      h1 {
+        max-width: 850px;
+        margin: 10px 0 18px;
+        font-size: clamp(36px, 6vw, 62px);
+        line-height: 1.06;
+        letter-spacing: -0.045em;
+      }
+
+      .meta {
+        color: #6a6a6a;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 34px;
+        font-size: 15px;
+      }
+
+      .cover {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 18px;
+        margin: 0 0 42px;
+      }
+
+      .article-content {
+        max-width: 760px;
+        margin: 0 auto;
+        font-size: 18px;
+      }
+
+      .article-content :global(p) {
+        margin: 0 0 1.35em;
+      }
+
+      .article-content :global(h2),
+      .article-content :global(h3),
+      .article-content :global(h4) {
+        line-height: 1.2;
+        letter-spacing: -0.025em;
+        margin: 2em 0 0.7em;
+      }
+
+      .article-content :global(h2) { font-size: 34px; }
+      .article-content :global(h3) { font-size: 27px; }
+
+      .article-content :global(a) {
+        color: #356d29;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+      }
+
+      .article-content :global(ul),
+      .article-content :global(ol) {
+        padding-left: 1.4em;
+        margin: 0 0 1.5em;
+      }
+
+      .article-content :global(li) {
+        margin: 0.45em 0;
+      }
+
+      .article-content :global(figure) {
+        margin: 2.1em 0;
+      }
+
+      .article-content :global(img) {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        margin-inline: auto;
+        border-radius: 12px;
+      }
+
+      .article-content :global(blockquote) {
+        margin: 2em 0;
+        padding: 0.3em 0 0.3em 1.2em;
+        border-left: 4px solid #4c7e3a;
+        color: #444;
+      }
+
+      .article-content :global(hr) {
+        border: 0;
+        border-top: 1px solid #ddd;
+        margin: 2.5em 0;
+      }
+
+      .article-content :global(.table-scroll) {
+        overflow-x: auto;
+        margin: 2em 0;
+      }
+
+      .article-content :global(table) {
+        border-collapse: collapse;
+        width: 100%;
+        min-width: 560px;
+      }
+
+      .article-content :global(td) {
+        border: 1px solid #d8d8d8;
+        padding: 12px 14px;
+        vertical-align: top;
+      }
+
+      .not-found {
+        width: min(720px, calc(100% - 36px));
+        margin: 100px auto;
+        text-align: center;
+      }
+
+      .not-found a {
+        color: #356d29;
+        font-weight: 700;
+      }
+
+      @media (max-width: 640px) {
+        .article-shell {
+          padding-top: 34px;
+        }
+
+        h1 {
+          font-size: 38px;
+        }
+
+        .article-content {
+          font-size: 17px;
+        }
+
+        .article-content :global(h2) {
+          font-size: 29px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="site-header-inner">
+        <a class="brand" href="/">Scrap My Car UAE</a>
+        <a class="blog-link" href="/blog">Blog</a>
+      </div>
+    </header>
+
+    {post ? (
+      <main class="article-shell">
+        <div class="eyebrow">Scrap My Car UAE Blog</div>
+        <h1>{post.title}</h1>
+
+        <div class="meta">
+          {publishedDate && <span>{formatDate(publishedDate)}</span>}
+          {post.minutesToRead && <span>• {post.minutesToRead} min read</span>}
+          {updatedDate &&
+            publishedDate &&
+            updatedDate.getTime() !== publishedDate.getTime() && (
+              <span>• Updated {formatDate(updatedDate)}</span>
+            )}
+        </div>
+
+        {coverImage && (
+          <img
+            class="cover"
+            src={coverImage}
+            alt={coverAlt}
+            width={post?.media?.wixMedia?.image?.width}
+            height={post?.media?.wixMedia?.image?.height}
+            fetchpriority="high"
+          />
+        )}
+
+        <article class="article-content" set:html={articleHtml} />
+      </main>
+    ) : (
+      <main class="not-found">
+        <h1>Article not found</h1>
+        <p>The article may have been moved or is no longer available.</p>
+        <p><a href="/blog">Return to the blog</a></p>
+        {import.meta.env.DEV && loadError && <pre>{loadError}</pre>}
+      </main>
+    )}
+  </body>
+</html>
