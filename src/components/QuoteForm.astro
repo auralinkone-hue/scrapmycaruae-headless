@@ -1,12 +1,29 @@
 ---
-const years = Array.from({ length: 41 }, (_, i) => 2025 - i);
+import type { VehicleMake, VehicleModel, VehicleYear } from '../lib/vehicle-data';
+
+interface Props {
+  makes: VehicleMake[];
+  models: VehicleModel[];
+  years: VehicleYear[];
+  dataError?: string;
+}
+
+const {
+  makes = [],
+  models = [],
+  years = [],
+  dataError = ''
+} = Astro.props;
+
+const featuredMakes = makes.filter((item) => item.featuredMake);
+const regularMakes = makes.filter((item) => !item.featuredMake);
 ---
 
 <div class="quote-card" data-quote-form>
   <div class="quote-head">
     <span>Free vehicle valuation</span>
     <h2>Get your vehicle price</h2>
-    <p>Tell us about your car. It only takes a moment.</p>
+    <p>Choose your vehicle details. It only takes a moment.</p>
   </div>
 
   <div class="steps" aria-hidden="true">
@@ -19,31 +36,52 @@ const years = Array.from({ length: 41 }, (_, i) => 2025 - i);
     <div class="panel active" data-step-panel="1">
       <label>
         <span>Make</span>
-        <input
-          name="make"
-          autocomplete="off"
-          placeholder="e.g. Toyota"
-          required
-        />
+        <select name="make" data-make required disabled={Boolean(dataError || makes.length === 0)}>
+          <option value="">Select make</option>
+
+          {featuredMakes.length > 0 && (
+            <optgroup label="Popular makes">
+              {featuredMakes.map((item) => (
+                <option value={item.make}>{item.make}</option>
+              ))}
+            </optgroup>
+          )}
+
+          {regularMakes.length > 0 && (
+            <optgroup label="All makes">
+              {regularMakes.map((item) => (
+                <option value={item.make}>{item.make}</option>
+              ))}
+            </optgroup>
+          )}
+        </select>
       </label>
 
       <label>
         <span>Model</span>
-        <input
-          name="model"
-          autocomplete="off"
-          placeholder="e.g. Land Cruiser"
-          required
-        />
+        <select name="model" data-model required disabled>
+          <option value="">Select make first</option>
+        </select>
+        <small class="field-help" data-model-help>
+          Choose a make to see its available models.
+        </small>
       </label>
 
       <label>
         <span>Year</span>
-        <select name="year" required>
+        <select name="year" required disabled={Boolean(dataError || years.length === 0)}>
           <option value="">Select year</option>
-          {years.map((year) => <option value={year}>{year}</option>)}
+          {years.map((item) => (
+            <option value={item.year}>{item.year}</option>
+          ))}
         </select>
       </label>
+
+      {dataError && (
+        <div class="data-error" role="alert">
+          Vehicle options could not be loaded from Wix CMS. Check the three collection IDs and public read permissions.
+        </div>
+      )}
 
       <button type="button" class="continue" data-next>
         Continue
@@ -53,6 +91,8 @@ const years = Array.from({ length: 41 }, (_, i) => 2025 - i);
 
     <div class="panel" data-step-panel="2">
       <button type="button" class="back" data-back>← Back</button>
+
+      <div class="vehicle-summary" data-vehicle-summary></div>
 
       <label>
         <span>Your name</span>
@@ -78,74 +118,210 @@ const years = Array.from({ length: 41 }, (_, i) => 2025 - i);
         </div>
       </label>
 
-      <button type="submit" class="submit">
+      <label class="hp-field" aria-hidden="true">
+        <span>Website</span>
+        <input name="website" tabindex="-1" autocomplete="off" />
+      </label>
+
+      <button type="submit" class="submit" data-submit>
         Get Your Vehicle Price
       </button>
+
+      <div class="submit-message" data-submit-message hidden></div>
 
       <p class="fine-print">
         No obligation. Your details will only be used to contact you about your vehicle valuation.
       </p>
     </div>
   </form>
-
-  <div class="dev-note" data-dev-note hidden>
-    Form UI is ready. Wix CMS submission + email notification will be connected next.
-  </div>
 </div>
 
-<script>
-  const forms = document.querySelectorAll('[data-quote-form]');
+<script define:vars={{ vehicleModels: models }}>
+  (() => {
+    const roots = document.querySelectorAll('[data-quote-form]');
 
-  forms.forEach((root) => {
-    const panels = root.querySelectorAll('[data-step-panel]');
-    const dots = root.querySelectorAll('[data-step-dot]');
-    const form = root.querySelector('form');
-    const note = root.querySelector('[data-dev-note]');
+    roots.forEach((root) => {
+      const panels = root.querySelectorAll('[data-step-panel]');
+      const dots = root.querySelectorAll('[data-step-dot]');
+      const form = root.querySelector('form');
+      const makeSelect = root.querySelector('[data-make]');
+      const modelSelect = root.querySelector('[data-model]');
+      const modelHelp = root.querySelector('[data-model-help]');
+      const summary = root.querySelector('[data-vehicle-summary]');
 
-    const setStep = (step) => {
-      panels.forEach((panel) => {
-        panel.classList.toggle('active', panel.getAttribute('data-step-panel') === String(step));
+      if (!(form instanceof HTMLFormElement)) return;
+      if (!(makeSelect instanceof HTMLSelectElement)) return;
+      if (!(modelSelect instanceof HTMLSelectElement)) return;
+
+      const setStep = (step) => {
+        panels.forEach((panel) => {
+          panel.classList.toggle(
+            'active',
+            panel.getAttribute('data-step-panel') === String(step)
+          );
+        });
+
+        dots.forEach((dot) => {
+          dot.classList.toggle(
+            'active',
+            Number(dot.getAttribute('data-step-dot')) <= step
+          );
+        });
+      };
+
+      const populateModels = (make) => {
+        modelSelect.replaceChildren();
+
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = make ? 'Select model' : 'Select make first';
+        modelSelect.appendChild(placeholder);
+
+        if (!make) {
+          modelSelect.disabled = true;
+          if (modelHelp) modelHelp.textContent = 'Choose a make to see its available models.';
+          return;
+        }
+
+        const matching = vehicleModels.filter((item) => item.make === make);
+
+        matching.forEach((item) => {
+          const option = document.createElement('option');
+          option.value = item.model;
+          option.textContent = item.model;
+          modelSelect.appendChild(option);
+        });
+
+        modelSelect.disabled = matching.length === 0;
+
+        if (modelHelp) {
+          modelHelp.textContent = matching.length
+            ? `${matching.length} models available for ${make}.`
+            : `No models found for ${make}.`;
+        }
+      };
+
+      makeSelect.addEventListener('change', () => {
+        populateModels(makeSelect.value);
       });
-      dots.forEach((dot) => {
-        dot.classList.toggle('active', Number(dot.getAttribute('data-step-dot')) <= step);
+
+      root.querySelector('[data-next]')?.addEventListener('click', () => {
+        const firstPanel = root.querySelector('[data-step-panel="1"]');
+        const required = firstPanel?.querySelectorAll(
+          'input[required], select[required]'
+        ) || [];
+
+        const invalid = Array.from(required).find(
+          (field) =>
+            field instanceof HTMLInputElement || field instanceof HTMLSelectElement
+              ? !field.checkValidity()
+              : false
+        );
+
+        if (
+          invalid instanceof HTMLInputElement ||
+          invalid instanceof HTMLSelectElement
+        ) {
+          invalid.reportValidity();
+          return;
+        }
+
+        const data = new FormData(form);
+
+        if (summary) {
+          summary.textContent =
+            `${data.get('make')} ${data.get('model')} · ${data.get('year')}`;
+        }
+
+        setStep(2);
+        root.scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
-    };
 
-    root.querySelector('[data-next]')?.addEventListener('click', () => {
-      const firstPanel = root.querySelector('[data-step-panel="1"]');
-      const required = firstPanel?.querySelectorAll('input[required], select[required]') || [];
-      const invalid = Array.from(required).find((field) => !field.checkValidity());
-      if (invalid) {
-        invalid.reportValidity();
-        return;
-      }
-      setStep(2);
-      root.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      root.querySelector('[data-back]')?.addEventListener('click', () => {
+        setStep(1);
+      });
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const required = form.querySelectorAll(
+          'input[required], select[required]'
+        );
+
+        const invalid = Array.from(required).find(
+          (field) =>
+            field instanceof HTMLInputElement || field instanceof HTMLSelectElement
+              ? !field.checkValidity()
+              : false
+        );
+
+        if (
+          invalid instanceof HTMLInputElement ||
+          invalid instanceof HTMLSelectElement
+        ) {
+          invalid.reportValidity();
+          return;
+        }
+
+        const submitButton = root.querySelector('[data-submit]');
+        const submitMessage = root.querySelector('[data-submit-message]');
+        const data = Object.fromEntries(new FormData(form).entries());
+
+        if (submitButton instanceof HTMLButtonElement) {
+          submitButton.disabled = true;
+          submitButton.textContent = 'Submitting…';
+        }
+
+        if (submitMessage instanceof HTMLElement) {
+          submitMessage.hidden = true;
+          submitMessage.textContent = '';
+          submitMessage.classList.remove('error');
+        }
+
+        try {
+          const response = await fetch('/api/quote', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+
+          const result = await response.json();
+
+          if (!response.ok || !result.ok) {
+            throw new Error(result.message || 'Submission failed.');
+          }
+
+          window.location.href = result.redirect || '/thank-you';
+        } catch (error) {
+          if (submitMessage instanceof HTMLElement) {
+            submitMessage.hidden = false;
+            submitMessage.classList.add('error');
+            submitMessage.textContent =
+              error instanceof Error
+                ? error.message
+                : 'We could not submit your request right now.';
+          }
+
+          if (submitButton instanceof HTMLButtonElement) {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Get Your Vehicle Price';
+          }
+        }
+      });
     });
-
-    root.querySelector('[data-back]')?.addEventListener('click', () => setStep(1));
-
-    form?.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const required = form.querySelectorAll('input[required], select[required]');
-      const invalid = Array.from(required).find((field) => !field.checkValidity());
-      if (invalid) {
-        invalid.reportValidity();
-        return;
-      }
-      if (note) note.hidden = false;
-    });
-  });
+  })();
 </script>
 
 <style>
   .quote-card {
     width: 100%;
-    padding: 28px;
-    border: 1px solid rgba(24, 71, 28, .13);
-    border-radius: 24px;
-    background: rgba(255,255,255,.96);
-    box-shadow: 0 28px 70px rgba(19, 45, 18, .13);
+    padding: 30px;
+    border: 1px solid rgba(24, 71, 28, .12);
+    border-radius: 26px;
+    background: rgba(255,255,255,.97);
+    box-shadow: 0 30px 80px rgba(19, 45, 18, .14);
   }
 
   .quote-head span {
@@ -158,9 +334,9 @@ const years = Array.from({ length: 41 }, (_, i) => 2025 - i);
 
   .quote-head h2 {
     margin: 7px 0 8px;
-    font-size: 30px;
+    font-size: 31px;
     line-height: 1.08;
-    letter-spacing: -.035em;
+    letter-spacing: -.04em;
   }
 
   .quote-head p {
@@ -234,13 +410,35 @@ const years = Array.from({ length: 41 }, (_, i) => 2025 - i);
     color: #151715;
     font: inherit;
     font-size: 15px;
-    transition: border-color 160ms ease, box-shadow 160ms ease;
+    transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+  }
+
+  select:disabled,
+  input:disabled {
+    background: #f3f5f1;
+    color: #959b93;
+    cursor: not-allowed;
   }
 
   input:focus,
   select:focus {
     border-color: #77a76e;
     box-shadow: 0 0 0 4px rgba(63, 122, 54, .10);
+  }
+
+  .field-help {
+    color: #7a8078;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .vehicle-summary {
+    padding: 11px 13px;
+    border-radius: 10px;
+    background: var(--smc-green-soft);
+    color: var(--smc-green-dark);
+    font-size: 13px;
+    font-weight: 850;
   }
 
   .phone-wrap {
@@ -286,6 +484,13 @@ const years = Array.from({ length: 41 }, (_, i) => 2025 - i);
     font: inherit;
     font-weight: 850;
     cursor: pointer;
+    transition: transform 160ms ease, background 160ms ease, opacity 160ms ease;
+  }
+
+  .continue:hover,
+  .submit:hover {
+    transform: translateY(-1px);
+    background: #173d18;
   }
 
   .continue {
@@ -313,12 +518,40 @@ const years = Array.from({ length: 41 }, (_, i) => 2025 - i);
     line-height: 1.5;
   }
 
-  .dev-note {
-    margin-top: 14px;
+  .hp-field {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    white-space: nowrap !important;
+  }
+
+  .submit:disabled {
+    opacity: .72;
+    cursor: wait;
+  }
+
+  .submit-message {
+    padding: 11px 12px;
+    border-radius: 10px;
+    background: var(--smc-green-soft);
+    color: var(--smc-green-dark);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .submit-message.error {
+    background: #fff0f0;
+    color: #842727;
+  }
+
+  .data-error {
+    margin-top: 2px;
     padding: 12px 13px;
     border-radius: 10px;
-    background: #fff7d8;
-    color: #67591a;
+    background: #fff0f0;
+    color: #842727;
     font-size: 12px;
     line-height: 1.45;
   }
@@ -330,7 +563,7 @@ const years = Array.from({ length: 41 }, (_, i) => 2025 - i);
     }
 
     .quote-head h2 {
-      font-size: 26px;
+      font-size: 27px;
     }
   }
 </style>
