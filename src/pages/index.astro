@@ -1,105 +1,447 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+
+const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
+
+const benefits = [
+  'Cars in any condition',
+  'Free vehicle collection',
+  'Fast valuation',
+  'Hassle-free paperwork',
+  'UAE-wide service'
+];
+
+const steps = [
+  {
+    number: '01',
+    title: 'Get a free quote',
+    text: 'Share your make, model and year. We use your vehicle details to prepare a valuation.'
+  },
+  {
+    number: '02',
+    title: 'Arrange free collection',
+    text: 'If you accept the offer, we arrange collection from your location anywhere in the UAE.'
+  },
+  {
+    number: '03',
+    title: 'Complete the sale',
+    text: 'We guide you through the required paperwork and complete the vehicle handover.'
+  }
+];
 ---
 
 <BaseLayout
   title="Scrap My Car UAE | Free Quote & Collection - Dubai"
-  description="Get a free scrap car valuation in the UAE. Scrap My Car UAE buys cars in any condition with free collection and a hassle-free process."
+  description="Scrap My Car offers unbeatable prices & free scrap car valuation and collection service across all UAE locations. Obtaining a scrap car valuation has never been easier – simply share your name and contact number, and our expert car valuation team will reach out to you Shortly."
   canonical="https://www.scrapmycaruae.com/"
 >
   <main>
-    <section class="hero smc-container">
-      <div>
-        <div class="smc-kicker">Scrap My Car UAE</div>
-        <h1>Get A Free Scrap Car Valuation Now</h1>
-        <p>
-          Simply enter your make and model and get a free car valuation today.
-          The complete homepage redesign will be built on this shared headless shell.
-        </p>
-        <div class="hero-actions">
-          <a class="smc-button smc-button-primary" href="/free-quote">Get a Free Quote</a>
-          <a class="smc-button smc-button-secondary" href="tel:+971557458322">Call 055 745 83 22</a>
+    <section class="hero">
+      <div class="smc-container hero-grid">
+        <div class="hero-copy">
+          <div class="smc-kicker">Sell your car anywhere in the UAE</div>
+          <h1>Get a free scrap car valuation — without the hassle.</h1>
+          <p class="hero-lead">
+            Old, damaged, non-running or simply unwanted? Tell us about your car
+            and get a vehicle valuation with free collection available across the UAE.
+          </p>
+
+          <div class="hero-actions">
+            <a class="smc-button smc-button-primary" href="#valuation">
+              Get Your Vehicle Price
+            </a>
+            <a
+              class="smc-button smc-button-secondary"
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              WhatsApp Us
+            </a>
+          </div>
+
+          <div class="benefit-row" aria-label="Service benefits">
+            {benefits.map((benefit) => (
+              <span>
+                <i aria-hidden="true">✓</i>
+                {benefit}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div id="valuation" class="hero-form">
+          <QuoteForm />
         </div>
       </div>
+    </section>
 
-      <aside class="status-card">
-        <span>Development shell</span>
-        <strong>Header + footer system is active</strong>
-        <p>The live Wix frontend remains untouched while this preview is developed.</p>
-      </aside>
+    <section class="trust-strip">
+      <div class="smc-container trust-grid">
+        <div>
+          <strong>Any condition</strong>
+          <span>Old, damaged, accident or non-running vehicles</span>
+        </div>
+        <div>
+          <strong>Free collection</strong>
+          <span>Pickup available across the UAE</span>
+        </div>
+        <div>
+          <strong>Simple process</strong>
+          <span>Vehicle details, valuation and handover</span>
+        </div>
+        <div>
+          <strong>Direct support</strong>
+          <span>Call or WhatsApp our team</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="steps-section smc-container">
+      <div class="section-intro">
+        <div class="smc-kicker">Simple from start to finish</div>
+        <h2>Sell your car in three clear steps.</h2>
+        <p>
+          No classifieds, no endless buyer messages, and no separate towing arrangement.
+        </p>
+      </div>
+
+      <div class="steps-grid">
+        {steps.map((step) => (
+          <article>
+            <span class="step-number">{step.number}</span>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="condition-section">
+      <div class="smc-container condition-grid">
+        <div>
+          <div class="smc-kicker">We buy cars in different conditions</div>
+          <h2>Your car does not need to be perfect to have value.</h2>
+          <p>
+            We assess vehicles based on their actual condition, including cars
+            with mechanical faults, electrical problems, accident damage,
+            expired registration, high mileage or cars that no longer run.
+          </p>
+          <a class="smc-button smc-button-primary" href="#valuation">
+            Get a Free Valuation
+          </a>
+        </div>
+
+        <div class="condition-list">
+          <span>Non-running cars</span>
+          <span>Engine or gearbox faults</span>
+          <span>Accident-damaged vehicles</span>
+          <span>High-mileage cars</span>
+          <span>Expired Mulkiya</span>
+          <span>Old or unwanted vehicles</span>
+        </div>
+      </div>
     </section>
   </main>
 </BaseLayout>
 
 <style>
   .hero {
-    min-height: 570px;
-    padding: 90px 0 70px;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 88% 12%, rgba(88, 139, 73, .18), transparent 34%),
+      linear-gradient(180deg, #f8fbf6 0%, #ffffff 100%);
+    border-bottom: 1px solid var(--smc-line);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: .32;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(43, 88, 39, .05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(43, 88, 39, .05) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 82%);
+  }
+
+  .hero-grid {
+    position: relative;
+    min-height: 680px;
+    padding: 76px 0 68px;
     display: grid;
-    grid-template-columns: 1.2fr .8fr;
-    gap: 60px;
+    grid-template-columns: minmax(0, 1.12fr) minmax(390px, .72fr);
+    gap: 72px;
     align-items: center;
   }
 
-  h1 {
+  .hero-copy h1 {
     max-width: 760px;
-    margin: 10px 0 20px;
-    font-size: clamp(48px, 7vw, 82px);
+    margin: 11px 0 22px;
+    font-size: clamp(52px, 6vw, 78px);
     line-height: .98;
     letter-spacing: -.06em;
   }
 
-  .hero p {
-    max-width: 650px;
+  .hero-lead {
+    max-width: 675px;
     margin: 0;
     color: var(--smc-muted);
     font-size: 19px;
-    line-height: 1.7;
+    line-height: 1.72;
   }
 
   .hero-actions {
     margin-top: 28px;
     display: flex;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
   }
 
-  .status-card {
-    padding: 28px;
-    border: 1px solid var(--smc-line);
-    border-radius: 22px;
-    background: var(--smc-surface);
-    box-shadow: var(--smc-shadow);
+  .benefit-row {
+    max-width: 760px;
+    margin-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
   }
 
-  .status-card span {
-    color: var(--smc-green);
-    font-size: 12px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: .09em;
+  .benefit-row span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #4f554e;
+    font-size: 13px;
+    font-weight: 700;
   }
 
-  .status-card strong {
-    display: block;
-    margin: 10px 0;
-    font-size: 26px;
-    line-height: 1.2;
+  .benefit-row i {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #e7f1e3;
+    color: var(--smc-green-dark);
+    font-style: normal;
+    font-size: 11px;
   }
 
-  .status-card p {
+  .hero-form {
+    scroll-margin-top: 30px;
+  }
+
+  .trust-strip {
+    border-bottom: 1px solid var(--smc-line);
+    background: #fff;
+  }
+
+  .trust-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .trust-grid > div {
+    min-height: 112px;
+    padding: 25px 26px;
+    border-right: 1px solid var(--smc-line);
+    display: grid;
+    align-content: center;
+    gap: 6px;
+  }
+
+  .trust-grid > div:first-child {
+    border-left: 1px solid var(--smc-line);
+  }
+
+  .trust-grid strong {
     font-size: 15px;
   }
 
-  @media (max-width: 800px) {
-    .hero {
+  .trust-grid span {
+    color: var(--smc-muted);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .steps-section {
+    padding: 105px 0 110px;
+  }
+
+  .section-intro {
+    max-width: 720px;
+    margin-bottom: 46px;
+  }
+
+  .section-intro h2,
+  .condition-grid h2 {
+    margin: 9px 0 16px;
+    font-size: clamp(38px, 5vw, 58px);
+    line-height: 1.05;
+    letter-spacing: -.045em;
+  }
+
+  .section-intro p,
+  .condition-grid > div > p {
+    margin: 0;
+    color: var(--smc-muted);
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .steps-grid article {
+    min-height: 255px;
+    padding: 28px;
+    border: 1px solid var(--smc-line);
+    border-radius: 20px;
+    background: #fff;
+  }
+
+  .step-number {
+    color: #7aa072;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .12em;
+  }
+
+  .steps-grid h3 {
+    margin: 38px 0 10px;
+    font-size: 24px;
+    letter-spacing: -.03em;
+  }
+
+  .steps-grid p {
+    margin: 0;
+    color: var(--smc-muted);
+    line-height: 1.65;
+  }
+
+  .condition-section {
+    padding: 90px 0;
+    background: #102912;
+    color: #fff;
+  }
+
+  .condition-grid {
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .condition-grid .smc-kicker {
+    color: #9cc895;
+  }
+
+  .condition-grid > div > p {
+    color: #c7d5c5;
+    margin-bottom: 28px;
+  }
+
+  .condition-grid .smc-button-primary {
+    background: #fff;
+    color: #173b18;
+  }
+
+  .condition-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .condition-list span {
+    min-height: 72px;
+    padding: 0 18px;
+    border: 1px solid rgba(255,255,255,.13);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,.04);
+    color: #edf4ec;
+    font-size: 14px;
+    font-weight: 750;
+  }
+
+  @media (max-width: 960px) {
+    .hero-grid {
       grid-template-columns: 1fr;
-      min-height: auto;
-      padding: 58px 0 30px;
+      gap: 42px;
+      padding-top: 58px;
     }
 
-    h1 {
-      font-size: 50px;
+    .hero-form {
+      max-width: 620px;
+    }
+
+    .trust-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .steps-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .condition-grid {
+      grid-template-columns: 1fr;
+      gap: 42px;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .hero-grid {
+      min-height: auto;
+      padding: 42px 0 52px;
+      gap: 32px;
+    }
+
+    .hero-copy h1 {
+      font-size: 47px;
+    }
+
+    .hero-lead {
+      font-size: 17px;
+    }
+
+    .hero-actions .smc-button {
+      width: 100%;
+    }
+
+    .benefit-row {
+      display: grid;
+      gap: 10px;
+    }
+
+    .trust-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .trust-grid > div,
+    .trust-grid > div:first-child {
+      min-height: 92px;
+      border-left: 1px solid var(--smc-line);
+      border-bottom: 1px solid var(--smc-line);
+    }
+
+    .steps-section {
+      padding: 72px 0;
+    }
+
+    .condition-section {
+      padding: 70px 0;
+    }
+
+    .condition-list {
+      grid-template-columns: 1fr;
     }
   }
 </style>
