@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/inner-pages.css';
+
+const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
+const faqs = [["What types of cars do you buy?","We accept valuation requests for cars in many different conditions, including running cars, non-running cars, accident-damaged vehicles, high-mileage cars and vehicles with mechanical or electrical faults."],["Do you buy non-running cars?","Yes. A vehicle does not need to be running to be submitted for valuation."],["Do you buy cars with accident damage?","Yes. Accident-damaged vehicles can be submitted for valuation. The final value depends on the vehicle and its condition."],["Can I sell a car with an expired Mulkiya?","You can submit the vehicle for valuation. The team can then explain the documents and handover requirements that apply to your situation."],["Is the valuation free?","Yes. Sending a vehicle valuation request through the website is free and carries no obligation to accept an offer."],["Is vehicle collection free?","Free collection is available as part of the service across supported UAE locations."],["Which areas do you cover?","We serve customers across Dubai and other UAE locations, including Sharjah, Abu Dhabi, Ajman, Ras Al Khaimah, Fujairah, Al Ain and Umm Al Quwain."],["What information do I need for a quote?","Choose the vehicle Make, Model and Year, then provide your name and WhatsApp number so our team can contact you about the valuation."],["How do I get started?","Use the Free Quote page, select your vehicle details and submit the short form. You can also contact the team directly by WhatsApp or phone."],["What happens after I accept an offer?","The team will confirm the next steps, required handover details and collection arrangements for your vehicle."]];
+const faqJsonLd = {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What types of cars do you buy?","acceptedAnswer":{"@type":"Answer","text":"We accept valuation requests for cars in many different conditions, including running cars, non-running cars, accident-damaged vehicles, high-mileage cars and vehicles with mechanical or electrical faults."}},{"@type":"Question","name":"Do you buy non-running cars?","acceptedAnswer":{"@type":"Answer","text":"Yes. A vehicle does not need to be running to be submitted for valuation."}},{"@type":"Question","name":"Do you buy cars with accident damage?","acceptedAnswer":{"@type":"Answer","text":"Yes. Accident-damaged vehicles can be submitted for valuation. The final value depends on the vehicle and its condition."}},{"@type":"Question","name":"Can I sell a car with an expired Mulkiya?","acceptedAnswer":{"@type":"Answer","text":"You can submit the vehicle for valuation. The team can then explain the documents and handover requirements that apply to your situation."}},{"@type":"Question","name":"Is the valuation free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Sending a vehicle valuation request through the website is free and carries no obligation to accept an offer."}},{"@type":"Question","name":"Is vehicle collection free?","acceptedAnswer":{"@type":"Answer","text":"Free collection is available as part of the service across supported UAE locations."}},{"@type":"Question","name":"Which areas do you cover?","acceptedAnswer":{"@type":"Answer","text":"We serve customers across Dubai and other UAE locations, including Sharjah, Abu Dhabi, Ajman, Ras Al Khaimah, Fujairah, Al Ain and Umm Al Quwain."}},{"@type":"Question","name":"What information do I need for a quote?","acceptedAnswer":{"@type":"Answer","text":"Choose the vehicle Make, Model and Year, then provide your name and WhatsApp number so our team can contact you about the valuation."}},{"@type":"Question","name":"How do I get started?","acceptedAnswer":{"@type":"Answer","text":"Use the Free Quote page, select your vehicle details and submit the short form. You can also contact the team directly by WhatsApp or phone."}},{"@type":"Question","name":"What happens after I accept an offer?","acceptedAnswer":{"@type":"Answer","text":"The team will confirm the next steps, required handover details and collection arrangements for your vehicle."}}]};
+---
+
+<BaseLayout
+  title="FAQs | Scrap My Car UAE - Scrap Car For Cash"
+  description="Answers to common questions about scrap car valuations, collection, vehicle condition and selling a car to Scrap My Car UAE."
+  canonical="https://www.scrapmycaruae.com/faqs"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')} />
+  </Fragment>
+
+  <main>
+    <section class="inner-hero">
+      <div class="smc-container inner-hero-grid">
+        <div>
+          <div class="smc-kicker">Frequently asked questions</div>
+          <h1>Everything you need to know before you start.</h1>
+          <p>
+            Quick answers about vehicle condition, valuations, collection and the process of selling your car.
+          </p>
+        </div>
+        <aside class="inner-hero-aside">
+          <strong>Still have a question?</strong>
+          <span>Contact us directly and we’ll help with your specific vehicle or situation.</span>
+        </aside>
+      </div>
+    </section>
+
+    <section class="page-shell">
+      <div class="smc-container content-grid">
+        <aside class="side-card">
+          <div class="smc-kicker">Need help?</div>
+          <h2>Ask the team directly.</h2>
+          <p>If your question is specific to your vehicle, WhatsApp is the easiest way to explain the situation.</p>
+          <a class="smc-button smc-button-primary" href={whatsappUrl} target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
+        </aside>
+
+        <div class="faq-stack">
+          {faqs.map(([question, answer], index) => (
+            <details open={index === 0}>
+              <summary>
+                <span>{question}</span>
+                <i aria-hidden="true">+</i>
+              </summary>
+              <p>{answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="page-cta">
+      <div class="smc-container page-cta-inner">
+        <div>
+          <div class="smc-kicker">Free valuation</div>
+          <h2>Ready to find out what your car is worth?</h2>
+          <p>Select your Make, Model and Year and send your request.</p>
+        </div>
+        <div class="page-cta-actions">
+          <a class="smc-button smc-button-primary" href="/free-quote">Get Your Vehicle Price</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
