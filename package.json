@@ -13,7 +13,8 @@
     "generate-types": "wrangler types",
     "deploy": "astro build && wrangler deploy",
     "cf-typegen": "wrangler types",
-    "seo:inventory": "node --env-file=.env scripts/export-seo-inventory.mjs"
+    "seo:inventory": "node --env-file=.env scripts/export-seo-inventory.mjs",
+    "seo:audit": "node scripts/audit-seo-inventory.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.2",
