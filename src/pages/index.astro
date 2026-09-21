@@ -1,34 +1,167 @@
 ---
+export const prerender = false;
+
+import { media } from '@wix/sdk';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import QuoteForm from '../components/QuoteForm.astro';
+import { getVehicleData } from '../lib/vehicle-data';
+import { wixClient } from '../lib/wix';
 
 const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
 
+let vehicleData = {
+  makes: [],
+  models: [],
+  years: []
+};
+
+let vehicleDataError = '';
+
+try {
+  vehicleData = await getVehicleData();
+} catch (error) {
+  vehicleDataError = error instanceof Error ? error.message : String(error);
+}
+
+const featuredMakes = vehicleData.makes
+  .filter((item: any) => item.featuredMake)
+  .slice(0, 5)
+  .map((item: any) => item.make);
+
+let latestPosts: any[] = [];
+
+try {
+  const result = await wixClient.posts.queryPosts({
+    paging: { limit: 3, offset: 0 },
+    sort: [{ fieldName: 'firstPublishedDate', order: 'DESC' }]
+  });
+  latestPosts = result.posts ?? [];
+} catch {
+  latestPosts = [];
+}
+
+const getPostImage = (post: any) => {
+  const image = post?.media?.wixMedia?.image;
+  if (!image) return null;
+
+  if (typeof image === 'string') {
+    try {
+      return media.getImageUrl(image);
+    } catch {
+      return null;
+    }
+  }
+
+  return image?.url ? image : null;
+};
+
+const formatDate = (value: string | Date | undefined) => {
+  if (!value) return '';
+  return new Intl.DateTimeFormat('en-AE', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  }).format(new Date(value));
+};
+
 const benefits = [
-  'Cars in any condition',
-  'Free vehicle collection',
-  'Fast valuation',
-  'Hassle-free paperwork',
-  'UAE-wide service'
+  {
+    title: 'Any condition',
+    text: 'Old, accident-damaged, non-running, high-mileage or mechanically faulty cars.',
+    icon: 'car'
+  },
+  {
+    title: 'Free collection',
+    text: 'We arrange vehicle collection across Dubai, Sharjah and the wider UAE.',
+    icon: 'truck'
+  },
+  {
+    title: 'Straightforward paperwork',
+    text: 'A simple handover process with guidance on the details needed to complete the sale.',
+    icon: 'file'
+  },
+  {
+    title: 'Direct support',
+    text: 'Call or WhatsApp our team when you need help with your valuation or collection.',
+    icon: 'chat'
+  }
 ];
 
 const steps = [
   {
     number: '01',
-    title: 'Get a free quote',
-    text: 'Share your make, model and year. We use your vehicle details to prepare a valuation.'
+    title: 'Choose your vehicle',
+    text: 'Select the make, model and year from our vehicle database.'
   },
   {
     number: '02',
-    title: 'Arrange free collection',
-    text: 'If you accept the offer, we arrange collection from your location anywhere in the UAE.'
+    title: 'Get your valuation',
+    text: 'Add your name and WhatsApp number and send your request to our team.'
   },
   {
     number: '03',
-    title: 'Complete the sale',
-    text: 'We guide you through the required paperwork and complete the vehicle handover.'
+    title: 'Arrange collection',
+    text: 'If you accept the offer, we arrange the vehicle handover and collection.'
   }
 ];
+
+const conditions = [
+  'Non-running cars',
+  'Engine or gearbox faults',
+  'Accident-damaged cars',
+  'Electrical issues',
+  'High-mileage vehicles',
+  'Expired Mulkiya',
+  'Old cars',
+  'Running cars'
+];
+
+const locations = [
+  'Dubai',
+  'Sharjah',
+  'Abu Dhabi',
+  'Ajman',
+  'Ras Al Khaimah',
+  'Fujairah',
+  'Al Ain',
+  'Umm Al Quwain'
+];
+
+const faqs = [
+  {
+    question: 'Do you buy cars that are not running?',
+    answer: 'Yes. We assess non-running cars as well as vehicles with engine, gearbox, electrical or accident damage.'
+  },
+  {
+    question: 'Is vehicle collection free?',
+    answer: 'Free vehicle collection is available as part of our service across supported UAE locations.'
+  },
+  {
+    question: 'Can I request a valuation for a car with expired Mulkiya?',
+    answer: 'Yes. Cars with expired Mulkiya can still be submitted for valuation. Our team can explain the required handover details for your situation.'
+  },
+  {
+    question: 'What information do I need to get a quote?',
+    answer: 'Choose the vehicle make, model and year, then enter your name and WhatsApp number so our team can contact you about the valuation.'
+  },
+  {
+    question: 'Which areas do you cover?',
+    answer: 'We serve customers across Dubai and the UAE, including Sharjah, Abu Dhabi, Ajman, Ras Al Khaimah, Fujairah, Al Ain and Umm Al Quwain.'
+  }
+];
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer
+    }
+  }))
+};
 ---
 
 <BaseLayout
@@ -36,412 +169,1627 @@ const steps = [
   description="Scrap My Car offers unbeatable prices & free scrap car valuation and collection service across all UAE locations. Obtaining a scrap car valuation has never been easier – simply share your name and contact number, and our expert car valuation team will reach out to you Shortly."
   canonical="https://www.scrapmycaruae.com/"
 >
+  <Fragment slot="head">
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')}
+    />
+  </Fragment>
+
   <main>
     <section class="hero">
+      <div class="hero-orb hero-orb-one"></div>
+      <div class="hero-orb hero-orb-two"></div>
+
       <div class="smc-container hero-grid">
-        <div class="hero-copy">
-          <div class="smc-kicker">Sell your car anywhere in the UAE</div>
-          <h1>Get a free scrap car valuation — without the hassle.</h1>
+        <div class="hero-copy" data-reveal>
+          <div class="eyebrow">
+            <span class="live-dot"></span>
+            Scrap car buyers across the UAE
+          </div>
+
+          <h1>
+            Sell your car.
+            <span>Skip the hassle.</span>
+          </h1>
+
           <p class="hero-lead">
-            Old, damaged, non-running or simply unwanted? Tell us about your car
-            and get a vehicle valuation with free collection available across the UAE.
+            Get a free vehicle valuation for old, damaged, non-running or unwanted cars,
+            with collection available across the UAE.
           </p>
 
           <div class="hero-actions">
-            <a class="smc-button smc-button-primary" href="#valuation">
+            <a class="smc-button smc-button-primary hero-primary" href="#valuation">
               Get Your Vehicle Price
+              <span aria-hidden="true">→</span>
             </a>
             <a
-              class="smc-button smc-button-secondary"
+              class="smc-button smc-button-secondary whatsapp-button"
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
             >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.5 0 .2 5.3.2 11.9c0 2.1.6 4.2 1.7 6L0 24l6.3-1.7a11.8 11.8 0 0 0 5.8 1.5h.1c6.5 0 11.8-5.3 11.8-11.9 0-3.2-1.2-6.2-3.5-8.4Zm-8.3 18.3h-.1c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4a9.8 9.8 0 0 1-1.5-5.3A9.8 9.8 0 0 1 12.1 2c2.6 0 5 1 6.9 2.9a9.7 9.7 0 0 1 2.9 6.9c0 5.4-4.4 9.8-9.7 9.8Zm5.4-7.3c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.4.2-.7.1-1.8-.9-3-1.6-4.2-3.6-.3-.5.3-.5.9-1.7.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9 0 1.7 1.2 3.3 1.4 3.5.2.2 2.4 3.7 5.9 5.2 2.2.9 3.1 1 4.2.8.7-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.3-.6-.4Z"/>
+              </svg>
               WhatsApp Us
             </a>
           </div>
 
-          <div class="benefit-row" aria-label="Service benefits">
-            {benefits.map((benefit) => (
-              <span>
-                <i aria-hidden="true">✓</i>
-                {benefit}
-              </span>
-            ))}
+          <div class="hero-proof">
+            <div>
+              <strong>Free</strong>
+              <span>valuation</span>
+            </div>
+            <div>
+              <strong>UAE-wide</strong>
+              <span>collection</span>
+            </div>
+            <div>
+              <strong>Any</strong>
+              <span>condition</span>
+            </div>
+          </div>
+
+          <div class="hero-visual" aria-hidden="true">
+            <div class="visual-ring"></div>
+            <img
+              src="https://static.wixstatic.com/media/ff8df3_57b1e39afd6540059346a106769350eb~mv2.png"
+              alt=""
+              width="738"
+              height="465"
+              loading="eager"
+              decoding="async"
+            />
           </div>
         </div>
 
-        <div id="valuation" class="hero-form">
-          <QuoteForm />
+        <div id="valuation" class="hero-form" data-reveal>
+          <QuoteForm
+            makes={vehicleData.makes}
+            models={vehicleData.models}
+            years={vehicleData.years}
+            dataError={vehicleDataError}
+          />
+          <div class="form-reassurance">
+            <span>✓ No obligation</span>
+            <span>✓ Free valuation</span>
+            <span>✓ Secure request</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="trust-strip">
-      <div class="smc-container trust-grid">
-        <div>
-          <strong>Any condition</strong>
-          <span>Old, damaged, accident or non-running vehicles</span>
+    {featuredMakes.length > 0 && (
+      <section class="make-strip">
+        <div class="smc-container make-strip-inner">
+          <span class="make-label">Popular makes we buy</span>
+          <div class="make-list">
+            {featuredMakes.map((make: string) => <strong>{make}</strong>)}
+          </div>
         </div>
-        <div>
-          <strong>Free collection</strong>
-          <span>Pickup available across the UAE</span>
-        </div>
-        <div>
-          <strong>Simple process</strong>
-          <span>Vehicle details, valuation and handover</span>
-        </div>
-        <div>
-          <strong>Direct support</strong>
-          <span>Call or WhatsApp our team</span>
-        </div>
-      </div>
-    </section>
+      </section>
+    )}
 
-    <section class="steps-section smc-container">
-      <div class="section-intro">
-        <div class="smc-kicker">Simple from start to finish</div>
-        <h2>Sell your car in three clear steps.</h2>
+    <section class="benefits smc-container">
+      <div class="section-heading" data-reveal>
+        <div class="smc-kicker">Why Scrap My Car UAE</div>
+        <h2>A simpler way to move on from your car.</h2>
         <p>
-          No classifieds, no endless buyer messages, and no separate towing arrangement.
+          One straightforward process from valuation request to vehicle collection.
         </p>
       </div>
 
-      <div class="steps-grid">
-        {steps.map((step) => (
-          <article>
-            <span class="step-number">{step.number}</span>
-            <h3>{step.title}</h3>
-            <p>{step.text}</p>
+      <div class="benefit-grid">
+        {benefits.map((benefit, index) => (
+          <article class="benefit-card" data-reveal>
+            <div class="benefit-top">
+              <div class="benefit-icon">
+                {benefit.icon === 'car' && (
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 16h14M6 16l-1.3-3.2a2 2 0 0 1 .2-1.9l1.5-2.3A2 2 0 0 1 8 7.7h8a2 2 0 0 1 1.6.9l1.5 2.3a2 2 0 0 1 .2 1.9L18 16M7 19v1M17 19v1M4 13h16M8 11h8"/>
+                  </svg>
+                )}
+                {benefit.icon === 'truck' && (
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 6h11v10H3zM14 10h4l3 3v3h-7zM7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM18 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+                  </svg>
+                )}
+                {benefit.icon === 'file' && (
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 3h8l4 4v14H6zM14 3v5h5M9 12h6M9 16h6"/>
+                  </svg>
+                )}
+                {benefit.icon === 'chat' && (
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 5h16v11H9l-5 4zM8 9h8M8 12h5"/>
+                  </svg>
+                )}
+              </div>
+              <span>0{index + 1}</span>
+            </div>
+            <h3>{benefit.title}</h3>
+            <p>{benefit.text}</p>
           </article>
         ))}
       </div>
     </section>
 
-    <section class="condition-section">
-      <div class="smc-container condition-grid">
-        <div>
-          <div class="smc-kicker">We buy cars in different conditions</div>
-          <h2>Your car does not need to be perfect to have value.</h2>
+    <section class="process-section">
+      <div class="smc-container process-grid">
+        <div class="process-copy" data-reveal>
+          <div class="smc-kicker">How it works</div>
+          <h2>From vehicle details to collection in three clear steps.</h2>
           <p>
-            We assess vehicles based on their actual condition, including cars
-            with mechanical faults, electrical problems, accident damage,
-            expired registration, high mileage or cars that no longer run.
+            No classified ads, no endless buyer messages and no separate towing arrangement.
           </p>
-          <a class="smc-button smc-button-primary" href="#valuation">
-            Get a Free Valuation
+          <a class="text-link" href="#valuation">
+            Start your valuation <span aria-hidden="true">↗</span>
           </a>
         </div>
 
-        <div class="condition-list">
-          <span>Non-running cars</span>
-          <span>Engine or gearbox faults</span>
-          <span>Accident-damaged vehicles</span>
-          <span>High-mileage cars</span>
-          <span>Expired Mulkiya</span>
-          <span>Old or unwanted vehicles</span>
+        <div class="process-list">
+          {steps.map((step) => (
+            <article data-reveal>
+              <span class="process-number">{step.number}</span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>
+
+    <section class="condition-section">
+      <div class="smc-container condition-grid">
+        <div class="condition-visual" data-reveal>
+          <div class="condition-image-wrap">
+            <img
+              src="https://static.wixstatic.com/media/ff8df3_5ad850cd37b548fcb891e45e46e44e9d~mv2.png"
+              alt="Scrap My Car UAE buys cars in different conditions"
+              width="609"
+              height="425"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div class="condition-float-card">
+            <strong>Any condition</strong>
+            <span>Tell us what you have.</span>
+          </div>
+        </div>
+
+        <div class="condition-copy" data-reveal>
+          <div class="smc-kicker">We buy more than perfect cars</div>
+          <h2>Your car can still have value even when it has problems.</h2>
+          <p>
+            We assess cars with mechanical faults, electrical problems, accident damage,
+            expired registration and other issues.
+          </p>
+
+          <div class="condition-tags">
+            {conditions.map((condition) => (
+              <span><i>✓</i>{condition}</span>
+            ))}
+          </div>
+
+          <a class="smc-button condition-button" href="#valuation">
+            Get a Free Valuation
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="value-section smc-container">
+      <div class="value-intro" data-reveal>
+        <div class="smc-kicker">Easy. Fast. Fair.</div>
+        <h2>Designed around the way people actually want to sell a car.</h2>
+      </div>
+
+      <div class="value-grid">
+        <article data-reveal>
+          <span>01</span>
+          <h3>Easy</h3>
+          <p>Select your vehicle and send one short request. No long listing process.</p>
+        </article>
+        <article data-reveal>
+          <span>02</span>
+          <h3>Fast</h3>
+          <p>Your details go directly to the team handling valuations and collections.</p>
+        </article>
+        <article data-reveal>
+          <span>03</span>
+          <h3>Fair</h3>
+          <p>Your vehicle is assessed using its actual make, model, year and condition.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="coverage-section">
+      <div class="smc-container coverage-grid">
+        <div class="coverage-copy" data-reveal>
+          <div class="smc-kicker">UAE vehicle collection</div>
+          <h2>Wherever your car is, start with the same simple form.</h2>
+          <p>
+            Scrap My Car UAE serves customers across Dubai and other major UAE locations.
+          </p>
+
+          <div class="location-grid">
+            {locations.map((location) => (
+              <span>
+                <i></i>
+                {location}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div class="coverage-art" aria-hidden="true" data-reveal>
+          <div class="map-card">
+            <div class="map-line line-one"></div>
+            <div class="map-line line-two"></div>
+            <div class="map-line line-three"></div>
+            <span class="pin pin-one"></span>
+            <span class="pin pin-two"></span>
+            <span class="pin pin-three"></span>
+            <span class="pin pin-four"></span>
+            <div class="map-badge">
+              <strong>UAE</strong>
+              <span>Collection coverage</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonial-section smc-container">
+      <div class="testimonial-card" data-reveal>
+        <div class="quote-mark">“</div>
+        <div class="stars" aria-label="5 star customer review">★★★★★</div>
+        <blockquote>
+          The process was quick and easy. After I filled out the online form,
+          I got my car's valuation. The collection was handled professionally.
+        </blockquote>
+        <span>Customer feedback</span>
+      </div>
+
+      <div class="testimonial-side" data-reveal>
+        <div class="smc-kicker">A straightforward service</div>
+        <h2>Less chasing. More clarity.</h2>
+        <p>
+          Start online, speak directly with the team, and keep the whole vehicle-sale process simple.
+        </p>
+        <div class="mini-proof">
+          <span><strong>01</strong> Online valuation request</span>
+          <span><strong>02</strong> Direct WhatsApp support</span>
+          <span><strong>03</strong> Collection arranged for you</span>
+        </div>
+      </div>
+    </section>
+
+    {latestPosts.length > 0 && (
+      <section class="blog-section smc-container">
+        <div class="blog-heading" data-reveal>
+          <div>
+            <div class="smc-kicker">Latest guides</div>
+            <h2>Useful advice for UAE car owners.</h2>
+          </div>
+          <a class="text-link" href="/blogs">View all blogs <span>↗</span></a>
+        </div>
+
+        <div class="blog-grid">
+          {latestPosts.map((post: any) => {
+            const image = getPostImage(post);
+            return (
+              <article class="blog-card" data-reveal>
+                <a href={`/post/${post.slug}`}>
+                  <div class="blog-image">
+                    {image?.url && (
+                      <img
+                        src={image.url}
+                        alt={post?.media?.altText || post.title || ''}
+                        width={image.width}
+                        height={image.height}
+                        loading="lazy"
+                      />
+                    )}
+                  </div>
+                  <div class="blog-meta">{formatDate(post.firstPublishedDate)}</div>
+                  <h3>{post.title}</h3>
+                  <span class="read-more">Read article →</span>
+                </a>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    )}
+
+    <section class="faq-section smc-container">
+      <div class="faq-heading" data-reveal>
+        <div class="smc-kicker">Common questions</div>
+        <h2>What customers usually want to know.</h2>
+        <p>
+          Need something else? Message our team directly on WhatsApp.
+        </p>
+        <a
+          class="smc-button smc-button-secondary"
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Ask on WhatsApp
+        </a>
+      </div>
+
+      <div class="faq-list">
+        {faqs.map((faq, index) => (
+          <details data-reveal open={index === 0}>
+            <summary>
+              <span>{faq.question}</span>
+              <i aria-hidden="true">+</i>
+            </summary>
+            <p>{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="smc-container final-cta-inner" data-reveal>
+        <div>
+          <div class="smc-kicker">Ready when you are</div>
+          <h2>Tell us which car you want to sell.</h2>
+          <p>Choose your make, model and year to start your free valuation.</p>
+        </div>
+        <div class="final-actions">
+          <a class="smc-button final-primary" href="#valuation">
+            Get Your Vehicle Price
+          </a>
+          <a
+            class="smc-button final-whatsapp"
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <a
+      class="floating-whatsapp"
+      href={whatsappUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat with Scrap My Car UAE on WhatsApp"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.5 0 .2 5.3.2 11.9c0 2.1.6 4.2 1.7 6L0 24l6.3-1.7a11.8 11.8 0 0 0 5.8 1.5h.1c6.5 0 11.8-5.3 11.8-11.9 0-3.2-1.2-6.2-3.5-8.4Zm-8.3 18.3h-.1c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4a9.8 9.8 0 0 1-1.5-5.3A9.8 9.8 0 0 1 12.1 2c2.6 0 5 1 6.9 2.9a9.7 9.7 0 0 1 2.9 6.9c0 5.4-4.4 9.8-9.7 9.8Z"/>
+      </svg>
+    </a>
   </main>
 </BaseLayout>
 
+<script>
+  const revealItems = document.querySelectorAll('[data-reveal]');
+
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+  } else {
+    revealItems.forEach((item) => item.classList.add('is-visible'));
+  }
+</script>
+
 <style>
+  main {
+    overflow: clip;
+  }
+
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity .65s ease, transform .65s cubic-bezier(.2,.7,.2,1);
+  }
+
+  [data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   .hero {
     position: relative;
     overflow: hidden;
-    background:
-      radial-gradient(circle at 88% 12%, rgba(88, 139, 73, .18), transparent 34%),
-      linear-gradient(180deg, #f8fbf6 0%, #ffffff 100%);
     border-bottom: 1px solid var(--smc-line);
+    background:
+      radial-gradient(circle at 78% 18%, rgba(82, 137, 69, .13), transparent 34%),
+      linear-gradient(180deg, #f7faf5 0%, #fff 86%);
   }
 
   .hero::before {
     content: '';
     position: absolute;
     inset: 0;
-    opacity: .32;
+    opacity: .45;
     pointer-events: none;
     background-image:
-      linear-gradient(rgba(43, 88, 39, .05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(43, 88, 39, .05) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: linear-gradient(to bottom, #000 0%, transparent 82%);
+      linear-gradient(rgba(43, 88, 39, .045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(43, 88, 39, .045) 1px, transparent 1px);
+    background-size: 52px 52px;
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 76%);
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(2px);
+    pointer-events: none;
+  }
+
+  .hero-orb-one {
+    width: 420px;
+    height: 420px;
+    top: -240px;
+    right: -80px;
+    background: rgba(102, 163, 91, .10);
+  }
+
+  .hero-orb-two {
+    width: 260px;
+    height: 260px;
+    left: 32%;
+    bottom: -190px;
+    background: rgba(30, 77, 32, .06);
   }
 
   .hero-grid {
     position: relative;
-    min-height: 680px;
-    padding: 76px 0 68px;
+    min-height: 720px;
+    padding: 74px 0 72px;
     display: grid;
-    grid-template-columns: minmax(0, 1.12fr) minmax(390px, .72fr);
-    gap: 72px;
+    grid-template-columns: minmax(0, 1.1fr) minmax(390px, .72fr);
+    gap: 70px;
     align-items: center;
   }
 
-  .hero-copy h1 {
-    max-width: 760px;
-    margin: 11px 0 22px;
-    font-size: clamp(52px, 6vw, 78px);
-    line-height: .98;
-    letter-spacing: -.06em;
+  .hero-copy {
+    position: relative;
+    padding-bottom: 82px;
+  }
+
+  .eyebrow {
+    width: fit-content;
+    padding: 8px 12px;
+    border: 1px solid #dce7d8;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,.7);
+    color: #40503e;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4f963f;
+    box-shadow: 0 0 0 5px rgba(79,150,63,.11);
+  }
+
+  .hero h1 {
+    max-width: 800px;
+    margin: 18px 0 22px;
+    font-size: clamp(58px, 7vw, 92px);
+    line-height: .92;
+    letter-spacing: -.068em;
+    font-weight: 820;
+  }
+
+  .hero h1 span {
+    display: block;
+    color: var(--smc-green);
   }
 
   .hero-lead {
-    max-width: 675px;
+    max-width: 655px;
     margin: 0;
     color: var(--smc-muted);
     font-size: 19px;
-    line-height: 1.72;
+    line-height: 1.68;
   }
 
   .hero-actions {
-    margin-top: 28px;
+    margin-top: 30px;
     display: flex;
-    gap: 10px;
+    gap: 11px;
     flex-wrap: wrap;
   }
 
-  .benefit-row {
-    max-width: 760px;
-    margin-top: 32px;
+  .hero-primary {
+    min-width: 225px;
+    justify-content: space-between;
+  }
+
+  .whatsapp-button svg {
+    width: 17px;
+    height: 17px;
+    fill: currentColor;
+  }
+
+  .hero-proof {
+    margin-top: 34px;
     display: flex;
+    gap: 32px;
     flex-wrap: wrap;
-    gap: 10px 20px;
   }
 
-  .benefit-row span {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    color: #4f554e;
-    font-size: 13px;
-    font-weight: 700;
-  }
-
-  .benefit-row i {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
+  .hero-proof > div {
     display: grid;
-    place-items: center;
-    background: #e7f1e3;
-    color: var(--smc-green-dark);
-    font-style: normal;
-    font-size: 11px;
+    gap: 1px;
+  }
+
+  .hero-proof strong {
+    font-size: 16px;
+    letter-spacing: -.02em;
+  }
+
+  .hero-proof span {
+    color: #747b72;
+    font-size: 12px;
+  }
+
+  .hero-visual {
+    position: absolute;
+    left: 44%;
+    bottom: -18px;
+    width: 400px;
+    height: 230px;
+    pointer-events: none;
+    opacity: .96;
+  }
+
+  .hero-visual img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center bottom;
+    filter: drop-shadow(0 22px 24px rgba(34,65,29,.12));
+  }
+
+  .visual-ring {
+    position: absolute;
+    width: 310px;
+    height: 120px;
+    left: 45px;
+    bottom: 10px;
+    border: 1px solid rgba(47,111,45,.18);
+    border-radius: 50%;
+    transform: rotate(-5deg);
   }
 
   .hero-form {
+    position: relative;
+    z-index: 3;
     scroll-margin-top: 30px;
   }
 
-  .trust-strip {
+  .form-reassurance {
+    margin-top: 12px;
+    padding: 0 7px;
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    color: #778075;
+    font-size: 10px;
+    font-weight: 750;
+  }
+
+  .make-strip {
     border-bottom: 1px solid var(--smc-line);
     background: #fff;
   }
 
-  .trust-grid {
+  .make-strip-inner {
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+  }
+
+  .make-label {
+    color: #868d84;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .make-list {
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+    gap: 22px;
+    align-items: center;
   }
 
-  .trust-grid > div {
-    min-height: 112px;
-    padding: 25px 26px;
-    border-right: 1px solid var(--smc-line);
-    display: grid;
-    align-content: center;
-    gap: 6px;
+  .make-list strong {
+    color: #343a33;
+    text-align: center;
+    font-size: 14px;
+    letter-spacing: .035em;
   }
 
-  .trust-grid > div:first-child {
-    border-left: 1px solid var(--smc-line);
+  .benefits {
+    padding: 112px 0 118px;
   }
 
-  .trust-grid strong {
-    font-size: 15px;
+  .section-heading {
+    max-width: 760px;
+    margin-bottom: 50px;
   }
 
-  .trust-grid span {
-    color: var(--smc-muted);
-    font-size: 13px;
-    line-height: 1.45;
-  }
-
-  .steps-section {
-    padding: 105px 0 110px;
-  }
-
-  .section-intro {
-    max-width: 720px;
-    margin-bottom: 46px;
-  }
-
-  .section-intro h2,
-  .condition-grid h2 {
+  .section-heading h2,
+  .process-copy h2,
+  .condition-copy h2,
+  .value-intro h2,
+  .coverage-copy h2,
+  .testimonial-side h2,
+  .blog-heading h2,
+  .faq-heading h2,
+  .final-cta h2 {
     margin: 9px 0 16px;
-    font-size: clamp(38px, 5vw, 58px);
-    line-height: 1.05;
-    letter-spacing: -.045em;
+    font-size: clamp(40px, 5.2vw, 62px);
+    line-height: 1.03;
+    letter-spacing: -.05em;
   }
 
-  .section-intro p,
-  .condition-grid > div > p {
+  .section-heading p,
+  .process-copy > p,
+  .condition-copy > p,
+  .coverage-copy > p,
+  .testimonial-side > p,
+  .faq-heading > p,
+  .final-cta p {
     margin: 0;
     color: var(--smc-muted);
     font-size: 17px;
-    line-height: 1.7;
+    line-height: 1.68;
   }
 
-  .steps-grid {
+  .benefit-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
   }
 
-  .steps-grid article {
-    min-height: 255px;
-    padding: 28px;
+  .benefit-card {
+    min-height: 280px;
+    padding: 24px;
     border: 1px solid var(--smc-line);
     border-radius: 20px;
     background: #fff;
+    transition: transform 190ms ease, box-shadow 190ms ease, border-color 190ms ease;
   }
 
-  .step-number {
-    color: #7aa072;
-    font-size: 12px;
+  .benefit-card:hover {
+    transform: translateY(-4px);
+    border-color: #d4e1d0;
+    box-shadow: 0 18px 48px rgba(29,55,25,.08);
+  }
+
+  .benefit-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .benefit-top > span {
+    color: #a1a8a0;
+    font-size: 11px;
+    font-weight: 850;
+  }
+
+  .benefit-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    display: grid;
+    place-items: center;
+    background: var(--smc-green-soft);
+    color: var(--smc-green-dark);
+  }
+
+  .benefit-icon svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .benefit-card h3 {
+    margin: 48px 0 11px;
+    font-size: 22px;
+    letter-spacing: -.03em;
+  }
+
+  .benefit-card p {
+    margin: 0;
+    color: var(--smc-muted);
+    line-height: 1.62;
+    font-size: 14px;
+  }
+
+  .process-section {
+    padding: 105px 0;
+    background: #f6f8f4;
+    border-block: 1px solid var(--smc-line);
+  }
+
+  .process-grid {
+    display: grid;
+    grid-template-columns: .85fr 1.15fr;
+    gap: 90px;
+    align-items: start;
+  }
+
+  .process-copy {
+    position: sticky;
+    top: 118px;
+  }
+
+  .text-link {
+    margin-top: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--smc-green-dark);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 850;
+  }
+
+  .process-list {
+    display: grid;
+  }
+
+  .process-list article {
+    min-height: 170px;
+    padding: 34px 0;
+    border-bottom: 1px solid #dce1d8;
+    display: grid;
+    grid-template-columns: 78px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .process-list article:first-child {
+    border-top: 1px solid #dce1d8;
+  }
+
+  .process-number {
+    color: #84a37f;
+    font-size: 13px;
     font-weight: 900;
     letter-spacing: .12em;
   }
 
-  .steps-grid h3 {
-    margin: 38px 0 10px;
-    font-size: 24px;
-    letter-spacing: -.03em;
+  .process-list h3 {
+    margin: 0 0 9px;
+    font-size: 27px;
+    letter-spacing: -.035em;
   }
 
-  .steps-grid p {
+  .process-list p {
+    max-width: 530px;
     margin: 0;
     color: var(--smc-muted);
     line-height: 1.65;
   }
 
   .condition-section {
-    padding: 90px 0;
+    padding: 110px 0;
     background: #102912;
     color: #fff;
   }
 
   .condition-grid {
     display: grid;
-    grid-template-columns: 1.05fr .95fr;
-    gap: 80px;
+    grid-template-columns: .95fr 1.05fr;
+    gap: 86px;
     align-items: center;
   }
 
-  .condition-grid .smc-kicker {
+  .condition-visual {
+    position: relative;
+  }
+
+  .condition-image-wrap {
+    min-height: 510px;
+    border-radius: 28px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 40% 20%, rgba(156,200,149,.16), transparent 35%),
+      rgba(255,255,255,.035);
+    display: grid;
+    place-items: center;
+  }
+
+  .condition-image-wrap img {
+    width: 92%;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 28px 34px rgba(0,0,0,.24));
+  }
+
+  .condition-float-card {
+    position: absolute;
+    right: -20px;
+    bottom: 34px;
+    padding: 16px 18px;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 16px;
+    background: rgba(22,55,25,.82);
+    backdrop-filter: blur(12px);
+    display: grid;
+    gap: 2px;
+    box-shadow: 0 20px 45px rgba(0,0,0,.18);
+  }
+
+  .condition-float-card strong {
+    font-size: 15px;
+  }
+
+  .condition-float-card span {
+    color: #b9c9b7;
+    font-size: 11px;
+  }
+
+  .condition-section .smc-kicker {
     color: #9cc895;
   }
 
-  .condition-grid > div > p {
-    color: #c7d5c5;
-    margin-bottom: 28px;
+  .condition-copy > p {
+    color: #c6d4c4;
+    max-width: 640px;
   }
 
-  .condition-grid .smc-button-primary {
+  .condition-tags {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .condition-tags span {
+    min-height: 48px;
+    padding: 0 14px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: rgba(255,255,255,.035);
+    color: #ecf3eb;
+    font-size: 13px;
+    font-weight: 720;
+  }
+
+  .condition-tags i {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(156,200,149,.13);
+    color: #9cc895;
+    font-style: normal;
+    font-size: 10px;
+  }
+
+  .condition-button {
+    margin-top: 28px;
     background: #fff;
     color: #173b18;
   }
 
-  .condition-list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+  .condition-button:hover {
+    background: #f1f5ef;
   }
 
-  .condition-list span {
-    min-height: 72px;
-    padding: 0 18px;
-    border: 1px solid rgba(255,255,255,.13);
-    border-radius: 14px;
+  .value-section {
+    padding: 112px 0;
+  }
+
+  .value-intro {
+    max-width: 850px;
+    margin-bottom: 52px;
+  }
+
+  .value-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--smc-line);
+    border-bottom: 1px solid var(--smc-line);
+  }
+
+  .value-grid article {
+    min-height: 245px;
+    padding: 30px 34px 30px 0;
+    border-right: 1px solid var(--smc-line);
+  }
+
+  .value-grid article + article {
+    padding-left: 34px;
+  }
+
+  .value-grid article:last-child {
+    border-right: 0;
+  }
+
+  .value-grid > article > span {
+    color: #90a88c;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .1em;
+  }
+
+  .value-grid h3 {
+    margin: 44px 0 11px;
+    font-size: 34px;
+    letter-spacing: -.045em;
+  }
+
+  .value-grid p {
+    margin: 0;
+    color: var(--smc-muted);
+    line-height: 1.65;
+  }
+
+  .coverage-section {
+    padding: 105px 0;
+    background: #f4f7f2;
+    border-block: 1px solid var(--smc-line);
+  }
+
+  .coverage-grid {
+    display: grid;
+    grid-template-columns: 1fr .9fr;
+    gap: 90px;
+    align-items: center;
+  }
+
+  .location-grid {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 24px;
+  }
+
+  .location-grid span {
     display: flex;
     align-items: center;
-    background: rgba(255,255,255,.04);
-    color: #edf4ec;
+    gap: 9px;
+    color: #424941;
     font-size: 14px;
+    font-weight: 760;
+  }
+
+  .location-grid i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--smc-green);
+    box-shadow: 0 0 0 5px rgba(47,111,45,.08);
+  }
+
+  .map-card {
+    position: relative;
+    min-height: 430px;
+    border: 1px solid #dfe6dc;
+    border-radius: 28px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 45% 45%, rgba(81,139,69,.18), transparent 34%),
+      linear-gradient(145deg, #fbfcfa, #e8f0e4);
+    box-shadow: 0 24px 62px rgba(33,60,28,.08);
+  }
+
+  .map-card::before,
+  .map-card::after {
+    content: '';
+    position: absolute;
+    border: 1px solid rgba(47,111,45,.10);
+    border-radius: 50%;
+  }
+
+  .map-card::before {
+    width: 330px;
+    height: 330px;
+    left: 20%;
+    top: 10%;
+  }
+
+  .map-card::after {
+    width: 220px;
+    height: 220px;
+    left: 32%;
+    top: 23%;
+  }
+
+  .map-line {
+    position: absolute;
+    height: 1px;
+    background: rgba(47,111,45,.22);
+    transform-origin: left center;
+  }
+
+  .line-one { width: 220px; left: 27%; top: 38%; transform: rotate(24deg); }
+  .line-two { width: 190px; left: 42%; top: 61%; transform: rotate(-42deg); }
+  .line-three { width: 170px; left: 32%; top: 67%; transform: rotate(-8deg); }
+
+  .pin {
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    background: var(--smc-green);
+    box-shadow: 0 0 0 8px rgba(47,111,45,.10);
+  }
+
+  .pin-one { left: 30%; top: 36%; }
+  .pin-two { left: 63%; top: 51%; }
+  .pin-three { left: 42%; top: 69%; }
+  .pin-four { left: 73%; top: 31%; }
+
+  .map-badge {
+    position: absolute;
+    left: 28px;
+    bottom: 28px;
+    padding: 15px 17px;
+    border: 1px solid rgba(47,111,45,.12);
+    border-radius: 15px;
+    display: grid;
+    background: rgba(255,255,255,.88);
+    backdrop-filter: blur(10px);
+  }
+
+  .map-badge strong {
+    font-size: 23px;
+    letter-spacing: -.04em;
+  }
+
+  .map-badge span {
+    color: var(--smc-muted);
+    font-size: 11px;
+  }
+
+  .testimonial-section {
+    padding: 112px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 70px;
+    align-items: center;
+  }
+
+  .testimonial-card {
+    position: relative;
+    padding: 38px;
+    border: 1px solid var(--smc-line);
+    border-radius: 24px;
+    background: #fff;
+    box-shadow: 0 22px 55px rgba(27,48,25,.06);
+  }
+
+  .quote-mark {
+    position: absolute;
+    right: 30px;
+    top: 14px;
+    color: #e4eee1;
+    font-family: Georgia, serif;
+    font-size: 92px;
+    line-height: 1;
+  }
+
+  .stars {
+    color: #3f7639;
+    letter-spacing: .13em;
+    font-size: 14px;
+  }
+
+  blockquote {
+    position: relative;
+    z-index: 1;
+    margin: 26px 0 24px;
+    font-size: 24px;
+    line-height: 1.48;
+    letter-spacing: -.025em;
+  }
+
+  .testimonial-card > span {
+    color: var(--smc-muted);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .mini-proof {
+    margin-top: 26px;
+    display: grid;
+    gap: 10px;
+  }
+
+  .mini-proof span {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--smc-line);
+    color: #424842;
+    font-size: 14px;
+  }
+
+  .mini-proof strong {
+    margin-right: 12px;
+    color: #8ba386;
+    font-size: 11px;
+    letter-spacing: .08em;
+  }
+
+  .blog-section {
+    padding: 10px 0 112px;
+  }
+
+  .blog-heading {
+    margin-bottom: 36px;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 30px;
+  }
+
+  .blog-heading h2 {
+    max-width: 720px;
+    margin-bottom: 0;
+  }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+
+  .blog-card a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .blog-image {
+    aspect-ratio: 16 / 10;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #edf0eb;
+  }
+
+  .blog-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform .24s ease;
+  }
+
+  .blog-card a:hover img {
+    transform: scale(1.025);
+  }
+
+  .blog-meta {
+    margin-top: 15px;
+    color: #899087;
+    font-size: 11px;
     font-weight: 750;
   }
 
-  @media (max-width: 960px) {
+  .blog-card h3 {
+    margin: 8px 0 10px;
+    font-size: 21px;
+    line-height: 1.3;
+    letter-spacing: -.025em;
+  }
+
+  .read-more {
+    color: var(--smc-green-dark);
+    font-size: 12px;
+    font-weight: 850;
+  }
+
+  .faq-section {
+    padding: 108px 0;
+    display: grid;
+    grid-template-columns: .75fr 1.25fr;
+    gap: 90px;
+    border-top: 1px solid var(--smc-line);
+  }
+
+  .faq-heading {
+    align-self: start;
+    position: sticky;
+    top: 118px;
+  }
+
+  .faq-heading .smc-button {
+    margin-top: 24px;
+  }
+
+  .faq-list {
+    display: grid;
+  }
+
+  .faq-list details {
+    border-bottom: 1px solid var(--smc-line);
+  }
+
+  .faq-list details:first-child {
+    border-top: 1px solid var(--smc-line);
+  }
+
+  .faq-list summary {
+    min-height: 86px;
+    padding: 22px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+  }
+
+  .faq-list summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-list summary i {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--smc-line);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: var(--smc-green-dark);
+    font-style: normal;
+    transition: transform .2s ease;
+  }
+
+  .faq-list details[open] summary i {
+    transform: rotate(45deg);
+  }
+
+  .faq-list details p {
+    max-width: 670px;
+    margin: -6px 0 26px;
+    color: var(--smc-muted);
+    line-height: 1.7;
+  }
+
+  .final-cta {
+    padding: 76px 0;
+    background: #163d18;
+    color: #fff;
+  }
+
+  .final-cta-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+  }
+
+  .final-cta .smc-kicker {
+    color: #a1cd99;
+  }
+
+  .final-cta h2 {
+    max-width: 760px;
+    margin-bottom: 12px;
+  }
+
+  .final-cta p {
+    color: #c3d2c1;
+  }
+
+  .final-actions {
+    display: flex;
+    gap: 10px;
+    flex: 0 0 auto;
+  }
+
+  .final-primary,
+  .final-whatsapp {
+    color: #173b18;
+    background: #fff;
+  }
+
+  .final-whatsapp {
+    border-color: rgba(255,255,255,.18);
+    background: transparent;
+    color: #fff;
+  }
+
+  .floating-whatsapp {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 60;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #1f9d50;
+    color: #fff;
+    box-shadow: 0 15px 36px rgba(15,80,39,.28);
+    transition: transform .18s ease;
+  }
+
+  .floating-whatsapp:hover {
+    transform: translateY(-3px);
+  }
+
+  .floating-whatsapp svg {
+    width: 25px;
+    height: 25px;
+    fill: currentColor;
+  }
+
+  @media (max-width: 1040px) {
     .hero-grid {
       grid-template-columns: 1fr;
-      gap: 42px;
-      padding-top: 58px;
+      gap: 36px;
+      padding-top: 56px;
+    }
+
+    .hero-copy {
+      padding-bottom: 190px;
     }
 
     .hero-form {
-      max-width: 620px;
+      max-width: 650px;
     }
 
-    .trust-grid {
+    .hero-visual {
+      left: auto;
+      right: 0;
+      bottom: 0;
+      width: 390px;
+    }
+
+    .benefit-grid {
       grid-template-columns: 1fr 1fr;
     }
 
-    .steps-grid {
+    .process-grid,
+    .condition-grid,
+    .coverage-grid,
+    .testimonial-section,
+    .faq-section {
       grid-template-columns: 1fr;
+      gap: 52px;
     }
 
-    .condition-grid {
-      grid-template-columns: 1fr;
-      gap: 42px;
+    .process-copy,
+    .faq-heading {
+      position: static;
+    }
+
+    .condition-visual {
+      max-width: 680px;
+    }
+
+    .blog-grid {
+      grid-template-columns: 1fr 1fr;
     }
   }
 
-  @media (max-width: 620px) {
+  @media (max-width: 720px) {
     .hero-grid {
       min-height: auto;
-      padding: 42px 0 52px;
-      gap: 32px;
+      padding: 38px 0 48px;
     }
 
-    .hero-copy h1 {
-      font-size: 47px;
+    .hero-copy {
+      padding-bottom: 154px;
+    }
+
+    .hero h1 {
+      margin-top: 16px;
+      font-size: 53px;
     }
 
     .hero-lead {
       font-size: 17px;
     }
 
+    .hero-actions {
+      display: grid;
+    }
+
     .hero-actions .smc-button {
       width: 100%;
     }
 
-    .benefit-row {
-      display: grid;
-      gap: 10px;
+    .hero-proof {
+      gap: 22px;
     }
 
-    .trust-grid {
+    .hero-visual {
+      width: 300px;
+      height: 180px;
+      right: -20px;
+    }
+
+    .make-strip-inner {
+      padding: 20px 0;
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .make-list {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .make-list strong {
+      text-align: left;
+    }
+
+    .benefits,
+    .value-section,
+    .testimonial-section,
+    .faq-section {
+      padding: 76px 0;
+    }
+
+    .benefit-grid {
       grid-template-columns: 1fr;
     }
 
-    .trust-grid > div,
-    .trust-grid > div:first-child {
-      min-height: 92px;
-      border-left: 1px solid var(--smc-line);
+    .benefit-card {
+      min-height: 230px;
+    }
+
+    .process-section,
+    .condition-section,
+    .coverage-section {
+      padding: 76px 0;
+    }
+
+    .process-list article {
+      grid-template-columns: 56px 1fr;
+    }
+
+    .condition-image-wrap {
+      min-height: 330px;
+    }
+
+    .condition-float-card {
+      right: 12px;
+      bottom: 14px;
+    }
+
+    .condition-tags {
+      grid-template-columns: 1fr;
+    }
+
+    .value-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .value-grid article,
+    .value-grid article + article {
+      min-height: 190px;
+      padding: 26px 0;
+      border-right: 0;
       border-bottom: 1px solid var(--smc-line);
     }
 
-    .steps-section {
-      padding: 72px 0;
+    .value-grid article:last-child {
+      border-bottom: 0;
     }
 
-    .condition-section {
-      padding: 70px 0;
+    .value-grid h3 {
+      margin-top: 28px;
     }
 
-    .condition-list {
+    .location-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .map-card {
+      min-height: 330px;
+    }
+
+    .testimonial-card {
+      padding: 28px;
+    }
+
+    blockquote {
+      font-size: 20px;
+    }
+
+    .blog-heading {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .blog-grid {
       grid-template-columns: 1fr;
+    }
+
+    .final-cta {
+      padding: 58px 0;
+    }
+
+    .final-cta-inner {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .final-actions {
+      width: 100%;
+      display: grid;
+    }
+
+    .final-actions .smc-button {
+      width: 100%;
+    }
+
+    .floating-whatsapp {
+      right: 14px;
+      bottom: 14px;
+      width: 50px;
+      height: 50px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .benefit-card,
+    .blog-image img,
+    .floating-whatsapp {
+      transition: none;
     }
   }
 </style>
