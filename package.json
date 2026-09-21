@@ -15,7 +15,8 @@
     "cf-typegen": "wrangler types",
     "seo:inventory": "node --env-file=.env scripts/export-seo-inventory.mjs",
     "seo:audit": "node scripts/audit-seo-inventory.mjs",
-    "blog:validate": "node --env-file=.env scripts/validate-blog-parity.mjs"
+    "blog:validate": "node --env-file=.env scripts/validate-blog-parity.mjs",
+    "preview:check": "node scripts/check-preview.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.2",
