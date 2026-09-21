@@ -1,17 +1,105 @@
 ---
-
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  title="Scrap My Car UAE | Free Quote & Collection - Dubai"
+  description="Get a free scrap car valuation in the UAE. Scrap My Car UAE buys cars in any condition with free collection and a hassle-free process."
+  canonical="https://www.scrapmycaruae.com/"
+>
+  <main>
+    <section class="hero smc-container">
+      <div>
+        <div class="smc-kicker">Scrap My Car UAE</div>
+        <h1>Get A Free Scrap Car Valuation Now</h1>
+        <p>
+          Simply enter your make and model and get a free car valuation today.
+          The complete homepage redesign will be built on this shared headless shell.
+        </p>
+        <div class="hero-actions">
+          <a class="smc-button smc-button-primary" href="/free-quote">Get a Free Quote</a>
+          <a class="smc-button smc-button-secondary" href="tel:+971557458322">Call 055 745 83 22</a>
+        </div>
+      </div>
+
+      <aside class="status-card">
+        <span>Development shell</span>
+        <strong>Header + footer system is active</strong>
+        <p>The live Wix frontend remains untouched while this preview is developed.</p>
+      </aside>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .hero {
+    min-height: 570px;
+    padding: 90px 0 70px;
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  h1 {
+    max-width: 760px;
+    margin: 10px 0 20px;
+    font-size: clamp(48px, 7vw, 82px);
+    line-height: .98;
+    letter-spacing: -.06em;
+  }
+
+  .hero p {
+    max-width: 650px;
+    margin: 0;
+    color: var(--smc-muted);
+    font-size: 19px;
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    margin-top: 28px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .status-card {
+    padding: 28px;
+    border: 1px solid var(--smc-line);
+    border-radius: 22px;
+    background: var(--smc-surface);
+    box-shadow: var(--smc-shadow);
+  }
+
+  .status-card span {
+    color: var(--smc-green);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+  }
+
+  .status-card strong {
+    display: block;
+    margin: 10px 0;
+    font-size: 26px;
+    line-height: 1.2;
+  }
+
+  .status-card p {
+    font-size: 15px;
+  }
+
+  @media (max-width: 800px) {
+    .hero {
+      grid-template-columns: 1fr;
+      min-height: auto;
+      padding: 58px 0 30px;
+    }
+
+    h1 {
+      font-size: 50px;
+    }
+  }
+</style>
