@@ -1,3 +1,4 @@
+# Cloudflare deployment secrets configured
 name: Deploy development preview
 
 on:
