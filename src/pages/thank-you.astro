@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const requestId = Astro.url.searchParams.get('request') || '';
+const shortRef = requestId ? requestId.slice(0, 8).toUpperCase() : '';
+const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
+---
+
+<BaseLayout
+  title="Thankyou | Scrap My Car UAE"
+  description="Thank you for requesting a vehicle valuation from Scrap My Car UAE."
+  canonical="https://www.scrapmycaruae.com/thank-you"
+>
+  <main class="thank-you smc-container">
+    <div class="success-mark" aria-hidden="true">✓</div>
+    <div class="smc-kicker">Request received</div>
+    <h1>Your vehicle price request is on the way.</h1>
+    <p>
+      We’ve received your vehicle details. Our team will review the request
+      and contact you using the WhatsApp number you provided.
+    </p>
+
+    {shortRef && (
+      <div class="reference">
+        <span>Reference</span>
+        <strong>{shortRef}</strong>
+      </div>
+    )}
+
+    <div class="actions">
+      <a class="smc-button smc-button-primary" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+        WhatsApp Us
+      </a>
+      <a class="smc-button smc-button-secondary" href="/">
+        Back to Home
+      </a>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .thank-you {
+    min-height: 620px;
+    padding: 100px 0;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    text-align: center;
+  }
+
+  .thank-you > * { max-width: 760px; }
+
+  .success-mark {
+    width: 66px;
+    height: 66px;
+    margin-bottom: 22px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--smc-green-soft);
+    color: var(--smc-green-dark);
+    font-size: 30px;
+    font-weight: 900;
+  }
+
+  h1 {
+    margin: 10px 0 18px;
+    font-size: clamp(44px, 7vw, 72px);
+    line-height: 1;
+    letter-spacing: -.055em;
+  }
+
+  p {
+    margin: 0;
+    color: var(--smc-muted);
+    font-size: 18px;
+    line-height: 1.7;
+  }
+
+  .reference {
+    margin-top: 26px;
+    padding: 14px 18px;
+    border: 1px solid var(--smc-line);
+    border-radius: 14px;
+    display: inline-grid;
+    gap: 3px;
+    background: var(--smc-surface);
+  }
+
+  .reference span {
+    color: var(--smc-muted);
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+
+  .reference strong { font-size: 16px; }
+
+  .actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 620px) {
+    .thank-you { min-height: 520px; padding: 70px 0; }
+    h1 { font-size: 46px; }
+    .actions .smc-button { width: 100%; }
+  }
+</style>
