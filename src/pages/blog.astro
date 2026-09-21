@@ -1,6 +1,7 @@
 ---
 export const prerender = false;
 
+import { media } from '@wix/sdk';
 import { wixClient } from '../lib/wix';
 
 const PAGE_SIZE = 12;
@@ -66,6 +67,25 @@ const seoTitle =
 
 const seoDescription =
   'Discover expert insights and tips on selling your faulty car hassle-free with Scrap My Car UAE. Get valuable information on dealing with mechanical issues, accident damage, and more. Sell your car easily in the UAE today!';
+
+const getImage = (post: any) => {
+  const image = post?.media?.wixMedia?.image;
+  if (!image) return null;
+
+  if (typeof image === 'string') {
+    try {
+      return media.getImageUrl(image);
+    } catch {
+      return null;
+    }
+  }
+
+  if (image?.url) {
+    return image;
+  }
+
+  return null;
+};
 
 const formatDate = (value: string | Date | undefined) => {
   if (!value) return '';
@@ -334,7 +354,7 @@ const pageNumbers = (() => {
         <>
           <section class="grid" aria-label="Blog posts">
             {posts.map((post: any) => {
-              const image = post?.media?.wixMedia?.image;
+              const image = getImage(post);
               const postUrl = `/post/${post.slug}`;
 
               return (
