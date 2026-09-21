@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page Not Found | Scrap My Car UAE"
+  description="The page you requested could not be found."
+  canonical="https://www.scrapmycaruae.com/404"
+  noindex={true}
+>
+  <main class="not-found smc-container">
+    <div class="code">404</div>
+    <div class="smc-kicker">Page not found</div>
+    <h1>This page has moved or no longer exists.</h1>
+    <p>
+      Use the links below to return to Scrap My Car UAE or request a free vehicle valuation.
+    </p>
+    <div class="actions">
+      <a class="smc-button smc-button-primary" href="/">Back to Home</a>
+      <a class="smc-button smc-button-secondary" href="/free-quote">Get Your Vehicle Price</a>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .not-found {
+    min-height: 640px;
+    padding: 96px 0;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    text-align: center;
+  }
+
+  .code {
+    margin-bottom: 8px;
+    color: #dbe8d7;
+    font-size: clamp(80px, 14vw, 170px);
+    font-weight: 900;
+    line-height: .8;
+    letter-spacing: -.08em;
+  }
+
+  h1 {
+    max-width: 800px;
+    margin: 11px 0 18px;
+    font-size: clamp(42px, 6vw, 70px);
+    line-height: 1;
+    letter-spacing: -.055em;
+  }
+
+  p {
+    max-width: 620px;
+    margin: 0;
+    color: var(--smc-muted);
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  .actions {
+    margin-top: 28px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  @media (max-width: 620px) {
+    .not-found { min-height: 520px; padding: 70px 0; }
+    .actions, .actions .smc-button { width: 100%; }
+  }
+</style>
