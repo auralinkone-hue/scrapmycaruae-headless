@@ -1,0 +1,66 @@
+---
+import '../styles/global.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  prevUrl?: string;
+  nextUrl?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = '',
+  canonical,
+  ogImage = '',
+  ogType = 'website',
+  prevUrl = '',
+  nextUrl = '',
+  noindex = false
+} = Astro.props;
+
+const resolvedCanonical = canonical || new URL(Astro.url.pathname, 'https://www.scrapmycaruae.com').toString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={resolvedCanonical} />
+    {prevUrl && <link rel="prev" href={prevUrl} />}
+    {nextUrl && <link rel="next" href={nextUrl} />}
+    {noindex && <meta name="robots" content="noindex,follow" />}
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={resolvedCanonical} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+
+    <slot name="head" />
+  </head>
+
+  <body>
+    <SiteHeader />
+    <slot />
+    <SiteFooter />
+  </body>
+</html>
