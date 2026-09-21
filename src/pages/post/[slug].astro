@@ -1,6 +1,7 @@
 ---
 export const prerender = false;
 
+import { media } from '@wix/sdk';
 import { wixClient } from '../../lib/wix';
 import { renderRicosDocument } from '../../lib/rich-content';
 
@@ -38,10 +39,25 @@ const canonical = post?.slug
   ? `https://www.scrapmycaruae.com/post/${post.slug}`
   : 'https://www.scrapmycaruae.com/blog';
 
-const coverImage =
-  post?.media?.wixMedia?.image?.url ||
-  post?.heroImage?.url ||
-  '';
+const rawCoverImage =
+  post?.media?.wixMedia?.image ||
+  post?.heroImage ||
+  null;
+
+const normalizedCover =
+  typeof rawCoverImage === 'string'
+    ? (() => {
+        try {
+          return media.getImageUrl(rawCoverImage);
+        } catch {
+          return null;
+        }
+      })()
+    : rawCoverImage?.url
+      ? rawCoverImage
+      : null;
+
+const coverImage = normalizedCover?.url || '';
 
 const coverAlt =
   post?.media?.altText ||
@@ -331,8 +347,8 @@ const jsonLd = post
             class="cover"
             src={coverImage}
             alt={coverAlt}
-            width={post?.media?.wixMedia?.image?.width}
-            height={post?.media?.wixMedia?.image?.height}
+            width={normalizedCover?.width}
+            height={normalizedCover?.height}
             fetchpriority="high"
           />
         )}
