@@ -26,6 +26,11 @@ const {
 } = Astro.props;
 
 const resolvedCanonical = canonical || new URL(Astro.url.pathname, 'https://www.scrapmycaruae.com').toString();
+const isDevelopmentHost =
+  Astro.url.hostname === 'localhost' ||
+  Astro.url.hostname === '127.0.0.1' ||
+  Astro.url.hostname.endsWith('.workers.dev');
+const shouldNoindex = noindex || isDevelopmentHost;
 ---
 
 <!doctype html>
@@ -42,7 +47,8 @@ const resolvedCanonical = canonical || new URL(Astro.url.pathname, 'https://www.
     <link rel="canonical" href={resolvedCanonical} />
     {prevUrl && <link rel="prev" href={prevUrl} />}
     {nextUrl && <link rel="next" href={nextUrl} />}
-    {noindex && <meta name="robots" content="noindex,follow" />}
+    {shouldNoindex && <meta name="robots" content="noindex,nofollow" />}
+    {shouldNoindex && <meta name="googlebot" content="noindex,nofollow" />}
 
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
