@@ -1,0 +1,66 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import { getVehicleData } from '../lib/vehicle-data';
+import '../styles/inner-pages.css';
+
+let vehicleData = { makes: [], models: [], years: [] };
+let vehicleDataError = '';
+
+try {
+  vehicleData = await getVehicleData();
+} catch (error) {
+  vehicleDataError = error instanceof Error ? error.message : String(error);
+}
+---
+
+<BaseLayout
+  title="Scrap My Car UAE | Free Scrap Car Quote - Free Collection"
+  description="Get a free, no-obligation scrap car valuation in the UAE. Choose your vehicle make, model and year and send your request to Scrap My Car UAE."
+  canonical="https://www.scrapmycaruae.com/free-quote"
+>
+  <main>
+    <section class="inner-hero">
+      <div class="smc-container inner-hero-grid">
+        <div>
+          <div class="smc-kicker">Free car valuation</div>
+          <h1>Unlock a free car scrap quote today.</h1>
+          <p>
+            Find out what your old, damaged, non-running or unwanted vehicle could be worth with a complimentary, no-obligation valuation request.
+          </p>
+        </div>
+        <aside class="inner-hero-aside">
+          <strong>No long form. No listing process.</strong>
+          <span>Select your Make, Model and Year, then add your name and WhatsApp number.</span>
+        </aside>
+      </div>
+    </section>
+
+    <section class="quote-page">
+      <div class="smc-container quote-page-grid">
+        <div class="quote-copy">
+          <div class="smc-kicker">Get your free quote today</div>
+          <h2>A simple first step before you decide what to do with your car.</h2>
+          <p>
+            Start with a vehicle valuation before making any decisions. Scrap My Car UAE serves customers across Dubai and the UAE, including Abu Dhabi, Sharjah, Ajman, Fujairah, Ras Al Khaimah and Umm Al Quwain.
+          </p>
+          <div class="quote-points">
+            <span><i>✓</i> Cars in different conditions accepted for valuation</span>
+            <span><i>✓</i> Free vehicle collection available</span>
+            <span><i>✓</i> Direct WhatsApp support</span>
+            <span><i>✓</i> No obligation to accept the valuation</span>
+          </div>
+        </div>
+
+        <QuoteForm
+          makes={vehicleData.makes}
+          models={vehicleData.models}
+          years={vehicleData.years}
+          dataError={vehicleDataError}
+        />
+      </div>
+    </section>
+  </main>
+</BaseLayout>
