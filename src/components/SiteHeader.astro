@@ -1,0 +1,283 @@
+---
+const pathname = Astro.url.pathname;
+
+const links = [
+  { href: '/', label: 'Home' },
+  { href: '/free-quote', label: 'Free Quote' },
+  { href: '/contact-us', label: 'Contact Us' },
+  { href: '/faqs', label: 'FAQs' },
+  { href: '/blogs', label: 'Blogs' }
+];
+
+const isActive = (href: string) =>
+  href === '/'
+    ? pathname === '/'
+    : pathname === href || pathname.startsWith(href + '/');
+---
+
+<header class="smc-header">
+  <div class="smc-topbar">
+    <div class="smc-container topbar-inner">
+      <span>Sell your car anywhere in the UAE</span>
+      <a href="tel:+971557458322">Call now · 055 745 83 22</a>
+    </div>
+  </div>
+
+  <div class="smc-nav-wrap">
+    <div class="smc-container nav-inner">
+      <a class="brand" href="/" aria-label="Scrap My Car UAE home">
+        <img
+          src="https://static.wixstatic.com/media/ff8df3_ee2506a8a7ed4752b5b7832449c71105~mv2.png"
+          alt="Scrap My Car UAE"
+          width="155"
+          height="60"
+        />
+      </a>
+
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        {links.map((link) => (
+          <a
+            href={link.href}
+            class:list={['nav-link', { active: isActive(link.href) }]}
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
+
+      <div class="desktop-actions">
+        <a class="phone-link" href="tel:+971557458322" aria-label="Call Scrap My Car UAE">
+          055 745 83 22
+        </a>
+        <a class="smc-button smc-button-primary" href="/free-quote">
+          Get Free Quote
+        </a>
+      </div>
+
+      <details class="mobile-menu">
+        <summary aria-label="Open navigation">
+          <span></span><span></span><span></span>
+        </summary>
+        <div class="mobile-panel">
+          {links.map((link) => (
+            <a
+              href={link.href}
+              class:list={['mobile-link', { active: isActive(link.href) }]}
+            >
+              {link.label}
+            </a>
+          ))}
+          <a class="smc-button smc-button-primary mobile-quote" href="/free-quote">
+            Get Free Quote
+          </a>
+          <a class="mobile-phone" href="tel:+971557458322">
+            Call 055 745 83 22
+          </a>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  .smc-header {
+    position: relative;
+    z-index: 40;
+    background: #fff;
+  }
+
+  .smc-topbar {
+    background: #1f4d20;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .02em;
+  }
+
+  .topbar-inner {
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .topbar-inner a {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .smc-nav-wrap {
+    border-bottom: 1px solid var(--smc-line);
+    background: rgba(255,255,255,.96);
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-inner {
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .brand {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .brand img {
+    display: block;
+    width: 150px;
+    height: auto;
+    max-height: 58px;
+    object-fit: contain;
+  }
+
+  .desktop-nav {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 26px;
+  }
+
+  .nav-link {
+    position: relative;
+    color: #3f433e;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -10px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--smc-green);
+    transform: scaleX(0);
+    transition: transform 180ms ease;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--smc-green-dark);
+  }
+
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    transform: scaleX(1);
+  }
+
+  .desktop-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .phone-link {
+    color: #2d322d;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .mobile-menu {
+    display: none;
+    margin-left: auto;
+    position: relative;
+  }
+
+  .mobile-menu summary {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--smc-line);
+    border-radius: 12px;
+    display: grid;
+    place-content: center;
+    gap: 4px;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .mobile-menu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-menu summary span {
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+    background: #202420;
+  }
+
+  .mobile-panel {
+    position: absolute;
+    right: 0;
+    top: 54px;
+    width: min(310px, calc(100vw - 30px));
+    padding: 12px;
+    border: 1px solid var(--smc-line);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: var(--smc-shadow);
+    display: grid;
+    gap: 4px;
+  }
+
+  .mobile-link {
+    padding: 13px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 750;
+  }
+
+  .mobile-link:hover,
+  .mobile-link.active {
+    color: var(--smc-green-dark);
+    background: var(--smc-green-soft);
+  }
+
+  .mobile-quote {
+    margin-top: 8px;
+  }
+
+  .mobile-phone {
+    padding: 11px;
+    color: var(--smc-green-dark);
+    text-align: center;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  @media (max-width: 980px) {
+    .desktop-nav,
+    .desktop-actions {
+      display: none;
+    }
+
+    .mobile-menu {
+      display: block;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .smc-topbar {
+      display: none;
+    }
+
+    .nav-inner {
+      min-height: 68px;
+    }
+
+    .brand img {
+      width: 132px;
+    }
+  }
+</style>
