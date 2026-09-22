@@ -119,9 +119,6 @@ const countryCodes = [
         <select name="model" data-model required disabled>
           <option value="">Select make first</option>
         </select>
-        <small class="field-help" data-model-help>
-          Choose a make to see its available models.
-        </small>
       </label>
 
       <label>
@@ -166,7 +163,7 @@ const countryCodes = [
         <div class="phone-wrap">
           <select name="countryCode" class="country-code" aria-label="Country calling code" required>
             {countryCodes.map(([flag, country, code]) => (
-              <option value={code} selected={code === '+971'}>{flag} {country} {code}</option>
+              <option value={code} selected={code === '+971'}>{flag} {code} · {country}</option>
             ))}
           </select>
           <input
@@ -185,7 +182,7 @@ const countryCodes = [
       </label>
 
       <button type="submit" class="submit" data-submit>
-        Get Your Vehicle Price
+        Get My Free Valuation
         <i class="ph ph-arrow-right" aria-hidden="true"></i>
       </button>
 
@@ -207,7 +204,6 @@ const countryCodes = [
        const form = root.querySelector('form');
       const makeSelect = root.querySelector('[data-make]');
       const modelSelect = root.querySelector('[data-model]');
-      const modelHelp = root.querySelector('[data-model-help]');
       const summary = root.querySelector('[data-vehicle-summary]');
 
       if (!(form instanceof HTMLFormElement)) return;
@@ -234,7 +230,6 @@ const countryCodes = [
 
         if (!make) {
           modelSelect.disabled = true;
-          if (modelHelp) modelHelp.textContent = 'Choose a make to see its available models.';
           return;
         }
 
@@ -249,11 +244,6 @@ const countryCodes = [
 
         modelSelect.disabled = matching.length === 0;
 
-        if (modelHelp) {
-          modelHelp.textContent = matching.length
-            ? `${matching.length} models available for ${make}.`
-            : `No models found for ${make}.`;
-        }
       };
 
       makeSelect.addEventListener('change', () => {
@@ -289,7 +279,6 @@ const countryCodes = [
         }
 
         setStep(2);
-        root.scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
 
       root.querySelector('[data-back]')?.addEventListener('click', () => {
@@ -361,7 +350,7 @@ const countryCodes = [
 
           if (submitButton instanceof HTMLButtonElement) {
             submitButton.disabled = false;
-            submitButton.innerHTML = 'Get Your Vehicle Price <i class="ph ph-arrow-right" aria-hidden="true"></i>';
+            submitButton.innerHTML = 'Get My Free Valuation <i class="ph ph-arrow-right" aria-hidden="true"></i>';
           }
         }
       });
@@ -372,11 +361,11 @@ const countryCodes = [
 <style>
   .quote-card {
     width: 100%;
-    padding: 30px;
-    border: 1px solid rgba(24, 71, 28, .12);
-    border-radius: 26px;
-    background: rgba(255,255,255,.97);
-    box-shadow: 0 30px 80px rgba(19, 45, 18, .14);
+    padding: 26px;
+    border: 1px solid rgba(24, 71, 28, .11);
+    border-radius: 22px;
+    background: rgba(255,255,255,.98);
+    box-shadow: 0 20px 54px rgba(19, 45, 18, .10);
   }
 
   .quote-head .quote-kicker {
@@ -395,8 +384,8 @@ const countryCodes = [
   }
 
   .quote-head h2 {
-    margin: 7px 0 8px;
-    font-size: 31px;
+    margin: 6px 0 7px;
+    font-size: 29px;
     line-height: 1.08;
     letter-spacing: -.04em;
   }
@@ -410,7 +399,8 @@ const countryCodes = [
 
   .panel {
     display: none;
-    gap: 15px;
+    gap: 14px;
+    margin-top: 20px;
   }
 
   .panel.active {
@@ -444,7 +434,7 @@ const countryCodes = [
   input,
   select {
     width: 100%;
-    min-height: 52px;
+    min-height: 50px;
     padding: 0 14px;
     border: 1px solid #d9ded6;
     border-radius: 12px;
@@ -466,13 +456,16 @@ const countryCodes = [
   input:focus,
   select:focus {
     border-color: #77a76e;
-    box-shadow: 0 0 0 4px rgba(63, 122, 54, .10);
+    box-shadow: 0 0 0 3px rgba(63, 122, 54, .10);
   }
 
-  .field-help {
-    color: #7a8078;
-    font-size: 11px;
-    line-height: 1.4;
+  input:focus-visible,
+  select:focus-visible,
+  .continue:focus-visible,
+  .submit:focus-visible,
+  .back:focus-visible {
+    outline: 3px solid rgba(47, 111, 45, .16);
+    outline-offset: 2px;
   }
 
   .vehicle-summary {
@@ -486,7 +479,7 @@ const countryCodes = [
 
   .phone-wrap {
     display: grid;
-    grid-template-columns: minmax(122px, 142px) 1fr;
+    grid-template-columns: 116px 1fr;
     align-items: center;
     border: 1px solid #d9ded6;
     border-radius: 12px;
@@ -506,8 +499,8 @@ const countryCodes = [
     border-radius: 0;
     background: #f8faf7;
     box-shadow: none !important;
-    padding: 0 30px 0 11px;
-    font-size: 13px;
+    padding: 0 26px 0 10px;
+    font-size: 12px;
     cursor: pointer;
   }
 
@@ -525,7 +518,7 @@ const countryCodes = [
 
   .continue,
   .submit {
-    min-height: 54px;
+    min-height: 50px;
     margin-top: 3px;
     padding: 0 18px;
     border: 0;
@@ -553,7 +546,7 @@ const countryCodes = [
   }
 
   .continue {
-    justify-content: space-between;
+    justify-content: center;
   }
 
   .continue .ph,
@@ -635,22 +628,22 @@ const countryCodes = [
 
   @media (max-width: 620px) {
     .quote-card {
-      padding: 22px;
-      border-radius: 20px;
+      padding: 20px;
+      border-radius: 18px;
     }
 
     .quote-head h2 {
-      font-size: 27px;
+      font-size: 26px;
     }
 
     .phone-wrap {
-      grid-template-columns: 116px 1fr;
+      grid-template-columns: 104px 1fr;
     }
 
     .country-code {
-      padding-left: 9px;
-      padding-right: 24px;
-      font-size: 12px;
+      padding-left: 8px;
+      padding-right: 20px;
+      font-size: 11px;
     }
 
     .phone-wrap input {
@@ -658,7 +651,11 @@ const countryCodes = [
     }
 
     .phone-wrap input::placeholder {
-      font-size: 11px;
+      font-size: 10.5px;
+    }
+
+    .panel {
+      margin-top: 18px;
     }
   }
 </style>
