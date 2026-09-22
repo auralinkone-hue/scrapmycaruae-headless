@@ -628,12 +628,41 @@ const countryCodes = [
 
   @media (max-width: 620px) {
     .quote-card {
-      padding: 20px;
-      border-radius: 18px;
+      padding: 18px;
+      border-radius: 16px;
+      box-shadow: 0 14px 30px rgba(19, 45, 18, .07);
     }
 
     .quote-head h2 {
-      font-size: 26px;
+      font-size: 25px;
+    }
+
+    .quote-head p {
+      font-size: 13px;
+    }
+
+    .quote-head .quote-kicker {
+      font-size: 11px;
+    }
+
+    label {
+      gap: 6px;
+    }
+
+    input,
+    select {
+      min-height: 48px;
+      border-radius: 10px;
+      background-color: #fcfdfb;
+      font-size: 15px;
+    }
+
+    .field-label {
+      font-size: 11px;
+    }
+
+    .field-label .ph {
+      font-size: 15px;
     }
 
     .phone-wrap {
@@ -655,7 +684,14 @@ const countryCodes = [
     }
 
     .panel {
-      margin-top: 18px;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .continue,
+    .submit {
+      min-height: 50px;
+      border-radius: 11px;
     }
   }
 </style>
