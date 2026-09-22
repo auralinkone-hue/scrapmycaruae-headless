@@ -958,75 +958,87 @@ const faqJsonLd = {
 
   .process-list {
     display: grid;
+    gap: 13px;
   }
 
   .process-list article {
-    min-height: 184px;
-    padding: 28px 14px 28px 0;
-    border-bottom: 1px solid #dce1d8;
+    position: relative;
+    min-height: 152px;
+    padding: 23px;
     display: grid;
-    grid-template-columns: 74px 1fr;
+    grid-template-columns: 56px 1fr;
     gap: 18px;
-    align-items: start;
-    transition: background 180ms ease, padding 180ms ease, border-color 180ms ease;
-  }
-
-  .process-list article:first-child {
-    border-top: 1px solid #dce1d8;
+    align-items: center;
+    border: 1px solid #dce5d9;
+    border-radius: 18px;
+    background: rgba(255,255,255,.78);
+    box-shadow: 0 8px 24px rgba(25,55,24,.035);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
   }
 
   .process-number {
-    color: #527c4f;
-    font-size: 20px;
+    position: absolute;
+    right: -7px;
+    bottom: -7px;
+    width: 27px;
+    height: 27px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #f6f8f4;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--smc-green-dark);
+    font-size: 10px;
     font-weight: 900;
-    letter-spacing: .04em;
+    letter-spacing: .03em;
     line-height: 1;
   }
 
   .process-marker {
+    position: relative;
     display: grid;
-    gap: 11px;
-    justify-items: start;
+    place-items: center;
+    width: 52px;
+    height: 52px;
   }
 
   .process-marker > .ph {
-    width: 42px;
-    height: 42px;
+    width: 48px;
+    height: 48px;
     display: grid;
     place-items: center;
-    border: 1px solid #d6e4d2;
-    border-radius: 13px;
-    background: #fff;
-    color: var(--smc-green-dark);
-    font-size: 21px;
-    transition: transform 180ms ease, background 180ms ease, color 180ms ease, border-color 180ms ease;
+    border-radius: 15px;
+    background: var(--smc-green-dark);
+    color: #fff;
+    font-size: 22px;
+    box-shadow: 0 8px 16px rgba(25,70,26,.16);
+    transition: transform 180ms ease, background 180ms ease;
   }
 
   .process-list article:hover {
-    padding-left: 14px;
-    border-color: #c9dbc5;
-    background: rgba(255,255,255,.5);
+    transform: translateY(-3px);
+    border-color: #bcd1b7;
+    background: #fff;
+    box-shadow: 0 14px 30px rgba(25,55,24,.08);
   }
 
   .process-list article:hover .process-marker > .ph,
   .process-list article:active .process-marker > .ph {
-    transform: translateY(-2px) rotate(-4deg);
-    border-color: var(--smc-green);
-    background: var(--smc-green-dark);
-    color: #fff;
+    transform: rotate(-5deg) scale(1.04);
+    background: #2f6f2d;
   }
 
   .process-list h3 {
-    margin: 0 0 9px;
-    font-size: 27px;
-    letter-spacing: -.035em;
+    margin: 0 0 7px;
+    font-size: 25px;
+    letter-spacing: -.04em;
   }
 
   .process-list p {
     max-width: 530px;
     margin: 0;
     color: var(--smc-muted);
-    line-height: 1.65;
+    line-height: 1.6;
   }
 
   .condition-section {
@@ -1787,36 +1799,51 @@ const faqJsonLd = {
       gap: 28px;
     }
 
+    .process-list {
+      gap: 11px;
+    }
+
     .process-list article {
       min-height: 0;
-      grid-template-columns: 62px 1fr;
+      grid-template-columns: 51px 1fr;
       gap: 14px;
-      padding: 25px 4px;
+      padding: 18px;
+      border-radius: 16px;
     }
 
     .process-marker {
-      gap: 8px;
+      width: 46px;
+      height: 46px;
     }
 
     .process-marker > .ph {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      font-size: 19px;
+      width: 43px;
+      height: 43px;
+      border-radius: 14px;
+      font-size: 20px;
     }
 
     .process-number {
-      font-size: 18px;
+      right: -5px;
+      bottom: -5px;
+      width: 24px;
+      height: 24px;
+      font-size: 9px;
     }
 
     .process-list h3 {
-      margin-bottom: 7px;
-      font-size: 24px;
+      margin-bottom: 6px;
+      font-size: 22px;
+    }
+
+    .process-list p {
+      font-size: 15px;
     }
 
     .process-list article:hover {
-      padding-left: 4px;
-      background: transparent;
+      transform: none;
+      background: rgba(255,255,255,.78);
+      box-shadow: 0 8px 24px rgba(25,55,24,.035);
     }
 
     .condition-image-wrap {
