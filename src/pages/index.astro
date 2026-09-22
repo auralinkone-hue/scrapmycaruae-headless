@@ -1564,12 +1564,37 @@ const faqJsonLd = {
       min-height: auto;
       padding: 32px 0 26px;
       gap: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
       text-align: center;
     }
 
-    .eyebrow,
     .hero-actions {
       display: none;
+    }
+
+    .hero-copy {
+      order: 1;
+    }
+
+    .hero-form {
+      order: 2;
+      width: 100%;
+    }
+
+    .hero-description {
+      order: 3;
+    }
+
+    .hero-proof {
+      order: 4;
+    }
+
+    .eyebrow {
+      margin: 0 auto 14px;
+      font-size: 10px;
+      letter-spacing: .035em;
     }
 
     .hero h1 {
