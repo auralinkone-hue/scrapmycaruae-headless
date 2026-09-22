@@ -248,13 +248,21 @@ const faqJsonLd = {
     <section class="make-strip">
         <div class="smc-container make-strip-inner">
           <span class="make-label">Popular makes we buy</span>
-          <div class="make-list">
-            {popularMakes.map((make) => (
-              <div class="make-item">
-                <img src={make.icon} alt="" aria-hidden="true" loading="lazy" decoding="async" />
-                <strong>{make.name}</strong>
-              </div>
-            ))}
+          <div class="make-marquee" aria-label="Popular makes we buy">
+            <div class="make-list">
+              {popularMakes.map((make) => (
+                <div class="make-item">
+                  <img src={make.icon} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                  <strong>{make.name}</strong>
+                </div>
+              ))}
+              {popularMakes.map((make) => (
+                <div class="make-item" aria-hidden="true">
+                  <img src={make.icon} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                  <strong>{make.name}</strong>
+                </div>
+              ))}
+            </div>
           </div>
           <a class="smc-button smc-button-secondary make-whatsapp" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
             <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
@@ -732,7 +740,7 @@ const faqJsonLd = {
 
   .make-strip {
     border-bottom: 1px solid var(--smc-line);
-    background: #fff;
+    background: #edf6ea;
   }
 
   .make-strip-inner {
@@ -740,7 +748,7 @@ const faqJsonLd = {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 28px;
+    gap: 22px;
   }
 
   .make-label {
@@ -752,12 +760,20 @@ const faqJsonLd = {
     white-space: nowrap;
   }
 
-  .make-list {
+  .make-marquee {
     width: 100%;
+    overflow: hidden;
+  }
+
+  .make-list {
+    --marquee-step: 632px;
+    width: max-content;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 22px;
+    grid-auto-flow: column;
+    grid-auto-columns: 130px;
+    gap: 28px;
     align-items: center;
+    animation: make-marquee 24s linear infinite;
   }
 
   .make-item {
@@ -780,6 +796,14 @@ const faqJsonLd = {
   .make-item strong {
     font-size: 13px;
     letter-spacing: .02em;
+  }
+
+  @keyframes make-marquee {
+    to { transform: translateX(calc(-1 * var(--marquee-step))); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .make-list { animation: none; }
   }
 
   .make-whatsapp {
@@ -1578,13 +1602,13 @@ const faqJsonLd = {
       order: 1;
     }
 
-    .hero-form {
+    .hero-description {
       order: 2;
-      width: 100%;
     }
 
-    .hero-description {
+    .hero-form {
       order: 3;
+      width: 100%;
     }
 
     .hero-proof {
@@ -1592,9 +1616,7 @@ const faqJsonLd = {
     }
 
     .eyebrow {
-      margin: 0 auto 14px;
-      font-size: 10px;
-      letter-spacing: .035em;
+      display: none;
     }
 
     .hero h1 {
@@ -1635,28 +1657,25 @@ const faqJsonLd = {
       align-items: center;
       flex-direction: column;
       text-align: center;
-      gap: 18px;
+      gap: 16px;
     }
 
     .make-list {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      --marquee-step: 568px;
+      grid-auto-columns: 124px;
+      gap: 18px;
     }
 
     .make-item {
-      min-height: 74px;
-      padding: 12px 8px;
-      flex-direction: column;
-      gap: 6px;
-      border: 1px solid #e4e8e2;
-      border-radius: 14px;
-      background: #fff;
-      box-shadow: 0 10px 24px rgba(31, 77, 32, .05);
-      animation: make-float 3.5s ease-in-out infinite;
-    }
-
-    .make-item:nth-child(even) {
-      animation-delay: .45s;
+      min-height: 0;
+      padding: 0;
+      flex-direction: row;
+      gap: 7px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      animation: none;
     }
 
     .make-item img {
@@ -1675,10 +1694,6 @@ const faqJsonLd = {
       min-height: 50px;
       border-color: #dce7d8;
       color: var(--smc-green-dark);
-    }
-
-    @keyframes make-float {
-      50% { transform: translateY(-3px); }
     }
 
     .benefits,
