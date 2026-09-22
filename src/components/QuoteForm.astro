@@ -21,7 +21,7 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
 
 <div class="quote-card" data-quote-form>
   <div class="quote-head">
-    <span>Free vehicle valuation</span>
+    <span class="quote-kicker"><i class="ph ph-car-profile" aria-hidden="true"></i>Free vehicle valuation</span>
     <h2>Get your vehicle price</h2>
     <p>Choose your vehicle details. It only takes a moment.</p>
   </div>
@@ -35,7 +35,7 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
   <form novalidate>
     <div class="panel active" data-step-panel="1">
       <label>
-        <span>Make</span>
+        <span class="field-label"><i class="ph ph-steering-wheel" aria-hidden="true"></i>Make</span>
         <select name="make" data-make required disabled={Boolean(dataError || makes.length === 0)}>
           <option value="">Select make</option>
 
@@ -58,7 +58,7 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
       </label>
 
       <label>
-        <span>Model</span>
+        <span class="field-label"><i class="ph ph-car-profile" aria-hidden="true"></i>Model</span>
         <select name="model" data-model required disabled>
           <option value="">Select make first</option>
         </select>
@@ -68,7 +68,7 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
       </label>
 
       <label>
-        <span>Year</span>
+        <span class="field-label"><i class="ph ph-calendar-blank" aria-hidden="true"></i>Year</span>
         <select name="year" required disabled={Boolean(dataError || years.length === 0)}>
           <option value="">Select year</option>
           {years.map((item) => (
@@ -85,17 +85,17 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
 
       <button type="button" class="continue" data-next>
         Continue
-        <span aria-hidden="true">→</span>
+        <i class="ph ph-arrow-right" aria-hidden="true"></i>
       </button>
     </div>
 
     <div class="panel" data-step-panel="2">
-      <button type="button" class="back" data-back>← Back</button>
+      <button type="button" class="back" data-back><i class="ph ph-arrow-left" aria-hidden="true"></i>Back</button>
 
       <div class="vehicle-summary" data-vehicle-summary></div>
 
       <label>
-        <span>Your name</span>
+        <span class="field-label"><i class="ph ph-user" aria-hidden="true"></i>Your name</span>
         <input
           name="name"
           autocomplete="name"
@@ -105,7 +105,7 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
       </label>
 
       <label>
-        <span>WhatsApp number</span>
+        <span class="field-label"><img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />WhatsApp number</span>
         <div class="phone-wrap">
           <span>+971</span>
           <input
@@ -125,6 +125,7 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
 
       <button type="submit" class="submit" data-submit>
         Get Your Vehicle Price
+        <i class="ph ph-arrow-right" aria-hidden="true"></i>
       </button>
 
       <div class="submit-message" data-submit-message hidden></div>
@@ -269,7 +270,7 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
 
         if (submitButton instanceof HTMLButtonElement) {
           submitButton.disabled = true;
-          submitButton.textContent = 'Submitting…';
+          submitButton.innerHTML = 'Submitting… <i class="ph ph-circle-notch" aria-hidden="true"></i>';
         }
 
         if (submitMessage instanceof HTMLElement) {
@@ -306,7 +307,7 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
 
           if (submitButton instanceof HTMLButtonElement) {
             submitButton.disabled = false;
-            submitButton.textContent = 'Get Your Vehicle Price';
+            submitButton.innerHTML = 'Get Your Vehicle Price <i class="ph ph-arrow-right" aria-hidden="true"></i>';
           }
         }
       });
@@ -324,12 +325,19 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
     box-shadow: 0 30px 80px rgba(19, 45, 18, .14);
   }
 
-  .quote-head span {
+  .quote-head .quote-kicker {
     color: var(--smc-green);
     font-size: 12px;
     font-weight: 850;
     letter-spacing: .09em;
     text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .quote-kicker .ph {
+    font-size: 15px;
   }
 
   .quote-head h2 {
@@ -392,10 +400,23 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
     gap: 7px;
   }
 
-  label > span {
+  .field-label {
     color: #363a35;
     font-size: 12px;
     font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .field-label .ph {
+    color: var(--smc-green);
+    font-size: 16px;
+  }
+
+  .field-label .wa-icon {
+    width: 16px;
+    height: 16px;
   }
 
   input,
@@ -493,10 +514,29 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
     background: #173d18;
   }
 
-  .continue {
+  .continue,
+  .submit {
     display: flex;
     align-items: center;
+    justify-content: center;
+    gap: 9px;
+  }
+
+  .continue {
     justify-content: space-between;
+  }
+
+  .continue .ph,
+  .submit .ph {
+    font-size: 18px;
+  }
+
+  .submit:disabled .ph-circle-notch {
+    animation: smc-spin .8s linear infinite;
+  }
+
+  @keyframes smc-spin {
+    to { transform: rotate(360deg); }
   }
 
   .back {
@@ -509,6 +549,13 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
     font-size: 13px;
     font-weight: 800;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .back .ph {
+    font-size: 16px;
   }
 
   .fine-print {
