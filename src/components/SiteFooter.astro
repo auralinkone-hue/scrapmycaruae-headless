@@ -36,9 +36,9 @@ const uaeLocations = [
           serving Dubai, Sharjah and customers across the UAE.
         </p>
         <div class="footer-actions">
-          <a class="smc-button smc-button-primary" href="/free-quote">Get Free Quote</a>
-          <a class="smc-button footer-call" href="tel:+971557458322">Call Us</a>
-          <a class="smc-button footer-call" href={whatsappUrl} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          <a class="smc-button smc-button-primary" href="/free-quote"><i class="ph ph-car-profile" aria-hidden="true"></i>Get Free Quote</a>
+          <a class="smc-button footer-call" href="tel:+971557458322"><i class="ph ph-phone-call" aria-hidden="true"></i>Call Us</a>
+          <a class="smc-button footer-call" href={whatsappUrl} target="_blank" rel="noopener noreferrer"><img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />WhatsApp</a>
         </div>
       </div>
 
@@ -70,19 +70,19 @@ const uaeLocations = [
 
     <div class="smc-container contact-strip">
       <div>
-        <span class="label">Address</span>
+        <span class="label"><i class="ph ph-map-pin" aria-hidden="true"></i>Address</span>
         <span>Al Sajaa Industrial Area, Sajaa, Sharjah</span>
       </div>
       <div>
-        <span class="label">Phone</span>
+        <span class="label"><i class="ph ph-phone-call" aria-hidden="true"></i>Phone</span>
         <a href="tel:+971557458322">055 745 83 22</a>
       </div>
       <div>
-        <span class="label">Email</span>
+        <span class="label"><i class="ph ph-envelope-simple" aria-hidden="true"></i>Email</span>
         <a href="mailto:info@scrapmycaruae.com">info@scrapmycaruae.com</a>
       </div>
       <div>
-        <span class="label">WhatsApp</span>
+        <span class="label"><img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />WhatsApp</span>
         <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">+971 55 745 8322</a>
       </div>
     </div>
@@ -190,6 +190,18 @@ const uaeLocations = [
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: .08em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .contact-strip .label .ph {
+    font-size: 14px;
+  }
+
+  .contact-strip .label .wa-icon {
+    width: 14px;
+    height: 14px;
   }
 
   .contact-strip a {
