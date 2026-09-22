@@ -98,17 +98,20 @@ const steps = [
   {
     number: '01',
     title: 'Choose your vehicle',
-    text: 'Select the make, model and year from our vehicle database.'
+    text: 'Select the make, model and year from our vehicle database.',
+    icon: 'ph-steering-wheel'
   },
   {
     number: '02',
     title: 'Get your valuation',
-    text: 'Add your name and WhatsApp number and send your request to our team.'
+    text: 'Add your name and WhatsApp number and send your request to our team.',
+    icon: 'ph-chat-circle-dots'
   },
   {
     number: '03',
     title: 'Arrange collection',
-    text: 'If you accept the offer, we arrange the vehicle handover and collection.'
+    text: 'If you accept the offer, we arrange the vehicle handover and collection.',
+    icon: 'ph-truck'
   }
 ];
 
@@ -328,7 +331,18 @@ const faqJsonLd = {
         <div class="process-list">
           {steps.map((step) => (
             <article data-reveal>
-              <span class="process-number">{step.number}</span>
+              <div class="process-marker">
+                <i
+                  class:list={[
+                    'ph',
+                    step.icon === 'ph-steering-wheel' && 'ph-steering-wheel',
+                    step.icon === 'ph-chat-circle-dots' && 'ph-chat-circle-dots',
+                    step.icon === 'ph-truck' && 'ph-truck'
+                  ]}
+                  aria-hidden="true"
+                ></i>
+                <span class="process-number">{step.number}</span>
+              </div>
               <div>
                 <h3>{step.title}</h3>
                 <p>{step.text}</p>
@@ -958,13 +972,14 @@ const faqJsonLd = {
   }
 
   .process-list article {
-    min-height: 170px;
-    padding: 34px 0;
+    min-height: 184px;
+    padding: 28px 14px 28px 0;
     border-bottom: 1px solid #dce1d8;
     display: grid;
-    grid-template-columns: 78px 1fr;
-    gap: 24px;
+    grid-template-columns: 74px 1fr;
+    gap: 18px;
     align-items: start;
+    transition: background 180ms ease, padding 180ms ease, border-color 180ms ease;
   }
 
   .process-list article:first-child {
@@ -972,10 +987,43 @@ const faqJsonLd = {
   }
 
   .process-number {
-    color: #84a37f;
-    font-size: 13px;
+    color: #527c4f;
+    font-size: 20px;
     font-weight: 900;
-    letter-spacing: .12em;
+    letter-spacing: .04em;
+    line-height: 1;
+  }
+
+  .process-marker {
+    display: grid;
+    gap: 11px;
+    justify-items: start;
+  }
+
+  .process-marker > .ph {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #d6e4d2;
+    border-radius: 13px;
+    background: #fff;
+    color: var(--smc-green-dark);
+    font-size: 21px;
+    transition: transform 180ms ease, background 180ms ease, color 180ms ease, border-color 180ms ease;
+  }
+
+  .process-list article:hover {
+    padding-left: 14px;
+    border-color: #c9dbc5;
+    background: rgba(255,255,255,.5);
+  }
+
+  .process-list article:hover .process-marker > .ph {
+    transform: translateY(-2px) rotate(-4deg);
+    border-color: var(--smc-green);
+    background: var(--smc-green-dark);
+    color: #fff;
   }
 
   .process-list h3 {
@@ -1215,7 +1263,7 @@ const faqJsonLd = {
 
   .review-track {
     width: max-content;
-    animation: review-marquee 34s linear infinite;
+    animation:review-marquee 34s linear infinite;
   }
 
   .review-card {
@@ -1750,7 +1798,35 @@ const faqJsonLd = {
     }
 
     .process-list article {
-      grid-template-columns: 56px 1fr;
+      min-height: 0;
+      grid-template-columns: 62px 1fr;
+      gap: 14px;
+      padding: 25px 4px;
+    }
+
+    .process-marker {
+      gap: 8px;
+    }
+
+    .process-marker > .ph {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      font-size: 19px;
+    }
+
+    .process-number {
+      font-size: 18px;
+    }
+
+    .process-list h3 {
+      margin-bottom: 7px;
+      font-size: 24px;
+    }
+
+    .process-list article:hover {
+      padding-left: 4px;
+      background: transparent;
     }
 
     .condition-image-wrap {
@@ -1772,112 +1848,3 @@ const faqJsonLd = {
       filter: drop-shadow(0 24px 28px rgba(0,0,0,.34));
     }
 
-    .condition-tags {
-      grid-template-columns: 1fr;
-    }
-
-    .value-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .value-grid article,
-    .value-grid article + article {
-      min-height: 190px;
-      padding: 26px 0;
-      border-right: 0;
-      border-bottom: 1px solid var(--smc-line);
-    }
-
-    .value-grid article:last-child {
-      border-bottom: 0;
-    }
-
-    .value-grid h3 {
-      margin-top: 28px;
-    }
-
-    .location-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .coverage-art img {
-      width: 112%;
-      transform: none;
-    }
-
-    .testimonial-section {
-      gap: 32px;
-    }
-
-    .review-marquee {
-      margin-inline: -20px;
-    }
-
-    .review-track,
-    .review-track-duplicate {
-      gap: 12px;
-    }
-
-    .review-card {
-      width: min(276px, calc(100vw - 78px));
-      min-height: 174px;
-      padding: 19px;
-    }
-
-    .review-card p {
-      font-size: 15px;
-    }
-
-    .blog-heading {
-      align-items: flex-start;
-      flex-direction: column;
-    }
-
-    .blog-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .final-cta {
-      padding: 58px 0;
-    }
-
-    .final-cta-inner {
-      align-items: flex-start;
-      flex-direction: column;
-      gap: 28px;
-    }
-
-    .final-actions {
-      width: 100%;
-      display: grid;
-    }
-
-    .final-actions .smc-button {
-      width: 100%;
-    }
-
-    .floating-whatsapp {
-      right: 14px;
-      bottom: 14px;
-      width: 50px;
-      height: 50px;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    [data-reveal] {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-
-    .benefit-card,
-    .blog-image img,
-    .floating-whatsapp,
-    .make-item,
-    .review-track {
-      transition: none;
-      animation: none;
-    }
-  }
-</style>
