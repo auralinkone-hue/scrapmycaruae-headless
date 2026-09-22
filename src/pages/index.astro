@@ -201,7 +201,7 @@ const faqJsonLd = {
           <div class="hero-actions">
             <a class="smc-button smc-button-primary hero-primary" href="#valuation">
               Get Your Vehicle Price
-              <span aria-hidden="true">→</span>
+              <i class="ph ph-arrow-right" aria-hidden="true"></i>
             </a>
             <a
               class="smc-button smc-button-secondary whatsapp-button"
@@ -209,9 +209,7 @@ const faqJsonLd = {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.5 0 .2 5.3.2 11.9c0 2.1.6 4.2 1.7 6L0 24l6.3-1.7a11.8 11.8 0 0 0 5.8 1.5h.1c6.5 0 11.8-5.3 11.8-11.9 0-3.2-1.2-6.2-3.5-8.4Zm-8.3 18.3h-.1c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4a9.8 9.8 0 0 1-1.5-5.3A9.8 9.8 0 0 1 12.1 2c2.6 0 5 1 6.9 2.9a9.7 9.7 0 0 1 2.9 6.9c0 5.4-4.4 9.8-9.7 9.8Zm5.4-7.3c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.4.2-.7.1-1.8-.9-3-1.6-4.2-3.6-.3-.5.3-.5.9-1.7.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9 0 1.7 1.2 3.3 1.4 3.5.2.2 2.4 3.7 5.9 5.2 2.2.9 3.1 1 4.2.8.7-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.3-.6-.4Z"/>
-              </svg>
+              <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
               WhatsApp Us
             </a>
           </div>
@@ -252,9 +250,9 @@ const faqJsonLd = {
             dataError={vehicleDataError}
           />
           <div class="form-reassurance">
-            <span>✓ No obligation</span>
-            <span>✓ Free valuation</span>
-            <span>✓ Secure request</span>
+            <span><i class="ph ph-check-circle" aria-hidden="true"></i>No obligation</span>
+            <span><i class="ph ph-check-circle" aria-hidden="true"></i>Free valuation</span>
+            <span><i class="ph ph-shield-check" aria-hidden="true"></i>Secure request</span>
           </div>
         </div>
       </div>
@@ -285,26 +283,16 @@ const faqJsonLd = {
           <article class="benefit-card" data-reveal>
             <div class="benefit-top">
               <div class="benefit-icon">
-                {benefit.icon === 'car' && (
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M5 16h14M6 16l-1.3-3.2a2 2 0 0 1 .2-1.9l1.5-2.3A2 2 0 0 1 8 7.7h8a2 2 0 0 1 1.6.9l1.5 2.3a2 2 0 0 1 .2 1.9L18 16M7 19v1M17 19v1M4 13h16M8 11h8"/>
-                  </svg>
-                )}
-                {benefit.icon === 'truck' && (
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M3 6h11v10H3zM14 10h4l3 3v3h-7zM7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM18 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
-                  </svg>
-                )}
-                {benefit.icon === 'file' && (
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M6 3h8l4 4v14H6zM14 3v5h5M9 12h6M9 16h6"/>
-                  </svg>
-                )}
-                {benefit.icon === 'chat' && (
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M4 5h16v11H9l-5 4zM8 9h8M8 12h5"/>
-                  </svg>
-                )}
+                <i
+                  class:list={[
+                    'ph',
+                    benefit.icon === 'car' && 'ph-car-profile',
+                    benefit.icon === 'truck' && 'ph-truck',
+                    benefit.icon === 'file' && 'ph-file-text',
+                    benefit.icon === 'chat' && 'ph-chats-circle'
+                  ]}
+                  aria-hidden="true"
+                ></i>
               </div>
               <span>0{index + 1}</span>
             </div>
@@ -324,7 +312,7 @@ const faqJsonLd = {
             No classified ads, no endless buyer messages and no separate towing arrangement.
           </p>
           <a class="text-link" href="#valuation">
-            Start your valuation <span aria-hidden="true">↗</span>
+            Start your valuation <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
           </a>
         </div>
 
@@ -371,12 +359,13 @@ const faqJsonLd = {
 
           <div class="condition-tags">
             {conditions.map((condition) => (
-              <span><i>✓</i>{condition}</span>
+              <span><i class="ph ph-check" aria-hidden="true"></i>{condition}</span>
             ))}
           </div>
 
           <a class="smc-button condition-button" href="#valuation">
             Get a Free Valuation
+            <i class="ph ph-arrow-right" aria-hidden="true"></i>
           </a>
         </div>
       </div>
@@ -419,7 +408,7 @@ const faqJsonLd = {
           <div class="location-grid">
             {locations.map((location) => (
               <span>
-                <i></i>
+                <i class="ph ph-map-pin" aria-hidden="true"></i>
                 {location}
               </span>
             ))}
@@ -476,7 +465,7 @@ const faqJsonLd = {
             <div class="smc-kicker">Latest guides</div>
             <h2>Useful advice for UAE car owners.</h2>
           </div>
-          <a class="text-link" href="/blogs">View all blogs <span>↗</span></a>
+          <a class="text-link" href="/blogs">View all blogs <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
         </div>
 
         <div class="blog-grid">
@@ -498,7 +487,7 @@ const faqJsonLd = {
                   </div>
                   <div class="blog-meta">{formatDate(post.firstPublishedDate)}</div>
                   <h3>{post.title}</h3>
-                  <span class="read-more">Read article →</span>
+                  <span class="read-more">Read article <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
                 </a>
               </article>
             );
@@ -520,6 +509,7 @@ const faqJsonLd = {
           target="_blank"
           rel="noopener noreferrer"
         >
+          <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
           Ask on WhatsApp
         </a>
       </div>
@@ -529,7 +519,7 @@ const faqJsonLd = {
           <details data-reveal open={index === 0}>
             <summary>
               <span>{faq.question}</span>
-              <i aria-hidden="true">+</i>
+              <i class="ph ph-plus" aria-hidden="true"></i>
             </summary>
             <p>{faq.answer}</p>
           </details>
@@ -547,6 +537,7 @@ const faqJsonLd = {
         <div class="final-actions">
           <a class="smc-button final-primary" href="#valuation">
             Get Your Vehicle Price
+            <i class="ph ph-arrow-right" aria-hidden="true"></i>
           </a>
           <a
             class="smc-button final-whatsapp"
@@ -554,6 +545,7 @@ const faqJsonLd = {
             target="_blank"
             rel="noopener noreferrer"
           >
+            <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
             WhatsApp
           </a>
         </div>
@@ -567,9 +559,7 @@ const faqJsonLd = {
       rel="noopener noreferrer"
       aria-label="Chat with Scrap My Car UAE on WhatsApp"
     >
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.5 0 .2 5.3.2 11.9c0 2.1.6 4.2 1.7 6L0 24l6.3-1.7a11.8 11.8 0 0 0 5.8 1.5h.1c6.5 0 11.8-5.3 11.8-11.9 0-3.2-1.2-6.2-3.5-8.4Zm-8.3 18.3h-.1c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4a9.8 9.8 0 0 1-1.5-5.3A9.8 9.8 0 0 1 12.1 2c2.6 0 5 1 6.9 2.9a9.7 9.7 0 0 1 2.9 6.9c0 5.4-4.4 9.8-9.7 9.8Z"/>
-      </svg>
+      <img src="/whatsapp.svg" alt="" aria-hidden="true" />
     </a>
   </main>
 </BaseLayout>
@@ -729,10 +719,9 @@ const faqJsonLd = {
     justify-content: space-between;
   }
 
-  .whatsapp-button svg {
-    width: 17px;
-    height: 17px;
-    fill: currentColor;
+  .whatsapp-button .wa-icon {
+    width: 18px;
+    height: 18px;
   }
 
   .hero-proof {
@@ -804,6 +793,17 @@ const faqJsonLd = {
     color: #778075;
     font-size: 10px;
     font-weight: 750;
+  }
+
+  .form-reassurance span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .form-reassurance .ph {
+    color: var(--smc-green);
+    font-size: 13px;
   }
 
   .make-strip {
@@ -923,14 +923,8 @@ const faqJsonLd = {
     color: var(--smc-green-dark);
   }
 
-  .benefit-icon svg {
-    width: 22px;
-    height: 22px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.7;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+  .benefit-icon > .ph {
+    font-size: 23px;
   }
 
   .benefit-card h3 {
@@ -973,6 +967,10 @@ const faqJsonLd = {
     text-decoration: none;
     font-size: 14px;
     font-weight: 850;
+  }
+
+  .text-link .ph {
+    font-size: 16px;
   }
 
   .process-list {
@@ -1202,11 +1200,8 @@ const faqJsonLd = {
   }
 
   .location-grid i {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--smc-green);
-    box-shadow: 0 0 0 5px rgba(47,111,45,.08);
+    color: var(--smc-green);
+    font-size: 17px;
   }
 
   .map-card {
@@ -1425,6 +1420,13 @@ const faqJsonLd = {
     color: var(--smc-green-dark);
     font-size: 12px;
     font-weight: 850;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .read-more .ph {
+    font-size: 14px;
   }
 
   .faq-section {
@@ -1562,10 +1564,14 @@ const faqJsonLd = {
     transform: translateY(-3px);
   }
 
-  .floating-whatsapp svg {
-    width: 25px;
-    height: 25px;
-    fill: currentColor;
+  .floating-whatsapp {
+    overflow: hidden;
+  }
+
+  .floating-whatsapp img {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
 
   @media (max-width: 1040px) {
