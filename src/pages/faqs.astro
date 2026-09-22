@@ -39,7 +39,7 @@ const faqJsonLd = {"@context":"https://schema.org","@type":"FAQPage","mainEntity
           <div class="smc-kicker">Need help?</div>
           <h2>Ask the team directly.</h2>
           <p>If your question is specific to your vehicle, WhatsApp is the easiest way to explain the situation.</p>
-          <a class="smc-button smc-button-primary" href={whatsappUrl} target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
+          <a class="smc-button smc-button-primary" href={whatsappUrl} target="_blank" rel="noopener noreferrer"><img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />WhatsApp Us</a>
         </aside>
 
         <div class="faq-stack">
@@ -47,7 +47,7 @@ const faqJsonLd = {"@context":"https://schema.org","@type":"FAQPage","mainEntity
             <details open={index === 0}>
               <summary>
                 <span>{question}</span>
-                <i aria-hidden="true">+</i>
+                <i class="ph ph-plus" aria-hidden="true"></i>
               </summary>
               <p>{answer}</p>
             </details>
@@ -64,7 +64,7 @@ const faqJsonLd = {"@context":"https://schema.org","@type":"FAQPage","mainEntity
           <p>Select your Make, Model and Year and send your request.</p>
         </div>
         <div class="page-cta-actions">
-          <a class="smc-button smc-button-primary" href="/free-quote">Get Your Vehicle Price</a>
+          <a class="smc-button smc-button-primary" href="/free-quote">Get Your Vehicle Price <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
         </div>
       </div>
     </section>
