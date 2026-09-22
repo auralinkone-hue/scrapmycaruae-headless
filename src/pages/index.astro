@@ -95,14 +95,14 @@ const benefits = [
 ];
 
 const conditions = [
-  { label: 'Non-running cars', icon: 'ph-engine', description: 'We buy non-running cars across Dubai and the UAE, including vehicles that will not start or need recovery.' },
-  { label: 'Engine or gearbox faults', icon: 'ph-gear-six', description: 'Request a valuation for cars with engine trouble, transmission faults or major mechanical issues.' },
-  { label: 'Accident-damaged cars', icon: 'ph-warning-octagon', description: 'We assess accident-damaged vehicles in any condition and can arrange collection where needed.' },
-  { label: 'Electrical issues', icon: 'ph-lightning', description: 'Cars with electrical faults, warning lights or battery-related problems can still be submitted.' },
-  { label: 'High-mileage vehicles', icon: 'ph-gauge', description: 'High mileage does not prevent a fair valuation. Share your vehicle details and condition first.' },
-  { label: 'Expired Mulkiya', icon: 'ph-calendar-x', description: 'You can still ask about selling a car with expired Mulkiya; our team will explain the handover details.' },
-  { label: 'Old cars', icon: 'ph-clock-counter-clockwise', description: 'Older cars can still have value. We consider the make, model, year and overall condition.' },
-  { label: 'Running cars', icon: 'ph-car-profile', description: 'We also buy running cars when you want a straightforward sale and UAE-wide collection.' }
+  { label: 'Non-running cars', icon: 'ph-engine' },
+  { label: 'Engine or gearbox faults', icon: 'ph-gear-six' },
+  { label: 'Accident-damaged cars', icon: 'ph-warning-octagon' },
+  { label: 'Electrical issues', icon: 'ph-lightning' },
+  { label: 'High-mileage vehicles', icon: 'ph-gauge' },
+  { label: 'Expired Mulkiya', icon: 'ph-calendar-x' },
+  { label: 'Old cars', icon: 'ph-clock-counter-clockwise' },
+  { label: 'Running cars', icon: 'ph-car-profile' }
 ];
 
 const reviews = [
@@ -366,15 +366,8 @@ const faqJsonLd = {
           </p>
 
           <div class="condition-tags">
-            {conditions.map((condition, index) => (
-              <details class="condition-detail" open={index === 0}>
-                <summary>
-                  <i class:list={['ph', condition.icon]} aria-hidden="true"></i>
-                  <span>{condition.label}</span>
-                  <i class="ph ph-plus condition-toggle" aria-hidden="true"></i>
-                </summary>
-                <p>{condition.description}</p>
-              </details>
+            {conditions.map((condition) => (
+              <span><i class:list={['ph', condition.icon]} aria-hidden="true"></i>{condition.label}</span>
             ))}
           </div>
 
@@ -1062,75 +1055,108 @@ const faqJsonLd = {
   .process-list h3 {
     margin: 0 0 7px;
     font-size: 25px;
-    letter-spac  .condition-tags {
+    letter-spacing: -.04em;
+  }
+
+  .process-list p {
+    max-width: 530px;
+    margin: 0;
+    color: var(--smc-muted);
+    line-height: 1.6;
+  }
+
+  .condition-section {
+    padding: 110px 0;
+    background: #102912;
+    color: #fff;
+  }
+
+  .condition-grid {
+    display: grid;
+    grid-template-columns: .95fr 1.05fr;
+    gap: 86px;
+    align-items: center;
+  }
+
+  .condition-visual {
+    position: relative;
+  }
+
+  .condition-image-wrap {
+    position: relative;
+    min-height: 510px;
+    display: grid;
+    place-items: center;
+  }
+
+  .condition-image-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 34px 0 18px;
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at 50% 48%, rgba(126,184,116,.18), transparent 57%),
+      linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.01));
+  }
+
+  .condition-image-wrap img {
+    position: relative;
+    z-index: 1;
+    width: 126%;
+    max-width: none;
+    height: auto;
+    object-fit: contain;
+    transform: translate(-8%, 10px);
+    filter: drop-shadow(0 34px 40px rgba(0,0,0,.34));
+  }
+
+  .condition-section .smc-kicker {
+    color: #9cc895;
+  }
+
+  .condition-copy > p {
+    color: #c6d4c4;
+    max-width: 640px;
+  }
+
+  .condition-tags {
     margin-top: 28px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
 
-  .condition-detail {
-    border: 1px solid rgba(255,255,255,.13);
+  .condition-tags span {
+    min-height: 48px;
+    padding: 0 14px;
+    border: 1px solid rgba(255,255,255,.12);
     border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
     background: rgba(255,255,255,.035);
-    overflow: hidden;
-    transition: border-color 180ms ease, background 180ms ease;
+    color: #ecf3eb;
+    font-size: 13px;
+    font-weight: 720;
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
   }
 
-  .condition-detail[open] {
+  .condition-tags span:hover {
+    transform: translateY(-2px);
     border-color: rgba(156,200,149,.4);
     background: rgba(156,200,149,.09);
   }
 
-  .condition-detail summary {
-    min-height: 48px;
-    padding: 0 13px;
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    cursor: pointer;
-    list-style: none;
-    color: #ecf3eb;
-    font-size: 13px;
-    font-weight: 720;
-  }
-
-  .condition-detail summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .condition-detail summary > .ph:first-child {
+  .condition-tags i {
     width: 20px;
     height: 20px;
-    flex: 0 0 auto;
     border-radius: 50%;
     display: grid;
     place-items: center;
     background: rgba(156,200,149,.16);
     color: #9cc895;
+    font-style: normal;
     font-size: 12px;
-  }
-
-  .condition-detail summary > span {
-    min-width: 0;
-  }
-
-  .condition-toggle {
-    margin-left: auto;
-    color: #9cc895;
-    font-size: 16px;
-    transition: transform 180ms ease;
-  }
-
-  .condition-detail[open] .condition-toggle {
-    transform: rotate(45deg);
-  }
-
-  .condition-detail p {
-    margin: -1px 13px 14px 42px;
-    color: #c6d4c4;
-    font-size: 12px;
-    line-height: 1.55;
   }
 
   .condition-button {
