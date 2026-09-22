@@ -113,14 +113,14 @@ const steps = [
 ];
 
 const conditions = [
-  'Non-running cars',
-  'Engine or gearbox faults',
-  'Accident-damaged cars',
-  'Electrical issues',
-  'High-mileage vehicles',
-  'Expired Mulkiya',
-  'Old cars',
-  'Running cars'
+  { label: 'Non-running cars', icon: 'ph-engine' },
+  { label: 'Engine or gearbox faults', icon: 'ph-gear-six' },
+  { label: 'Accident-damaged cars', icon: 'ph-warning-octagon' },
+  { label: 'Electrical issues', icon: 'ph-lightning' },
+  { label: 'High-mileage vehicles', icon: 'ph-gauge' },
+  { label: 'Expired Mulkiya', icon: 'ph-calendar-x' },
+  { label: 'Old cars', icon: 'ph-clock-counter-clockwise' },
+  { label: 'Running cars', icon: 'ph-car-profile' }
 ];
 
 const locations = [
@@ -356,7 +356,7 @@ const faqJsonLd = {
 
           <div class="condition-tags">
             {conditions.map((condition) => (
-              <span><i class="ph ph-check" aria-hidden="true"></i>{condition}</span>
+              <span><i class:list={['ph', condition.icon]} aria-hidden="true"></i>{condition.label}</span>
             ))}
           </div>
 
@@ -1045,6 +1045,13 @@ const faqJsonLd = {
     color: #ecf3eb;
     font-size: 13px;
     font-weight: 720;
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+
+  .condition-tags span:hover {
+    transform: translateY(-2px);
+    border-color: rgba(156,200,149,.4);
+    background: rgba(156,200,149,.09);
   }
 
   .condition-tags i {
@@ -1053,10 +1060,10 @@ const faqJsonLd = {
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: rgba(156,200,149,.13);
+    background: rgba(156,200,149,.16);
     color: #9cc895;
     font-style: normal;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .condition-button {
