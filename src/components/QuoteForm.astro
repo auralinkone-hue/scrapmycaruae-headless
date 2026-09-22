@@ -17,6 +17,69 @@ const {
 
 const featuredMakes = makes.filter((item) => item.featuredMake);
 const regularMakes = makes.filter((item) => !item.featuredMake);
+
+const countryCodes = [
+  ['🇦🇪','United Arab Emirates','+971'],['🇦🇫','Afghanistan','+93'],['🇦🇱','Albania','+355'],['🇩🇿','Algeria','+213'],
+  ['🇦🇸','American Samoa','+1684'],['🇦🇩','Andorra','+376'],['🇦🇴','Angola','+244'],['🇦🇮','Anguilla','+1264'],
+  ['🇦🇬','Antigua & Barbuda','+1268'],['🇦🇷','Argentina','+54'],['🇦🇲','Armenia','+374'],['🇦🇼','Aruba','+297'],
+  ['🇦🇺','Australia','+61'],['🇦🇹','Austria','+43'],['🇦🇿','Azerbaijan','+994'],['🇧🇸','Bahamas','+1242'],
+  ['🇧🇭','Bahrain','+973'],['🇧🇩','Bangladesh','+880'],['🇧🇧','Barbados','+1246'],['🇧🇾','Belarus','+375'],
+  ['🇧🇪','Belgium','+32'],['🇧🇿','Belize','+501'],['🇧🇯','Benin','+229'],['🇧🇲','Bermuda','+1441'],
+  ['🇧🇹','Bhutan','+975'],['🇧🇴','Bolivia','+591'],['🇧🇦','Bosnia & Herzegovina','+387'],['🇧🇼','Botswana','+267'],
+  ['🇧🇷','Brazil','+55'],['🇮🇴','British Indian Ocean Territory','+246'],['🇻🇬','British Virgin Islands','+1284'],['🇧🇳','Brunei','+673'],
+  ['🇧🇬','Bulgaria','+359'],['🇧🇫','Burkina Faso','+226'],['🇧🇮','Burundi','+257'],['🇰🇭','Cambodia','+855'],
+  ['🇨🇲','Cameroon','+237'],['🇨🇦','Canada','+1'],['🇨🇻','Cape Verde','+238'],['🇰🇾','Cayman Islands','+1345'],
+  ['🇨🇫','Central African Republic','+236'],['🇹🇩','Chad','+235'],['🇨🇱','Chile','+56'],['🇨🇳','China','+86'],
+  ['🇨🇽','Christmas Island','+61'],['🇨🇨','Cocos Islands','+61'],['🇨🇴','Colombia','+57'],['🇰🇲','Comoros','+269'],
+  ['🇨🇬','Congo','+242'],['🇨🇩','Congo (DRC)','+243'],['🇨🇰','Cook Islands','+682'],['🇨🇷','Costa Rica','+506'],
+  ['🇭🇷','Croatia','+385'],['🇨🇺','Cuba','+53'],['🇨🇼','Curaçao','+599'],['🇨🇾','Cyprus','+357'],
+  ['🇨🇿','Czechia','+420'],['🇩🇰','Denmark','+45'],['🇩🇯','Djibouti','+253'],['🇩🇲','Dominica','+1767'],
+  ['🇩🇴','Dominican Republic','+1809'],['🇪🇨','Ecuador','+593'],['🇪🇬','Egypt','+20'],['🇸🇻','El Salvador','+503'],
+  ['🇬🇶','Equatorial Guinea','+240'],['🇪🇷','Eritrea','+291'],['🇪🇪','Estonia','+372'],['🇸🇿','Eswatini','+268'],
+  ['🇪🇹','Ethiopia','+251'],['🇫🇰','Falkland Islands','+500'],['🇫🇴','Faroe Islands','+298'],['🇫🇯','Fiji','+679'],
+  ['🇫🇮','Finland','+358'],['🇫🇷','France','+33'],['🇬🇫','French Guiana','+594'],['🇵🇫','French Polynesia','+689'],
+  ['🇬🇦','Gabon','+241'],['🇬🇲','Gambia','+220'],['🇬🇪','Georgia','+995'],['🇩🇪','Germany','+49'],
+  ['🇬🇭','Ghana','+233'],['🇬🇮','Gibraltar','+350'],['🇬🇷','Greece','+30'],['🇬🇱','Greenland','+299'],
+  ['🇬🇩','Grenada','+1473'],['🇬🇵','Guadeloupe','+590'],['🇬🇺','Guam','+1671'],['🇬🇹','Guatemala','+502'],
+  ['🇬🇬','Guernsey','+44'],['🇬🇳','Guinea','+224'],['🇬🇼','Guinea-Bissau','+245'],['🇬🇾','Guyana','+592'],
+  ['🇭🇹','Haiti','+509'],['🇭🇳','Honduras','+504'],['🇭🇰','Hong Kong','+852'],['🇭🇺','Hungary','+36'],
+  ['🇮🇸','Iceland','+354'],['🇮🇳','India','+91'],['🇮🇩','Indonesia','+62'],['🇮🇷','Iran','+98'],
+  ['🇮🇶','Iraq','+964'],['🇮🇪','Ireland','+353'],['🇮🇲','Isle of Man','+44'],['🇮🇱','Israel','+972'],
+  ['🇮🇹','Italy','+39'],['🇨🇮',"Côte d’Ivoire",'+225'],['🇯🇲','Jamaica','+1876'],['🇯🇵','Japan','+81'],
+  ['🇯🇪','Jersey','+44'],['🇯🇴','Jordan','+962'],['🇰🇿','Kazakhstan','+7'],['🇰🇪','Kenya','+254'],
+  ['🇰🇮','Kiribati','+686'],['🇰🇼','Kuwait','+965'],['🇰🇬','Kyrgyzstan','+996'],['🇱🇦','Laos','+856'],
+  ['🇱🇻','Latvia','+371'],['🇱🇧','Lebanon','+961'],['🇱🇸','Lesotho','+266'],['🇱🇷','Liberia','+231'],
+  ['🇱🇾','Libya','+218'],['🇱🇮','Liechtenstein','+423'],['🇱🇹','Lithuania','+370'],['🇱🇺','Luxembourg','+352'],
+  ['🇲🇴','Macao','+853'],['🇲🇬','Madagascar','+261'],['🇲🇼','Malawi','+265'],['🇲🇾','Malaysia','+60'],
+  ['🇲🇻','Maldives','+960'],['🇲🇱','Mali','+223'],['🇲🇹','Malta','+356'],['🇲🇭','Marshall Islands','+692'],
+  ['🇲🇶','Martinique','+596'],['🇲🇷','Mauritania','+222'],['🇲🇺','Mauritius','+230'],['🇾🇹','Mayotte','+262'],
+  ['🇲🇽','Mexico','+52'],['🇫🇲','Micronesia','+691'],['🇲🇩','Moldova','+373'],['🇲🇨','Monaco','+377'],
+  ['🇲🇳','Mongolia','+976'],['🇲🇪','Montenegro','+382'],['🇲🇸','Montserrat','+1664'],['🇲🇦','Morocco','+212'],
+  ['🇲🇿','Mozambique','+258'],['🇲🇲','Myanmar','+95'],['🇳🇦','Namibia','+264'],['🇳🇷','Nauru','+674'],
+  ['🇳🇵','Nepal','+977'],['🇳🇱','Netherlands','+31'],['🇳🇨','New Caledonia','+687'],['🇳🇿','New Zealand','+64'],
+  ['🇳🇮','Nicaragua','+505'],['🇳🇪','Niger','+227'],['🇳🇬','Nigeria','+234'],['🇳🇺','Niue','+683'],
+  ['🇳🇫','Norfolk Island','+672'],['🇰🇵','North Korea','+850'],['🇲🇰','North Macedonia','+389'],['🇲🇵','Northern Mariana Islands','+1670'],
+  ['🇳🇴','Norway','+47'],['🇴🇲','Oman','+968'],['🇵🇰','Pakistan','+92'],['🇵🇼','Palau','+680'],
+  ['🇵🇸','Palestine','+970'],['🇵🇦','Panama','+507'],['🇵🇬','Papua New Guinea','+675'],['🇵🇾','Paraguay','+595'],
+  ['🇵🇪','Peru','+51'],['🇵🇭','Philippines','+63'],['🇵🇱','Poland','+48'],['🇵🇹','Portugal','+351'],
+  ['🇵🇷','Puerto Rico','+1787'],['🇶🇦','Qatar','+974'],['🇷🇪','Réunion','+262'],['🇷🇴','Romania','+40'],
+  ['🇷🇺','Russia','+7'],['🇷🇼','Rwanda','+250'],['🇧🇱','Saint Barthélemy','+590'],['🇸🇭','Saint Helena','+290'],
+  ['🇰🇳','Saint Kitts & Nevis','+1869'],['🇱🇨','Saint Lucia','+1758'],['🇲🇫','Saint Martin','+590'],['🇵🇲','Saint Pierre & Miquelon','+508'],
+  ['🇻🇨','Saint Vincent & Grenadines','+1784'],['🇼🇸','Samoa','+685'],['🇸🇲','San Marino','+378'],['🇸🇹','São Tomé & Príncipe','+239'],
+  ['🇸🇦','Saudi Arabia','+966'],['🇸🇳','Senegal','+221'],['🇷🇸','Serbia','+381'],['🇸🇨','Seychelles','+248'],
+  ['🇸🇱','Sierra Leone','+232'],['🇸🇬','Singapore','+65'],['🇸🇽','Sint Maarten','+1721'],['🇸🇰','Slovakia','+421'],
+  ['🇸🇮','Slovenia','+386'],['🇸🇧','Solomon Islands','+677'],['🇸🇴','Somalia','+252'],['🇿🇦','South Africa','+27'],
+  ['🇰🇷','South Korea','+82'],['🇸🇸','South Sudan','+211'],['🇪🇸','Spain','+34'],['🇱🇰','Sri Lanka','+94'],
+  ['🇸🇩','Sudan','+249'],['🇸🇷','Suriname','+597'],['🇸🇪','Sweden','+46'],['🇨🇭','Switzerland','+41'],
+  ['🇸🇾','Syria','+963'],['🇹🇼','Taiwan','+886'],['🇹🇯','Tajikistan','+992'],['🇹🇿','Tanzania','+255'],
+  ['🇹🇭','Thailand','+66'],['🇹🇱','Timor-Leste','+670'],['🇹🇬','Togo','+228'],['🇹🇰','Tokelau','+690'],
+  ['🇹🇴','Tonga','+676'],['🇹🇹','Trinidad & Tobago','+1868'],['🇹🇳','Tunisia','+216'],['🇹🇷','Türkiye','+90'],
+  ['🇹🇲','Turkmenistan','+993'],['🇹🇨','Turks & Caicos Islands','+1649'],['🇹🇻','Tuvalu','+688'],['🇻🇮','U.S. Virgin Islands','+1340'],
+  ['🇺🇬','Uganda','+256'],['🇺🇦','Ukraine','+380'],['🇬🇧','United Kingdom','+44'],['🇺🇸','United States','+1'],
+  ['🇺🇾','Uruguay','+598'],['🇺🇿','Uzbekistan','+998'],['🇻🇺','Vanuatu','+678'],['🇻🇦','Vatican City','+39'],
+  ['🇻🇪','Venezuela','+58'],['🇻🇳','Vietnam','+84'],['🇼🇫','Wallis & Futuna','+681'],['🇾🇪','Yemen','+967'],
+  ['🇿🇲','Zambia','+260'],['🇿🇼','Zimbabwe','+263']
+] as const;
 ---
 
 <div class="quote-card" data-quote-form>
@@ -25,13 +88,7 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
     <h2>Get your vehicle price</h2>
     <p>Choose your vehicle details. It only takes a moment.</p>
   </div>
-
-  <div class="steps" aria-hidden="true">
-    <span class="step active" data-step-dot="1">1</span>
-    <span class="step-line"></span>
-    <span class="step" data-step-dot="2">2</span>
-  </div>
-
+ 
   <form novalidate>
     <div class="panel active" data-step-panel="1">
       <label>
@@ -84,7 +141,7 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
       )}
 
       <button type="button" class="continue" data-next>
-        Continue
+        Get My Free Valuation
         <i class="ph ph-arrow-right" aria-hidden="true"></i>
       </button>
     </div>
@@ -105,14 +162,18 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
       </label>
 
       <label>
-        <span class="field-label"><img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />WhatsApp number</span>
+        <span class="field-label"><i class="ph ph-device-mobile" aria-hidden="true"></i>Mobile / WhatsApp number</span>
         <div class="phone-wrap">
-          <span>+971</span>
+          <select name="countryCode" class="country-code" aria-label="Country calling code" required>
+            {countryCodes.map(([flag, country, code]) => (
+              <option value={code} selected={code === '+971'}>{flag} {country} {code}</option>
+            ))}
+          </select>
           <input
             name="whatsapp"
             inputmode="tel"
             autocomplete="tel"
-            placeholder="50 123 4567"
+            placeholder="Your Mobile No (you will receive an SMS)"
             required
           />
         </div>
@@ -143,8 +204,7 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
 
     roots.forEach((root) => {
       const panels = root.querySelectorAll('[data-step-panel]');
-      const dots = root.querySelectorAll('[data-step-dot]');
-      const form = root.querySelector('form');
+       const form = root.querySelector('form');
       const makeSelect = root.querySelector('[data-make]');
       const modelSelect = root.querySelector('[data-model]');
       const modelHelp = root.querySelector('[data-model-help]');
@@ -161,13 +221,7 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
             panel.getAttribute('data-step-panel') === String(step)
           );
         });
-
-        dots.forEach((dot) => {
-          dot.classList.toggle(
-            'active',
-            Number(dot.getAttribute('data-step-dot')) <= step
-          );
-        });
+ 
       };
 
       const populateModels = (make) => {
@@ -354,38 +408,6 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
     line-height: 1.55;
   }
 
-  .steps {
-    margin: 24px 0 20px;
-    display: grid;
-    grid-template-columns: 28px 1fr 28px;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .step {
-    width: 28px;
-    height: 28px;
-    border: 1px solid #d7ddd3;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    color: #899087;
-    background: #fff;
-    font-size: 12px;
-    font-weight: 850;
-  }
-
-  .step.active {
-    border-color: var(--smc-green-dark);
-    background: var(--smc-green-dark);
-    color: #fff;
-  }
-
-  .step-line {
-    height: 1px;
-    background: #dfe4dc;
-  }
-
   .panel {
     display: none;
     gap: 15px;
@@ -464,11 +486,12 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
 
   .phone-wrap {
     display: grid;
-    grid-template-columns: 62px 1fr;
+    grid-template-columns: minmax(122px, 142px) 1fr;
     align-items: center;
     border: 1px solid #d9ded6;
     border-radius: 12px;
     overflow: hidden;
+    background: #fff;
   }
 
   .phone-wrap:focus-within {
@@ -476,21 +499,28 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
     box-shadow: 0 0 0 4px rgba(63, 122, 54, .10);
   }
 
-  .phone-wrap > span {
-    min-height: 52px;
-    display: grid;
-    place-items: center;
+  .country-code {
+    min-width: 0;
+    border: 0;
     border-right: 1px solid #e4e7e1;
-    background: #f6f8f4;
-    color: #4f554e;
-    font-size: 14px;
-    font-weight: 800;
+    border-radius: 0;
+    background: #f8faf7;
+    box-shadow: none !important;
+    padding: 0 30px 0 11px;
+    font-size: 13px;
+    cursor: pointer;
   }
 
   .phone-wrap input {
+    min-width: 0;
     border: 0;
     border-radius: 0;
     box-shadow: none !important;
+  }
+
+  .phone-wrap input::placeholder {
+    color: #8d938b;
+    font-size: 12px;
   }
 
   .continue,
@@ -611,6 +641,24 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
 
     .quote-head h2 {
       font-size: 27px;
+    }
+
+    .phone-wrap {
+      grid-template-columns: 116px 1fr;
+    }
+
+    .country-code {
+      padding-left: 9px;
+      padding-right: 24px;
+      font-size: 12px;
+    }
+
+    .phone-wrap input {
+      padding-inline: 11px;
+    }
+
+    .phone-wrap input::placeholder {
+      font-size: 11px;
     }
   }
 </style>
