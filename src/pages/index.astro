@@ -1544,6 +1544,44 @@ const faqJsonLd = {
     display: block;
   }
 
+  @media (min-width: 1041px) {
+    .hero-grid {
+      min-height: 620px;
+      padding: 52px 0;
+      grid-template-columns: minmax(0, 1fr) minmax(440px, 550px);
+      grid-template-rows: auto auto auto auto;
+      column-gap: 88px;
+      row-gap: 17px;
+      align-content: center;
+      align-items: start;
+    }
+
+    .hero-copy { grid-column: 1; grid-row: 1; }
+    .hero-description { grid-column: 1; grid-row: 2; }
+    .hero-actions { grid-column: 1; grid-row: 3; margin-top: 0; }
+    .hero-proof { grid-column: 1; grid-row: 4; margin-top: 0; }
+
+    .hero-form {
+      grid-column: 2;
+      grid-row: 1 / span 4;
+      width: 100%;
+      max-width: 550px;
+      align-self: center;
+    }
+
+    .hero h1 {
+      max-width: 720px;
+      margin: 16px 0 0;
+      font-size: clamp(64px, 5.8vw, 82px);
+    }
+
+    .hero-lead {
+      max-width: 610px;
+      font-size: 18px;
+      line-height: 1.55;
+    }
+  }
+
   @media (max-width: 1040px) {
     .hero-grid {
       grid-template-columns: 1fr;
