@@ -336,17 +336,13 @@ const faqJsonLd = {
         <div class="condition-visual" data-reveal>
           <div class="condition-image-wrap">
             <img
-              src="https://static.wixstatic.com/media/ff8df3_5ad850cd37b548fcb891e45e46e44e9d~mv2.png"
-              alt="Scrap My Car UAE buys cars in different conditions"
-              width="609"
-              height="425"
+              src="/sections/vehicle-conditions.webp"
+              alt="Cars in different conditions, including damaged vehicles"
+              width="1456"
+              height="1092"
               loading="lazy"
               decoding="async"
             />
-          </div>
-          <div class="condition-float-card">
-            <strong>Any condition</strong>
-            <span>Tell us what you have.</span>
           </div>
         </div>
 
@@ -416,20 +412,15 @@ const faqJsonLd = {
           </div>
         </div>
 
-        <div class="coverage-art" aria-hidden="true" data-reveal>
-          <div class="map-card">
-            <div class="map-line line-one"></div>
-            <div class="map-line line-two"></div>
-            <div class="map-line line-three"></div>
-            <span class="pin pin-one"></span>
-            <span class="pin pin-two"></span>
-            <span class="pin pin-three"></span>
-            <span class="pin pin-four"></span>
-            <div class="map-badge">
-              <strong>UAE</strong>
-              <span>Collection coverage</span>
-            </div>
-          </div>
+        <div class="coverage-art" data-reveal>
+          <img
+            src="/sections/uae-collection-coverage.webp"
+            alt="UAE vehicle collection coverage map"
+            width="1456"
+            height="1092"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       </div>
     </section>
@@ -1000,8 +991,6 @@ const faqJsonLd = {
 
   .condition-image-wrap {
     min-height: 510px;
-    border-radius: 28px;
-    overflow: hidden;
     background:
       radial-gradient(circle at 40% 20%, rgba(156,200,149,.16), transparent 35%),
       rgba(255,255,255,.035);
@@ -1010,33 +999,11 @@ const faqJsonLd = {
   }
 
   .condition-image-wrap img {
-    width: 92%;
+    width: 100%;
+    max-width: 720px;
     height: auto;
     object-fit: contain;
     filter: drop-shadow(0 28px 34px rgba(0,0,0,.24));
-  }
-
-  .condition-float-card {
-    position: absolute;
-    right: -20px;
-    bottom: 34px;
-    padding: 16px 18px;
-    border: 1px solid rgba(255,255,255,.15);
-    border-radius: 16px;
-    background: rgba(22,55,25,.82);
-    backdrop-filter: blur(12px);
-    display: grid;
-    gap: 2px;
-    box-shadow: 0 20px 45px rgba(0,0,0,.18);
-  }
-
-  .condition-float-card strong {
-    font-size: 15px;
-  }
-
-  .condition-float-card span {
-    color: #b9c9b7;
-    font-size: 11px;
   }
 
   .condition-section .smc-kicker {
@@ -1174,86 +1141,17 @@ const faqJsonLd = {
     font-size: 17px;
   }
 
-  .map-card {
-    position: relative;
-    min-height: 430px;
-    border: 1px solid #dfe6dc;
-    border-radius: 28px;
-    overflow: hidden;
-    background:
-      radial-gradient(circle at 45% 45%, rgba(81,139,69,.18), transparent 34%),
-      linear-gradient(145deg, #fbfcfa, #e8f0e4);
-    box-shadow: 0 24px 62px rgba(33,60,28,.08);
-  }
-
-  .map-card::before,
-  .map-card::after {
-    content: '';
-    position: absolute;
-    border: 1px solid rgba(47,111,45,.10);
-    border-radius: 50%;
-  }
-
-  .map-card::before {
-    width: 330px;
-    height: 330px;
-    left: 20%;
-    top: 10%;
-  }
-
-  .map-card::after {
-    width: 220px;
-    height: 220px;
-    left: 32%;
-    top: 23%;
-  }
-
-  .map-line {
-    position: absolute;
-    height: 1px;
-    background: rgba(47,111,45,.22);
-    transform-origin: left center;
-  }
-
-  .line-one { width: 220px; left: 27%; top: 38%; transform: rotate(24deg); }
-  .line-two { width: 190px; left: 42%; top: 61%; transform: rotate(-42deg); }
-  .line-three { width: 170px; left: 32%; top: 67%; transform: rotate(-8deg); }
-
-  .pin {
-    position: absolute;
-    width: 13px;
-    height: 13px;
-    border: 3px solid #fff;
-    border-radius: 50%;
-    background: var(--smc-green);
-    box-shadow: 0 0 0 8px rgba(47,111,45,.10);
-  }
-
-  .pin-one { left: 30%; top: 36%; }
-  .pin-two { left: 63%; top: 51%; }
-  .pin-three { left: 42%; top: 69%; }
-  .pin-four { left: 73%; top: 31%; }
-
-  .map-badge {
-    position: absolute;
-    left: 28px;
-    bottom: 28px;
-    padding: 15px 17px;
-    border: 1px solid rgba(47,111,45,.12);
-    border-radius: 15px;
+  .coverage-art {
     display: grid;
-    background: rgba(255,255,255,.88);
-    backdrop-filter: blur(10px);
+    place-items: center;
   }
 
-  .map-badge strong {
-    font-size: 23px;
-    letter-spacing: -.04em;
-  }
-
-  .map-badge span {
-    color: var(--smc-muted);
-    font-size: 11px;
+  .coverage-art img {
+    width: 100%;
+    max-width: 650px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 22px 38px rgba(33,60,28,.10));
   }
 
   .testimonial-section {
@@ -1776,11 +1674,6 @@ const faqJsonLd = {
       min-height: 330px;
     }
 
-    .condition-float-card {
-      right: 12px;
-      bottom: 14px;
-    }
-
     .condition-tags {
       grid-template-columns: 1fr;
     }
@@ -1809,8 +1702,8 @@ const faqJsonLd = {
       grid-template-columns: 1fr 1fr;
     }
 
-    .map-card {
-      min-height: 330px;
+    .coverage-art img {
+      max-width: 560px;
     }
 
     .testimonial-card {
