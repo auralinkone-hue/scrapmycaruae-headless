@@ -178,9 +178,6 @@ const faqJsonLd = {
 
   <main>
     <section class="hero">
-      <div class="hero-orb hero-orb-one"></div>
-      <div class="hero-orb hero-orb-two"></div>
-
       <div class="smc-container hero-grid">
         <div class="hero-copy" data-reveal>
           <div class="eyebrow">
@@ -193,6 +190,23 @@ const faqJsonLd = {
             <span>Skip the hassle.</span>
           </h1>
 
+        </div>
+
+        <div id="valuation" class="hero-form" data-reveal>
+          <QuoteForm
+            makes={vehicleData.makes}
+            models={vehicleData.models}
+            years={vehicleData.years}
+            dataError={vehicleDataError}
+          />
+          <div class="form-reassurance">
+            <span><i class="ph ph-check-circle" aria-hidden="true"></i>No obligation</span>
+            <span><i class="ph ph-check-circle" aria-hidden="true"></i>Free valuation</span>
+            <span><i class="ph ph-shield-check" aria-hidden="true"></i>Secure request</span>
+          </div>
+        </div>
+
+        <div class="hero-support" data-reveal>
           <p class="hero-lead">
             Get a free vehicle valuation for old, damaged, non-running or unwanted cars,
             with collection available across the UAE.
@@ -227,32 +241,6 @@ const faqJsonLd = {
               <strong>Any</strong>
               <span>condition</span>
             </div>
-          </div>
-
-          <div class="hero-visual" aria-hidden="true">
-            <div class="visual-ring"></div>
-            <img
-              src="https://static.wixstatic.com/media/ff8df3_57b1e39afd6540059346a106769350eb~mv2.png"
-              alt=""
-              width="738"
-              height="465"
-              loading="eager"
-              decoding="async"
-            />
-          </div>
-        </div>
-
-        <div id="valuation" class="hero-form" data-reveal>
-          <QuoteForm
-            makes={vehicleData.makes}
-            models={vehicleData.models}
-            years={vehicleData.years}
-            dataError={vehicleDataError}
-          />
-          <div class="form-reassurance">
-            <span><i class="ph ph-check-circle" aria-hidden="true"></i>No obligation</span>
-            <span><i class="ph ph-check-circle" aria-hidden="true"></i>Free valuation</span>
-            <span><i class="ph ph-shield-check" aria-hidden="true"></i>Secure request</span>
           </div>
         </div>
       </div>
@@ -586,10 +574,6 @@ const faqJsonLd = {
 </script>
 
 <style>
-  main {
-    overflow: clip;
-  }
-
   [data-reveal] {
     opacity: 0;
     transform: translateY(18px);
@@ -623,42 +607,19 @@ const faqJsonLd = {
     mask-image: linear-gradient(to bottom, #000 0%, transparent 76%);
   }
 
-  .hero-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(2px);
-    pointer-events: none;
-  }
-
-  .hero-orb-one {
-    width: 420px;
-    height: 420px;
-    top: -240px;
-    right: -80px;
-    background: rgba(102, 163, 91, .10);
-  }
-
-  .hero-orb-two {
-    width: 260px;
-    height: 260px;
-    left: 32%;
-    bottom: -190px;
-    background: rgba(30, 77, 32, .06);
-  }
-
   .hero-grid {
     position: relative;
-    min-height: 720px;
-    padding: 74px 0 72px;
+    min-height: 630px;
+    padding: 70px 0;
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(390px, .72fr);
-    gap: 70px;
-    align-items: center;
+    column-gap: 70px;
+    row-gap: 24px;
+    align-items: end;
   }
 
   .hero-copy {
-    position: relative;
-    padding-bottom: 82px;
+    grid-column: 1;
   }
 
   .eyebrow {
@@ -707,6 +668,10 @@ const faqJsonLd = {
     line-height: 1.68;
   }
 
+  .hero-support {
+    grid-column: 1;
+  }
+
   .hero-actions {
     margin-top: 30px;
     display: flex;
@@ -746,40 +711,12 @@ const faqJsonLd = {
     font-size: 12px;
   }
 
-  .hero-visual {
-    position: absolute;
-    left: 44%;
-    bottom: -18px;
-    width: 400px;
-    height: 230px;
-    pointer-events: none;
-    opacity: .96;
-  }
-
-  .hero-visual img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: center bottom;
-    filter: drop-shadow(0 22px 24px rgba(34,65,29,.12));
-  }
-
-  .visual-ring {
-    position: absolute;
-    width: 310px;
-    height: 120px;
-    left: 45px;
-    bottom: 10px;
-    border: 1px solid rgba(47,111,45,.18);
-    border-radius: 50%;
-    transform: rotate(-5deg);
-  }
-
   .hero-form {
+    grid-column: 2;
+    grid-row: 1 / span 2;
     position: relative;
     z-index: 3;
+    align-self: center;
     scroll-margin-top: 30px;
   }
 
@@ -1579,21 +1516,14 @@ const faqJsonLd = {
       grid-template-columns: 1fr;
       gap: 36px;
       padding-top: 56px;
-    }
-
-    .hero-copy {
-      padding-bottom: 190px;
+      padding-bottom: 58px;
+      align-items: start;
     }
 
     .hero-form {
+      grid-column: 1;
+      grid-row: auto;
       max-width: 650px;
-    }
-
-    .hero-visual {
-      left: auto;
-      right: 0;
-      bottom: 0;
-      width: 390px;
     }
 
     .benefit-grid {
@@ -1627,10 +1557,7 @@ const faqJsonLd = {
     .hero-grid {
       min-height: auto;
       padding: 38px 0 48px;
-    }
-
-    .hero-copy {
-      padding-bottom: 154px;
+      gap: 28px;
     }
 
     .hero h1 {
@@ -1652,12 +1579,6 @@ const faqJsonLd = {
 
     .hero-proof {
       gap: 22px;
-    }
-
-    .hero-visual {
-      width: 300px;
-      height: 180px;
-      right: -20px;
     }
 
     .make-strip-inner {
