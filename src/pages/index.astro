@@ -270,7 +270,7 @@ const faqJsonLd = {
       </div>
 
       <div class="benefit-grid">
-        {benefits.map((benefit, index) => (
+        {benefits.map((benefit) => (
           <article class="benefit-card" data-reveal>
             <div class="benefit-top">
               <div class="benefit-icon">
@@ -285,7 +285,7 @@ const faqJsonLd = {
                   aria-hidden="true"
                 ></i>
               </div>
-              <span>0{index + 1}</span>
+              <i class="ph ph-arrow-up-right benefit-arrow" aria-hidden="true"></i>
             </div>
             <h3>{benefit.title}</h3>
             <p>{benefit.text}</p>
@@ -827,12 +827,12 @@ const faqJsonLd = {
   }
 
   .benefits {
-    padding: 112px 0 118px;
+    padding: 88px 0 92px;
   }
 
   .section-heading {
     max-width: 760px;
-    margin-bottom: 50px;
+    margin-bottom: 34px;
   }
 
   .section-heading h2,
@@ -865,61 +865,85 @@ const faqJsonLd = {
 
   .benefit-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
   }
 
   .benefit-card {
-    min-height: 280px;
-    padding: 24px;
-    border: 1px solid var(--smc-line);
-    border-radius: 20px;
+    min-height: 190px;
+    padding: 22px;
+    border: 1px solid #dfe7dc;
+    border-radius: 18px;
     background: #fff;
-    transition: transform 190ms ease, box-shadow 190ms ease, border-color 190ms ease;
+    box-shadow: 0 8px 22px rgba(29,55,25,.035);
+    transition: transform 190ms ease, box-shadow 190ms ease, border-color 190ms ease, background 190ms ease;
   }
 
   .benefit-card:hover {
     transform: translateY(-4px);
-    border-color: #d4e1d0;
-    box-shadow: 0 18px 48px rgba(29,55,25,.08);
+    border-color: #bfd4ba;
+    background: #fcfefb;
+    box-shadow: 0 16px 34px rgba(29,55,25,.08);
   }
 
   .benefit-top {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
   }
 
-  .benefit-top > span {
-    color: #a1a8a0;
-    font-size: 11px;
-    font-weight: 850;
-  }
-
   .benefit-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 13px;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
     display: grid;
     place-items: center;
     background: var(--smc-green-soft);
     color: var(--smc-green-dark);
+    transition: transform 190ms ease, background 190ms ease, color 190ms ease;
   }
 
   .benefit-icon > .ph {
-    font-size: 23px;
+    font-size: 22px;
+  }
+
+  .benefit-arrow {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #dfe7dc;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: #8aa287;
+    font-size: 15px;
+    transition: transform 190ms ease, background 190ms ease, color 190ms ease, border-color 190ms ease;
+  }
+
+  .benefit-card:hover .benefit-icon,
+  .benefit-card:active .benefit-icon {
+    transform: rotate(-5deg) scale(1.04);
+    background: var(--smc-green-dark);
+    color: #fff;
+  }
+
+  .benefit-card:hover .benefit-arrow,
+  .benefit-card:active .benefit-arrow {
+    transform: translate(2px, -2px);
+    border-color: var(--smc-green);
+    background: var(--smc-green);
+    color: #fff;
   }
 
   .benefit-card h3 {
-    margin: 48px 0 11px;
-    font-size: 22px;
-    letter-spacing: -.03em;
+    margin: 25px 0 8px;
+    font-size: 20px;
+    letter-spacing: -.035em;
   }
 
   .benefit-card p {
     margin: 0;
     color: var(--smc-muted);
-    line-height: 1.62;
+    line-height: 1.58;
     font-size: 14px;
   }
 
@@ -1777,12 +1801,50 @@ const faqJsonLd = {
       padding: 76px 0;
     }
 
+    .benefits {
+      padding: 58px 0;
+    }
+
+    .benefits .section-heading {
+      margin-bottom: 26px;
+    }
+
     .benefit-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
     }
 
     .benefit-card {
-      min-height: 230px;
+      min-height: 0;
+      padding: 15px;
+      border-radius: 16px;
+    }
+
+    .benefit-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+    }
+
+    .benefit-icon > .ph {
+      font-size: 19px;
+    }
+
+    .benefit-arrow {
+      width: 26px;
+      height: 26px;
+      font-size: 13px;
+    }
+
+    .benefit-card h3 {
+      margin: 18px 0 6px;
+      font-size: 17px;
+      line-height: 1.1;
+    }
+
+    .benefit-card p {
+      font-size: 12px;
+      line-height: 1.48;
     }
 
     .process-section,
