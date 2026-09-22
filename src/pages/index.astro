@@ -451,9 +451,7 @@ const faqJsonLd = {
         <div class="review-track">
           {reviews.map((review) => (
             <article class="review-card">
-              <div class="review-stars" aria-label="5 star customer review">
-                <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
-              </div>
+              <div class="review-stars" aria-label="5 star customer review">★★★★★</div>
               <p>“{review}”</p>
               <span><i class="ph ph-user-circle" aria-hidden="true"></i>Customer feedback</span>
             </article>
@@ -461,7 +459,7 @@ const faqJsonLd = {
           <div class="review-track-duplicate" aria-hidden="true">
             {reviews.map((review) => (
               <article class="review-card">
-                <div class="review-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                <div class="review-stars">★★★★★</div>
                 <p>“{review}”</p>
                 <span><i class="ph ph-user-circle"></i>Customer feedback</span>
               </article>
