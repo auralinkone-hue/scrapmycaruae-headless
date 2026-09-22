@@ -91,10 +91,9 @@ const countryCodes = [
  
   <form novalidate>
     <div class="panel active" data-step-panel="1">
-      <label>
-        <span class="sr-only">Vehicle make</span>
+      <label class="form-field">
+        <span class="field-label"><i class="ph ph-car" aria-hidden="true"></i>Make</span>
         <span class="field-control">
-          <i class="ph ph-steering-wheel" aria-hidden="true"></i>
           <select name="make" data-make required aria-label="Vehicle make" disabled={Boolean(dataError || makes.length === 0)}>
             <option value="">Select make</option>
 
@@ -117,20 +116,18 @@ const countryCodes = [
         </span>
       </label>
 
-      <label>
-        <span class="sr-only">Vehicle model</span>
+      <label class="form-field">
+        <span class="field-label"><i class="ph ph-car-profile" aria-hidden="true"></i>Model</span>
         <span class="field-control">
-          <i class="ph ph-car-profile" aria-hidden="true"></i>
           <select name="model" data-model required aria-label="Vehicle model" disabled>
             <option value="">Select make first</option>
           </select>
         </span>
       </label>
 
-      <label>
-        <span class="sr-only">Vehicle year</span>
+      <label class="form-field">
+        <span class="field-label"><i class="ph ph-calendar-blank" aria-hidden="true"></i>Year</span>
         <span class="field-control">
-          <i class="ph ph-calendar-blank" aria-hidden="true"></i>
           <select name="year" required aria-label="Vehicle year" disabled={Boolean(dataError || years.length === 0)}>
             <option value="">Select year</option>
             {years.map((item) => (
@@ -157,10 +154,9 @@ const countryCodes = [
 
       <div class="vehicle-summary" data-vehicle-summary></div>
 
-      <label>
-        <span class="sr-only">Your name</span>
+      <label class="form-field">
+        <span class="field-label"><i class="ph ph-user" aria-hidden="true"></i>Your name</span>
         <span class="field-control">
-          <i class="ph ph-user" aria-hidden="true"></i>
           <input
             name="name"
             autocomplete="name"
@@ -170,8 +166,8 @@ const countryCodes = [
         </span>
       </label>
 
-      <label>
-        <span class="sr-only">Mobile or WhatsApp number</span>
+      <label class="form-field">
+        <span class="field-label"><i class="ph ph-device-mobile" aria-hidden="true"></i>Mobile / WhatsApp number</span>
         <div class="phone-wrap">
           <select name="countryCode" class="country-code" aria-label="Country calling code" required>
             {countryCodes.map(([flag, country, code]) => (
@@ -184,7 +180,7 @@ const countryCodes = [
               name="whatsapp"
               inputmode="tel"
               autocomplete="tel"
-              placeholder="Mobile / WhatsApp number"
+              placeholder="Your Mobile No (you will receive an SMS)"
               required
             />
           </span>
@@ -376,18 +372,22 @@ const countryCodes = [
 <style>
   .quote-card {
     width: 100%;
-    padding: 26px;
-    border: 1px solid rgba(170, 224, 151, .34);
+    padding: 28px;
+    border: 1px solid #dfe8dc;
     border-radius: 22px;
-    background: #173d18;
-    box-shadow: 0 20px 54px rgba(19, 45, 18, .20);
+    background: #ffffff;
+    box-shadow: 0 18px 46px rgba(27, 55, 24, .10);
+  }
+
+  .quote-head {
+    text-align: left;
   }
 
   .quote-head .quote-kicker {
-    color: #a9df94;
-    font-size: 12px;
+    color: var(--smc-green);
+    font-size: 11px;
     font-weight: 850;
-    letter-spacing: .09em;
+    letter-spacing: .10em;
     text-transform: uppercase;
     display: inline-flex;
     align-items: center;
@@ -395,96 +395,97 @@ const countryCodes = [
   }
 
   .quote-kicker .ph {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .quote-head h2 {
-    margin: 6px 0 7px;
-    font-size: 29px;
+    margin: 7px 0 7px;
+    color: var(--smc-ink);
+    font-size: 30px;
     line-height: 1.08;
     letter-spacing: -.04em;
-    color: #fff;
   }
 
   .quote-head p {
     margin: 0;
-    color: #d5e4d2;
+    color: var(--smc-muted);
     font-size: 14px;
-    line-height: 1.55;
+    line-height: 1.5;
   }
 
   .panel {
     display: none;
-    gap: 14px;
-    margin-top: 20px;
+    gap: 16px;
+    margin-top: 24px;
   }
 
   .panel.active {
     display: grid;
   }
 
-  label {
+  .form-field {
     display: grid;
-    gap: 7px;
+    gap: 8px;
   }
 
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+  .field-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #3d463c;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .field-label .ph {
+    color: var(--smc-green);
+    font-size: 18px;
+    line-height: 1;
   }
 
   .field-control,
   .phone-input-control {
     position: relative;
     display: block;
-  }
-
-  .field-control > .ph,
-  .phone-input-control > .ph {
-    position: absolute;
-    top: 50%;
-    left: 16px;
-    z-index: 1;
-    color: #39723b;
-    font-size: 19px;
-    transform: translateY(-50%);
-    pointer-events: none;
+    min-width: 0;
   }
 
   input,
   select {
     width: 100%;
-    min-height: 50px;
     min-width: 0;
-    padding: 0 14px 0 48px;
-    border: 1px solid #d1dbce;
-    border-radius: 12px;
+    height: 56px;
+    padding: 0 16px;
+    border: 1px solid #d7ded4;
+    border-radius: 13px;
     outline: none;
-    background: #fbfdf9;
-    color: #151715;
+    background: #f9fbf8;
+    color: #171a17;
     font: inherit;
-    font-size: 15px;
+    font-size: 16px;
+    font-weight: 620;
     transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+  }
+
+  select {
+    padding-right: 42px;
+    cursor: pointer;
   }
 
   select:disabled,
   input:disabled {
-    background: #f3f5f1;
-    color: #959b93;
+    background: #f1f4ef;
+    color: #979d95;
     cursor: not-allowed;
   }
 
   input:focus,
-  select:focus {
-    border-color: #8ccb78;
-    box-shadow: 0 0 0 3px rgba(169, 223, 148, .28);
+  select:focus,
+  .phone-wrap:focus-within {
+    border-color: #73a96b;
+    box-shadow: 0 0 0 3px rgba(63, 122, 54, .10);
+    background: #fff;
   }
 
   input:focus-visible,
@@ -492,108 +493,114 @@ const countryCodes = [
   .continue:focus-visible,
   .submit:focus-visible,
   .back:focus-visible {
-    outline: 3px solid rgba(47, 111, 45, .16);
+    outline: 3px solid rgba(47, 111, 45, .15);
     outline-offset: 2px;
   }
 
   .vehicle-summary {
-    padding: 11px 13px;
-    border-radius: 10px;
-    background: #e1f2dc;
-    color: #194c1e;
+    padding: 12px 14px;
+    border: 1px solid #dce8d8;
+    border-radius: 12px;
+    background: #f1f7ee;
+    color: var(--smc-green-dark);
     font-size: 13px;
-    font-weight: 850;
+    font-weight: 800;
   }
 
   .phone-wrap {
     display: grid;
-    grid-template-columns: 116px 1fr;
-    align-items: center;
-    border: 1px solid #d1dbce;
-    border-radius: 12px;
+    grid-template-columns: 124px minmax(0, 1fr);
+    height: 56px;
+    align-items: stretch;
+    border: 1px solid #d7ded4;
+    border-radius: 13px;
     overflow: hidden;
-    background: #fbfdf9;
-  }
-
-  .phone-wrap:focus-within {
-    border-color: #8ccb78;
-    box-shadow: 0 0 0 4px rgba(169, 223, 148, .28);
+    background: #f9fbf8;
+    transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
   }
 
   .country-code {
+    height: 100%;
     min-width: 0;
+    padding: 0 28px 0 10px;
     border: 0;
-    border-right: 1px solid #e4e7e1;
+    border-right: 1px solid #e2e7df;
     border-radius: 0;
-    background: #f8faf7;
+    background: #f4f7f2;
     box-shadow: none !important;
-    padding: 0 26px 0 10px;
     font-size: 12px;
+    font-weight: 750;
     cursor: pointer;
   }
 
-  .phone-wrap input {
-    width: 100%;
+  .phone-input-control {
+    display: flex;
+    align-items: center;
     min-width: 0;
+  }
+
+  .phone-wrap input {
+    height: 100%;
     border: 0;
     border-radius: 0;
+    background: transparent;
     box-shadow: none !important;
+    padding: 0 13px;
+    font-size: 14px;
+    font-weight: 560;
   }
 
   .phone-wrap input::placeholder {
-    color: #8d938b;
-    font-size: 13px;
-  }
-
-  .phone-input-control {
-    min-width: 0;
+    color: #8b9289;
+    font-size: 12px;
+    font-weight: 500;
   }
 
   .phone-input-control > .ph {
-    left: 12px;
-    font-size: 17px;
-  }
-
-  .phone-input-control input {
-    padding-left: 40px;
+    display: none;
   }
 
   .continue,
   .submit {
-    min-height: 50px;
-    margin-top: 3px;
-    padding: 0 18px;
+    min-height: 56px;
+    margin-top: 2px;
+    padding: 0 20px;
     border: 0;
-    border-radius: 12px;
-    background: #a9df94;
-    color: #173d18;
+    border-radius: 13px;
+    background: var(--smc-green-dark);
+    color: #fff;
     font: inherit;
+    font-size: 15px;
     font-weight: 850;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
     cursor: pointer;
-    transition: transform 160ms ease, background 160ms ease, opacity 160ms ease;
+    box-shadow: 0 10px 24px rgba(32, 77, 32, .16);
+    transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
   }
 
   .continue:hover,
   .submit:hover {
     transform: translateY(-1px);
-    background: #c4edb5;
+    background: #173d18;
+    box-shadow: 0 12px 28px rgba(32, 77, 32, .20);
   }
 
-  .continue,
-  .submit {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-  }
-
-  .continue {
-    justify-content: center;
+  .continue:active,
+  .submit:active {
+    transform: translateY(0);
   }
 
   .continue .ph,
   .submit .ph {
     font-size: 18px;
+  }
+
+  .submit:disabled {
+    opacity: .68;
+    cursor: wait;
   }
 
   .submit:disabled .ph-circle-notch {
@@ -609,7 +616,7 @@ const countryCodes = [
     padding: 0;
     border: 0;
     background: none;
-    color: #c7efba;
+    color: var(--smc-green-dark);
     font: inherit;
     font-size: 13px;
     font-weight: 800;
@@ -625,7 +632,7 @@ const countryCodes = [
 
   .fine-print {
     margin: 0;
-    color: #d0dfcc;
+    color: #7b8279;
     font-size: 11px;
     line-height: 1.5;
   }
@@ -639,21 +646,17 @@ const countryCodes = [
     white-space: nowrap !important;
   }
 
-  .submit:disabled {
-    opacity: .72;
-    cursor: wait;
-  }
-
   .submit-message {
     padding: 11px 12px;
     border-radius: 10px;
-    background: #e1f2dc;
-    color: #194c1e;
+    background: #eef6eb;
+    color: var(--smc-green-dark);
     font-size: 12px;
     line-height: 1.45;
   }
 
-  .submit-message.error {
+  .submit-message.error,
+  .data-error {
     background: #fff0f0;
     color: #842727;
   }
@@ -662,70 +665,102 @@ const countryCodes = [
     margin-top: 2px;
     padding: 12px 13px;
     border-radius: 10px;
-    background: #fff0f0;
-    color: #842727;
     font-size: 12px;
     line-height: 1.45;
   }
 
   @media (max-width: 620px) {
     .quote-card {
-      padding: 18px;
-      border-radius: 16px;
-      box-shadow: 0 14px 30px rgba(10, 34, 11, .24);
+      padding: 22px 18px 20px;
+      border-radius: 20px;
+      box-shadow: 0 14px 34px rgba(27, 55, 24, .09);
+    }
+
+    .quote-head {
+      text-align: left;
     }
 
     .quote-head h2 {
-      font-size: 25px;
+      margin-top: 6px;
+      font-size: 27px;
     }
 
     .quote-head p {
       font-size: 13px;
+      line-height: 1.45;
     }
 
     .quote-head .quote-kicker {
-      font-size: 11px;
+      font-size: 10.5px;
     }
 
-    label {
-      gap: 6px;
+    .panel {
+      gap: 15px;
+      margin-top: 21px;
+    }
+
+    .field-label {
+      font-size: 12px;
+    }
+
+    .field-label .ph {
+      font-size: 18px;
     }
 
     input,
     select {
-      min-height: 48px;
-      border-radius: 10px;
-      background-color: #fbfdf9;
-      font-size: 15px;
-    }
-
-    .phone-wrap {
-      grid-template-columns: minmax(96px, 30%) minmax(0, 1fr);
-    }
-
-    .country-code {
-      padding-left: 8px;
-      padding-right: 20px;
-      font-size: 11px;
-    }
-
-    .phone-wrap input {
-      padding-right: 9px;
-    }
-
-    .phone-wrap input::placeholder {
-      font-size: 11px;
-    }
-
-    .panel {
-      gap: 12px;
-      margin-top: 16px;
+      height: 58px;
+      min-height: 58px;
+      padding-inline: 15px;
+      border-radius: 13px;
+      font-size: 16px;
     }
 
     .continue,
     .submit {
-      min-height: 50px;
-      border-radius: 11px;
+      min-height: 58px;
+      border-radius: 13px;
+      font-size: 15px;
+    }
+
+    .phone-wrap {
+      grid-template-columns: 106px minmax(0, 1fr);
+      height: 58px;
+    }
+
+    .country-code {
+      padding-left: 8px;
+      padding-right: 22px;
+      font-size: 11px;
+    }
+
+    .phone-wrap input {
+      padding-inline: 10px;
+      font-size: 13px;
+    }
+
+    .phone-wrap input::placeholder {
+      font-size: 10.5px;
+    }
+  }
+
+  @media (max-width: 370px) {
+    .quote-card {
+      padding-inline: 16px;
+    }
+
+    .phone-wrap {
+      grid-template-columns: 96px minmax(0, 1fr);
+    }
+
+    .country-code {
+      font-size: 10.5px;
+      padding-left: 7px;
+      padding-right: 18px;
+    }
+
+    .phone-wrap input::placeholder {
+      font-size: 10px;
     }
   }
 </style>
