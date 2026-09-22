@@ -12,7 +12,7 @@ const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
   canonical="https://www.scrapmycaruae.com/thank-you"
 >
   <main class="thank-you smc-container">
-    <div class="success-mark" aria-hidden="true">✓</div>
+    <div class="success-mark" aria-hidden="true"><i class="ph ph-check"></i></div>
     <div class="smc-kicker">Request received</div>
     <h1>Your vehicle price request is on the way.</h1>
     <p>
@@ -29,9 +29,11 @@ const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
 
     <div class="actions">
       <a class="smc-button smc-button-primary" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+        <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
         WhatsApp Us
       </a>
       <a class="smc-button smc-button-secondary" href="/">
+        <i class="ph ph-house" aria-hidden="true"></i>
         Back to Home
       </a>
     </div>
@@ -62,6 +64,8 @@ const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
     font-size: 30px;
     font-weight: 900;
   }
+
+  .success-mark .ph { font-size: 31px; }
 
   h1 {
     margin: 10px 0 18px;
