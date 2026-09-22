@@ -116,6 +116,11 @@ const countryCodes = [
         </span>
       </label>
 
+      <div class="model-availability" data-model-count role="status" aria-live="polite" hidden>
+        <i class="ph ph-list-checks" aria-hidden="true"></i>
+        <span></span>
+      </div>
+
       <label class="form-field">
         <span class="field-label"><i class="ph ph-car-profile" aria-hidden="true"></i>Model</span>
         <span class="field-control">
@@ -218,6 +223,7 @@ const countryCodes = [
       const makeSelect = root.querySelector('[data-make]');
       const modelSelect = root.querySelector('[data-model]');
       const summary = root.querySelector('[data-vehicle-summary]');
+      const modelCount = root.querySelector('[data-model-count]');
 
       if (!(form instanceof HTMLFormElement)) return;
       if (!(makeSelect instanceof HTMLSelectElement)) return;
@@ -243,6 +249,10 @@ const countryCodes = [
 
         if (!make) {
           modelSelect.disabled = true;
+          if (modelCount instanceof HTMLElement) {
+            modelCount.hidden = true;
+            modelCount.querySelector('span')?.replaceChildren();
+          }
           return;
         }
 
@@ -256,6 +266,16 @@ const countryCodes = [
         });
 
         modelSelect.disabled = matching.length === 0;
+
+        if (modelCount instanceof HTMLElement) {
+          const label = modelCount.querySelector('span');
+          if (label) {
+            label.textContent = matching.length
+              ? `${matching.length} ${matching.length === 1 ? 'model' : 'models'} available for ${make}`
+              : `No models are currently listed for ${make}`;
+          }
+          modelCount.hidden = false;
+        }
 
       };
 
@@ -428,6 +448,22 @@ const countryCodes = [
   .form-field {
     display: grid;
     gap: 8px;
+  }
+
+  .model-availability {
+    margin-top: -5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    color: #3e733b;
+    font-size: 12px;
+    font-weight: 760;
+    line-height: 1.2;
+  }
+
+  .model-availability .ph {
+    font-size: 16px;
   }
 
   .field-label {
@@ -699,6 +735,11 @@ const countryCodes = [
     .panel {
       gap: 12px;
       margin-top: 17px;
+    }
+
+    .model-availability {
+      margin-top: -3px;
+      font-size: 11px;
     }
 
     .field-label {
