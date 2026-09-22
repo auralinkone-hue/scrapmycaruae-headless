@@ -69,7 +69,7 @@ const isActive = (href: string) =>
               href={link.href}
               class:list={['mobile-link', { active: isActive(link.href) }]}
             >
-              <i class:list={['ph', link.icon]} aria-hidden="true"></i>
+              <i class={`ph ${link.icon}`} aria-hidden="true"></i>
               {link.label}
               <i class="ph ph-arrow-up-right mobile-link-arrow" aria-hidden="true"></i>
             </a>
