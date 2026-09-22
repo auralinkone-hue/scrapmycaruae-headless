@@ -329,26 +329,36 @@ const faqJsonLd = {
         </div>
 
         <div class="process-list">
-          {steps.map((step) => (
-            <article data-reveal>
-              <div class="process-marker">
-                <i
-                  class:list={[
-                    'ph',
-                    step.icon === 'ph-steering-wheel' && 'ph-steering-wheel',
-                    step.icon === 'ph-chat-circle-dots' && 'ph-chat-circle-dots',
-                    step.icon === 'ph-truck' && 'ph-truck'
-                  ]}
-                  aria-hidden="true"
-                ></i>
-                <span class="process-number">{step.number}</span>
-              </div>
-              <div>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
-              </div>
-            </article>
-          ))}
+          <article data-reveal>
+            <div class="process-marker">
+              <i class="ph ph-steering-wheel" aria-hidden="true"></i>
+              <span class="process-number">01</span>
+            </div>
+            <div>
+              <h3>Choose your vehicle</h3>
+              <p>Select the make, model and year from our vehicle database.</p>
+            </div>
+          </article>
+          <article data-reveal>
+            <div class="process-marker">
+              <i class="ph ph-chat-circle-dots" aria-hidden="true"></i>
+              <span class="process-number">02</span>
+            </div>
+            <div>
+              <h3>Get your valuation</h3>
+              <p>Add your name and WhatsApp number and send your request to our team.</p>
+            </div>
+          </article>
+          <article data-reveal>
+            <div class="process-marker">
+              <i class="ph ph-truck" aria-hidden="true"></i>
+              <span class="process-number">03</span>
+            </div>
+            <div>
+              <h3>Arrange collection</h3>
+              <p>If you accept the offer, we arrange the vehicle handover and collection.</p>
+            </div>
+          </article>
         </div>
       </div>
     </section>
@@ -1836,15 +1846,5 @@ const faqJsonLd = {
     .condition-image-wrap::before {
       inset: 24px 24px 10px;
       box-shadow: 0 20px 36px rgba(0,0,0,.16);
-    }
-
-    .condition-visual {
-      overflow: visible;
-    }
-
-    .condition-image-wrap img {
-      width: 102%;
-      transform: translateY(2px);
-      filter: drop-shadow(0 24px 28px rgba(0,0,0,.34));
     }
 
