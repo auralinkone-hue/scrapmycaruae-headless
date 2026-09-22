@@ -61,6 +61,11 @@ const isActive = (href: string) =>
         </a>
       </div>
 
+      <a class="mobile-call" href="tel:+971557458322" aria-label="Call Scrap My Car UAE on 055 745 83 22">
+        <i class="ph ph-phone-call" aria-hidden="true"></i>
+        <span>055 745 83 22</span>
+      </a>
+
       <details class="mobile-menu">
         <summary aria-label="Open navigation">
           <i class="ph ph-list" aria-hidden="true"></i>
@@ -237,6 +242,27 @@ const isActive = (href: string) =>
     position: relative;
   }
 
+  .mobile-call {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 10px;
+    margin-left: auto;
+    border-radius: 12px;
+    background: var(--smc-green-soft);
+    color: var(--smc-green-dark);
+    font-size: 11px;
+    font-weight: 850;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .mobile-call .ph {
+    font-size: 18px;
+  }
+
   .mobile-menu summary {
     width: 44px;
     height: 44px;
@@ -326,6 +352,14 @@ const isActive = (href: string) =>
 
     .brand img {
       width: 128px;
+    }
+
+    .nav-inner {
+      gap: 9px;
+    }
+
+    .mobile-call {
+      display: inline-flex;
     }
 
     .mobile-menu summary {
