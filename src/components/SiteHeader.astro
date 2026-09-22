@@ -47,14 +47,6 @@ const isActive = (href: string) =>
       </nav>
 
       <div class="desktop-actions">
-        <a class="phone-link" href="tel:+971557458322" aria-label="Call Scrap My Car UAE">
-          <i class="ph ph-phone-call" aria-hidden="true"></i>
-          055 745 83 22
-        </a>
-        <a class="whatsapp-link" href={whatsappUrl} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Scrap My Car UAE">
-          <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
-          WhatsApp
-        </a>
         <a class="smc-button smc-button-primary" href="/free-quote">
           <i class="ph ph-car-profile" aria-hidden="true"></i>
           Get Free Quote
@@ -202,8 +194,6 @@ const isActive = (href: string) =>
   }
 
   .nav-link:focus-visible,
-  .phone-link:focus-visible,
-  .whatsapp-link:focus-visible,
   .mobile-link:focus-visible,
   .mobile-phone:focus-visible,
   .mobile-whatsapp:focus-visible,
@@ -216,24 +206,7 @@ const isActive = (href: string) =>
   .desktop-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
-  }
-
-  .phone-link,
-  .whatsapp-link {
-    color: #2d322d;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 800;
-    white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-  }
-
-  .phone-link .ph {
-    color: var(--smc-green-dark);
-    font-size: 17px;
+    margin-left: 4px;
   }
 
   .mobile-menu {
