@@ -72,6 +72,20 @@ img {
   transform: translateY(-1px);
 }
 
+.smc-button .ph {
+  font-size: 17px;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.wa-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+  flex: 0 0 auto;
+  border-radius: 5px;
+}
+
 .smc-button-primary {
   background: var(--smc-green-dark);
   color: #fff;
