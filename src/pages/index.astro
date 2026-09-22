@@ -94,27 +94,6 @@ const benefits = [
   }
 ];
 
-const steps = [
-  {
-    number: '01',
-    title: 'Choose your vehicle',
-    text: 'Select the make, model and year from our vehicle database.',
-    icon: 'ph-steering-wheel'
-  },
-  {
-    number: '02',
-    title: 'Get your valuation',
-    text: 'Add your name and WhatsApp number and send your request to our team.',
-    icon: 'ph-chat-circle-dots'
-  },
-  {
-    number: '03',
-    title: 'Arrange collection',
-    text: 'If you accept the offer, we arrange the vehicle handover and collection.',
-    icon: 'ph-truck'
-  }
-];
-
 const conditions = [
   { label: 'Non-running cars', icon: 'ph-engine' },
   { label: 'Engine or gearbox faults', icon: 'ph-gear-six' },
@@ -1273,7 +1252,7 @@ const faqJsonLd = {
 
   .review-track {
     width: max-content;
-    animation:review-marquee 34s linear infinite;
+    animation: review-marquee 34s linear infinite;
   }
 
   .review-card {
@@ -1848,3 +1827,122 @@ const faqJsonLd = {
       box-shadow: 0 20px 36px rgba(0,0,0,.16);
     }
 
+    .condition-visual {
+      overflow: visible;
+    }
+
+    .condition-image-wrap img {
+      width: 102%;
+      transform: translateY(2px);
+      filter: drop-shadow(0 24px 28px rgba(0,0,0,.34));
+    }
+
+    .condition-tags {
+      grid-template-columns: 1fr;
+    }
+
+    .value-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .value-grid article,
+    .value-grid article + article {
+      min-height: 190px;
+      padding: 26px 0;
+      border-right: 0;
+      border-bottom: 1px solid var(--smc-line);
+    }
+
+    .value-grid article:last-child {
+      border-bottom: 0;
+    }
+
+    .value-grid h3 {
+      margin-top: 28px;
+    }
+
+    .location-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .coverage-art img {
+      width: 112%;
+      transform: none;
+    }
+
+    .testimonial-section {
+      gap: 32px;
+    }
+
+    .review-marquee {
+      margin-inline: -20px;
+    }
+
+    .review-track,
+    .review-track-duplicate {
+      gap: 12px;
+    }
+
+    .review-card {
+      width: min(276px, calc(100vw - 78px));
+      min-height: 174px;
+      padding: 19px;
+    }
+
+    .review-card p {
+      font-size: 15px;
+    }
+
+    .blog-heading {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .blog-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .final-cta {
+      padding: 58px 0;
+    }
+
+    .final-cta-inner {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .final-actions {
+      width: 100%;
+      display: grid;
+    }
+
+    .final-actions .smc-button {
+      width: 100%;
+    }
+
+    .floating-whatsapp {
+      right: 14px;
+      bottom: 14px;
+      width: 50px;
+      height: 50px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .benefit-card,
+    .blog-image img,
+    .floating-whatsapp,
+    .make-item,
+    .review-track {
+      transition: none;
+      animation: none;
+    }
+  }
+</style>
