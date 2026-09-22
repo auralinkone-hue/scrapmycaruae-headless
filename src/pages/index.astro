@@ -199,8 +199,7 @@ const faqJsonLd = {
         </div>
 
         <p class="hero-lead hero-description" data-reveal>
-          Get a free vehicle valuation for old, damaged, non-running or unwanted cars,
-          with collection available across the UAE.
+          Get a free car valuation.<br class="mobile-line-break" /> Collection across the UAE.
         </p>
 
         <div id="valuation" class="hero-form" data-reveal>
@@ -684,6 +683,10 @@ const faqJsonLd = {
     color: var(--smc-muted);
     font-size: 19px;
     line-height: 1.68;
+  }
+
+  .mobile-line-break {
+    display: none;
   }
 
   .hero-actions {
@@ -1628,8 +1631,12 @@ const faqJsonLd = {
     .hero-lead {
       max-width: 390px;
       margin-inline: auto;
-      font-size: 17px;
-      line-height: 1.52;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .mobile-line-break {
+      display: block;
     }
 
     .hero-proof {
