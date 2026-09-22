@@ -1681,9 +1681,17 @@ const faqJsonLd = {
     }
 
     .process-section,
-    .condition-section,
     .coverage-section {
       padding: 76px 0;
+    }
+
+    .condition-section {
+      padding: 46px 0 62px;
+      overflow: clip;
+    }
+
+    .condition-grid {
+      gap: 28px;
     }
 
     .process-list article {
@@ -1691,16 +1699,22 @@ const faqJsonLd = {
     }
 
     .condition-image-wrap {
-      min-height: 330px;
+      min-height: 286px;
+    }
+
+    .condition-image-wrap::before {
+      inset: 28px 8px 8px;
+      box-shadow: 0 20px 36px rgba(0,0,0,.16);
     }
 
     .condition-visual {
-      overflow: hidden;
+      overflow: visible;
     }
 
     .condition-image-wrap img {
-      width: 112%;
-      transform: translateY(6px);
+      width: 128%;
+      transform: translate(-10%, 2px);
+      filter: drop-shadow(0 24px 28px rgba(0,0,0,.34));
     }
 
     .condition-tags {
