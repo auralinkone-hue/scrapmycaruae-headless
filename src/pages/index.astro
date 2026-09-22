@@ -123,6 +123,14 @@ const conditions = [
   { label: 'Running cars', icon: 'ph-car-profile' }
 ];
 
+const reviews = [
+  'Quick valuation and a professional collection process.',
+  'Simple form, clear communication and no unnecessary chasing.',
+  'They handled the collection smoothly from start to finish.',
+  'A straightforward way to sell a car with problems.',
+  'The team explained the next step clearly and kept it easy.'
+];
+
 const locations = [
   'Dubai',
   'Sharjah',
@@ -426,16 +434,6 @@ const faqJsonLd = {
     </section>
 
     <section class="testimonial-section smc-container">
-      <div class="testimonial-card" data-reveal>
-        <div class="quote-mark">“</div>
-        <div class="stars" aria-label="5 star customer review">★★★★★</div>
-        <blockquote>
-          The process was quick and easy. After I filled out the online form,
-          I got my car's valuation. The collection was handled professionally.
-        </blockquote>
-        <span>Customer feedback</span>
-      </div>
-
       <div class="testimonial-side" data-reveal>
         <div class="smc-kicker">A straightforward service</div>
         <h2>Less chasing. More clarity.</h2>
@@ -443,9 +441,32 @@ const faqJsonLd = {
           Start online, speak directly with the team, and keep the whole vehicle-sale process simple.
         </p>
         <div class="mini-proof">
-          <span><strong>01</strong> Online valuation request</span>
-          <span><strong>02</strong> Direct WhatsApp support</span>
-          <span><strong>03</strong> Collection arranged for you</span>
+          <span><i class="ph ph-clipboard-text" aria-hidden="true"></i>Online valuation request</span>
+          <span><i class="ph ph-whatsapp-logo" aria-hidden="true"></i>Direct WhatsApp support</span>
+          <span><i class="ph ph-truck" aria-hidden="true"></i>Collection arranged for you</span>
+        </div>
+      </div>
+
+      <div class="review-marquee" data-reveal aria-label="Customer feedback">
+        <div class="review-track">
+          {reviews.map((review) => (
+            <article class="review-card">
+              <div class="review-stars" aria-label="5 star customer review">
+                <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+              </div>
+              <p>“{review}”</p>
+              <span><i class="ph ph-user-circle" aria-hidden="true"></i>Customer feedback</span>
+            </article>
+          ))}
+          <div class="review-track-duplicate" aria-hidden="true">
+            {reviews.map((review) => (
+              <article class="review-card">
+                <div class="review-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                <p>“{review}”</p>
+                <span><i class="ph ph-user-circle"></i>Customer feedback</span>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -1175,51 +1196,76 @@ const faqJsonLd = {
   }
 
   .testimonial-section {
-    padding: 112px 0;
+    padding: 96px 0;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 70px;
+    grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr);
+    gap: 74px;
     align-items: center;
   }
 
-  .testimonial-card {
-    position: relative;
-    padding: 38px;
+  .review-marquee {
+    min-width: 0;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  }
+
+  .review-track,
+  .review-track-duplicate {
+    display: flex;
+    gap: 14px;
+  }
+
+  .review-track {
+    width: max-content;
+    animation: review-marquee 34s linear infinite;
+  }
+
+  .review-card {
+    width: 290px;
+    min-height: 188px;
+    padding: 22px;
     border: 1px solid var(--smc-line);
-    border-radius: 24px;
+    border-radius: 18px;
     background: #fff;
-    box-shadow: 0 22px 55px rgba(27,48,25,.06);
+    box-shadow: 0 16px 38px rgba(27,48,25,.055);
+    display: flex;
+    flex-direction: column;
+    transition: transform 180ms ease, box-shadow 180ms ease;
   }
 
-  .quote-mark {
-    position: absolute;
-    right: 30px;
-    top: 14px;
-    color: #e4eee1;
-    font-family: Georgia, serif;
-    font-size: 92px;
-    line-height: 1;
+  .review-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 22px 46px rgba(27,48,25,.09);
   }
 
-  .stars {
-    color: #3f7639;
-    letter-spacing: .13em;
-    font-size: 14px;
+  .review-stars {
+    display: flex;
+    gap: 3px;
+    color: #e7ad22;
+    font-size: 15px;
   }
 
-  blockquote {
-    position: relative;
-    z-index: 1;
-    margin: 26px 0 24px;
-    font-size: 24px;
-    line-height: 1.48;
-    letter-spacing: -.025em;
+  .review-card p {
+    margin: 17px 0 auto;
+    color: #222722;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: -.018em;
   }
 
-  .testimonial-card > span {
+  .review-card > span {
+    margin-top: 16px;
     color: var(--smc-muted);
     font-size: 12px;
     font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .review-card > span .ph {
+    color: var(--smc-green);
+    font-size: 15px;
   }
 
   .mini-proof {
@@ -1233,13 +1279,24 @@ const faqJsonLd = {
     border-bottom: 1px solid var(--smc-line);
     color: #424842;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
-  .mini-proof strong {
-    margin-right: 12px;
-    color: #8ba386;
-    font-size: 11px;
-    letter-spacing: .08em;
+  .mini-proof i {
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    background: var(--smc-green-soft);
+    color: var(--smc-green-dark);
+    font-size: 16px;
+  }
+
+  @keyframes review-marquee {
+    to { transform: translateX(calc(-50% - 7px)); }
   }
 
   .blog-section {
@@ -1699,11 +1756,11 @@ const faqJsonLd = {
     }
 
     .condition-image-wrap {
-      min-height: 286px;
+      min-height: 246px;
     }
 
     .condition-image-wrap::before {
-      inset: 28px 8px 8px;
+      inset: 24px 24px 10px;
       box-shadow: 0 20px 36px rgba(0,0,0,.16);
     }
 
@@ -1712,8 +1769,8 @@ const faqJsonLd = {
     }
 
     .condition-image-wrap img {
-      width: 128%;
-      transform: translate(-10%, 2px);
+      width: 102%;
+      transform: translateY(2px);
       filter: drop-shadow(0 24px 28px rgba(0,0,0,.34));
     }
 
@@ -1750,12 +1807,27 @@ const faqJsonLd = {
       transform: none;
     }
 
-    .testimonial-card {
-      padding: 28px;
+    .testimonial-section {
+      gap: 32px;
     }
 
-    blockquote {
-      font-size: 20px;
+    .review-marquee {
+      margin-inline: -20px;
+    }
+
+    .review-track,
+    .review-track-duplicate {
+      gap: 12px;
+    }
+
+    .review-card {
+      width: min(276px, calc(100vw - 78px));
+      min-height: 174px;
+      padding: 19px;
+    }
+
+    .review-card p {
+      font-size: 15px;
     }
 
     .blog-heading {
@@ -1804,7 +1876,8 @@ const faqJsonLd = {
     .benefit-card,
     .blog-image img,
     .floating-whatsapp,
-    .make-item {
+    .make-item,
+    .review-track {
       transition: none;
       animation: none;
     }
