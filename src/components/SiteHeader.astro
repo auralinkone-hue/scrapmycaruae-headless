@@ -19,8 +19,8 @@ const isActive = (href: string) =>
 <header class="smc-header">
   <div class="smc-topbar">
     <div class="smc-container topbar-inner">
-      <span>Sell your car anywhere in the UAE</span>
-      <a href="tel:+971557458322">Call now · 055 745 83 22</a>
+      <span class="topbar-message"><i class="ph ph-map-pin" aria-hidden="true"></i> Sell your car anywhere in the UAE</span>
+      <a href="tel:+971557458322"><i class="ph ph-phone-call" aria-hidden="true"></i> Call now · 055 745 83 22</a>
     </div>
   </div>
 
@@ -48,19 +48,22 @@ const isActive = (href: string) =>
 
       <div class="desktop-actions">
         <a class="phone-link" href="tel:+971557458322" aria-label="Call Scrap My Car UAE">
+          <i class="ph ph-phone-call" aria-hidden="true"></i>
           055 745 83 22
         </a>
         <a class="whatsapp-link" href={whatsappUrl} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Scrap My Car UAE">
+          <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
           WhatsApp
         </a>
         <a class="smc-button smc-button-primary" href="/free-quote">
+          <i class="ph ph-car-profile" aria-hidden="true"></i>
           Get Free Quote
         </a>
       </div>
 
       <details class="mobile-menu">
         <summary aria-label="Open navigation">
-          <span></span><span></span><span></span>
+          <i class="ph ph-list" aria-hidden="true"></i>
         </summary>
         <div class="mobile-panel">
           {links.map((link) => (
@@ -72,12 +75,15 @@ const isActive = (href: string) =>
             </a>
           ))}
           <a class="smc-button smc-button-primary mobile-quote" href="/free-quote">
+            <i class="ph ph-car-profile" aria-hidden="true"></i>
             Get Free Quote
           </a>
           <a class="mobile-phone" href="tel:+971557458322">
+            <i class="ph ph-phone-call" aria-hidden="true"></i>
             Call 055 745 83 22
           </a>
           <a class="mobile-whatsapp" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+            <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
             WhatsApp Us
           </a>
         </div>
@@ -109,9 +115,20 @@ const isActive = (href: string) =>
     gap: 16px;
   }
 
+  .topbar-inner a,
+  .topbar-message {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
   .topbar-inner a {
     color: #fff;
     text-decoration: none;
+  }
+
+  .topbar-inner .ph {
+    font-size: 14px;
   }
 
   .smc-nav-wrap {
@@ -192,6 +209,14 @@ const isActive = (href: string) =>
     font-size: 13px;
     font-weight: 800;
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .phone-link .ph {
+    color: var(--smc-green-dark);
+    font-size: 17px;
   }
 
   .mobile-menu {
@@ -216,11 +241,9 @@ const isActive = (href: string) =>
     display: none;
   }
 
-  .mobile-menu summary span {
-    width: 18px;
-    height: 2px;
-    border-radius: 2px;
-    background: #202420;
+  .mobile-menu summary .ph {
+    color: #202420;
+    font-size: 22px;
   }
 
   .mobile-panel {
@@ -263,6 +286,10 @@ const isActive = (href: string) =>
     text-decoration: none;
     font-size: 13px;
     font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
   }
 
   @media (max-width: 980px) {
