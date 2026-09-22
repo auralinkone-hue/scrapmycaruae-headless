@@ -28,6 +28,13 @@ const featuredMakes = vehicleData.makes
   .slice(0, 5)
   .map((item: any) => item.make);
 
+const popularMakes = [
+  { name: 'Honda', icon: '/brands/honda.svg' },
+  { name: 'Toyota', icon: '/brands/toyota.svg' },
+  { name: 'Mercedes', icon: '/brands/mercedes.svg' },
+  { name: 'Nissan', icon: '/brands/nissan.svg' }
+];
+
 let latestPosts: any[] = [];
 
 try {
@@ -189,8 +196,12 @@ const faqJsonLd = {
             Sell your car.
             <span>Skip the hassle.</span>
           </h1>
-
         </div>
+
+        <p class="hero-lead hero-description" data-reveal>
+          Get a free vehicle valuation for old, damaged, non-running or unwanted cars,
+          with collection available across the UAE.
+        </p>
 
         <div id="valuation" class="hero-form" data-reveal>
           <QuoteForm
@@ -206,56 +217,56 @@ const faqJsonLd = {
           </div>
         </div>
 
-        <div class="hero-support" data-reveal>
-          <p class="hero-lead">
-            Get a free vehicle valuation for old, damaged, non-running or unwanted cars,
-            with collection available across the UAE.
-          </p>
+        <div class="hero-actions" data-reveal>
+          <a class="smc-button smc-button-primary hero-primary" href="#valuation">
+            Get Your Vehicle Price
+            <i class="ph ph-arrow-right" aria-hidden="true"></i>
+          </a>
+          <a
+            class="smc-button smc-button-secondary whatsapp-button"
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
+            WhatsApp Us
+          </a>
+        </div>
 
-          <div class="hero-actions">
-            <a class="smc-button smc-button-primary hero-primary" href="#valuation">
-              Get Your Vehicle Price
-              <i class="ph ph-arrow-right" aria-hidden="true"></i>
-            </a>
-            <a
-              class="smc-button smc-button-secondary whatsapp-button"
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
-              WhatsApp Us
-            </a>
+        <div class="hero-proof" data-reveal>
+          <div>
+            <i class="ph ph-seal-check" aria-hidden="true"></i>
+            <span>Free valuation</span>
           </div>
-
-          <div class="hero-proof">
-            <div>
-              <strong>Free</strong>
-              <span>valuation</span>
-            </div>
-            <div>
-              <strong>UAE-wide</strong>
-              <span>collection</span>
-            </div>
-            <div>
-              <strong>Any</strong>
-              <span>condition</span>
-            </div>
+          <div>
+            <i class="ph ph-map-pin" aria-hidden="true"></i>
+            <span>UAE-wide collection</span>
+          </div>
+          <div>
+            <i class="ph ph-car-profile" aria-hidden="true"></i>
+            <span>Any condition</span>
           </div>
         </div>
       </div>
     </section>
 
-    {featuredMakes.length > 0 && (
-      <section class="make-strip">
+    <section class="make-strip">
         <div class="smc-container make-strip-inner">
           <span class="make-label">Popular makes we buy</span>
           <div class="make-list">
-            {featuredMakes.map((make: string) => <strong>{make}</strong>)}
+            {popularMakes.map((make) => (
+              <div class="make-item">
+                <img src={make.icon} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                <strong>{make.name}</strong>
+              </div>
+            ))}
           </div>
+          <a class="smc-button smc-button-secondary make-whatsapp" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+            <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
+            WhatsApp Us
+          </a>
         </div>
       </section>
-    )}
 
     <section class="benefits smc-container">
       <div class="section-heading" data-reveal>
@@ -614,11 +625,15 @@ const faqJsonLd = {
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(390px, .72fr);
     column-gap: 70px;
-    row-gap: 24px;
+    row-gap: 20px;
     align-items: end;
   }
 
   .hero-copy {
+    grid-column: 1;
+  }
+
+  .hero-description {
     grid-column: 1;
   }
 
@@ -668,11 +683,8 @@ const faqJsonLd = {
     line-height: 1.68;
   }
 
-  .hero-support {
-    grid-column: 1;
-  }
-
   .hero-actions {
+    grid-column: 1;
     margin-top: 30px;
     display: flex;
     gap: 11px;
@@ -690,25 +702,28 @@ const faqJsonLd = {
   }
 
   .hero-proof {
-    margin-top: 34px;
+    grid-column: 1;
+    margin-top: 12px;
     display: flex;
     gap: 32px;
     flex-wrap: wrap;
   }
 
   .hero-proof > div {
-    display: grid;
-    gap: 1px;
-  }
-
-  .hero-proof strong {
-    font-size: 16px;
-    letter-spacing: -.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
   }
 
   .hero-proof span {
-    color: #747b72;
-    font-size: 12px;
+    color: #556054;
+    font-size: 13px;
+    font-weight: 760;
+  }
+
+  .hero-proof .ph {
+    color: var(--smc-green);
+    font-size: 17px;
   }
 
   .hero-form {
@@ -749,7 +764,7 @@ const faqJsonLd = {
   }
 
   .make-strip-inner {
-    min-height: 78px;
+    min-height: 88px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -768,16 +783,35 @@ const faqJsonLd = {
   .make-list {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 22px;
     align-items: center;
   }
 
-  .make-list strong {
+  .make-item {
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     color: #343a33;
-    text-align: center;
-    font-size: 14px;
-    letter-spacing: .035em;
+  }
+
+  .make-item img {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    opacity: .72;
+    filter: grayscale(1);
+  }
+
+  .make-item strong {
+    font-size: 13px;
+    letter-spacing: .02em;
+  }
+
+  .make-whatsapp {
+    display: none;
   }
 
   .benefits {
@@ -1556,35 +1590,55 @@ const faqJsonLd = {
   @media (max-width: 720px) {
     .hero-grid {
       min-height: auto;
-      padding: 38px 0 48px;
-      gap: 28px;
+      padding: 32px 0 26px;
+      gap: 18px;
+      text-align: center;
+    }
+
+    .eyebrow,
+    .hero-actions {
+      display: none;
     }
 
     .hero h1 {
-      margin-top: 16px;
-      font-size: 53px;
+      max-width: 390px;
+      margin: 0 auto;
+      font-size: clamp(43px, 13vw, 54px);
     }
 
     .hero-lead {
+      max-width: 390px;
+      margin-inline: auto;
       font-size: 17px;
-    }
-
-    .hero-actions {
-      display: grid;
-    }
-
-    .hero-actions .smc-button {
-      width: 100%;
+      line-height: 1.52;
     }
 
     .hero-proof {
-      gap: 22px;
+      margin: 0;
+      padding-top: 2px;
+      justify-content: center;
+      gap: 14px 18px;
+    }
+
+    .hero-proof > div {
+      gap: 5px;
+    }
+
+    .hero-proof span {
+      font-size: 11px;
+    }
+
+    .hero-proof .ph {
+      font-size: 15px;
     }
 
     .make-strip-inner {
-      padding: 20px 0;
-      align-items: flex-start;
+      min-height: 0;
+      padding: 25px 0 28px;
+      align-items: center;
       flex-direction: column;
+      text-align: center;
+      gap: 18px;
     }
 
     .make-list {
@@ -1592,8 +1646,42 @@ const faqJsonLd = {
       gap: 12px;
     }
 
-    .make-list strong {
-      text-align: left;
+    .make-item {
+      min-height: 74px;
+      padding: 12px 8px;
+      flex-direction: column;
+      gap: 6px;
+      border: 1px solid #e4e8e2;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 10px 24px rgba(31, 77, 32, .05);
+      animation: make-float 3.5s ease-in-out infinite;
+    }
+
+    .make-item:nth-child(even) {
+      animation-delay: .45s;
+    }
+
+    .make-item img {
+      width: 28px;
+      height: 28px;
+      opacity: .78;
+    }
+
+    .make-item strong {
+      font-size: 12px;
+    }
+
+    .make-whatsapp {
+      width: 100%;
+      display: inline-flex;
+      min-height: 50px;
+      border-color: #dce7d8;
+      color: var(--smc-green-dark);
+    }
+
+    @keyframes make-float {
+      50% { transform: translateY(-3px); }
     }
 
     .benefits,
@@ -1715,8 +1803,10 @@ const faqJsonLd = {
 
     .benefit-card,
     .blog-image img,
-    .floating-whatsapp {
+    .floating-whatsapp,
+    .make-item {
       transition: none;
+      animation: none;
     }
   }
 </style>
