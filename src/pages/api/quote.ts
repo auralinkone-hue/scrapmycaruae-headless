@@ -60,14 +60,21 @@ export const POST: APIRoute = async ({ request }) => {
     const model = cleanText(body?.model, 120);
     const year = Number(body?.year);
     const customerName = cleanText(body?.name, 120);
-    const whatsappLocal = cleanText(body?.whatsapp, 30).replace(/[^\d]/g, '');
+    const countryCode = cleanText(body?.countryCode, 8);
+    const whatsappLocal = cleanText(body?.whatsapp, 40).replace(/[^\d]/g, '');
 
-    if (!make || !model || !Number.isInteger(year) || !customerName || !whatsappLocal) {
+    if (!make || !model || !Number.isInteger(year) || !customerName || !countryCode || !whatsappLocal) {
       return json({ ok: false, message: 'Please complete all required fields.' }, 400);
     }
 
-    if (whatsappLocal.length < 7 || whatsappLocal.length > 15) {
-      return json({ ok: false, message: 'Please enter a valid WhatsApp number.' }, 400);
+    if (!/^\+\d{1,4}$/.test(countryCode)) {
+      return json({ ok: false, message: 'Please select a valid country code.' }, 400);
+    }
+
+    const whatsappDigits = countryCode.replace('+', '') + whatsappLocal.replace(/^0+/, '');
+
+    if (whatsappDigits.length < 7 || whatsappDigits.length > 15) {
+      return json({ ok: false, message: 'Please enter a valid mobile number.' }, 400);
     }
 
     const tokens = await wixClient.auth.generateVisitorTokens();
@@ -93,7 +100,7 @@ export const POST: APIRoute = async ({ request }) => {
       return json({ ok: false, message: 'Please select a valid vehicle from the dropdowns.' }, 400);
     }
 
-    const whatsapp = `+971${whatsappLocal.replace(/^0+/, '')}`;
+    const whatsapp = `+${whatsappDigits}`;
     const title = `${make} ${model} ${year} - ${customerName}`;
 
     const insertResponse = await fetch(INSERT_URL, {
