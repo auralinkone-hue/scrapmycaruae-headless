@@ -990,23 +990,31 @@ const faqJsonLd = {
   }
 
   .condition-image-wrap {
+    position: relative;
     min-height: 510px;
-    overflow: hidden;
-    border-radius: 28px;
-    background:
-      radial-gradient(circle at 50% 50%, rgba(126,184,116,.18), transparent 57%),
-      linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.01));
     display: grid;
     place-items: center;
   }
 
+  .condition-image-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 34px 0 18px;
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at 50% 48%, rgba(126,184,116,.18), transparent 57%),
+      linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.01));
+  }
+
   .condition-image-wrap img {
-    width: 118%;
+    position: relative;
+    z-index: 1;
+    width: 126%;
     max-width: none;
     height: auto;
     object-fit: contain;
-    transform: translateY(10px);
-    filter: drop-shadow(0 30px 38px rgba(0,0,0,.30));
+    transform: translate(-8%, 10px);
+    filter: drop-shadow(0 34px 40px rgba(0,0,0,.34));
   }
 
   .condition-section .smc-kicker {
@@ -1677,6 +1685,10 @@ const faqJsonLd = {
 
     .condition-image-wrap {
       min-height: 330px;
+    }
+
+    .condition-visual {
+      overflow: hidden;
     }
 
     .condition-image-wrap img {
