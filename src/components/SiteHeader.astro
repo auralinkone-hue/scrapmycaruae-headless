@@ -1,13 +1,11 @@
 ---
 const pathname = Astro.url.pathname;
-const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
-
 const links = [
-  { href: '/', label: 'Home' },
-  { href: '/free-quote', label: 'Free Quote' },
-  { href: '/contact-us', label: 'Contact Us' },
-  { href: '/faqs', label: 'FAQs' },
-  { href: '/blogs', label: 'Blogs' }
+  { href: '/', label: 'Home', icon: 'ph-house' },
+  { href: '/free-quote', label: 'Free Quote', icon: 'ph-car-profile' },
+  { href: '/contact-us', label: 'Contact Us', icon: 'ph-chat-circle-text' },
+  { href: '/faqs', label: 'FAQs', icon: 'ph-question' },
+  { href: '/blogs', label: 'Blogs', icon: 'ph-newspaper-clipping' }
 ];
 
 const isActive = (href: string) =>
@@ -60,28 +58,24 @@ const isActive = (href: string) =>
 
       <details class="mobile-menu">
         <summary aria-label="Open navigation">
-          <i class="ph ph-list" aria-hidden="true"></i>
+          <i class="ph ph-list menu-open-icon" aria-hidden="true"></i>
+          <i class="ph ph-x menu-close-icon" aria-hidden="true"></i>
         </summary>
         <div class="mobile-panel">
+          <p class="mobile-menu-kicker">Navigation</p>
           {links.map((link) => (
             <a
               href={link.href}
               class:list={['mobile-link', { active: isActive(link.href) }]}
             >
+              <i class:list={['ph', link.icon]} aria-hidden="true"></i>
               {link.label}
+              <i class="ph ph-arrow-up-right mobile-link-arrow" aria-hidden="true"></i>
             </a>
           ))}
           <a class="smc-button smc-button-primary mobile-quote" href="/free-quote">
             <i class="ph ph-car-profile" aria-hidden="true"></i>
             Get Free Quote
-          </a>
-          <a class="mobile-phone" href="tel:+971557458322">
-            <i class="ph ph-phone-call" aria-hidden="true"></i>
-            Call 055 745 83 22
-          </a>
-          <a class="mobile-whatsapp" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-            <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
-            WhatsApp Us
           </a>
         </div>
       </details>
@@ -195,8 +189,6 @@ const isActive = (href: string) =>
 
   .nav-link:focus-visible,
   .mobile-link:focus-visible,
-  .mobile-phone:focus-visible,
-  .mobile-whatsapp:focus-visible,
   .mobile-menu summary:focus-visible {
     outline: 3px solid rgba(47, 111, 45, .16);
     outline-offset: 3px;
@@ -257,6 +249,10 @@ const isActive = (href: string) =>
     font-size: 22px;
   }
 
+  .menu-close-icon {
+    display: none;
+  }
+
   .mobile-panel {
     position: absolute;
     right: 0;
@@ -272,11 +268,22 @@ const isActive = (href: string) =>
   }
 
   .mobile-link {
+    color: #202420;
     padding: 13px 14px;
     border-radius: 10px;
     text-decoration: none;
     font-size: 15px;
     font-weight: 750;
+  }
+
+  .mobile-link > .ph:first-child {
+    font-size: 20px;
+  }
+
+  .mobile-link-arrow {
+    margin-left: auto;
+    font-size: 17px;
+    opacity: .5;
   }
 
   .mobile-link:hover,
@@ -289,20 +296,6 @@ const isActive = (href: string) =>
     margin-top: 8px;
   }
 
-  .mobile-phone,
-  .mobile-whatsapp {
-    padding: 11px;
-    color: var(--smc-green-dark);
-    text-align: center;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 800;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-  }
-
   @media (max-width: 1100px) {
     .desktop-nav,
     .desktop-actions {
@@ -311,6 +304,12 @@ const isActive = (href: string) =>
 
     .mobile-menu {
       display: block;
+    }
+
+    .mobile-link {
+      display: flex;
+      align-items: center;
+      gap: 11px;
     }
   }
 
@@ -327,9 +326,7 @@ const isActive = (href: string) =>
       width: 128px;
     }
 
-    .nav-inner {
-      gap: 9px;
-    }
+    .nav-inner { gap: 12px; }
 
     .mobile-call {
       display: inline-flex;
@@ -339,5 +336,76 @@ const isActive = (href: string) =>
       width: 44px;
       height: 44px;
     }
+
+    .mobile-menu {
+      position: static;
+      margin-left: 0;
+    }
+
+    .mobile-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      width: auto;
+      min-height: 100dvh;
+      padding: 104px 24px max(28px, env(safe-area-inset-bottom));
+      border: 0;
+      border-radius: 0;
+      background: #123816;
+      box-shadow: none;
+      align-content: start;
+      gap: 7px;
+      overflow-y: auto;
+    }
+
+    .mobile-menu-kicker {
+      margin: 0 0 12px;
+      color: #a9caa7;
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .mobile-link {
+      min-height: 58px;
+      padding: 14px 4px;
+      border-bottom: 1px solid rgba(255,255,255,.14);
+      border-radius: 0;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 750;
+    }
+
+    .mobile-link > .ph:first-child { color: #9bd394; }
+    .mobile-link-arrow { color: #fff; opacity: .65; }
+
+    .mobile-link:hover,
+    .mobile-link.active {
+      color: #fff;
+      background: transparent;
+    }
+
+    .mobile-quote {
+      min-height: 54px;
+      margin-top: 24px;
+      justify-content: center;
+      background: #fff;
+      color: #17491b;
+      border: 1px solid #fff;
+    }
+
+    .mobile-menu[open] summary {
+      position: fixed;
+      top: max(11px, env(safe-area-inset-top));
+      right: 16px;
+      z-index: 51;
+      border-color: rgba(255,255,255,.24);
+      background: rgba(255,255,255,.1);
+    }
+
+    .mobile-menu[open] summary .ph { color: #fff; }
+    .mobile-menu[open] .menu-open-icon { display: none; }
+    .mobile-menu[open] .menu-close-icon { display: block; }
   }
 </style>
