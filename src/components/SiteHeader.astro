@@ -64,16 +64,31 @@ const isActive = (href: string) =>
         </summary>
         <div class="mobile-panel">
           <p class="mobile-menu-kicker">Navigation</p>
-          {links.map((link) => (
-            <a
-              href={link.href}
-              class:list={['mobile-link', { active: isActive(link.href) }]}
-            >
-              <i class={`ph ${link.icon}`} aria-hidden="true"></i>
-              {link.label}
-              <i class="ph ph-arrow-up-right mobile-link-arrow" aria-hidden="true"></i>
-            </a>
-          ))}
+          <a href="/" class:list={['mobile-link', { active: isActive('/') }]}>
+            <i class="ph ph-house" aria-hidden="true"></i>
+            Home
+            <i class="ph ph-arrow-up-right mobile-link-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="/free-quote" class:list={['mobile-link', { active: isActive('/free-quote') }]}>
+            <i class="ph ph-car-profile" aria-hidden="true"></i>
+            Free Quote
+            <i class="ph ph-arrow-up-right mobile-link-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="/contact-us" class:list={['mobile-link', { active: isActive('/contact-us') }]}>
+            <i class="ph ph-chat-circle-text" aria-hidden="true"></i>
+            Contact Us
+            <i class="ph ph-arrow-up-right mobile-link-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="/faqs" class:list={['mobile-link', { active: isActive('/faqs') }]}>
+            <i class="ph ph-question" aria-hidden="true"></i>
+            FAQs
+            <i class="ph ph-arrow-up-right mobile-link-arrow" aria-hidden="true"></i>
+          </a>
+          <a href="/blogs" class:list={['mobile-link', { active: isActive('/blogs') }]}>
+            <i class="ph ph-newspaper-clipping" aria-hidden="true"></i>
+            Blogs
+            <i class="ph ph-arrow-up-right mobile-link-arrow" aria-hidden="true"></i>
+          </a>
           <a class="smc-button smc-button-primary mobile-quote" href="/free-quote">
             <i class="ph ph-car-profile" aria-hidden="true"></i>
             Get Free Quote
@@ -438,3 +453,5 @@ const isActive = (href: string) =>
     .mobile-menu[open] summary .ph { color: #fff; }
     .mobile-menu[open] .menu-open-icon { display: none; }
     .mobile-menu[open] .menu-close-icon { display: block; }
+  }
+</style>
