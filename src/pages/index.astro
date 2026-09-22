@@ -991,19 +991,22 @@ const faqJsonLd = {
 
   .condition-image-wrap {
     min-height: 510px;
+    overflow: hidden;
+    border-radius: 28px;
     background:
-      radial-gradient(circle at 40% 20%, rgba(156,200,149,.16), transparent 35%),
-      rgba(255,255,255,.035);
+      radial-gradient(circle at 50% 50%, rgba(126,184,116,.18), transparent 57%),
+      linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.01));
     display: grid;
     place-items: center;
   }
 
   .condition-image-wrap img {
-    width: 100%;
-    max-width: 720px;
+    width: 118%;
+    max-width: none;
     height: auto;
     object-fit: contain;
-    filter: drop-shadow(0 28px 34px rgba(0,0,0,.24));
+    transform: translateY(10px);
+    filter: drop-shadow(0 30px 38px rgba(0,0,0,.30));
   }
 
   .condition-section .smc-kicker {
@@ -1144,14 +1147,16 @@ const faqJsonLd = {
   .coverage-art {
     display: grid;
     place-items: center;
+    overflow: hidden;
   }
 
   .coverage-art img {
-    width: 100%;
-    max-width: 650px;
+    width: 124%;
+    max-width: none;
     height: auto;
     object-fit: contain;
-    filter: drop-shadow(0 22px 38px rgba(33,60,28,.10));
+    transform: translateX(-2%);
+    filter: drop-shadow(0 25px 40px rgba(33,60,28,.12));
   }
 
   .testimonial-section {
@@ -1674,6 +1679,11 @@ const faqJsonLd = {
       min-height: 330px;
     }
 
+    .condition-image-wrap img {
+      width: 112%;
+      transform: translateY(6px);
+    }
+
     .condition-tags {
       grid-template-columns: 1fr;
     }
@@ -1703,7 +1713,8 @@ const faqJsonLd = {
     }
 
     .coverage-art img {
-      max-width: 560px;
+      width: 112%;
+      transform: none;
     }
 
     .testimonial-card {
