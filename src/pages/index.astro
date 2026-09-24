@@ -1062,7 +1062,71 @@ const faqJsonLd = {
   .process-list h3 {
     margin: 0 0 7px;
     font-size: 25px;
-    letter-spac  .condition-tags {
+    letter-spacing: -.04em;
+  }
+
+  .process-list p {
+    max-width: 530px;
+    margin: 0;
+    color: var(--smc-muted);
+    line-height: 1.6;
+  }
+
+  .condition-section {
+    padding: 110px 0;
+    background: #102912;
+    color: #fff;
+  }
+
+  .condition-grid {
+    display: grid;
+    grid-template-columns: .95fr 1.05fr;
+    gap: 86px;
+    align-items: center;
+  }
+
+  .condition-visual {
+    position: relative;
+  }
+
+  .condition-image-wrap {
+    position: relative;
+    min-height: 510px;
+    display: grid;
+    place-items: center;
+  }
+
+  .condition-image-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 34px 0 18px;
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at 50% 48%, rgba(126,184,116,.18), transparent 57%),
+      linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.01));
+  }
+
+  .condition-image-wrap img {
+    position: relative;
+    z-index: 1;
+    width: 126%;
+    max-width: none;
+    height: auto;
+    object-fit: contain;
+    transform: translate(-8%, 10px);
+    filter: drop-shadow(0 34px 40px rgba(0,0,0,.34));
+  }
+
+  .condition-section .smc-kicker {
+    color: #9cc895;
+  }
+
+  .condition-copy > p {
+    color: #c6d4c4;
+    max-width: 640px;
+  }
+
+  .condition-tags {
     margin-top: 28px;
     display: grid;
     grid-template-columns: 1fr 1fr;
