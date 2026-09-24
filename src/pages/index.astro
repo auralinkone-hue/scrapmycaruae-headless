@@ -6,6 +6,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import QuoteForm from '../components/QuoteForm.astro';
 import { getVehicleData } from '../lib/vehicle-data';
 import { wixClient } from '../lib/wix';
+import { wixResponsiveImage } from '../lib/wix-image';
 
 const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
 
@@ -492,19 +493,28 @@ const faqJsonLd = {
         <div class="blog-grid">
           {latestPosts.map((post: any) => {
             const image = getPostImage(post);
+            const responsiveImage = wixResponsiveImage(image, {
+              widths: [320, 480, 640, 800],
+              aspectRatio: 900 / 506
+            });
             return (
               <article class="blog-card" data-reveal>
                 <a href={`/post/${post.slug}`}>
                   <div class="blog-image" data-image-loading>
-                    {image?.url && (
-                      <img
-                        src={image.url}
-                        alt={post?.media?.altText || post.title || ''}
-                        width={image.width}
-                        height={image.height}
-                        loading="lazy"
-                        decoding="async"
-                      />
+                    {responsiveImage.src && (
+                      <picture>
+                        <source type="image/avif" srcset={responsiveImage.avifSrcset} sizes="(max-width: 700px) calc(100vw - 36px), (max-width: 1100px) calc(50vw - 42px), 360px" />
+                        <img
+                          src={responsiveImage.src}
+                          srcset={responsiveImage.srcset}
+                          sizes="(max-width: 700px) calc(100vw - 36px), (max-width: 1100px) calc(50vw - 42px), 360px"
+                          alt={post?.media?.altText || post.title || ''}
+                          width={responsiveImage.width}
+                          height={responsiveImage.height}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </picture>
                     )}
                   </div>
                   <div class="blog-meta">{formatDate(post.firstPublishedDate)}</div>
