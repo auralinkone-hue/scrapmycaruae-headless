@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import { canonicalUrl, robotsContent } from '../lib/seo';
 
 interface Props {
   title: string;
@@ -25,12 +26,8 @@ const {
   noindex = false
 } = Astro.props;
 
-const resolvedCanonical = canonical || new URL(Astro.url.pathname, 'https://www.scrapmycaruae.com').toString();
-const isDevelopmentHost =
-  Astro.url.hostname === 'localhost' ||
-  Astro.url.hostname === '127.0.0.1' ||
-  Astro.url.hostname.endsWith('.workers.dev');
-const shouldNoindex = noindex || isDevelopmentHost;
+const resolvedCanonical = canonicalUrl(canonical || Astro.url.pathname);
+const resolvedRobots = noindex ? 'noindex,nofollow' : robotsContent(Astro.url);
 ---
 
 <!doctype html>
@@ -49,16 +46,19 @@ const shouldNoindex = noindex || isDevelopmentHost;
     <link rel="canonical" href={resolvedCanonical} />
     {prevUrl && <link rel="prev" href={prevUrl} />}
     {nextUrl && <link rel="next" href={nextUrl} />}
-    {shouldNoindex && <meta name="robots" content="noindex,nofollow" />}
-    {shouldNoindex && <meta name="googlebot" content="noindex,nofollow" />}
+    <meta name="robots" content={resolvedRobots} />
+    <meta name="googlebot" content={resolvedRobots} />
 
     <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="Scrap My Car UAE" />
+    <meta property="og:locale" content="en_AE" />
     <meta property="og:title" content={title} />
     {description && <meta property="og:description" content={description} />}
     <meta property="og:url" content={resolvedCanonical} />
     {ogImage && <meta property="og:image" content={ogImage} />}
 
     <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:url" content={resolvedCanonical} />
     <meta name="twitter:title" content={title} />
     {description && <meta name="twitter:description" content={description} />}
     {ogImage && <meta name="twitter:image" content={ogImage} />}
