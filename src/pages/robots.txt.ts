@@ -11,9 +11,9 @@ Allow: /
 
 Sitemap: ${siteUrl}/sitemap.xml
 `
-    : 'User-agent: *
+    : `User-agent: *
 Disallow: /
-';
+`;
 
   return new Response(body, {
     headers: {

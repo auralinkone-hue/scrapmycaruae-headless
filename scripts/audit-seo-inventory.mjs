@@ -3,17 +3,25 @@ import path from 'node:path';
 
 const inputPath = path.resolve('seo-inventory/blog-seo-inventory.json');
 const outputPath = path.resolve('seo-inventory/seo-issues.csv');
+const crawlFailuresPath = path.resolve('seo-inventory/crawl-failures.csv');
 
 const raw = await fs.readFile(inputPath, 'utf8');
 const inventory = JSON.parse(raw);
 const rows = inventory.rows ?? [];
 
-const issues = rows
+function isSuccessfulCrawl(row) {
+  return (
+    Number(row.liveStatus) === 200 &&
+    (!row.crawlState || row.crawlState === 'success')
+  );
+}
+
+const successfulRows = rows.filter(isSuccessfulCrawl);
+
+const issues = successfulRows
   .map((row) => {
     const problems = [];
-    if (Number(row.liveStatus) !== 200) {
-      problems.push(`NON_200:${row.liveStatus || 'UNKNOWN'}`);
-    }
+
     if (!row.liveMetaDescription) {
       problems.push('MISSING_META_DESCRIPTION');
     }
@@ -23,18 +31,22 @@ const issues = rows
     if (!row.liveTitle) {
       problems.push('MISSING_TITLE');
     }
+
     return problems.length ? { ...row, problems } : null;
   })
   .filter(Boolean);
+
+const crawlFailures = rows.filter((row) => !isSuccessfulCrawl(row));
 
 function csvEscape(value) {
   const text = value == null ? '' : String(value);
   return '"' + text.replaceAll('"', '""') + '"';
 }
 
-const columns = [
+const issueColumns = [
   'problems',
   'liveStatus',
+  'crawlState',
   'title',
   'slug',
   'url',
@@ -49,37 +61,73 @@ const columns = [
   'crawlError'
 ];
 
-const csv = [
-  columns.map(csvEscape).join(','),
+const issueCsv = [
+  issueColumns.map(csvEscape).join(','),
   ...issues.map((row) =>
-    columns.map((column) =>
-      csvEscape(column === 'problems' ? row.problems.join(' | ') : row[column])
-    ).join(',')
+    issueColumns
+      .map((column) =>
+        csvEscape(
+          column === 'problems'
+            ? row.problems.join(' | ')
+            : row[column]
+        )
+      )
+      .join(',')
   )
 ].join('\n');
 
-await fs.writeFile(outputPath, csv, 'utf8');
+await fs.writeFile(outputPath, issueCsv, 'utf8');
 
-const non200 = issues.filter((row) => row.problems.some((p) => p.startsWith('NON_200')));
-const missingDescriptions = issues.filter((row) => row.problems.includes('MISSING_META_DESCRIPTION'));
-const missingCanonicals = issues.filter((row) => row.problems.includes('MISSING_CANONICAL'));
-const missingTitles = issues.filter((row) => row.problems.includes('MISSING_TITLE'));
+const failureColumns = [
+  'liveStatus',
+  'crawlState',
+  'retryCount',
+  'title',
+  'slug',
+  'url',
+  'liveFinalUrl',
+  'crawlError'
+];
+
+const failureCsv = [
+  failureColumns.map(csvEscape).join(','),
+  ...crawlFailures.map((row) =>
+    failureColumns.map((column) => csvEscape(row[column])).join(',')
+  )
+].join('\n');
+
+await fs.writeFile(crawlFailuresPath, failureCsv, 'utf8');
+
+const missingDescriptions = issues.filter((row) =>
+  row.problems.includes('MISSING_META_DESCRIPTION')
+);
+const missingCanonicals = issues.filter((row) =>
+  row.problems.includes('MISSING_CANONICAL')
+);
+const missingTitles = issues.filter((row) =>
+  row.problems.includes('MISSING_TITLE')
+);
+const rateLimited = crawlFailures.filter(
+  (row) =>
+    Number(row.liveStatus) === 429 ||
+    row.crawlState === 'rate_limited'
+);
 
 console.log('');
 console.log('SEO audit summary');
 console.log('=================');
 console.log(`Total published posts: ${rows.length}`);
-console.log(`Posts with at least one issue: ${issues.length}`);
-console.log(`Non-200 live URLs: ${non200.length}`);
-console.log(`Missing live meta descriptions: ${missingDescriptions.length}`);
+console.log(`Successfully crawled pages: ${successfulRows.length}`);
+console.log(
+  `Crawl failures excluded from SEO scoring: ${crawlFailures.length}`
+);
+console.log(`Still rate-limited: ${rateLimited.length}`);
+console.log(`Pages with actual SEO issues: ${issues.length}`);
+console.log(
+  `Missing live meta descriptions: ${missingDescriptions.length}`
+);
 console.log(`Missing live canonicals: ${missingCanonicals.length}`);
 console.log(`Missing live titles: ${missingTitles.length}`);
-console.log('');
-console.log('Non-200 URLs');
-console.log('------------');
-for (const row of non200) {
-  console.log(`[${row.liveStatus || 'UNKNOWN'}] ${row.url}`);
-}
 console.log('');
 console.log('Missing meta descriptions');
 console.log('-------------------------');
@@ -93,4 +141,11 @@ for (const row of missingCanonicals) {
   console.log(`- ${row.url}`);
 }
 console.log('');
-console.log(`Issue CSV: ${outputPath}`);
+console.log('Missing titles');
+console.log('--------------');
+for (const row of missingTitles) {
+  console.log(`- ${row.url}`);
+}
+console.log('');
+console.log(`SEO issue CSV: ${outputPath}`);
+console.log(`Crawl failure CSV: ${crawlFailuresPath}`);

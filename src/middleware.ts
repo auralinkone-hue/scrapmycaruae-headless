@@ -1,5 +1,9 @@
 import { defineMiddleware } from 'astro:middleware';
-import { hasUnsafeSeoConfiguration, isIndexableRequest, robotsContent } from './lib/seo';
+import {
+  hasUnsafeSeoConfiguration,
+  isAlwaysNoindexPath,
+  isIndexableRequest
+} from './lib/seo';
 
 export const onRequest = defineMiddleware(async (context, next) => {
   if (hasUnsafeSeoConfiguration(context.url)) {
@@ -15,12 +19,15 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   const response = await next();
   const headers = new Headers(response.headers);
+  const mustNotIndex =
+    response.status >= 400 ||
+    isAlwaysNoindexPath(context.url.pathname);
 
   headers.set(
     'X-Robots-Tag',
-    isIndexableRequest(context.url)
+    !mustNotIndex && isIndexableRequest(context.url)
       ? 'index, follow'
-      : `${robotsContent(context.url)}, noarchive`
+      : 'noindex, nofollow, noarchive'
   );
 
   headers.set('X-Content-Type-Options', 'nosniff');

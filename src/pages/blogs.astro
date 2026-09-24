@@ -6,7 +6,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { wixClient } from '../lib/wix';
 import { wixResponsiveImage } from '../lib/wix-image';
 import { getBlogAuthor } from '../lib/blog-author';
-import SharePostMenu from '../components/SharePostMenu.astro';
 
 const PAGE_SIZE = 12;
 
@@ -51,19 +50,19 @@ if (!errorMessage && requestedPage > totalPages && totalCount > 0) {
 
 const canonical =
   page > 1
-    ? `https://www.scrapmycaruae.com/blogs?page=${page}`
-    : 'https://www.scrapmycaruae.com/blogs';
+    ? `/blogs?page=${page}`
+    : '/blogs';
 
 const previousUrl =
   page > 2
-    ? `https://www.scrapmycaruae.com/blogs?page=${page - 1}`
+    ? `/blogs?page=${page - 1}`
     : page === 2
-      ? 'https://www.scrapmycaruae.com/blogs'
+      ? '/blogs'
       : '';
 
 const nextUrl =
   page < totalPages
-    ? `https://www.scrapmycaruae.com/blogs?page=${page + 1}`
+    ? `/blogs?page=${page + 1}`
     : '';
 
 const seoTitle =
@@ -140,7 +139,6 @@ const pageNumbers = (() => {
               aspectRatio: 900 / 506
             });
             const postUrl = `/post/${post.slug}`;
-            const canonicalPostUrl = `https://www.scrapmycaruae.com/post/${post.slug}`;
             const author = postAuthors[index];
 
             return (
@@ -178,7 +176,6 @@ const pageNumbers = (() => {
                         <div class="date">{formatDate(post.firstPublishedDate)} {post.minutesToRead && `• ${post.minutesToRead} min read`}</div>
                       </div>
                     </div>
-                    <SharePostMenu url={canonicalPostUrl} title={post.title} />
                   </div>
                   <a class="card-title-link" href={postUrl}>
                     <h2>{post.title}</h2>
@@ -422,5 +419,41 @@ const pageNumbers = (() => {
     .intro h1 {
       font-size: 46px;
     }
+  }
+
+  /* Archive editorial system: intentionally quieter than the marketing pages. */
+  .page-shell { padding-top: 48px; padding-bottom: 68px; }
+  .intro { max-width: 660px; margin-bottom: 34px; }
+  .intro h1 { font-size: clamp(2.6rem, 6vw, 4.25rem); line-height: 1.04; }
+  .intro p { max-width: 610px; font-size: 17px; }
+  .grid { gap: 28px 22px; }
+  .card {
+    overflow: hidden;
+    border: 1px solid var(--smc-line);
+    border-radius: var(--smc-radius);
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(22, 38, 19, .045);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  }
+  .card:hover { transform: translateY(-3px); border-color: #cbd6c8; box-shadow: var(--smc-shadow); }
+  .card-link:focus-visible, .card-title-link:focus-visible { outline: 3px solid rgba(47, 111, 45, .35); outline-offset: -3px; }
+  .image-wrap { border-radius: 0; aspect-ratio: 16 / 9; }
+  .card-body { display: flex; min-height: 188px; flex-direction: column; padding: 16px 17px 18px; }
+  .card-top { justify-content: flex-start; }
+  .author-line { gap: 8px; }
+  .author-line img, .author-placeholder { width: 32px; height: 32px; }
+  .author-name { font-size: 12px; }
+  .date { font-size: 12px; color: #687268; }
+  .card h2 { margin: 13px 0 8px; font-size: clamp(1.14rem, 1.65vw, 1.34rem); line-height: 1.25; }
+  .card p { font-size: 14px; line-height: 1.58; -webkit-line-clamp: 3; }
+  .pagination { margin-top: 48px; }
+  .pagination a, .pagination span { min-width: 44px; height: 44px; border-radius: 10px; }
+  @media (max-width: 620px) {
+    .page-shell { padding-top: 34px; }
+    .intro { margin-bottom: 28px; }
+    .intro h1 { font-size: 2.55rem; }
+    .intro p { font-size: 16px; line-height: 1.65; }
+    .grid { gap: 18px; }
+    .card-body { min-height: 0; padding: 15px 16px 17px; }
   }
 </style>

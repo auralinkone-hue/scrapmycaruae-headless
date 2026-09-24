@@ -1,0 +1,97 @@
+---
+import type { BlogBreadcrumbItem } from '../lib/blog-breadcrumb';
+
+interface Props {
+  items: BlogBreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    {items.map((item) => (
+      <li>
+        {item.current ? (
+          <span aria-current="page">{item.label}</span>
+        ) : (
+          <a href={item.href}>{item.label}</a>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .breadcrumb {
+    max-width: 100%;
+    margin: 0 0 18px;
+    padding: 0;
+    color: #657065;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 5px 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: inline-flex;
+    align-items: baseline;
+    min-width: 0;
+  }
+
+  li + li::before {
+    content: '›';
+    margin: 0 9px;
+    color: #6f806f;
+    font-weight: 700;
+  }
+
+  a {
+    color: #1d5721;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  a:hover {
+    color: #173f18;
+  }
+
+  a:focus-visible {
+    outline: 3px solid rgba(47, 111, 45, 0.3);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  [aria-current='page'] {
+    min-width: 0;
+    color: #344134;
+    font-weight: 650;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .breadcrumb {
+      margin-bottom: 15px;
+      font-size: 13px;
+    }
+
+    li + li::before {
+      margin-inline: 7px;
+    }
+
+    li:last-child { max-width: min(100%, 26rem); }
+  }
+</style>

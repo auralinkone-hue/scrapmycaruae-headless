@@ -11,10 +11,12 @@
     "preview": "astro build && wrangler dev",
     "astro": "astro",
     "generate-types": "wrangler types",
-    "deploy": "astro build && wrangler deploy",
+    "deploy": "npm run seo:verify-production && astro build && wrangler deploy",
+    "deploy:staging": "astro build && wrangler deploy",
     "cf-typegen": "wrangler types",
     "seo:inventory": "node --env-file=.env scripts/export-seo-inventory.mjs",
     "seo:audit": "node scripts/audit-seo-inventory.mjs",
+    "seo:verify-production": "node --env-file-if-exists=.env scripts/verify-production-seo.mjs",
     "blog:validate": "node --env-file=.env scripts/validate-blog-parity.mjs",
     "preview:check": "node scripts/check-preview.mjs"
   },

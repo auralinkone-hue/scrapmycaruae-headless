@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { wixClient } from '../lib/wix';
-import { isIndexableRequest, siteUrl } from '../lib/seo';
+import { canonicalUrl, isIndexableRequest } from '../lib/seo';
 
 export const prerender = false;
 
@@ -78,25 +78,37 @@ export const GET: APIRoute = async ({ url }) => {
     });
   }
 
-  let posts: Awaited<ReturnType<typeof getAllPosts>> = [];
-
+  let posts: Awaited<ReturnType<typeof getAllPosts>>;
   try {
     posts = await getAllPosts();
   } catch (error) {
     console.error('Could not load blog posts for sitemap', error);
+    return new Response('Sitemap is temporarily unavailable.', {
+      status: 503,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-store',
+        'Retry-After': '300',
+        'X-Robots-Tag': 'noindex, nofollow'
+      }
+    });
   }
 
   const staticEntries = staticUrls
     .map((path) => {
-      const loc = path === '/' ? `${siteUrl}/` : `${siteUrl}${path}`;
+      const loc = canonicalUrl(path);
       return `  <url><loc>${escapeXml(loc)}</loc></url>`;
     })
     .join('\n');
 
-  const postEntries = posts
+  const retainedPosts = [...new Map(
+    posts.filter((post) => post.slug).map((post) => [post.slug, post])
+  ).values()];
+
+  const postEntries = retainedPosts
     .filter((post) => post.slug)
     .map((post) => {
-      const loc = `${siteUrl}/post/${post.slug}`;
+      const loc = canonicalUrl(`/post/${post.slug}`);
       const lastmod = post.lastPublishedDate || post.firstPublishedDate;
       const lastmodTag = lastmod
         ? `<lastmod>${escapeXml(new Date(lastmod).toISOString())}</lastmod>`

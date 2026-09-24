@@ -1,4 +1,5 @@
-const DEFAULT_SITE_URL = 'https://www.scrapmycaruae.com';
+export const PRODUCTION_SITE_URL = 'https://www.scrapmycaruae.com';
+export const PRODUCTION_HOSTNAME = new URL(PRODUCTION_SITE_URL).hostname;
 
 type SeoEnvironment = 'staging' | 'production';
 
@@ -13,7 +14,7 @@ if (!['staging', 'production'].includes(configuredEnvironment)) {
 export const seoEnvironment = configuredEnvironment as SeoEnvironment;
 export const isProductionSeo = seoEnvironment === 'production';
 
-const configuredSiteUrl = String(import.meta.env.PUBLIC_SITE_URL || DEFAULT_SITE_URL).trim();
+const configuredSiteUrl = String(import.meta.env.PUBLIC_SITE_URL || PRODUCTION_SITE_URL).trim();
 
 let parsedSiteUrl: URL;
 try {
@@ -33,6 +34,10 @@ if (isProductionSeo && (
   throw new Error('Production SEO cannot use a localhost or workers.dev PUBLIC_SITE_URL.');
 }
 
+if (isProductionSeo && parsedSiteUrl.hostname.toLowerCase() !== PRODUCTION_HOSTNAME) {
+  throw new Error(`Production SEO must use ${PRODUCTION_SITE_URL} as PUBLIC_SITE_URL.`);
+}
+
 parsedSiteUrl.pathname = '/';
 parsedSiteUrl.search = '';
 parsedSiteUrl.hash = '';
@@ -42,6 +47,9 @@ export const siteHostname = parsedSiteUrl.hostname.toLowerCase();
 
 export const isCanonicalHost = (url: URL) =>
   url.hostname.toLowerCase() === siteHostname;
+
+export const isProductionHost = (url: URL) =>
+  url.hostname.toLowerCase() === PRODUCTION_HOSTNAME;
 
 export const isIndexableRequest = (url: URL) =>
   isProductionSeo && isCanonicalHost(url);
@@ -58,6 +66,11 @@ export const canonicalUrl = (value: string | URL) => {
   return url.toString();
 };
 
-/** Prevent a staging build from ever serving the public hostname. */
+/** Prevent a staging build from ever serving the known public hostname. */
 export const hasUnsafeSeoConfiguration = (url: URL) =>
-  isCanonicalHost(url) && !isProductionSeo;
+  isProductionHost(url) && !isProductionSeo;
+
+const alwaysNoindexPaths = new Set(['/404', '/blog-test', '/thank-you']);
+
+export const isAlwaysNoindexPath = (pathname: string) =>
+  alwaysNoindexPaths.has(pathname.replace(/\/$/, '') || '/');

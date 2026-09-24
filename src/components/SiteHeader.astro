@@ -454,4 +454,13 @@ const isActive = (href: string) =>
     .mobile-menu[open] .menu-open-icon { display: none; }
     .mobile-menu[open] .menu-close-icon { display: block; }
   }
+
+  @media (max-width: 360px) {
+    .nav-inner { gap: 8px; }
+    .brand img { width: 108px; }
+    .mobile-call { width: 44px; padding: 0; justify-content: center; }
+    .mobile-call span { display: none; }
+    .mobile-menu { width: 44px; flex: 0 0 44px; }
+    .mobile-menu summary { width: 44px; box-sizing: border-box; }
+  }
 </style>

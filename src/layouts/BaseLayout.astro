@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { canonicalUrl, robotsContent } from '../lib/seo';
+import { canonicalUrl, robotsContent, siteUrl } from '../lib/seo';
 
 interface Props {
   title: string;
@@ -28,6 +28,9 @@ const {
 
 const resolvedCanonical = canonicalUrl(canonical || Astro.url.pathname);
 const resolvedRobots = noindex ? 'noindex,nofollow' : robotsContent(Astro.url);
+const resolvedPrevUrl = prevUrl ? canonicalUrl(prevUrl) : '';
+const resolvedNextUrl = nextUrl ? canonicalUrl(nextUrl) : '';
+const resolvedOgImage = ogImage ? new URL(ogImage, `${siteUrl}/`).toString() : '';
 ---
 
 <!doctype html>
@@ -44,8 +47,8 @@ const resolvedRobots = noindex ? 'noindex,nofollow' : robotsContent(Astro.url);
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={resolvedCanonical} />
-    {prevUrl && <link rel="prev" href={prevUrl} />}
-    {nextUrl && <link rel="next" href={nextUrl} />}
+    {resolvedPrevUrl && <link rel="prev" href={resolvedPrevUrl} />}
+    {resolvedNextUrl && <link rel="next" href={resolvedNextUrl} />}
     <meta name="robots" content={resolvedRobots} />
     <meta name="googlebot" content={resolvedRobots} />
 
@@ -55,13 +58,13 @@ const resolvedRobots = noindex ? 'noindex,nofollow' : robotsContent(Astro.url);
     <meta property="og:title" content={title} />
     {description && <meta property="og:description" content={description} />}
     <meta property="og:url" content={resolvedCanonical} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    {resolvedOgImage && <meta property="og:image" content={resolvedOgImage} />}
 
-    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:card" content={resolvedOgImage ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:url" content={resolvedCanonical} />
     <meta name="twitter:title" content={title} />
     {description && <meta name="twitter:description" content={description} />}
-    {ogImage && <meta name="twitter:image" content={ogImage} />}
+    {resolvedOgImage && <meta name="twitter:image" content={resolvedOgImage} />}
 
     <slot name="head" />
   </head>

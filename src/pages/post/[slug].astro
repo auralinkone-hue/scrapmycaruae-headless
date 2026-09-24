@@ -5,9 +5,19 @@ import { media } from '@wix/sdk';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { wixClient } from '../../lib/wix';
 import { wixResponsiveImage } from '../../lib/wix-image';
-import { renderRicosDocument } from '../../lib/rich-content';
+import { renderRicosDocumentWithTableOfContents } from '../../lib/rich-content';
 import { getBlogAuthor } from '../../lib/blog-author';
+import { canonicalUrl } from '../../lib/seo';
+import {
+  getArticleBreadcrumbItems,
+  getBreadcrumbJsonLd,
+  getPostCategoryBreadcrumb
+} from '../../lib/blog-breadcrumb';
+import BlogBreadcrumb from '../../components/BlogBreadcrumb.astro';
+import BlogArticleCard from '../../components/BlogArticleCard.astro';
+import ArticleTableOfContents from '../../components/ArticleTableOfContents.astro';
 import SharePostMenu from '../../components/SharePostMenu.astro';
+import { getRelatedPosts } from '../../lib/related-posts';
 
 const slug = Astro.params.slug ?? '';
 let post: any = null;
@@ -23,7 +33,13 @@ try {
   loadError = error instanceof Error ? error.message : String(error);
 }
 
-const author = post ? await getBlogAuthor(post) : null;
+const [author, categoryBreadcrumb, relatedPosts] = post
+  ? await Promise.all([
+      getBlogAuthor(post),
+      getPostCategoryBreadcrumb(post),
+      getRelatedPosts(post)
+    ])
+  : [null, null, []];
 
 const tags = post?.seoData?.tags ?? [];
 const seoTitle =
@@ -41,9 +57,14 @@ const seoDescription =
   post?.excerpt ||
   '';
 
-const canonical = post?.slug
-  ? `https://www.scrapmycaruae.com/post/${post.slug}`
-  : 'https://www.scrapmycaruae.com/blogs';
+const canonical = `/post/${post?.slug || slug}`;
+const absoluteCanonical = canonicalUrl(canonical);
+const breadcrumbItems = post
+  ? getArticleBreadcrumbItems(post.title, canonical, categoryBreadcrumb)
+  : [];
+const breadcrumbJsonLd = post
+  ? getBreadcrumbJsonLd(breadcrumbItems)
+  : null;
 
 const rawCoverImage =
   post?.media?.wixMedia?.image ||
@@ -76,11 +97,11 @@ const coverAlt =
   post?.title ||
   '';
 
-const articleHtml = post?.richContent
-  ? renderRicosDocument(post.richContent)
-  : post?.contentText
-    ? `<p>${post.contentText}</p>`
-    : '';
+const renderedArticle = post?.richContent
+  ? renderRicosDocumentWithTableOfContents(post.richContent)
+  : { html: post?.contentText ? `<p>${post.contentText}</p>` : '', items: [], headingCount: 0 };
+const articleHtml = renderedArticle.html;
+const tocItems = renderedArticle.items;
 
 const publishedDate = post?.firstPublishedDate
   ? new Date(post.firstPublishedDate)
@@ -107,12 +128,12 @@ const jsonLd = post
       description: seoDescription,
       datePublished: post.firstPublishedDate,
       dateModified: post.lastPublishedDate || post.firstPublishedDate,
-      mainEntityOfPage: canonical,
+      mainEntityOfPage: absoluteCanonical,
       image: coverImage ? [coverImage] : undefined,
       publisher: {
         '@type': 'Organization',
         name: 'Scrap My Car UAE',
-        url: 'https://www.scrapmycaruae.com'
+        url: canonicalUrl('/')
       }
     }
   : null;
@@ -124,16 +145,24 @@ const jsonLd = post
   canonical={canonical}
   ogImage={coverImage}
   ogType="article"
+  noindex={!post}
 >
   {jsonLd && (
     <Fragment slot="head">
-      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />
+      {breadcrumbJsonLd && (
+        <script
+          type="application/ld+json"
+          set:html={JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c')}
+        />
+      )}
     </Fragment>
   )}
 
   {post ? (
     <main class="article-shell">
       <div class="smc-kicker">Scrap My Car UAE Blog</div>
+      <BlogBreadcrumb items={breadcrumbItems} />
       <h1>{post.title}</h1>
 
       <div class="article-meta-row">
@@ -150,16 +179,17 @@ const jsonLd = post
           )}
           <div class="meta">
             {publishedDate && <span>{formatDate(publishedDate)}</span>}
-            {post.minutesToRead && <span>• {post.minutesToRead} min read</span>}
+            {post.minutesToRead && <span>{post.minutesToRead} min read</span>}
             {updatedDate &&
               publishedDate &&
               updatedDate.getTime() !== publishedDate.getTime() && (
-                <span>• Updated {formatDate(updatedDate)}</span>
+                <span>Updated {formatDate(updatedDate)}</span>
               )}
           </div>
         </div>
-        <SharePostMenu url={canonical} title={post.title} />
       </div>
+
+      {renderedArticle.headingCount >= 4 && <ArticleTableOfContents items={tocItems} />}
 
       {responsiveCover.src && (
         <div class="cover-wrap" data-image-loading>
@@ -182,6 +212,31 @@ const jsonLd = post
 
       <article class="article-content" set:html={articleHtml} />
 
+      <section class="article-quote-cta" aria-labelledby="article-quote-title">
+        <div>
+          <p class="article-quote-cta__eyebrow">Selling a car in the UAE?</p>
+          <h2 id="article-quote-title">Get a fair quote for your car today.</h2>
+          <p>Tell us about your vehicle and get a straightforward offer from Scrap My Car UAE.</p>
+        </div>
+        <a href="/free-quote">Get free quote <span aria-hidden="true">→</span></a>
+      </section>
+
+      {relatedPosts.length > 0 && (
+        <section class="related-articles" aria-labelledby="related-articles-title">
+          <div class="related-articles__heading">
+            <p>Keep reading</p>
+            <h2 id="related-articles-title">Related articles</h2>
+          </div>
+          <div class="related-articles__grid">
+            {relatedPosts.map((relatedPost) => <BlogArticleCard post={relatedPost} />)}
+          </div>
+        </section>
+      )}
+
+      <div class="article-share">
+        <SharePostMenu url={absoluteCanonical} title={post.title} />
+      </div>
+
     </main>
   ) : (
     <main class="not-found">
@@ -195,9 +250,9 @@ const jsonLd = post
 
 <style>
       .article-shell {
-        width: min(900px, calc(100% - 36px));
+        width: min(860px, calc(100% - 48px));
         margin: 0 auto;
-        padding: 54px 0 90px;
+        padding: 44px 0 80px;
       }
 
       .eyebrow {
@@ -209,27 +264,25 @@ const jsonLd = post
       }
 
       h1 {
-        max-width: 850px;
-        margin: 10px 0 18px;
-        font-size: clamp(36px, 6vw, 62px);
-        line-height: 1.06;
-        letter-spacing: -0.045em;
+        max-width: 820px;
+        margin: 9px 0 16px;
+        font-size: clamp(2.25rem, 5vw, 3.75rem);
+        line-height: 1.08;
+        letter-spacing: -0.04em;
       }
 
       .meta {
         color: #6a6a6a;
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
-        font-size: 15px;
+        gap: 6px 0;
+        font-size: 14px;
       }
+      .meta span { display: inline-flex; align-items: center; white-space: nowrap; }
+      .meta span + span::before { content: '•'; margin-inline: 9px; color: #9aa09a; }
 
       .article-meta-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 18px;
-        margin-bottom: 34px;
+        margin-bottom: 28px;
       }
 
       .author {
@@ -239,7 +292,7 @@ const jsonLd = post
         min-height: 36px;
         margin-bottom: 7px;
         color: #4e554e;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 700;
       }
 
@@ -262,8 +315,8 @@ const jsonLd = post
 
       .cover-wrap {
         aspect-ratio: 16 / 9;
-        margin: 0 0 42px;
-        border-radius: 18px;
+        margin: 0 0 38px;
+        border-radius: var(--smc-radius);
       }
 
       .cover {
@@ -295,6 +348,16 @@ const jsonLd = post
 
       .article-content :global(h2) { font-size: 34px; }
       .article-content :global(h3) { font-size: 27px; }
+
+      .article-content :global(h2[id]),
+      .article-content :global(h3[id]) {
+        scroll-margin-top: 130px;
+      }
+
+      :global(html) { scroll-behavior: smooth; }
+      @media (prefers-reduced-motion: reduce) {
+        :global(html) { scroll-behavior: auto; }
+      }
 
       .article-content :global(a) {
         color: #356d29;
@@ -354,6 +417,86 @@ const jsonLd = post
         vertical-align: top;
       }
 
+      .article-quote-cta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 28px;
+        max-width: 760px;
+        margin: 58px auto;
+        padding: 28px 30px;
+        border: 1px solid #cde0ca;
+        border-radius: 18px;
+        background: linear-gradient(120deg, #f2f9ed, #fff);
+      }
+
+      .article-quote-cta__eyebrow,
+      .related-articles__heading p {
+        margin: 0 0 6px;
+        color: #27683a;
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .article-quote-cta h2 {
+        margin: 0;
+        color: #17331d;
+        font-size: clamp(1.35rem, 3vw, 1.75rem);
+        line-height: 1.18;
+      }
+
+      .article-quote-cta p:not(.article-quote-cta__eyebrow) {
+        max-width: 540px;
+        margin: 8px 0 0;
+        color: #415046;
+      }
+
+      .article-quote-cta a {
+        flex: 0 0 auto;
+        padding: 12px 17px;
+        border-radius: 10px;
+        background: #1c5a2b;
+        color: #fff;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .article-quote-cta a:hover { background: #123e1e; }
+      .article-quote-cta a:focus-visible,
+      .article-share :global(button:focus-visible) {
+        outline: 3px solid #1b6e35;
+        outline-offset: 3px;
+      }
+
+      .related-articles {
+        margin: 0 auto 46px;
+        padding-top: 46px;
+        border-top: 1px solid #dce6dc;
+      }
+
+      .related-articles__heading { margin-bottom: 22px; }
+      .related-articles__heading h2 {
+        margin: 0;
+        color: #152018;
+        font-size: clamp(1.75rem, 4vw, 2.35rem);
+        letter-spacing: -0.035em;
+      }
+
+      .related-articles__grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+      }
+
+      .article-share {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 22px;
+        border-top: 1px solid #dce6dc;
+      }
+
       .not-found {
         width: min(720px, calc(100% - 36px));
         margin: 100px auto;
@@ -382,5 +525,31 @@ const jsonLd = post
           font-size: 29px;
         }
 
+        .article-quote-cta {
+          align-items: flex-start;
+          flex-direction: column;
+          margin: 42px auto;
+          padding: 24px;
+        }
+
+        .related-articles { padding-top: 38px; }
+        .related-articles__grid { grid-template-columns: 1fr; gap: 16px; }
+
+      }
+
+      /* Editorial refinements shared by the article header and reading flow. */
+      .cover { border-radius: var(--smc-radius); }
+      .article-content { line-height: 1.72; }
+      .article-content :global(h2),
+      .article-content :global(h3),
+      .article-content :global(h4) {
+        line-height: 1.17;
+        margin-top: 2.35em;
+        margin-bottom: .65em;
+      }
+      @media (max-width: 640px) {
+        .article-shell { width: min(100% - 40px, 860px); }
+        .meta { font-size: 13px; }
+        .article-content { font-size: 17px; line-height: 1.72; }
       }
     </style>
