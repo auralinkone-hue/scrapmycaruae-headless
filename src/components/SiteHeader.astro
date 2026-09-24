@@ -103,6 +103,27 @@ const isActive = (href: string) =>
   </div>
 </header>
 
+<script>
+  document.querySelectorAll('.mobile-menu').forEach((menu) => {
+    if (!(menu instanceof HTMLDetailsElement)) return;
+
+    const summary = menu.querySelector('summary');
+    if (!(summary instanceof HTMLElement)) return;
+
+    summary.addEventListener('click', (event) => {
+      if (!menu.open) return;
+
+      event.preventDefault();
+      menu.classList.add('is-closing');
+
+      window.setTimeout(() => {
+        menu.open = false;
+        menu.classList.remove('is-closing');
+      }, 200);
+    });
+  });
+</script>
+
 <style>
   .smc-header {
     position: relative;
@@ -249,6 +270,7 @@ const isActive = (href: string) =>
   }
 
   .mobile-menu summary {
+    position: relative;
     width: 44px;
     height: 44px;
     border: 1px solid var(--smc-line);
@@ -265,12 +287,15 @@ const isActive = (href: string) =>
   }
 
   .mobile-menu summary .ph {
+    position: absolute;
     color: #202420;
     font-size: 22px;
+    transition: opacity 180ms ease, transform 180ms ease;
   }
 
   .menu-close-icon {
-    display: none;
+    opacity: 0;
+    transform: rotate(-45deg) scale(.86);
   }
 
   .mobile-panel {
@@ -285,6 +310,24 @@ const isActive = (href: string) =>
     box-shadow: var(--smc-shadow);
     display: grid;
     gap: 4px;
+  }
+
+  .mobile-menu[open] .mobile-panel {
+    animation: mobile-menu-in 200ms cubic-bezier(.2,.75,.2,1) both;
+  }
+
+  .mobile-menu.is-closing .mobile-panel {
+    animation: mobile-menu-out 180ms cubic-bezier(.4,0,.8,.3) both;
+  }
+
+  @keyframes mobile-menu-in {
+    from { opacity: 0; transform: translateY(8px) scale(.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes mobile-menu-out {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0; transform: translateY(6px) scale(.985); }
   }
 
   .mobile-link {
@@ -451,7 +494,14 @@ const isActive = (href: string) =>
     }
 
     .mobile-menu[open] summary .ph { color: #fff; }
-    .mobile-menu[open] .menu-open-icon { display: none; }
-    .mobile-menu[open] .menu-close-icon { display: block; }
+    .mobile-menu[open] .menu-open-icon {
+      opacity: 0;
+      transform: rotate(45deg) scale(.86);
+    }
+
+    .mobile-menu[open] .menu-close-icon {
+      opacity: 1;
+      transform: rotate(0) scale(1);
+    }
   }
 </style>
