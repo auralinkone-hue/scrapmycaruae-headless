@@ -135,7 +135,7 @@ const pageNumbers = (() => {
             return (
               <article class="card">
                 <a class="card-link" href={postUrl}>
-                  <div class="image-wrap">
+                  <div class="image-wrap" data-image-loading>
                     {image?.url ? (
                       <img
                         src={image.url}
@@ -256,7 +256,7 @@ const pageNumbers = (() => {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 220ms ease;
+    transition: opacity 300ms ease, filter 300ms ease, transform 240ms cubic-bezier(.2,.7,.2,1);
   }
 
   .card-link:hover .image-wrap img {
