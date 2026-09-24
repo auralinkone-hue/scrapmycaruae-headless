@@ -4,6 +4,7 @@ export const prerender = false;
 import { media } from '@wix/sdk';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { wixClient } from '../lib/wix';
+import { wixResponsiveImage } from '../lib/wix-image';
 import { getBlogAuthor } from '../lib/blog-author';
 import SharePostMenu from '../components/SharePostMenu.astro';
 
@@ -134,6 +135,10 @@ const pageNumbers = (() => {
         <section class="grid" aria-label="Blog posts">
           {posts.map((post: any, index) => {
             const image = getImage(post);
+            const responsiveImage = wixResponsiveImage(image, {
+              widths: [320, 480, 640, 800],
+              aspectRatio: 900 / 506
+            });
             const postUrl = `/post/${post.slug}`;
             const canonicalPostUrl = `https://www.scrapmycaruae.com/post/${post.slug}`;
             const author = postAuthors[index];
@@ -142,15 +147,21 @@ const pageNumbers = (() => {
               <article class="card">
                 <a class="card-link" href={postUrl}>
                   <div class="image-wrap" data-image-loading>
-                    {image?.url ? (
-                      <img
-                        src={image.url}
-                        alt={post?.media?.altText || post.title || ''}
-                        width={image.width}
-                        height={image.height}
-                        loading="lazy"
-                        decoding="async"
-                      />
+                    {responsiveImage.src ? (
+                      <picture>
+                        <source type="image/avif" srcset={responsiveImage.avifSrcset} sizes="(max-width: 700px) calc(100vw - 36px), (max-width: 1100px) calc(50vw - 42px), 360px" />
+                        <img
+                          src={responsiveImage.src}
+                          srcset={responsiveImage.srcset}
+                          sizes="(max-width: 700px) calc(100vw - 36px), (max-width: 1100px) calc(50vw - 42px), 360px"
+                          alt={post?.media?.altText || post.title || ''}
+                          width={responsiveImage.width}
+                          height={responsiveImage.height}
+                          loading={index === 0 ? 'eager' : 'lazy'}
+                          fetchpriority={index === 0 ? 'high' : 'auto'}
+                          decoding="async"
+                        />
+                      </picture>
                     ) : null}
                   </div>
                 </a>
