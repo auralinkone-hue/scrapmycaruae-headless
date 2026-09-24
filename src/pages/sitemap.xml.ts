@@ -1,9 +1,8 @@
 import type { APIRoute } from 'astro';
 import { wixClient } from '../lib/wix';
+import { isIndexableRequest, siteUrl } from '../lib/seo';
 
 export const prerender = false;
-
-const SITE = 'https://www.scrapmycaruae.com';
 
 const staticUrls = [
   '/',
@@ -69,13 +68,7 @@ async function getAllPosts() {
 }
 
 export const GET: APIRoute = async ({ url }) => {
-  const host = url.hostname.toLowerCase();
-  const isPreview =
-    host === 'localhost' ||
-    host === '127.0.0.1' ||
-    host.endsWith('.workers.dev');
-
-  if (isPreview) {
+  if (!isIndexableRequest(url)) {
     return new Response('Preview sitemap disabled.', {
       status: 404,
       headers: {
@@ -95,7 +88,7 @@ export const GET: APIRoute = async ({ url }) => {
 
   const staticEntries = staticUrls
     .map((path) => {
-      const loc = path === '/' ? SITE + '/' : SITE + path;
+      const loc = path === '/' ? `${siteUrl}/` : `${siteUrl}${path}`;
       return `  <url><loc>${escapeXml(loc)}</loc></url>`;
     })
     .join('\n');
@@ -103,7 +96,7 @@ export const GET: APIRoute = async ({ url }) => {
   const postEntries = posts
     .filter((post) => post.slug)
     .map((post) => {
-      const loc = `${SITE}/post/${post.slug}`;
+      const loc = `${siteUrl}/post/${post.slug}`;
       const lastmod = post.lastPublishedDate || post.firstPublishedDate;
       const lastmodTag = lastmod
         ? `<lastmod>${escapeXml(new Date(lastmod).toISOString())}</lastmod>`
