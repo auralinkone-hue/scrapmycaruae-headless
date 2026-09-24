@@ -31,6 +31,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 24px;
 }
 
 body {
@@ -48,6 +49,10 @@ a {
 
 img {
   max-width: 100%;
+}
+
+[id] {
+  scroll-margin-top: 24px;
 }
 
 .smc-container {
@@ -83,7 +88,7 @@ img {
 }
 
 .smc-button:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(.99);
 }
 
 .smc-button:focus-visible {
@@ -121,6 +126,62 @@ img {
 
 .smc-button-secondary:hover {
   border-color: #cfd5cc;
+}
+
+.image-loading {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(105deg, #eef3ec 0%, #f8faf7 48%, #e8efe5 100%);
+}
+
+.image-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 25%, rgba(255,255,255,.58) 48%, transparent 70%);
+  transform: translateX(-110%);
+  animation: image-shimmer 1.5s ease-in-out infinite;
+  transition: opacity 260ms ease;
+}
+
+.image-loading img {
+  opacity: 0;
+  filter: blur(5px);
+  transition: opacity 300ms ease, filter 300ms ease, transform 240ms cubic-bezier(.2,.7,.2,1);
+}
+
+.image-loading.is-loaded::after {
+  opacity: 0;
+}
+
+.image-loading.is-loaded img {
+  opacity: 1;
+  filter: none;
+}
+
+@keyframes image-shimmer {
+  to { transform: translateX(110%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+
+  .image-loading img {
+    opacity: 1;
+    filter: none;
+  }
 }
 
 @media (max-width: 640px) {
