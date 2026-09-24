@@ -4,6 +4,8 @@ export const prerender = false;
 import { media } from '@wix/sdk';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { wixClient } from '../lib/wix';
+import { getBlogAuthor } from '../lib/blog-author';
+import SharePostMenu from '../components/SharePostMenu.astro';
 
 const PAGE_SIZE = 12;
 
@@ -36,6 +38,8 @@ try {
   Astro.response.status = 500;
   errorMessage = error instanceof Error ? error.message : String(error);
 }
+
+const postAuthors = await Promise.all(posts.map((post) => getBlogAuthor(post)));
 
 const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 const page = Math.min(requestedPage, totalPages);
@@ -128,9 +132,11 @@ const pageNumbers = (() => {
     ) : (
       <>
         <section class="grid" aria-label="Blog posts">
-          {posts.map((post: any) => {
+          {posts.map((post: any, index) => {
             const image = getImage(post);
             const postUrl = `/post/${post.slug}`;
+            const canonicalPostUrl = `https://www.scrapmycaruae.com/post/${post.slug}`;
+            const author = postAuthors[index];
 
             return (
               <article class="card">
@@ -147,13 +153,27 @@ const pageNumbers = (() => {
                       />
                     ) : null}
                   </div>
-
-                  <div class="card-body">
-                    <div class="date">{formatDate(post.firstPublishedDate)}</div>
+                </a>
+                <div class="card-body">
+                  <div class="card-top">
+                    <div class="author-line">
+                      {author?.photoUrl ? (
+                        <img src={author.photoUrl} alt="" width="36" height="36" />
+                      ) : (
+                        <span class="author-placeholder"><i class="ph ph-user" aria-hidden="true"></i></span>
+                      )}
+                      <div>
+                        {author && <div class="author-name">{author.name}</div>}
+                        <div class="date">{formatDate(post.firstPublishedDate)} {post.minutesToRead && `• ${post.minutesToRead} min read`}</div>
+                      </div>
+                    </div>
+                    <SharePostMenu url={canonicalPostUrl} title={post.title} />
+                  </div>
+                  <a class="card-title-link" href={postUrl}>
                     <h2>{post.title}</h2>
                     {post.excerpt && <p>{post.excerpt}</p>}
-                  </div>
-                </a>
+                  </a>
+                </div>
               </article>
             );
           })}
@@ -239,9 +259,11 @@ const pageNumbers = (() => {
     gap: 36px 24px;
   }
 
-  .card-link {
+  .card-link,
+  .card-title-link {
     display: block;
     text-decoration: none;
+    color: inherit;
   }
 
   .image-wrap {
@@ -265,6 +287,46 @@ const pageNumbers = (() => {
 
   .card-body {
     padding-top: 15px;
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .author-line {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .author-line img,
+  .author-placeholder {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+  }
+
+  .author-line img { object-fit: cover; }
+  .author-placeholder {
+    display: grid;
+    place-items: center;
+    background: #dfe2de;
+    color: #fff;
+    font-size: 19px;
+  }
+
+  .author-name {
+    overflow: hidden;
+    color: #4f574f;
+    font-size: 12px;
+    font-weight: 750;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .date {
