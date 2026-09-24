@@ -4,6 +4,7 @@ export const prerender = false;
 import { media } from '@wix/sdk';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { wixClient } from '../../lib/wix';
+import { wixResponsiveImage } from '../../lib/wix-image';
 import { renderRicosDocument } from '../../lib/rich-content';
 import { getBlogAuthor } from '../../lib/blog-author';
 import SharePostMenu from '../../components/SharePostMenu.astro';
@@ -63,6 +64,12 @@ const normalizedCover =
       : null;
 
 const coverImage = normalizedCover?.url || '';
+const responsiveCover = wixResponsiveImage(normalizedCover, {
+  widths: [480, 768, 1024, 1440, 1800],
+  aspectRatio: normalizedCover?.width && normalizedCover?.height
+    ? normalizedCover.width / normalizedCover.height
+    : 16 / 9
+});
 
 const coverAlt =
   post?.media?.altText ||
@@ -154,17 +161,22 @@ const jsonLd = post
         <SharePostMenu url={canonical} title={post.title} />
       </div>
 
-      {coverImage && (
+      {responsiveCover.src && (
         <div class="cover-wrap" data-image-loading>
-          <img
-            class="cover"
-            src={coverImage}
-            alt={coverAlt}
-            width={normalizedCover?.width}
-            height={normalizedCover?.height}
-            fetchpriority="high"
-            decoding="async"
-          />
+          <picture>
+            <source type="image/avif" srcset={responsiveCover.avifSrcset} sizes="(max-width: 936px) calc(100vw - 36px), 900px" />
+            <img
+              class="cover"
+              src={responsiveCover.src}
+              srcset={responsiveCover.srcset}
+              sizes="(max-width: 936px) calc(100vw - 36px), 900px"
+              alt={coverAlt}
+              width={responsiveCover.width}
+              height={responsiveCover.height}
+              fetchpriority="high"
+              decoding="async"
+            />
+          </picture>
         </div>
       )}
 
