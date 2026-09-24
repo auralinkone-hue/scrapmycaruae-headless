@@ -443,6 +443,12 @@ const countryCodes = [
 
   .panel.active {
     display: grid;
+    animation: form-step-in 220ms cubic-bezier(.2,.72,.2,1) both;
+  }
+
+  @keyframes form-step-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .form-field {
@@ -632,7 +638,7 @@ const countryCodes = [
 
   .continue:active,
   .submit:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(.99);
   }
 
   .continue .ph,
