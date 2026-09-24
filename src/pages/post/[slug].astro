@@ -5,6 +5,8 @@ import { media } from '@wix/sdk';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { wixClient } from '../../lib/wix';
 import { renderRicosDocument } from '../../lib/rich-content';
+import { getBlogAuthor } from '../../lib/blog-author';
+import SharePostMenu from '../../components/SharePostMenu.astro';
 
 const slug = Astro.params.slug ?? '';
 let post: any = null;
@@ -19,6 +21,8 @@ try {
   Astro.response.status = 404;
   loadError = error instanceof Error ? error.message : String(error);
 }
+
+const author = post ? await getBlogAuthor(post) : null;
 
 const tags = post?.seoData?.tags ?? [];
 const seoTitle =
@@ -88,16 +92,6 @@ const formatDate = (date: Date | null) =>
       }).format(date)
     : '';
 
-const shareUrl = canonical;
-const shareText = post?.title ?? 'Scrap My Car UAE';
-const encodedShareUrl = encodeURIComponent(shareUrl);
-const encodedShareText = encodeURIComponent(shareText);
-const shareLinks = {
-  facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedShareUrl}`,
-  x: `https://twitter.com/intent/tweet?url=${encodedShareUrl}&text=${encodedShareText}`,
-  linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedShareUrl}`
-};
-
 const jsonLd = post
   ? {
       '@context': 'https://schema.org',
@@ -135,14 +129,29 @@ const jsonLd = post
       <div class="smc-kicker">Scrap My Car UAE Blog</div>
       <h1>{post.title}</h1>
 
-      <div class="meta">
-        {publishedDate && <span>{formatDate(publishedDate)}</span>}
-        {post.minutesToRead && <span>• {post.minutesToRead} min read</span>}
-        {updatedDate &&
-          publishedDate &&
-          updatedDate.getTime() !== publishedDate.getTime() && (
-            <span>• Updated {formatDate(updatedDate)}</span>
+      <div class="article-meta-row">
+        <div>
+          {author && (
+            <div class="author">
+              {author.photoUrl ? (
+                <img src={author.photoUrl} alt="" width="36" height="36" />
+              ) : (
+                <span class="author-placeholder"><i class="ph ph-user" aria-hidden="true"></i></span>
+              )}
+              <span>{author.name}</span>
+            </div>
           )}
+          <div class="meta">
+            {publishedDate && <span>{formatDate(publishedDate)}</span>}
+            {post.minutesToRead && <span>• {post.minutesToRead} min read</span>}
+            {updatedDate &&
+              publishedDate &&
+              updatedDate.getTime() !== publishedDate.getTime() && (
+                <span>• Updated {formatDate(updatedDate)}</span>
+              )}
+          </div>
+        </div>
+        <SharePostMenu url={canonical} title={post.title} />
       </div>
 
       {coverImage && (
@@ -161,23 +170,6 @@ const jsonLd = post
 
       <article class="article-content" set:html={articleHtml} />
 
-      <section class="article-share" aria-label="Share this article" data-share-url={shareUrl} data-share-title={shareText}>
-        <span class="article-share__label">Share this article</span>
-        <div class="article-share__actions">
-          <a class="article-share__button" href={shareLinks.facebook} target="_blank" rel="noreferrer" aria-label="Share on Facebook">
-            <i class="ph ph-facebook-logo" aria-hidden="true"></i><span>Facebook</span>
-          </a>
-          <a class="article-share__button" href={shareLinks.x} target="_blank" rel="noreferrer" aria-label="Share on X">
-            <i class="ph ph-x-logo" aria-hidden="true"></i><span>X</span>
-          </a>
-          <a class="article-share__button" href={shareLinks.linkedin} target="_blank" rel="noreferrer" aria-label="Share on LinkedIn">
-            <i class="ph ph-linkedin-logo" aria-hidden="true"></i><span>LinkedIn</span>
-          </a>
-          <button class="article-share__button" type="button" data-copy-share aria-label="Copy article link">
-            <i class="ph ph-link-simple" aria-hidden="true"></i><span data-copy-label>Copy link</span>
-          </button>
-        </div>
-      </section>
     </main>
   ) : (
     <main class="not-found">
@@ -217,8 +209,43 @@ const jsonLd = post
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
-        margin-bottom: 34px;
         font-size: 15px;
+      }
+
+      .article-meta-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 34px;
+      }
+
+      .author {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        min-height: 36px;
+        margin-bottom: 7px;
+        color: #4e554e;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .author img,
+      .author-placeholder {
+        width: 36px;
+        height: 36px;
+        flex: 0 0 auto;
+        border-radius: 50%;
+      }
+
+      .author img { object-fit: cover; }
+      .author-placeholder {
+        display: grid;
+        place-items: center;
+        background: #dfe2de;
+        color: #fff;
+        font-size: 20px;
       }
 
       .cover-wrap {
@@ -298,66 +325,6 @@ const jsonLd = post
         margin: 2.5em 0;
       }
 
-      .article-share {
-        max-width: 760px;
-        margin: 46px auto 0;
-        padding-top: 24px;
-        border-top: 1px solid #dce4da;
-      }
-
-      .article-share__label {
-        display: block;
-        margin-bottom: 12px;
-        color: #334033;
-        font-size: 14px;
-        font-weight: 800;
-      }
-
-      .article-share__actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 9px;
-      }
-
-      .article-share__button {
-        display: inline-flex;
-        align-items: center;
-        min-height: 42px;
-        gap: 8px;
-        padding: 9px 13px;
-        border: 1px solid #d4dfd2;
-        border-radius: 10px;
-        background: #fff;
-        color: #243026;
-        font: inherit;
-        font-size: 14px;
-        font-weight: 700;
-        line-height: 1;
-        text-decoration: none;
-        cursor: pointer;
-        transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, transform 160ms ease;
-      }
-
-      .article-share__button :global(i) {
-        font-size: 18px;
-      }
-
-      .article-share__button:hover {
-        border-color: #5b8d4e;
-        background: #f4f8f2;
-        color: #245c1a;
-        transform: translateY(-1px);
-      }
-
-      .article-share__button:active {
-        transform: translateY(0);
-      }
-
-      .article-share__button:focus-visible {
-        outline: 3px solid rgb(93 157 76 / 30%);
-        outline-offset: 2px;
-      }
-
       .article-content :global(.table-scroll) {
         overflow-x: auto;
         margin: 2em 0;
@@ -403,31 +370,5 @@ const jsonLd = post
           font-size: 29px;
         }
 
-        .article-share {
-          margin-top: 36px;
-        }
-
-        .article-share__button {
-          min-height: 40px;
-        }
       }
     </style>
-
-    <script>
-      document.querySelectorAll<HTMLElement>('[data-copy-share]').forEach((button) => {
-        button.addEventListener('click', async () => {
-          const share = button.closest<HTMLElement>('[data-share-url]');
-          const url = share?.dataset.shareUrl;
-          const label = button.querySelector<HTMLElement>('[data-copy-label]');
-          if (!url || !label) return;
-
-          try {
-            await navigator.clipboard.writeText(url);
-            label.textContent = 'Copied';
-            window.setTimeout(() => { label.textContent = 'Copy link'; }, 1600);
-          } catch {
-            window.prompt('Copy this link:', url);
-          }
-        });
-      });
-    </script>
