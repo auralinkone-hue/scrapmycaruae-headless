@@ -105,7 +105,7 @@ const isActive = (href: string) =>
 
 <style>
   .smc-header {
-    position: static;
+    position: relative;
     z-index: 40;
     background: #fff;
   }
@@ -266,21 +266,12 @@ const isActive = (href: string) =>
   }
 
   .mobile-menu summary .ph {
-    position: absolute;
-    left: 50%;
-    top: 50%;
     color: #202420;
     font-size: 22px;
-    transition: opacity 180ms ease, transform 180ms ease;
-  }
-
-  .menu-open-icon {
-    transform: translate(-50%, -50%);
   }
 
   .menu-close-icon {
-    opacity: 0;
-    transform: translate(-50%, -50%) rotate(-45deg) scale(.86);
+    display: none;
   }
 
   .mobile-panel {
@@ -295,15 +286,6 @@ const isActive = (href: string) =>
     box-shadow: var(--smc-shadow);
     display: grid;
     gap: 4px;
-  }
-
-  .mobile-menu[open] .mobile-panel {
-    animation: mobile-menu-in 200ms cubic-bezier(.2,.75,.2,1) both;
-  }
-
-  @keyframes mobile-menu-in {
-    from { opacity: 0; transform: translateY(8px) scale(.985); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
   }
 
   .mobile-link {
@@ -470,14 +452,7 @@ const isActive = (href: string) =>
     }
 
     .mobile-menu[open] summary .ph { color: #fff; }
-    .mobile-menu[open] .menu-open-icon {
-      opacity: 0;
-      transform: translate(-50%, -50%) rotate(45deg) scale(.86);
-    }
-
-    .mobile-menu[open] .menu-close-icon {
-      opacity: 1;
-      transform: translate(-50%, -50%) rotate(0) scale(1);
-    }
+    .mobile-menu[open] .menu-open-icon { display: none; }
+    .mobile-menu[open] .menu-close-icon { display: block; }
   }
 </style>
