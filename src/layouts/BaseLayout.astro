@@ -70,5 +70,26 @@ const shouldNoindex = noindex || isDevelopmentHost;
     <SiteHeader />
     <slot />
     <SiteFooter />
+
+    <script>
+      const markLoadedImages = () => {
+        document.querySelectorAll('[data-image-loading]').forEach((container) => {
+          const image = container.querySelector('img');
+          if (!(image instanceof HTMLImageElement)) return;
+
+          const complete = () => container.classList.add('is-loaded');
+
+          if (image.complete) {
+            complete();
+          } else {
+            image.addEventListener('load', complete, { once: true });
+            image.addEventListener('error', complete, { once: true });
+          }
+        });
+      };
+
+      markLoadedImages();
+      document.addEventListener('astro:page-load', markLoadedImages);
+    </script>
   </body>
 </html>
