@@ -1,0 +1,99 @@
+---
+interface Props {
+  url: string;
+  title: string;
+  label?: string;
+}
+
+const { url, title, label = 'Share post' } = Astro.props;
+const encodedUrl = encodeURIComponent(url);
+const encodedTitle = encodeURIComponent(title);
+---
+
+<div class="share-menu" data-share-menu data-share-url={url}>
+  <button class="share-trigger" type="button" aria-label={label} data-share-open>
+    <i class="ph ph-dots-three-vertical" aria-hidden="true"></i>
+  </button>
+
+  <dialog class="share-dialog" aria-label="Share post" data-share-dialog>
+    <div class="share-dialog__inner">
+      <button class="share-dialog__close" type="button" aria-label="Close share dialog" data-share-close>
+        <i class="ph ph-x" aria-hidden="true"></i>
+      </button>
+      <h2>Share Post</h2>
+      <div class="share-dialog__actions">
+        <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`} target="_blank" rel="noreferrer" aria-label="Share on Facebook" class="share-dialog__action share-dialog__action--facebook"><i class="ph ph-facebook-logo" aria-hidden="true"></i></a>
+        <a href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`} target="_blank" rel="noreferrer" aria-label="Share on X" class="share-dialog__action share-dialog__action--x"><i class="ph ph-x-logo" aria-hidden="true"></i></a>
+        <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`} target="_blank" rel="noreferrer" aria-label="Share on LinkedIn" class="share-dialog__action share-dialog__action--linkedin"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></a>
+        <button type="button" aria-label="Copy post link" class="share-dialog__action share-dialog__action--copy" data-share-copy><i class="ph ph-link-simple" aria-hidden="true"></i></button>
+      </div>
+      <p class="share-dialog__feedback" aria-live="polite" data-share-feedback></p>
+    </div>
+  </dialog>
+</div>
+
+<style>
+  .share-menu { position: relative; }
+  .share-trigger, .share-dialog__close {
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    color: #2d352d;
+    cursor: pointer;
+  }
+  .share-trigger:hover, .share-trigger:focus-visible, .share-dialog__close:hover, .share-dialog__close:focus-visible { background: #edf4ea; }
+  .share-trigger:focus-visible, .share-dialog__close:focus-visible, .share-dialog__action:focus-visible { outline: 3px solid rgb(93 157 76 / 32%); outline-offset: 2px; }
+  .share-trigger .ph { font-size: 22px; }
+  .share-dialog { width: min(565px, calc(100% - 34px)); padding: 0; border: 0; background: transparent; }
+  .share-dialog::backdrop { background: rgb(13 20 13 / 78%); }
+  .share-dialog__inner { position: relative; padding: 64px 34px 42px; border-radius: 2px; background: #fff; text-align: center; box-shadow: 0 25px 80px rgb(0 0 0 / 24%); }
+  .share-dialog__close { position: absolute; top: 15px; right: 15px; color: #334033; }
+  .share-dialog__close .ph { font-size: 24px; }
+  .share-dialog h2 { margin: 0 0 32px; color: #111; font-size: 22px; letter-spacing: -.03em; }
+  .share-dialog__actions { display: flex; justify-content: center; gap: 26px; }
+  .share-dialog__action { width: 57px; height: 57px; display: grid; place-items: center; border: 0; border-radius: 50%; color: #fff; font: inherit; text-decoration: none; cursor: pointer; }
+  .share-dialog__action .ph { font-size: 26px; }
+  .share-dialog__action--facebook { background: #4267aa; }
+  .share-dialog__action--x { background: #4aa7e8; }
+  .share-dialog__action--linkedin { background: #007db7; }
+  .share-dialog__action--copy { background: #323232; }
+  .share-dialog__feedback { min-height: 20px; margin: 18px 0 -20px; color: #437b36; font-size: 13px; font-weight: 750; }
+  @media (max-width: 520px) {
+    .share-dialog__inner { padding: 53px 22px 30px; }
+    .share-dialog h2 { margin-bottom: 26px; }
+    .share-dialog__actions { gap: 15px; }
+    .share-dialog__action { width: 50px; height: 50px; }
+    .share-dialog__action .ph { font-size: 23px; }
+  }
+</style>
+
+<script>
+  const bindShareMenus = () => {
+    document.querySelectorAll<HTMLElement>('[data-share-menu]').forEach((menu) => {
+      if (menu.dataset.bound) return;
+      menu.dataset.bound = 'true';
+      const dialog = menu.querySelector<HTMLDialogElement>('[data-share-dialog]');
+      const feedback = menu.querySelector<HTMLElement>('[data-share-feedback]');
+      const url = menu.dataset.shareUrl;
+      if (!dialog || !url) return;
+
+      menu.querySelector<HTMLElement>('[data-share-open]')?.addEventListener('click', () => dialog.showModal());
+      menu.querySelector<HTMLElement>('[data-share-close]')?.addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+      menu.querySelector<HTMLElement>('[data-share-copy]')?.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(url);
+          if (feedback) feedback.textContent = 'Link copied';
+        } catch {
+          window.prompt('Copy this link:', url);
+        }
+      });
+    });
+  };
+  bindShareMenus();
+  document.addEventListener('astro:page-load', bindShareMenus);
+</script>
