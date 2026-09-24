@@ -129,7 +129,7 @@ const isActive = (href: string) =>
 
 <style>
   .smc-header {
-    position: relative;
+    position: static;
     z-index: 40;
     background: #fff;
   }
@@ -291,14 +291,20 @@ const isActive = (href: string) =>
 
   .mobile-menu summary .ph {
     position: absolute;
+    left: 50%;
+    top: 50%;
     color: #202420;
     font-size: 22px;
     transition: opacity 180ms ease, transform 180ms ease;
   }
 
+  .menu-open-icon {
+    transform: translate(-50%, -50%);
+  }
+
   .menu-close-icon {
     opacity: 0;
-    transform: rotate(-45deg) scale(.86);
+    transform: translate(-50%, -50%) rotate(-45deg) scale(.86);
   }
 
   .mobile-panel {
@@ -499,12 +505,12 @@ const isActive = (href: string) =>
     .mobile-menu[open] summary .ph { color: #fff; }
     .mobile-menu[open] .menu-open-icon {
       opacity: 0;
-      transform: rotate(45deg) scale(.86);
+      transform: translate(-50%, -50%) rotate(45deg) scale(.86);
     }
 
     .mobile-menu[open] .menu-close-icon {
       opacity: 1;
-      transform: rotate(0) scale(1);
+      transform: translate(-50%, -50%) rotate(0) scale(1);
     }
   }
 </style>
