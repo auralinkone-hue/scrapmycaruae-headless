@@ -115,11 +115,14 @@ const isActive = (href: string) =>
 
       event.preventDefault();
       menu.classList.add('is-closing');
+      const closeDuration = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 0
+        : 200;
 
       window.setTimeout(() => {
         menu.open = false;
         menu.classList.remove('is-closing');
-      }, 200);
+      }, closeDuration);
     });
   });
 </script>
