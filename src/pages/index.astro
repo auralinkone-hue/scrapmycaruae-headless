@@ -495,7 +495,7 @@ const faqJsonLd = {
             return (
               <article class="blog-card" data-reveal>
                 <a href={`/post/${post.slug}`}>
-                  <div class="blog-image">
+                  <div class="blog-image" data-image-loading>
                     {image?.url && (
                       <img
                         src={image.url}
@@ -503,6 +503,7 @@ const faqJsonLd = {
                         width={image.width}
                         height={image.height}
                         loading="lazy"
+                        decoding="async"
                       />
                     )}
                   </div>
@@ -587,8 +588,17 @@ const faqJsonLd = {
 
 <script>
   const revealItems = document.querySelectorAll('[data-reveal]');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document
+    .querySelectorAll('.benefit-grid, .process-list, .blog-grid, .faq-list')
+    .forEach((group) => {
+      group.querySelectorAll('[data-reveal]').forEach((item, index) => {
+        item.style.setProperty('--reveal-delay', `${Math.min(index * 65, 195)}ms`);
+      });
+    });
+
+  if ('IntersectionObserver' in window && !reducedMotion) {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -609,8 +619,8 @@ const faqJsonLd = {
 <style>
   [data-reveal] {
     opacity: 0;
-    transform: translateY(18px);
-    transition: opacity .65s ease, transform .65s cubic-bezier(.2,.7,.2,1);
+    transform: translateY(14px);
+    transition: opacity 560ms cubic-bezier(.2,.7,.2,1) var(--reveal-delay, 0ms), transform 560ms cubic-bezier(.2,.7,.2,1) var(--reveal-delay, 0ms);
   }
 
   [data-reveal].is-visible {
@@ -1450,7 +1460,7 @@ const faqJsonLd = {
     height: 100%;
     display: block;
     object-fit: cover;
-    transition: transform .24s ease;
+    transition: opacity 300ms ease, filter 300ms ease, transform .24s cubic-bezier(.2,.7,.2,1);
   }
 
   .blog-card a:hover img {
@@ -1550,9 +1560,19 @@ const faqJsonLd = {
 
   .faq-list details p {
     max-width: 670px;
-    margin: -6px 0 26px;
+    max-height: 0;
+    margin: 0;
+    overflow: hidden;
+    opacity: 0;
     color: var(--smc-muted);
     line-height: 1.7;
+    transition: max-height 220ms ease, margin 220ms ease, opacity 180ms ease;
+  }
+
+  .faq-list details[open] p {
+    max-height: 180px;
+    margin: -6px 0 26px;
+    opacity: 1;
   }
 
   .final-cta {
