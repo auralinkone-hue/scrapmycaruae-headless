@@ -136,14 +136,17 @@ const jsonLd = post
       </div>
 
       {coverImage && (
-        <img
-          class="cover"
-          src={coverImage}
-          alt={coverAlt}
-          width={normalizedCover?.width}
-          height={normalizedCover?.height}
-          fetchpriority="high"
-        />
+        <div class="cover-wrap" data-image-loading>
+          <img
+            class="cover"
+            src={coverImage}
+            alt={coverAlt}
+            width={normalizedCover?.width}
+            height={normalizedCover?.height}
+            fetchpriority="high"
+            decoding="async"
+          />
+        </div>
       )}
 
       <article class="article-content" set:html={articleHtml} />
@@ -190,12 +193,19 @@ const jsonLd = post
         font-size: 15px;
       }
 
+      .cover-wrap {
+        aspect-ratio: 16 / 9;
+        margin: 0 0 42px;
+        border-radius: 18px;
+      }
+
       .cover {
         display: block;
         width: 100%;
-        height: auto;
+        height: 100%;
+        object-fit: cover;
         border-radius: 18px;
-        margin: 0 0 42px;
+        transition: opacity 300ms ease, filter 300ms ease;
       }
 
       .article-content {
