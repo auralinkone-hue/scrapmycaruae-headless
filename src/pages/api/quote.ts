@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { wixClient } from '../../lib/wix';
+import { requireQuoteRequestsCollectionId } from '../../lib/quote-collection';
 
 export const prerender = false;
 
@@ -50,6 +51,23 @@ async function queryOne(
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    let quoteRequestsCollectionId: string;
+
+    try {
+      quoteRequestsCollectionId = requireQuoteRequestsCollectionId(
+        import.meta.env.WIX_QUOTE_REQUESTS_COLLECTION_ID
+      );
+    } catch {
+      console.error('Quote submission collection configuration is unavailable.');
+      return json(
+        {
+          ok: false,
+          message: 'We could not submit your request right now. Please try again.'
+        },
+        500
+      );
+    }
+
     const body = await request.json();
 
     if (cleanText(body?.website, 200)) {
@@ -110,7 +128,7 @@ export const POST: APIRoute = async ({ request }) => {
         authorization: accessToken
       },
       body: JSON.stringify({
-        dataCollectionId: 'QuoteRequests',
+        dataCollectionId: quoteRequestsCollectionId,
         dataItem: {
           data: {
             title,
@@ -128,7 +146,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (!insertResponse.ok) {
       const detail = await insertResponse.text();
-      throw new Error(`QuoteRequests insert failed: ${insertResponse.status} ${detail}`);
+      throw new Error(`Quote request insert failed: ${insertResponse.status} ${detail}`);
     }
 
     const inserted = await insertResponse.json();

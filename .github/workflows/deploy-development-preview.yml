@@ -19,6 +19,7 @@ jobs:
 
     env:
       PUBLIC_WIX_CLIENT_ID: f3ac0e15-b92a-42ce-8340-f9ec2a40d267
+      WIX_QUOTE_REQUESTS_COLLECTION_ID: QuoteRequestsStaging
       PUBLIC_SEO_ENV: staging
       PUBLIC_SITE_URL: https://www.scrapmycaruae.com
 
