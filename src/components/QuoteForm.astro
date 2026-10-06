@@ -147,6 +147,8 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
         let messageText = '';
         if (!value) {
           messageText = validationMessages[field.name] || 'Please complete this field.';
+        } else if (field.name === 'name' && !/^[\p{L}][\p{L}\s.'-]*$/u.test(value)) {
+          messageText = 'Please enter a valid name.';
         } else if (field.name === 'whatsapp') {
           const digits = value.replace(/[^\d]/g, '');
           if (digits.length < 7 || digits.length > 15) messageText = 'Please enter a valid phone number.';
