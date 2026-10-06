@@ -8,6 +8,7 @@ import { wixResponsiveImage } from '../../lib/wix-image';
 import { renderRicosDocumentWithTableOfContents } from '../../lib/rich-content';
 import { getBlogAuthor } from '../../lib/blog-author';
 import { canonicalUrl } from '../../lib/seo';
+import { getWixPostSeo } from '../../lib/wix-seo';
 import {
   getArticleBreadcrumbItems,
   getBreadcrumbJsonLd,
@@ -41,24 +42,11 @@ const [author, categoryBreadcrumb, relatedPosts] = post
     ])
   : [null, null, []];
 
-const tags = post?.seoData?.tags ?? [];
-const seoTitle =
-  tags.find((tag: any) => tag.type === 'title' && !tag.disabled)?.children ||
-  post?.title ||
-  'Scrap My Car UAE';
-
-const seoDescription =
-  tags.find(
-    (tag: any) =>
-      tag.type === 'meta' &&
-      tag.props?.name === 'description' &&
-      !tag.disabled
-  )?.props?.content ||
-  post?.excerpt ||
-  '';
-
-const canonical = `/post/${post?.slug || slug}`;
-const absoluteCanonical = canonicalUrl(canonical);
+const wixSeo = post ? getWixPostSeo(post) : null;
+const seoTitle = wixSeo?.title || 'Scrap My Car UAE';
+const seoDescription = wixSeo?.description || '';
+const canonical = wixSeo?.canonical || canonicalUrl(`/post/${slug}`);
+const absoluteCanonical = canonical;
 const breadcrumbItems = post
   ? getArticleBreadcrumbItems(post.title, canonical, categoryBreadcrumb)
   : [];
@@ -145,7 +133,7 @@ const jsonLd = post
   canonical={canonical}
   ogImage={coverImage}
   ogType="article"
-  noindex={!post}
+  noindex={!post || Boolean(wixSeo?.noindex)}
 >
   {jsonLd && (
     <Fragment slot="head">
