@@ -18,6 +18,7 @@
     "seo:inventory": "node --env-file=.env scripts/export-seo-inventory.mjs",
     "seo:audit": "node scripts/audit-seo-inventory.mjs",
     "seo:verify-production": "node --env-file-if-exists=.env scripts/verify-production-seo.mjs",
+    "seo:qa": "node --experimental-strip-types --env-file-if-exists=.env scripts/seo-route-audit.mjs",
     "blog:validate": "node --env-file=.env scripts/validate-blog-parity.mjs",
     "preview:check": "node scripts/check-preview.mjs"
   },

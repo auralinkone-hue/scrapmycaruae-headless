@@ -20,3 +20,20 @@ This variable is intentionally not public and must never use a `PUBLIC_` prefix.
 The development preview workflow sets the staging collection explicitly. Production
 deployments must set the production value explicitly; if the variable is missing or
 invalid, quote submission fails closed without exposing configuration to the browser.
+
+
+## Migration route and metadata QA
+
+The protected production route manifest lives in `src/lib/site-routes.ts`. It preserves
+the live Wix canonical routes, including `/post/{slug}`, `/terms-conditions` and
+`/privacy-policy`. It also records only deliberate one-hop 301 compatibility redirects.
+
+Run the rendered SEO audit against a local server, preview URL or production candidate:
+
+```bash
+PUBLIC_SEO_ENV=staging SEO_AUDIT_URL=http://localhost:4321 npm run seo:qa
+```
+
+For a production-candidate check, set both `PUBLIC_SEO_ENV=production` and
+`SEO_AUDIT_URL=https://www.scrapmycaruae.com`. Optional representative post paths can
+be supplied through `SEO_AUDIT_POST_PATHS=/post/example-one,/post/example-two`.

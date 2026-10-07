@@ -1,18 +1,10 @@
 import type { APIRoute } from 'astro';
 import { wixClient } from '../lib/wix';
 import { canonicalUrl, isIndexableRequest } from '../lib/seo';
+import { getWixPostSeo } from '../lib/wix-seo';
+import { indexableStaticRoutes } from '../lib/site-routes';
 
 export const prerender = false;
-
-const staticUrls = [
-  '/',
-  '/free-quote',
-  '/contact-us',
-  '/faqs',
-  '/blogs',
-  '/terms-conditions',
-  '/privay-policy'
-];
 
 function escapeXml(value: string) {
   return value
@@ -35,6 +27,7 @@ async function getAllPosts() {
     slug?: string;
     lastPublishedDate?: string;
     firstPublishedDate?: string;
+    seoData?: { tags?: any[] };
   }> = [];
 
   let cursor: string | undefined;
@@ -47,7 +40,7 @@ async function getAllPosts() {
         authorization: accessToken
       },
       body: JSON.stringify({
-        fieldsets: ['URL'],
+        fieldsets: ['URL', 'SEO'],
         query: {
           cursorPaging: cursor ? { limit: 100, cursor } : { limit: 100 },
           sort: [{ fieldName: 'firstPublishedDate', order: 'DESC' }]
@@ -94,7 +87,7 @@ export const GET: APIRoute = async ({ url }) => {
     });
   }
 
-  const staticEntries = staticUrls
+  const staticEntries = indexableStaticRoutes
     .map((path) => {
       const loc = canonicalUrl(path);
       return `  <url><loc>${escapeXml(loc)}</loc></url>`;
@@ -102,13 +95,15 @@ export const GET: APIRoute = async ({ url }) => {
     .join('\n');
 
   const retainedPosts = [...new Map(
-    posts.filter((post) => post.slug).map((post) => [post.slug, post])
+    posts
+      .filter((post) => post.slug && !getWixPostSeo(post).noindex)
+      .map((post) => [post.slug, post])
   ).values()];
 
   const postEntries = retainedPosts
     .filter((post) => post.slug)
     .map((post) => {
-      const loc = canonicalUrl(`/post/${post.slug}`);
+      const loc = getWixPostSeo(post).canonical;
       const lastmod = post.lastPublishedDate || post.firstPublishedDate;
       const lastmodTag = lastmod
         ? `<lastmod>${escapeXml(new Date(lastmod).toISOString())}</lastmod>`
