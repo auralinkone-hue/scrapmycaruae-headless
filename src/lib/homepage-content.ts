@@ -1,7 +1,10 @@
 import { wixClient } from './wix';
+import { normalizeWixImage } from './wix-image';
 
 const QUERY_URL = 'https://www.wixapis.com/data/v2/items/query';
-const CACHE_TTL_MS = 5 * 60 * 1000;
+const FRESH_CACHE_TTL_MS = 5 * 60 * 1000;
+const EDGE_RETENTION_SECONDS = 24 * 60 * 60;
+const EDGE_CACHE_KEY = new Request('https://homepage-content-cache.invalid/v1/content');
 
 type CmsData = Record<string, unknown>;
 
@@ -192,11 +195,26 @@ const fallback: HomepageContent = {
   steps: stepDefaults
 };
 
-let cached: { expiresAt: number; value: HomepageContent } | undefined;
+type CachedHomepage = {
+  cachedAt: number;
+  value: HomepageContent;
+};
+
+let cached: CachedHomepage | undefined;
+let inFlight: Promise<HomepageContent> | undefined;
+
+function normalizeCmsImage(value: unknown) {
+  if (typeof value === 'string') return normalizeWixImage(value);
+  if (value && typeof value === 'object' && 'url' in value) {
+    const url = (value as { url?: unknown }).url;
+    return normalizeWixImage(typeof url === 'string' ? url : '');
+  }
+  return '';
+}
 
 function coerceItem(data: CmsData): HomeItem {
   return {
-    title: String(data.title ?? ''), description: String(data.description ?? ''), icon: String(data.icon ?? ''), image: String(data.image ?? ''), imageAlt: String(data.imageAlt ?? ''), imageDecorative: Boolean(data.imageDecorative), buttonLabel: String(data.buttonLabel ?? ''), buttonLink: String(data.buttonLink ?? ''), sortOrder: Number(data.sortOrder ?? 9999), isVisible: data.isVisible !== false, group: String(data.group ?? ''), value: String(data.value ?? ''), number: String(data.number ?? ''), isOpenByDefault: Boolean(data.isOpenByDefault), question: String(data.question ?? ''), answer: String(data.answer ?? ''), quote: String(data.quote ?? ''), author: String(data.author ?? ''), rating: Number(data.rating ?? 0), name: String(data.name ?? ''), slug: String(data.slug ?? '')
+    title: String(data.title ?? ''), description: String(data.description ?? ''), icon: String(data.icon ?? ''), image: normalizeCmsImage(data.image), imageAlt: String(data.imageAlt ?? ''), imageDecorative: Boolean(data.imageDecorative), buttonLabel: String(data.buttonLabel ?? ''), buttonLink: String(data.buttonLink ?? ''), sortOrder: Number(data.sortOrder ?? 9999), isVisible: data.isVisible !== false, group: String(data.group ?? ''), value: String(data.value ?? ''), number: String(data.number ?? ''), isOpenByDefault: Boolean(data.isOpenByDefault), question: String(data.question ?? ''), answer: String(data.answer ?? ''), quote: String(data.quote ?? ''), author: String(data.author ?? ''), rating: Number(data.rating ?? 0), name: String(data.name ?? ''), slug: String(data.slug ?? '')
   };
 }
 
@@ -215,44 +233,117 @@ function ordered(items: HomeItem[]) {
   return items.filter((item) => item.isVisible).sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
-/**
- * The single server-side source for homepage CMS content. The five minute
- * process cache avoids eight CMS reads for every visitor while allowing CMS
- * edits to appear without another frontend build or deployment.
- */
-export async function getHomepageContent(): Promise<HomepageContent> {
-  if (cached && cached.expiresAt > Date.now()) return cached.value;
+function normalizePageImages(page: CmsData): CmsData {
+  return {
+    ...page,
+    conditionsImage: normalizeCmsImage(page.conditionsImage),
+    coverageImage: normalizeCmsImage(page.coverageImage)
+  };
+}
+
+function isFresh(entry: CachedHomepage) {
+  return Date.now() - entry.cachedAt < FRESH_CACHE_TTL_MS;
+}
+
+async function readEdgeCache(): Promise<CachedHomepage | undefined> {
+  if (typeof caches === 'undefined') return undefined;
 
   try {
-    const tokens = await wixClient.auth.generateVisitorTokens();
-    const accessToken = tokens.accessToken?.value;
-    if (!accessToken) throw new Error('Could not generate a Wix visitor access token.');
-
-    const [pageRows, settingsRows, badgeRows, faqRows, reviewRows, makeRows, statRows, stepRows] = await Promise.all([
-      queryCollection(accessToken, 'HomePage'),
-      queryCollection(accessToken, 'SiteSettings'),
-      queryCollection(accessToken, 'HomeBadges'),
-      queryCollection(accessToken, 'HomeFAQs'),
-      queryCollection(accessToken, 'HomeReviews'),
-      queryCollection(accessToken, 'HomePopularMakes'),
-      queryCollection(accessToken, 'HomeStats'),
-      queryCollection(accessToken, 'HomeSteps')
-    ]);
-
-    const value: HomepageContent = {
-      page: { ...pageDefaults, ...(pageRows[0] ?? {}) },
-      settings: { ...settingsDefaults, ...(settingsRows[0] ?? {}) },
-      badges: badgeRows.length ? ordered(badgeRows.map(coerceItem)) : badgeDefaults,
-      faqs: faqRows.length ? ordered(faqRows.map(coerceItem)) : faqDefaults,
-      reviews: reviewRows.length ? ordered(reviewRows.map(coerceItem)) : reviewDefaults,
-      popularMakes: makeRows.length ? ordered(makeRows.map(coerceItem)) : makeDefaults,
-      stats: statRows.length ? ordered(statRows.map(coerceItem)) : statDefaults,
-      steps: stepRows.length ? ordered(stepRows.map(coerceItem)) : stepDefaults
-    };
-    cached = { value, expiresAt: Date.now() + CACHE_TTL_MS };
-    return value;
+    const response = await caches.default.match(EDGE_CACHE_KEY);
+    if (!response) return undefined;
+    const entry = await response.json() as CachedHomepage;
+    return entry?.cachedAt && entry.value ? entry : undefined;
   } catch (error) {
-    console.error('Homepage CMS loader failed; serving the verified fallback content.', error);
-    return fallback;
+    console.warn('Homepage edge cache read failed.', error);
+    return undefined;
   }
+}
+
+async function writeEdgeCache(entry: CachedHomepage) {
+  if (typeof caches === 'undefined') return;
+
+  try {
+    await caches.default.put(
+      EDGE_CACHE_KEY,
+      new Response(JSON.stringify(entry), {
+        headers: {
+          'Content-Type': 'application/json',
+          // Freshness is managed in the envelope; retention enables stale-on-error.
+          'Cache-Control': `public, s-maxage=${EDGE_RETENTION_SECONDS}`
+        }
+      })
+    );
+  } catch (error) {
+    console.warn('Homepage edge cache write failed.', error);
+  }
+}
+
+async function fetchHomepageContent(): Promise<HomepageContent> {
+  const tokens = await wixClient.auth.generateVisitorTokens();
+  const accessToken = tokens.accessToken?.value;
+  if (!accessToken) throw new Error('Could not generate a Wix visitor access token.');
+
+  const [pageRows, settingsRows, badgeRows, faqRows, reviewRows, makeRows, statRows, stepRows] = await Promise.all([
+    queryCollection(accessToken, 'HomePage'),
+    queryCollection(accessToken, 'SiteSettings'),
+    queryCollection(accessToken, 'HomeBadges'),
+    queryCollection(accessToken, 'HomeFAQs'),
+    queryCollection(accessToken, 'HomeReviews'),
+    queryCollection(accessToken, 'HomePopularMakes'),
+    queryCollection(accessToken, 'HomeStats'),
+    queryCollection(accessToken, 'HomeSteps')
+  ]);
+
+  return {
+    page: normalizePageImages({ ...pageDefaults, ...(pageRows[0] ?? {}) }),
+    settings: { ...settingsDefaults, ...(settingsRows[0] ?? {}) },
+    badges: badgeRows.length ? ordered(badgeRows.map(coerceItem)) : badgeDefaults,
+    faqs: faqRows.length ? ordered(faqRows.map(coerceItem)) : faqDefaults,
+    reviews: reviewRows.length ? ordered(reviewRows.map(coerceItem)) : reviewDefaults,
+    popularMakes: makeRows.length ? ordered(makeRows.map(coerceItem)) : makeDefaults,
+    stats: statRows.length ? ordered(statRows.map(coerceItem)) : statDefaults,
+    steps: stepRows.length ? ordered(stepRows.map(coerceItem)) : stepDefaults
+  };
+}
+
+/**
+ * The single server-side source for homepage CMS content. Cloudflare's native
+ * cache is the production cache shared by Worker isolates at the edge. The
+ * small process cache is only a local optimisation and development fallback.
+ */
+export async function getHomepageContent(): Promise<HomepageContent> {
+  if (cached && isFresh(cached)) return cached.value;
+  if (inFlight) return inFlight;
+
+  inFlight = (async () => {
+    const edgeEntry = await readEdgeCache();
+    if (edgeEntry && isFresh(edgeEntry)) {
+      cached = edgeEntry;
+      return edgeEntry.value;
+    }
+
+    try {
+      const value = await fetchHomepageContent();
+      const entry = { cachedAt: Date.now(), value };
+      cached = entry;
+      await writeEdgeCache(entry);
+      return value;
+    } catch (error) {
+      if (edgeEntry) {
+        console.warn('Homepage CMS refresh failed; serving stale edge content.', error);
+        cached = edgeEntry;
+        return edgeEntry.value;
+      }
+      if (cached) {
+        console.warn('Homepage CMS refresh failed; serving last known process content.', error);
+        return cached.value;
+      }
+      console.error('Homepage CMS loader failed; serving the verified fallback content.', error);
+      return fallback;
+    } finally {
+      inFlight = undefined;
+    }
+  })();
+
+  return inFlight;
 }

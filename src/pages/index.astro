@@ -34,6 +34,14 @@ const featuredMakes = vehicleData.makes
   .map((item: any) => item.make);
 
 const popularMakes = homepage.popularMakes;
+const conditionsResponsiveImage = wixResponsiveImage(
+  home.conditionsImage || '/sections/vehicle-conditions.webp',
+  { widths: [480, 720, 960, 1280], aspectRatio: 1456 / 1092 }
+);
+const coverageResponsiveImage = wixResponsiveImage(
+  home.coverageImage || '/sections/uae-collection-coverage.webp',
+  { widths: [480, 720, 960, 1280], aspectRatio: 1456 / 1092 }
+);
 
 let latestPosts: any[] = [];
 
@@ -251,15 +259,26 @@ const faqJsonLd = {
       <div class="smc-container condition-grid">
         <div class="condition-visual" data-reveal>
           <div class="condition-image-wrap">
-            <img
-              src={home.conditionsImage || '/sections/vehicle-conditions.webp'}
-              alt={home.conditionsImageDecorative ? '' : home.conditionsImageAlt}
-              aria-hidden={home.conditionsImageDecorative ? 'true' : undefined}
-              width="1456"
-              height="1092"
-              loading="lazy"
-              decoding="async"
-            />
+            <picture>
+              {conditionsResponsiveImage.avifSrcset && (
+                <source
+                  type="image/avif"
+                  srcset={conditionsResponsiveImage.avifSrcset}
+                  sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
+                />
+              )}
+              <img
+                src={conditionsResponsiveImage.src}
+                srcset={conditionsResponsiveImage.srcset || undefined}
+                sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
+                alt={home.conditionsImageDecorative ? '' : home.conditionsImageAlt}
+                aria-hidden={home.conditionsImageDecorative ? 'true' : undefined}
+                width={conditionsResponsiveImage.width || 1456}
+                height={conditionsResponsiveImage.height || 1092}
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
           </div>
         </div>
 
@@ -328,15 +347,26 @@ const faqJsonLd = {
         </div>
 
         <div class="coverage-art" data-reveal>
-          <img
-            src={home.coverageImage || '/sections/uae-collection-coverage.webp'}
-            alt={home.coverageImageDecorative ? '' : home.coverageImageAlt}
-            aria-hidden={home.coverageImageDecorative ? 'true' : undefined}
-            width="1456"
-            height="1092"
-            loading="lazy"
-            decoding="async"
-          />
+          <picture>
+            {coverageResponsiveImage.avifSrcset && (
+              <source
+                type="image/avif"
+                srcset={coverageResponsiveImage.avifSrcset}
+                sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
+              />
+            )}
+            <img
+              src={coverageResponsiveImage.src}
+              srcset={coverageResponsiveImage.srcset || undefined}
+              sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
+              alt={home.coverageImageDecorative ? '' : home.coverageImageAlt}
+              aria-hidden={home.coverageImageDecorative ? 'true' : undefined}
+              width={coverageResponsiveImage.width || 1456}
+              height={coverageResponsiveImage.height || 1092}
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
         </div>
       </div>
     </section>}
