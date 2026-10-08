@@ -1,0 +1,48 @@
+name: Deploy CRM feature preview
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: smc-headless-crm-feature
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    env:
+      PUBLIC_WIX_CLIENT_ID: f3ac0e15-b92a-42ce-8340-f9ec2a40d267
+      WIX_QUOTE_REQUESTS_COLLECTION_ID: QuoteRequestsStaging
+      PUBLIC_SEO_ENV: staging
+      PUBLIC_SITE_URL: https://www.scrapmycaruae.com
+
+    steps:
+      - name: Checkout CRM feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/forms-crm-integration
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test
+        run: npm test
+
+      - name: Build Astro
+        run: npm run build
+
+      - name: Deploy isolated CRM feature Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --name smc-headless-crm-feature
