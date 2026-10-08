@@ -23,8 +23,8 @@ After a quote is saved, the server can create or reuse a Wix CRM contact by norm
 
 Configure these as Cloudflare Worker **secrets** (never `PUBLIC_` variables):
 
-- `WIX_CRM_API_KEY` — Wix API key with **Read Contacts** and **Manage Contacts** scopes.
-- `WIX_CRM_SITE_ID` — the existing Wix site ID when the API key requires an explicit site header.
+- `WIX_CRM_API_KEY` — Wix API key with **Read Contacts**, **Manage Contacts**, and **Manage Contact Labels** scopes.
+- `WIX_CRM_SITE_ID` — the existing Wix site ID, required for this API-key CRM integration.
 
 The development collection applies `Headless Staging Test`; production applies `Website Valuation Lead`.
 

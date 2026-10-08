@@ -22,7 +22,7 @@ export type CrmSyncResult = {
   synced: boolean;
   contactId?: string;
   created?: boolean;
-  reason?: 'unconfigured' | 'ambiguous-match' | 'label-pending';
+  reason?: 'unconfigured' | 'ambiguous-match';
 };
 
 class WixCrmRequestError extends Error {
@@ -52,19 +52,19 @@ function hasMeaningfulName(contact: WixContact): boolean {
 function getCrmConfiguration(runtimeEnv: RuntimeCrmEnv) {
   const apiKey = asNonEmptyString(runtimeEnv.WIX_CRM_API_KEY);
   const siteId = asNonEmptyString(runtimeEnv.WIX_CRM_SITE_ID);
-  return apiKey ? { apiKey, siteId } : undefined;
+  return apiKey && siteId ? { apiKey, siteId } : undefined;
 }
 
-function crmHeaders(config: { apiKey: string; siteId?: string }) {
+function crmHeaders(config: { apiKey: string; siteId: string }) {
   return {
     Authorization: config.apiKey,
     'Content-Type': 'application/json',
-    ...(config.siteId ? { 'wix-site-id': config.siteId } : {})
+    'wix-site-id': config.siteId
   };
 }
 
 async function crmFetch(
-  config: { apiKey: string; siteId?: string },
+  config: { apiKey: string; siteId: string },
   operation: string,
   path: string,
   init: RequestInit
@@ -79,7 +79,7 @@ async function crmFetch(
 }
 
 async function findExactPhoneMatches(
-  config: { apiKey: string; siteId?: string },
+  config: { apiKey: string; siteId: string },
   normalizedPhone: string
 ): Promise<WixContact[]> {
   const response = await crmFetch(config, 'contact lookup', '/v5/contacts/query', {
@@ -96,13 +96,14 @@ async function findExactPhoneMatches(
 }
 
 async function createContact(
-  config: { apiKey: string; siteId?: string },
+  config: { apiKey: string; siteId: string },
   customerName: string,
   normalizedPhone: string
 ): Promise<WixContact> {
   const response = await crmFetch(config, 'contact creation', '/v5/contacts', {
     method: 'POST',
     body: JSON.stringify({
+      allowDuplicates: false,
       contact: {
         name: contactName(customerName),
         phone: { tag: 'MOBILE', phone: normalizedPhone }
@@ -115,7 +116,7 @@ async function createContact(
 }
 
 async function fillMissingContactName(
-  config: { apiKey: string; siteId?: string },
+  config: { apiKey: string; siteId: string },
   contact: WixContact,
   customerName: string
 ) {
@@ -136,7 +137,7 @@ async function fillMissingContactName(
 }
 
 async function findOrCreateLabel(
-  config: { apiKey: string; siteId?: string },
+  config: { apiKey: string; siteId: string },
   labelName: string
 ): Promise<string> {
   const response = await crmFetch(config, 'label resolution', '/v4/labels', {
@@ -149,19 +150,14 @@ async function findOrCreateLabel(
 }
 
 async function applyLabel(
-  config: { apiKey: string; siteId?: string },
+  config: { apiKey: string; siteId: string },
   contactId: string,
   labelKey: string
 ) {
-  const response = await crmFetch(config, 'contact labeling', '/v4/bulk/contacts/add-remove-labels', {
+  await crmFetch(config, 'contact labeling', `/v4/contacts/${encodeURIComponent(contactId)}/labels`, {
     method: 'POST',
-    body: JSON.stringify({
-      filter: { id: { $in: [contactId] } },
-      labelKeysToAdd: [labelKey]
-    })
+    body: JSON.stringify({ labelKeys: [labelKey] })
   });
-  const data = await response.json() as { jobId?: string };
-  if (!data.jobId) throw new Error('Wix CRM labeling returned no job ID.');
 }
 
 /**
