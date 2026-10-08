@@ -54,7 +54,7 @@ test('quote route has no hardcoded QuoteRequests destination', async () => {
 test('existing Wix field mapping remains unchanged', async () => {
   const route = await readProjectFile('src/pages/api/quote.ts');
   const mappedFields = route.match(
-    /data:\s*\{\s*title,\s*make,\s*model,\s*year,\s*customerName,\s*whatsapp,\s*status:\s*'New',\s*source:\s*'Headless Website'\s*\}/s
+    /data:\s*\{\s*title,\s*make,\s*model,\s*year:\s*Number\(year\),\s*customerName,\s*whatsapp,\s*status:\s*'New',\s*source:\s*'Headless Website'\s*\}/s
   );
 
   assert.ok(mappedFields, `Expected unchanged quote field mapping in ${projectRoot}`);

@@ -4,11 +4,15 @@ export const prerender = false;
 import { media } from '@wix/sdk';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import QuoteForm from '../components/QuoteForm.astro';
+import { getHomepageContent } from '../lib/homepage-content';
 import { getVehicleData } from '../lib/vehicle-data';
 import { wixClient } from '../lib/wix';
 import { wixResponsiveImage } from '../lib/wix-image';
 
-const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
+const homepage = await getHomepageContent();
+const home = homepage.page as Record<string, any>;
+const settings = homepage.settings as Record<string, any>;
+const whatsappUrl = String(settings.whatsappUrl || 'https://api.whatsapp.com/send?phone=%2B971557458322');
 
 let vehicleData = {
   makes: [],
@@ -29,12 +33,15 @@ const featuredMakes = vehicleData.makes
   .slice(0, 5)
   .map((item: any) => item.make);
 
-const popularMakes = [
-  { name: 'Honda', icon: '/brands/honda.svg' },
-  { name: 'Toyota', icon: '/brands/toyota.svg' },
-  { name: 'Mercedes', icon: '/brands/mercedes.svg' },
-  { name: 'Nissan', icon: '/brands/nissan.svg' }
-];
+const popularMakes = homepage.popularMakes;
+const conditionsResponsiveImage = wixResponsiveImage(
+  home.conditionsImage || '/sections/vehicle-conditions.webp',
+  { widths: [480, 720, 960, 1280], aspectRatio: 1456 / 1092 }
+);
+const coverageResponsiveImage = wixResponsiveImage(
+  home.coverageImage || '/sections/uae-collection-coverage.webp',
+  { widths: [480, 720, 960, 1280], aspectRatio: 1456 / 1092 }
+);
 
 let latestPosts: any[] = [];
 
@@ -72,81 +79,13 @@ const formatDate = (value: string | Date | undefined) => {
   }).format(new Date(value));
 };
 
-const benefits = [
-  {
-    title: 'Any condition',
-    text: 'Old, accident-damaged, non-running, high-mileage or mechanically faulty cars.',
-    icon: 'car'
-  },
-  {
-    title: 'Free collection',
-    text: 'We arrange vehicle collection across Dubai, Sharjah and the wider UAE.',
-    icon: 'truck'
-  },
-  {
-    title: 'Straightforward paperwork',
-    text: 'A simple handover process with guidance on the details needed to complete the sale.',
-    icon: 'file'
-  },
-  {
-    title: 'Direct support',
-    text: 'Call or WhatsApp our team when you need help with your valuation or collection.',
-    icon: 'chat'
-  }
-];
-
-const conditions = [
-  { label: 'Non-running cars', icon: 'ph-engine', description: 'We buy non-running cars across Dubai and the UAE, including vehicles that will not start or need recovery.' },
-  { label: 'Engine or gearbox faults', icon: 'ph-gear-six', description: 'Request a valuation for cars with engine trouble, transmission faults or major mechanical issues.' },
-  { label: 'Accident-damaged cars', icon: 'ph-warning-octagon', description: 'We assess accident-damaged vehicles in any condition and can arrange collection where needed.' },
-  { label: 'Electrical issues', icon: 'ph-lightning', description: 'Cars with electrical faults, warning lights or battery-related problems can still be submitted.' },
-  { label: 'High-mileage vehicles', icon: 'ph-gauge', description: 'High mileage does not prevent a fair valuation. Share your vehicle details and condition first.' },
-  { label: 'Expired Mulkiya', icon: 'ph-calendar-x', description: 'You can still ask about selling a car with expired Mulkiya; our team will explain the handover details.' },
-  { label: 'Old cars', icon: 'ph-clock-counter-clockwise', description: 'Older cars can still have value. We consider the make, model, year and overall condition.' },
-  { label: 'Running cars', icon: 'ph-car-profile', description: 'We also buy running cars when you want a straightforward sale and UAE-wide collection.' }
-];
-
-const reviews = [
-  'Quick valuation and a professional collection process.',
-  'Simple form, clear communication and no unnecessary chasing.',
-  'They handled the collection smoothly from start to finish.',
-  'A straightforward way to sell a car with problems.',
-  'The team explained the next step clearly and kept it easy.'
-];
-
-const locations = [
-  'Dubai',
-  'Sharjah',
-  'Abu Dhabi',
-  'Ajman',
-  'Ras Al Khaimah',
-  'Fujairah',
-  'Al Ain',
-  'Umm Al Quwain'
-];
-
-const faqs = [
-  {
-    question: 'Do you buy cars that are not running?',
-    answer: 'Yes. We assess non-running cars as well as vehicles with engine, gearbox, electrical or accident damage.'
-  },
-  {
-    question: 'Is vehicle collection free?',
-    answer: 'Free vehicle collection is available as part of our service across supported UAE locations.'
-  },
-  {
-    question: 'Can I request a valuation for a car with expired Mulkiya?',
-    answer: 'Yes. Cars with expired Mulkiya can still be submitted for valuation. Our team can explain the required handover details for your situation.'
-  },
-  {
-    question: 'What information do I need to get a quote?',
-    answer: 'Choose the vehicle make, model and year, then enter your name and mobile number so our team can contact you about the valuation.'
-  },
-  {
-    question: 'Which areas do you cover?',
-    answer: 'We serve customers across Dubai and the UAE, including Sharjah, Abu Dhabi, Ajman, Ras Al Khaimah, Fujairah, Al Ain and Umm Al Quwain.'
-  }
-];
+const benefits = homepage.badges.filter((item) => item.group === 'benefits');
+const conditions = homepage.badges.filter((item) => item.group === 'conditions');
+const locations = homepage.badges.filter((item) => item.group === 'locations');
+const heroProof = homepage.badges.filter((item) => item.group === 'heroProof');
+const testimonialProof = homepage.badges.filter((item) => item.group === 'testimonialProof');
+const reviews = homepage.reviews;
+const faqs = homepage.faqs;
 
 const faqJsonLd = {
   '@context': 'https://schema.org',
@@ -163,8 +102,8 @@ const faqJsonLd = {
 ---
 
 <BaseLayout
-  title="Scrap My Car UAE | Free Quote & Collection - Dubai"
-  description="Scrap My Car offers unbeatable prices & free scrap car valuation and collection service across all UAE locations. Obtaining a scrap car valuation has never been easier – simply share your name and contact number, and our expert car valuation team will reach out to you Shortly."
+  title={home.title}
+  description={home.description}
   canonical="/"
 >
   <Fragment slot="head">
@@ -175,22 +114,22 @@ const faqJsonLd = {
   </Fragment>
 
   <main>
-    <section class="hero">
+    {home.heroVisible && <section class="hero">
       <div class="smc-container hero-grid">
         <div class="hero-copy" data-reveal>
           <div class="eyebrow">
             <span class="live-dot"></span>
-            Scrap car buyers across the UAE
+            {home.heroEyebrow}
           </div>
 
           <h1>
-            Sell your car.
-            <span>Skip the hassle.</span>
+            {home.heroHeading}
+            <span>{home.heroHeadingAccent}</span>
           </h1>
         </div>
 
         <p class="hero-lead hero-description" data-reveal>
-          Get a free car valuation.<br class="mobile-line-break" /> Collection across the UAE.
+          {home.heroDescription}
         </p>
 
         <div id="valuation" class="hero-form" data-reveal>
@@ -203,52 +142,46 @@ const faqJsonLd = {
         </div>
 
         <div class="hero-actions" data-reveal>
-          <a class="smc-button smc-button-primary hero-primary" href="#valuation">
-            Get Your Vehicle Price
+          <a class="smc-button smc-button-primary hero-primary" href={home.heroPrimaryButtonLink}>
+            {home.heroPrimaryButtonLabel}
             <i class="ph ph-arrow-right" aria-hidden="true"></i>
           </a>
           <a
             class="smc-button smc-button-secondary whatsapp-button"
-            href={whatsappUrl}
+            href={home.heroSecondaryButtonLink || whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
           >
             <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
-            WhatsApp Us
+            {home.heroSecondaryButtonLabel}
           </a>
         </div>
 
         <div class="hero-proof" data-reveal>
-          <div>
-            <i class="ph ph-seal-check" aria-hidden="true"></i>
-            <span>Free valuation</span>
-          </div>
-          <div>
-            <i class="ph ph-map-pin" aria-hidden="true"></i>
-            <span>UAE-wide collection</span>
-          </div>
-          <div>
-            <i class="ph ph-car-profile" aria-hidden="true"></i>
-            <span>Any condition</span>
-          </div>
+          {heroProof.map((item) => (
+            <div>
+              <i class:list={['ph', item.icon]} aria-hidden="true"></i>
+              <span>{item.title}</span>
+            </div>
+          ))}
         </div>
       </div>
-    </section>
+    </section>}
 
-    <section class="make-strip">
+    {home.makesVisible && <section class="make-strip">
         <div class="smc-container make-strip-inner">
-          <span class="make-label">Popular makes we buy</span>
+          <span class="make-label">{home.makesHeading}</span>
           <div class="make-marquee" aria-label="Popular makes we buy">
             <div class="make-list">
               {popularMakes.map((make) => (
                 <div class="make-item">
-                  <img src={make.icon} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                  <img src={make.image || make.icon} alt={make.imageDecorative ? '' : make.imageAlt} aria-hidden={make.imageDecorative ? 'true' : undefined} loading="lazy" decoding="async" />
                   <strong>{make.name}</strong>
                 </div>
               ))}
               {popularMakes.map((make) => (
                 <div class="make-item" aria-hidden="true">
-                  <img src={make.icon} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                  <img src={make.image || make.icon} alt={make.imageDecorative ? '' : make.imageAlt} aria-hidden={make.imageDecorative ? 'true' : undefined} loading="lazy" decoding="async" />
                   <strong>{make.name}</strong>
                 </div>
               ))}
@@ -256,17 +189,17 @@ const faqJsonLd = {
           </div>
           <a class="smc-button smc-button-secondary make-whatsapp" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
             <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
-            WhatsApp Us
+            {home.makesButtonLabel}
           </a>
         </div>
-      </section>
+    </section>}
 
-    <section class="benefits smc-container">
+    {home.benefitsVisible && <section class="benefits smc-container">
       <div class="section-heading" data-reveal>
-        <div class="smc-kicker">Why Scrap My Car UAE</div>
-        <h2>A simpler way to move on from your car.</h2>
+        <div class="smc-kicker">{home.benefitsKicker}</div>
+        <h2>{home.benefitsHeading}</h2>
         <p>
-          One straightforward process from valuation request to vehicle collection.
+          {home.benefitsDescription}
         </p>
       </div>
 
@@ -278,10 +211,7 @@ const faqJsonLd = {
                 <i
                   class:list={[
                     'ph',
-                    benefit.icon === 'car' && 'ph-car-profile',
-                    benefit.icon === 'truck' && 'ph-truck',
-                    benefit.icon === 'file' && 'ph-file-text',
-                    benefit.icon === 'chat' && 'ph-chats-circle'
+                  benefit.icon
                   ]}
                   aria-hidden="true"
                 ></i>
@@ -289,89 +219,82 @@ const faqJsonLd = {
               <i class="ph ph-arrow-up-right benefit-arrow" aria-hidden="true"></i>
             </div>
             <h3>{benefit.title}</h3>
-            <p>{benefit.text}</p>
+            <p>{benefit.description}</p>
           </article>
         ))}
       </div>
-    </section>
+    </section>}
 
-    <section class="process-section">
+    {home.processVisible && <section class="process-section">
       <div class="smc-container process-grid">
         <div class="process-copy" data-reveal>
-          <div class="smc-kicker">How it works</div>
-          <h2>From vehicle details to collection in three clear steps.</h2>
+          <div class="smc-kicker">{home.processKicker}</div>
+          <h2>{home.processHeading}</h2>
           <p>
-            No classified ads, no endless buyer messages and no separate towing arrangement.
+            {home.processDescription}
           </p>
-          <a class="text-link" href="#valuation">
-            Start your valuation <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
+          <a class="text-link" href={home.processButtonLink}>
+            {home.processButtonLabel} <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
           </a>
         </div>
 
         <div class="process-list">
-          <article data-reveal>
-            <div class="process-marker">
-              <i class="ph ph-steering-wheel" aria-hidden="true"></i>
-              <span class="process-number">01</span>
-            </div>
-            <div>
-              <h3>Choose your vehicle</h3>
-              <p>Select the make, model and year from our vehicle database.</p>
-            </div>
-          </article>
-          <article data-reveal>
-            <div class="process-marker">
-              <i class="ph ph-chat-circle-dots" aria-hidden="true"></i>
-              <span class="process-number">02</span>
-            </div>
-            <div>
-              <h3>Get your valuation</h3>
-              <p>Add your name and WhatsApp number and send your request to our team.</p>
-            </div>
-          </article>
-          <article data-reveal>
-            <div class="process-marker">
-              <i class="ph ph-truck" aria-hidden="true"></i>
-              <span class="process-number">03</span>
-            </div>
-            <div>
-              <h3>Arrange collection</h3>
-              <p>If you accept the offer, we arrange the vehicle handover and collection.</p>
-            </div>
-          </article>
+          {homepage.steps.map((step) => (
+            <article data-reveal>
+              <div class="process-marker">
+                <i class:list={['ph', step.icon]} aria-hidden="true"></i>
+                <span class="process-number">{step.number}</span>
+              </div>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
-    </section>
+    </section>}
 
-    <section class="condition-section">
+    {home.conditionsVisible && <section class="condition-section">
       <div class="smc-container condition-grid">
         <div class="condition-visual" data-reveal>
           <div class="condition-image-wrap">
-            <img
-              src="/sections/vehicle-conditions.webp"
-              alt="Cars in different conditions, including damaged vehicles"
-              width="1456"
-              height="1092"
-              loading="lazy"
-              decoding="async"
-            />
+            <picture>
+              {conditionsResponsiveImage.avifSrcset && (
+                <source
+                  type="image/avif"
+                  srcset={conditionsResponsiveImage.avifSrcset}
+                  sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
+                />
+              )}
+              <img
+                src={conditionsResponsiveImage.src}
+                srcset={conditionsResponsiveImage.srcset || undefined}
+                sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
+                alt={home.conditionsImageDecorative ? '' : home.conditionsImageAlt}
+                aria-hidden={home.conditionsImageDecorative ? 'true' : undefined}
+                width={conditionsResponsiveImage.width || 1456}
+                height={conditionsResponsiveImage.height || 1092}
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
           </div>
         </div>
 
         <div class="condition-copy" data-reveal>
-          <div class="smc-kicker">We buy more than perfect cars</div>
-          <h2>Your car can still have value even when it has problems.</h2>
+          <div class="smc-kicker">{home.conditionsKicker}</div>
+          <h2>{home.conditionsHeading}</h2>
           <p>
-            We assess cars with mechanical faults, electrical problems, accident damage,
-            expired registration and other issues.
+            {home.conditionsDescription}
           </p>
 
           <div class="condition-tags">
-            {conditions.map((condition, index) => (
-              <details class="condition-detail" open={index === 0}>
+            {conditions.map((condition) => (
+              <details class="condition-detail" open={condition.isOpenByDefault}>
                 <summary>
                   <i class:list={['ph', condition.icon]} aria-hidden="true"></i>
-                  <span>{condition.label}</span>
+                  <span>{condition.title}</span>
                   <i class="ph ph-plus condition-toggle" aria-hidden="true"></i>
                 </summary>
                 <p>{condition.description}</p>
@@ -379,82 +302,86 @@ const faqJsonLd = {
             ))}
           </div>
 
-          <a class="smc-button condition-button" href="#valuation">
-            Get a Free Valuation
+          <a class="smc-button condition-button" href={home.conditionsButtonLink}>
+            {home.conditionsButtonLabel}
             <i class="ph ph-arrow-right" aria-hidden="true"></i>
           </a>
         </div>
       </div>
-    </section>
+    </section>}
 
-    <section class="value-section smc-container">
+    {home.valueVisible && <section class="value-section smc-container">
       <div class="value-intro" data-reveal>
-        <div class="smc-kicker">Easy. Fast. Fair.</div>
-        <h2>Designed around the way people actually want to sell a car.</h2>
+        <div class="smc-kicker">{home.valueKicker}</div>
+        <h2>{home.valueHeading}</h2>
       </div>
 
       <div class="value-grid">
-        <article data-reveal>
-          <span>01</span>
-          <h3>Easy</h3>
-          <p>Select your vehicle and send one short request. No long listing process.</p>
-        </article>
-        <article data-reveal>
-          <span>02</span>
-          <h3>Fast</h3>
-          <p>Your details go directly to the team handling valuations and collections.</p>
-        </article>
-        <article data-reveal>
-          <span>03</span>
-          <h3>Fair</h3>
-          <p>Your vehicle is assessed using its actual make, model, year and condition.</p>
-        </article>
+        {homepage.stats.map((stat) => (
+          <article data-reveal>
+            <span>{stat.value}</span>
+            <h3>{stat.title}</h3>
+            <p>{stat.description}</p>
+          </article>
+        ))}
       </div>
-    </section>
+    </section>}
 
-    <section class="coverage-section">
+    {home.coverageVisible && <section class="coverage-section">
       <div class="smc-container coverage-grid">
         <div class="coverage-copy" data-reveal>
-          <div class="smc-kicker">UAE vehicle collection</div>
-          <h2>Wherever your car is, start with the same simple form.</h2>
+          <div class="smc-kicker">{home.coverageKicker}</div>
+          <h2>{home.coverageHeading}</h2>
           <p>
-            Scrap My Car UAE serves customers across Dubai and other major UAE locations.
+            {home.coverageDescription}
           </p>
 
           <div class="location-grid">
             {locations.map((location) => (
               <span>
-                <i class="ph ph-map-pin" aria-hidden="true"></i>
-                {location}
+                <i class:list={['ph', location.icon]} aria-hidden="true"></i>
+                {location.title}
               </span>
             ))}
           </div>
         </div>
 
         <div class="coverage-art" data-reveal>
-          <img
-            src="/sections/uae-collection-coverage.webp"
-            alt="UAE vehicle collection coverage map"
-            width="1456"
-            height="1092"
-            loading="lazy"
-            decoding="async"
-          />
+          <picture>
+            {coverageResponsiveImage.avifSrcset && (
+              <source
+                type="image/avif"
+                srcset={coverageResponsiveImage.avifSrcset}
+                sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
+              />
+            )}
+            <img
+              src={coverageResponsiveImage.src}
+              srcset={coverageResponsiveImage.srcset || undefined}
+              sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
+              alt={home.coverageImageDecorative ? '' : home.coverageImageAlt}
+              aria-hidden={home.coverageImageDecorative ? 'true' : undefined}
+              width={coverageResponsiveImage.width || 1456}
+              height={coverageResponsiveImage.height || 1092}
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
         </div>
       </div>
-    </section>
+    </section>}
 
-    <section class="testimonial-section smc-container">
+    {home.testimonialsVisible && <section class="testimonial-section smc-container">
       <div class="testimonial-side" data-reveal>
-        <div class="smc-kicker">A straightforward service</div>
-        <h2>Less chasing. More clarity.</h2>
+        <div class="smc-kicker">{home.testimonialsKicker}</div>
+        <h2>{home.testimonialsHeading}</h2>
         <p>
-          Start online, speak directly with the team, and keep the whole vehicle-sale process simple.
+          {home.testimonialsDescription}
         </p>
         <div class="mini-proof">
-          <span><i class="ph ph-clipboard-text" aria-hidden="true"></i>Online valuation request</span>
-          <span><i class="ph ph-whatsapp-logo" aria-hidden="true"></i>Direct WhatsApp support</span>
-          <span><i class="ph ph-truck" aria-hidden="true"></i>Collection arranged for you</span>
+          {testimonialProof.map((item) => (
+            <span><i class:list={['ph', item.icon]} aria-hidden="true"></i>{item.title}</span>
+          ))}
         </div>
       </div>
 
@@ -463,31 +390,31 @@ const faqJsonLd = {
           {reviews.map((review) => (
             <article class="review-card">
               <div class="review-stars" aria-label="5 star customer review">★★★★★</div>
-              <p>“{review}”</p>
-              <span><i class="ph ph-user-circle" aria-hidden="true"></i>Customer feedback</span>
+              <p>“{review.quote}”</p>
+              <span><i class="ph ph-user-circle" aria-hidden="true"></i>{review.author}</span>
             </article>
           ))}
           <div class="review-track-duplicate" aria-hidden="true">
             {reviews.map((review) => (
               <article class="review-card">
                 <div class="review-stars">★★★★★</div>
-                <p>“{review}”</p>
-                <span><i class="ph ph-user-circle"></i>Customer feedback</span>
+                <p>“{review.quote}”</p>
+                <span><i class="ph ph-user-circle"></i>{review.author}</span>
               </article>
             ))}
           </div>
         </div>
       </div>
-    </section>
+    </section>}
 
-    {latestPosts.length > 0 && (
+    {home.blogVisible && latestPosts.length > 0 && (
       <section class="blog-section smc-container">
         <div class="blog-heading" data-reveal>
           <div>
-            <div class="smc-kicker">Latest guides</div>
-            <h2>Useful advice for UAE car owners.</h2>
+            <div class="smc-kicker">{home.blogKicker}</div>
+            <h2>{home.blogHeading}</h2>
           </div>
-          <a class="text-link" href="/blogs">View all blogs <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          <a class="text-link" href={home.blogButtonLink}>{home.blogButtonLabel} <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
         </div>
 
         <div class="blog-grid">
@@ -528,27 +455,27 @@ const faqJsonLd = {
       </section>
     )}
 
-    <section class="faq-section smc-container">
+    {home.faqVisible && <section class="faq-section smc-container">
       <div class="faq-heading" data-reveal>
-        <div class="smc-kicker">Common questions</div>
-        <h2>What customers usually want to know.</h2>
+        <div class="smc-kicker">{home.faqKicker}</div>
+        <h2>{home.faqHeading}</h2>
         <p>
-          Need something else? Message our team directly on WhatsApp.
+          {home.faqDescription}
         </p>
         <a
           class="smc-button smc-button-secondary"
-          href={whatsappUrl}
+          href={home.faqButtonLink || whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
         >
           <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
-          Ask on WhatsApp
+          {home.faqButtonLabel}
         </a>
       </div>
 
       <div class="faq-list">
-        {faqs.map((faq, index) => (
-          <details data-reveal open={index === 0}>
+        {faqs.map((faq) => (
+          <details data-reveal open={faq.isOpenByDefault}>
             <summary>
               <span>{faq.question}</span>
               <i class="ph ph-plus" aria-hidden="true"></i>
@@ -557,32 +484,32 @@ const faqJsonLd = {
           </details>
         ))}
       </div>
-    </section>
+    </section>}
 
-    <section class="final-cta">
+    {home.finalVisible && <section class="final-cta">
       <div class="smc-container final-cta-inner" data-reveal>
         <div>
-          <div class="smc-kicker">Ready when you are</div>
-          <h2>Tell us which car you want to sell.</h2>
-          <p>Choose your make, model and year to start your free valuation.</p>
+          <div class="smc-kicker">{home.finalKicker}</div>
+          <h2>{home.finalHeading}</h2>
+          <p>{home.finalDescription}</p>
         </div>
         <div class="final-actions">
-          <a class="smc-button final-primary" href="#valuation">
-            Get Your Vehicle Price
+          <a class="smc-button final-primary" href={home.finalPrimaryButtonLink}>
+            {home.finalPrimaryButtonLabel}
             <i class="ph ph-arrow-right" aria-hidden="true"></i>
           </a>
           <a
             class="smc-button final-whatsapp"
-            href={whatsappUrl}
+            href={home.finalSecondaryButtonLink || whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
           >
             <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
-            WhatsApp
+            {home.finalSecondaryButtonLabel}
           </a>
         </div>
       </div>
-    </section>
+    </section>}
 
     <a
       class="floating-whatsapp"

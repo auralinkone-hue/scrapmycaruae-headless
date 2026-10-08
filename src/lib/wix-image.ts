@@ -12,8 +12,31 @@ type ResponsiveImageOptions = {
   quality?: number;
 };
 
-const sourceUrl = (image: WixImage | null | undefined) =>
+const rawSourceUrl = (image: WixImage | null | undefined) =>
   typeof image === 'string' ? image : image?.url || '';
+
+const isWixCdnImage = (source: string) =>
+  source.includes('static.wixstatic.com/') || source.startsWith('wix:image://') || source.startsWith('wix:');
+
+/**
+ * Wix CMS IMAGE fields may return an opaque wix:image:// URI. Those values
+ * are useful CMS references, but are not browser image URLs. Resolve them at
+ * the server boundary so templates never emit a raw Wix media URI in src.
+ */
+export function normalizeWixImage(image: WixImage | null | undefined) {
+  const source = rawSourceUrl(image);
+  if (!source) return '';
+
+  if (source.startsWith('wix:image://') || source.startsWith('wix:')) {
+    try {
+      return media.getImageUrl(source) || '';
+    } catch {
+      return '';
+    }
+  }
+
+  return source;
+}
 
 const transform = (
   image: WixImage,
@@ -22,8 +45,9 @@ const transform = (
   encoding: 'auto' | 'avif',
   quality: number
 ) => {
-  const source = sourceUrl(image);
+  const source = normalizeWixImage(image);
   if (!source) return '';
+  if (!isWixCdnImage(source)) return source;
 
   return media.getScaledToFillImageUrl(source, width, height, {
     quality,
@@ -42,13 +66,23 @@ export function wixResponsiveImage(
   image: WixImage | null | undefined,
   { widths, aspectRatio, quality = 78 }: ResponsiveImageOptions
 ) {
-  const source = sourceUrl(image);
+  const source = normalizeWixImage(image);
   const originalWidth = typeof image === 'string' ? 0 : Number(image?.width || 0);
   const originalHeight = typeof image === 'string' ? 0 : Number(image?.height || 0);
   const ratio = aspectRatio || (originalWidth && originalHeight ? originalWidth / originalHeight : 16 / 9);
 
   if (!source) {
     return { src: '', srcset: '', avifSrcset: '', width: originalWidth, height: originalHeight };
+  }
+
+  if (!isWixCdnImage(source)) {
+    return {
+      src: source,
+      srcset: '',
+      avifSrcset: '',
+      width: originalWidth,
+      height: originalHeight
+    };
   }
 
   const variants = widths.map((width) => {
