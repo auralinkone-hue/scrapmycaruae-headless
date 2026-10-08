@@ -43,6 +43,15 @@ test('collection configuration remains server-only', async () => {
   assert.match(quoteForm, /fetch\('\/api\/quote'/);
 });
 
+test('CMS quote save is essential before the WhatsApp response', async () => {
+  const route = await readProjectFile('src/pages/api/quote.ts');
+
+  assert.match(route, /normalizeUaeMobilePhone\(body\?\.whatsapp\)/);
+  assert.match(route, /if \(!insertResponse\.ok\) throw new Error\(/);
+  assert.ok(route.indexOf('if (!insertResponse.ok)') < route.indexOf('whatsappUrl'), 'WhatsApp URL must only be returned after Wix CMS confirms the quote write.');
+  assert.doesNotMatch(route, /syncQuoteContact|crmSynced/);
+});
+
 test('quote route has no hardcoded QuoteRequests destination', async () => {
   const route = await readProjectFile('src/pages/api/quote.ts');
 

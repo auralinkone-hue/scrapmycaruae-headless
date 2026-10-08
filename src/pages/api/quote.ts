@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { wixClient } from '../../lib/wix';
 import { requireQuoteRequestsCollectionId } from '../../lib/quote-collection';
+import { normalizeUaeMobilePhone } from '../../lib/phone';
 
 export const prerender = false;
 const INSERT_URL = 'https://www.wixapis.com/data/v2/items';
@@ -8,6 +9,7 @@ const QUERY_URL = 'https://www.wixapis.com/data/v2/items/query';
 const WHATSAPP_NUMBER = '971557458322';
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 const cleanText = (value: unknown, max = 100) => String(value ?? '').trim().slice(0, max);
+const CUSTOMER_NAME_PATTERN = /^[\p{L}][\p{L}\s.'-]*$/u;
 
 async function queryOne(accessToken: string, collectionId: string, filter: Record<string, unknown>) {
   const response = await fetch(QUERY_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', authorization: accessToken }, body: JSON.stringify({ dataCollectionId: collectionId, query: { filter, paging: { limit: 1, offset: 0 } } }) });
@@ -31,7 +33,9 @@ export const POST: APIRoute = async ({ request }) => {
     const whatsapp = cleanText(body?.whatsapp, 40).replace(/[^\d]/g, '');
     if (!make || !model || !year || !customerName || !whatsapp) return json({ ok: false, message: 'Please complete all required fields.' }, 400);
     if (!/^\d{4}$/.test(year)) return json({ ok: false, message: 'Please select a valid vehicle year.' }, 400);
-    if (whatsapp.length < 7 || whatsapp.length > 15) return json({ ok: false, message: 'Please enter a valid mobile number.' }, 400);
+    const normalizedPhone = normalizeUaeMobilePhone(body?.whatsapp);
+    if (!normalizedPhone) return json({ ok: false, message: 'Please enter a valid UAE mobile number.' }, 400);
+    if (!CUSTOMER_NAME_PATTERN.test(customerName)) return json({ ok: false, message: 'Please enter a valid name.' }, 400);
 
     const tokens = await wixClient.auth.generateVisitorTokens();
     const accessToken = tokens.accessToken?.value;

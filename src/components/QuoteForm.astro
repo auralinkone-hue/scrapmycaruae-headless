@@ -151,7 +151,8 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
           messageText = 'Please enter a valid name.';
         } else if (field.name === 'whatsapp') {
           const digits = value.replace(/[^\d]/g, '');
-          if (digits.length < 7 || digits.length > 15) messageText = 'Please enter a valid phone number.';
+          const isUaeMobile = /^(?:0?5\d{8}|9715\d{8})$/.test(digits);
+          if (!isUaeMobile) messageText = 'Please enter a valid UAE mobile number.';
         }
         if (messageText) {
           showError(field, messageText);
