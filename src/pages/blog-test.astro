@@ -2,7 +2,6 @@
 export const prerender = false;
 
 import { wixClient } from '../lib/wix';
-import BaseLayout from '../layouts/BaseLayout.astro';
 
 let blogPosts = [];
 let errorMessage = '';
@@ -20,13 +19,15 @@ try {
 }
 ---
 
-<BaseLayout
-  title="Wix Blog Connection Test"
-  description="Internal Wix Blog connection diagnostic."
-  canonical="/blog-test"
-  noindex={true}
->
-  <main>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Wix Blog Connection Test</title>
+  </head>
+
+  <body>
+    <main>
       <h1>Wix Blog Connection Test</h1>
 
       {errorMessage && (
@@ -51,5 +52,6 @@ try {
           </ul>
         </>
       )}
-  </main>
-</BaseLayout>
+    </main>
+  </body>
+</html>
