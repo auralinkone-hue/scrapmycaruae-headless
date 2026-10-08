@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { wixClient } from '../../lib/wix';
 import { requireQuoteRequestsCollectionId } from '../../lib/quote-collection';
+import { normalizeUaeMobilePhone } from '../../lib/phone';
+import { syncQuoteContact } from '../../lib/wix-crm';
 
 export const prerender = false;
 const INSERT_URL = 'https://www.wixapis.com/data/v2/items';
@@ -8,6 +10,7 @@ const QUERY_URL = 'https://www.wixapis.com/data/v2/items/query';
 const WHATSAPP_NUMBER = '971557458322';
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 const cleanText = (value: unknown, max = 100) => String(value ?? '').trim().slice(0, max);
+const CUSTOMER_NAME_PATTERN = /^[\p{L}][\p{L}\s.'-]*$/u;
 
 async function queryOne(accessToken: string, collectionId: string, filter: Record<string, unknown>) {
   const response = await fetch(QUERY_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', authorization: accessToken }, body: JSON.stringify({ dataCollectionId: collectionId, query: { filter, paging: { limit: 1, offset: 0 } } }) });
@@ -16,7 +19,7 @@ async function queryOne(accessToken: string, collectionId: string, filter: Recor
   return (data.dataItems ?? [])[0] ?? null;
 }
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   try {
     let quoteRequestsCollectionId: string;
     try { quoteRequestsCollectionId = requireQuoteRequestsCollectionId(import.meta.env.WIX_QUOTE_REQUESTS_COLLECTION_ID); }
@@ -31,7 +34,9 @@ export const POST: APIRoute = async ({ request }) => {
     const whatsapp = cleanText(body?.whatsapp, 40).replace(/[^\d]/g, '');
     if (!make || !model || !year || !customerName || !whatsapp) return json({ ok: false, message: 'Please complete all required fields.' }, 400);
     if (!/^\d{4}$/.test(year)) return json({ ok: false, message: 'Please select a valid vehicle year.' }, 400);
-    if (whatsapp.length < 7 || whatsapp.length > 15) return json({ ok: false, message: 'Please enter a valid mobile number.' }, 400);
+    const normalizedPhone = normalizeUaeMobilePhone(body?.whatsapp);
+    if (!normalizedPhone) return json({ ok: false, message: 'Please enter a valid UAE mobile number.' }, 400);
+    if (!CUSTOMER_NAME_PATTERN.test(customerName)) return json({ ok: false, message: 'Please enter a valid name.' }, 400);
 
     const tokens = await wixClient.auth.generateVisitorTokens();
     const accessToken = tokens.accessToken?.value;
@@ -48,8 +53,30 @@ export const POST: APIRoute = async ({ request }) => {
     if (!insertResponse.ok) throw new Error(`Quote request insert failed: ${insertResponse.status} ${await insertResponse.text()}`);
 
     const inserted = await insertResponse.json();
+    let crmSynced = false;
+    try {
+      const crmResult = await syncQuoteContact({
+        runtimeEnv: locals.runtime.env,
+        normalizedPhone,
+        customerName,
+        labelName: quoteRequestsCollectionId === 'QuoteRequestsStaging'
+          ? 'Headless Staging Test'
+          : 'Website Valuation Lead'
+      });
+      crmSynced = crmResult.synced;
+      if (!crmSynced) {
+        console.warn(`Quote CRM synchronization was skipped (${crmResult.reason ?? 'unknown'}).`);
+      }
+    } catch (crmError) {
+      // CRM is secondary. Never lose a confirmed CMS quote or expose CRM data
+      // and error details to the browser.
+      console.error(
+        'Quote CRM synchronization failed.',
+        crmError instanceof Error ? crmError.message : 'Unknown CRM error.'
+      );
+    }
     const message = ['Hi Scrap My Car UAE, I would like a free valuation.', '', `Make: ${make}`, `Model: ${model}`, `Year: ${year}`, `Name: ${customerName}`, `Phone: ${whatsapp}`].join('\n');
-    return json({ ok: true, requestId: inserted.dataItem?.id ?? '', whatsappUrl: `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}` });
+    return json({ ok: true, requestId: inserted.dataItem?.id ?? '', crmSynced, whatsappUrl: `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}` });
   } catch (error) {
     console.error('Quote submission failed', error);
     return json({ ok: false, message: 'We could not submit your request right now. Please try again.' }, 500);

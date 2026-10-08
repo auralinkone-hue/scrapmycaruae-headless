@@ -17,6 +17,17 @@ This variable is intentionally not public and must never use a `PUBLIC_` prefix.
 - Development and Cloudflare preview: `WIX_QUOTE_REQUESTS_COLLECTION_ID=QuoteRequestsStaging`
 - Production: `WIX_QUOTE_REQUESTS_COLLECTION_ID=QuoteRequests`
 
+## CRM contact synchronization
+
+After a quote is saved, the server can create or reuse a Wix CRM contact by normalized UAE mobile number and apply the environment label. This secondary step never blocks the saved quote or its WhatsApp handoff.
+
+Configure these as Cloudflare Worker **secrets** (never `PUBLIC_` variables):
+
+- `WIX_CRM_API_KEY` — Wix API key with **Read Contacts** and **Manage Contacts** scopes.
+- `WIX_CRM_SITE_ID` — the existing Wix site ID when the API key requires an explicit site header.
+
+The development collection applies `Headless Staging Test`; production applies `Website Valuation Lead`.
+
 The development preview workflow sets the staging collection explicitly. Production
 deployments must set the production value explicitly; if the variable is missing or
 invalid, quote submission fails closed without exposing configuration to the browser.
