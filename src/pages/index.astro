@@ -1,17 +1,2033 @@
 ---
+export const prerender = false;
 
+import { media } from '@wix/sdk';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import { getHomepageContent } from '../lib/homepage-content';
+import { getVehicleData } from '../lib/vehicle-data';
+import { wixClient } from '../lib/wix';
+import { wixResponsiveImage } from '../lib/wix-image';
+
+const homepage = await getHomepageContent();
+const home = homepage.page as Record<string, any>;
+const settings = homepage.settings as Record<string, any>;
+const whatsappUrl = String(settings.whatsappUrl || 'https://api.whatsapp.com/send?phone=%2B971557458322');
+
+let vehicleData = {
+  makes: [],
+  models: [],
+  years: []
+};
+
+let vehicleDataError = '';
+
+try {
+  vehicleData = await getVehicleData();
+} catch (error) {
+  vehicleDataError = error instanceof Error ? error.message : String(error);
+}
+
+const featuredMakes = vehicleData.makes
+  .filter((item: any) => item.featuredMake)
+  .slice(0, 5)
+  .map((item: any) => item.make);
+
+const popularMakes = homepage.popularMakes;
+const conditionsResponsiveImage = wixResponsiveImage(
+  home.conditionsImage || '/sections/vehicle-conditions.webp',
+  { widths: [480, 720, 960, 1280], aspectRatio: 1456 / 1092 }
+);
+const coverageResponsiveImage = wixResponsiveImage(
+  home.coverageImage || '/sections/uae-collection-coverage.webp',
+  { widths: [480, 720, 960, 1280], aspectRatio: 1456 / 1092 }
+);
+
+let latestPosts: any[] = [];
+
+try {
+  const result = await wixClient.posts.queryPosts({
+    paging: { limit: 3, offset: 0 },
+    sort: [{ fieldName: 'firstPublishedDate', order: 'DESC' }]
+  });
+  latestPosts = result.posts ?? [];
+} catch {
+  latestPosts = [];
+}
+
+const getPostImage = (post: any) => {
+  const image = post?.media?.wixMedia?.image;
+  if (!image) return null;
+
+  if (typeof image === 'string') {
+    try {
+      return media.getImageUrl(image);
+    } catch {
+      return null;
+    }
+  }
+
+  return image?.url ? image : null;
+};
+
+const formatDate = (value: string | Date | undefined) => {
+  if (!value) return '';
+  return new Intl.DateTimeFormat('en-AE', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  }).format(new Date(value));
+};
+
+const benefits = homepage.badges.filter((item) => item.group === 'benefits');
+const conditions = homepage.badges.filter((item) => item.group === 'conditions');
+const locations = homepage.badges.filter((item) => item.group === 'locations');
+const heroProof = homepage.badges.filter((item) => item.group === 'heroProof');
+const testimonialProof = homepage.badges.filter((item) => item.group === 'testimonialProof');
+const reviews = homepage.reviews;
+const faqs = homepage.faqs;
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer
+    }
+  }))
+};
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  title={home.title}
+  description={home.description}
+  canonical="/"
+>
+  <Fragment slot="head">
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')}
+    />
+  </Fragment>
+
+  <main>
+    {home.heroVisible && <section class="hero">
+      <div class="smc-container hero-grid">
+        <div class="hero-copy" data-reveal>
+          <div class="eyebrow">
+            <span class="live-dot"></span>
+            {home.heroEyebrow}
+          </div>
+
+          <h1>
+            {home.heroHeading}
+            <span>{home.heroHeadingAccent}</span>
+          </h1>
+        </div>
+
+        <p class="hero-lead hero-description" data-reveal>
+          {home.heroDescription}
+        </p>
+
+        <div id="valuation" class="hero-form" data-reveal>
+          <QuoteForm
+            makes={vehicleData.makes}
+            models={vehicleData.models}
+            years={vehicleData.years}
+            dataError={vehicleDataError}
+          />
+        </div>
+
+        <div class="hero-actions" data-reveal>
+          <a class="smc-button smc-button-primary hero-primary" href={home.heroPrimaryButtonLink}>
+            {home.heroPrimaryButtonLabel}
+            <i class="ph ph-arrow-right" aria-hidden="true"></i>
+          </a>
+          <a
+            class="smc-button smc-button-secondary whatsapp-button"
+            href={home.heroSecondaryButtonLink || whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
+            {home.heroSecondaryButtonLabel}
+          </a>
+        </div>
+
+        <div class="hero-proof" data-reveal>
+          {heroProof.map((item) => (
+            <div>
+              <i class:list={['ph', item.icon]} aria-hidden="true"></i>
+              <span>{item.title}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>}
+
+    {home.makesVisible && <section class="make-strip">
+        <div class="smc-container make-strip-inner">
+          <span class="make-label">{home.makesHeading}</span>
+          <div class="make-marquee" aria-label="Popular makes we buy">
+            <div class="make-list">
+              {popularMakes.map((make) => (
+                <div class="make-item">
+                  <img src={make.image || make.icon} alt={make.imageDecorative ? '' : make.imageAlt} aria-hidden={make.imageDecorative ? 'true' : undefined} loading="lazy" decoding="async" />
+                  <strong>{make.name}</strong>
+                </div>
+              ))}
+              {popularMakes.map((make) => (
+                <div class="make-item" aria-hidden="true">
+                  <img src={make.image || make.icon} alt={make.imageDecorative ? '' : make.imageAlt} aria-hidden={make.imageDecorative ? 'true' : undefined} loading="lazy" decoding="async" />
+                  <strong>{make.name}</strong>
+                </div>
+              ))}
+            </div>
+          </div>
+          <a class="smc-button smc-button-secondary make-whatsapp" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+            <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
+            {home.makesButtonLabel}
+          </a>
+        </div>
+    </section>}
+
+    {home.benefitsVisible && <section class="benefits smc-container">
+      <div class="section-heading" data-reveal>
+        <div class="smc-kicker">{home.benefitsKicker}</div>
+        <h2>{home.benefitsHeading}</h2>
+        <p>
+          {home.benefitsDescription}
+        </p>
+      </div>
+
+      <div class="benefit-grid">
+        {benefits.map((benefit) => (
+          <article class="benefit-card" data-reveal>
+            <div class="benefit-top">
+              <div class="benefit-icon">
+                <i
+                  class:list={[
+                    'ph',
+                  benefit.icon
+                  ]}
+                  aria-hidden="true"
+                ></i>
+              </div>
+              <i class="ph ph-arrow-up-right benefit-arrow" aria-hidden="true"></i>
+            </div>
+            <h3>{benefit.title}</h3>
+            <p>{benefit.description}</p>
+          </article>
+        ))}
+      </div>
+    </section>}
+
+    {home.processVisible && <section class="process-section">
+      <div class="smc-container process-grid">
+        <div class="process-copy" data-reveal>
+          <div class="smc-kicker">{home.processKicker}</div>
+          <h2>{home.processHeading}</h2>
+          <p>
+            {home.processDescription}
+          </p>
+          <a class="text-link" href={home.processButtonLink}>
+            {home.processButtonLabel} <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <div class="process-list">
+          {homepage.steps.map((step) => (
+            <article data-reveal>
+              <div class="process-marker">
+                <i class:list={['ph', step.icon]} aria-hidden="true"></i>
+                <span class="process-number">{step.number}</span>
+              </div>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>}
+
+    {home.conditionsVisible && <section class="condition-section">
+      <div class="smc-container condition-grid">
+        <div class="condition-visual" data-reveal>
+          <div class="condition-image-wrap">
+            <picture>
+              {conditionsResponsiveImage.avifSrcset && (
+                <source
+                  type="image/avif"
+                  srcset={conditionsResponsiveImage.avifSrcset}
+                  sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
+                />
+              )}
+              <img
+                src={conditionsResponsiveImage.src}
+                srcset={conditionsResponsiveImage.srcset || undefined}
+                sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
+                alt={home.conditionsImageDecorative ? '' : home.conditionsImageAlt}
+                aria-hidden={home.conditionsImageDecorative ? 'true' : undefined}
+                width={conditionsResponsiveImage.width || 1456}
+                height={conditionsResponsiveImage.height || 1092}
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
+          </div>
+        </div>
+
+        <div class="condition-copy" data-reveal>
+          <div class="smc-kicker">{home.conditionsKicker}</div>
+          <h2>{home.conditionsHeading}</h2>
+          <p>
+            {home.conditionsDescription}
+          </p>
+
+          <div class="condition-tags">
+            {conditions.map((condition) => (
+              <details class="condition-detail" open={condition.isOpenByDefault}>
+                <summary>
+                  <i class:list={['ph', condition.icon]} aria-hidden="true"></i>
+                  <span>{condition.title}</span>
+                  <i class="ph ph-plus condition-toggle" aria-hidden="true"></i>
+                </summary>
+                <p>{condition.description}</p>
+              </details>
+            ))}
+          </div>
+
+          <a class="smc-button condition-button" href={home.conditionsButtonLink}>
+            {home.conditionsButtonLabel}
+            <i class="ph ph-arrow-right" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </section>}
+
+    {home.valueVisible && <section class="value-section smc-container">
+      <div class="value-intro" data-reveal>
+        <div class="smc-kicker">{home.valueKicker}</div>
+        <h2>{home.valueHeading}</h2>
+      </div>
+
+      <div class="value-grid">
+        {homepage.stats.map((stat) => (
+          <article data-reveal>
+            <span>{stat.value}</span>
+            <h3>{stat.title}</h3>
+            <p>{stat.description}</p>
+          </article>
+        ))}
+      </div>
+    </section>}
+
+    {home.coverageVisible && <section class="coverage-section">
+      <div class="smc-container coverage-grid">
+        <div class="coverage-copy" data-reveal>
+          <div class="smc-kicker">{home.coverageKicker}</div>
+          <h2>{home.coverageHeading}</h2>
+          <p>
+            {home.coverageDescription}
+          </p>
+
+          <div class="location-grid">
+            {locations.map((location) => (
+              <span>
+                <i class:list={['ph', location.icon]} aria-hidden="true"></i>
+                {location.title}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div class="coverage-art" data-reveal>
+          <picture>
+            {coverageResponsiveImage.avifSrcset && (
+              <source
+                type="image/avif"
+                srcset={coverageResponsiveImage.avifSrcset}
+                sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
+              />
+            )}
+            <img
+              src={coverageResponsiveImage.src}
+              srcset={coverageResponsiveImage.srcset || undefined}
+              sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
+              alt={home.coverageImageDecorative ? '' : home.coverageImageAlt}
+              aria-hidden={home.coverageImageDecorative ? 'true' : undefined}
+              width={coverageResponsiveImage.width || 1456}
+              height={coverageResponsiveImage.height || 1092}
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
+        </div>
+      </div>
+    </section>}
+
+    {home.testimonialsVisible && <section class="testimonial-section smc-container">
+      <div class="testimonial-side" data-reveal>
+        <div class="smc-kicker">{home.testimonialsKicker}</div>
+        <h2>{home.testimonialsHeading}</h2>
+        <p>
+          {home.testimonialsDescription}
+        </p>
+        <div class="mini-proof">
+          {testimonialProof.map((item) => (
+            <span><i class:list={['ph', item.icon]} aria-hidden="true"></i>{item.title}</span>
+          ))}
+        </div>
+      </div>
+
+      <div class="review-marquee" data-reveal aria-label="Customer feedback">
+        <div class="review-track">
+          {reviews.map((review) => (
+            <article class="review-card">
+              <div class="review-stars" aria-label="5 star customer review">★★★★★</div>
+              <p>“{review.quote}”</p>
+              <span><i class="ph ph-user-circle" aria-hidden="true"></i>{review.author}</span>
+            </article>
+          ))}
+          <div class="review-track-duplicate" aria-hidden="true">
+            {reviews.map((review) => (
+              <article class="review-card">
+                <div class="review-stars">★★★★★</div>
+                <p>“{review.quote}”</p>
+                <span><i class="ph ph-user-circle"></i>{review.author}</span>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>}
+
+    {home.blogVisible && latestPosts.length > 0 && (
+      <section class="blog-section smc-container">
+        <div class="blog-heading" data-reveal>
+          <div>
+            <div class="smc-kicker">{home.blogKicker}</div>
+            <h2>{home.blogHeading}</h2>
+          </div>
+          <a class="text-link" href={home.blogButtonLink}>{home.blogButtonLabel} <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="blog-grid">
+          {latestPosts.map((post: any) => {
+            const image = getPostImage(post);
+            const responsiveImage = wixResponsiveImage(image, {
+              widths: [320, 480, 640, 800],
+              aspectRatio: 900 / 506
+            });
+            return (
+              <article class="blog-card" data-reveal>
+                <a href={`/post/${post.slug}`}>
+                  <div class="blog-image" data-image-loading>
+                    {responsiveImage.src && (
+                      <picture>
+                        <source type="image/avif" srcset={responsiveImage.avifSrcset} sizes="(max-width: 700px) calc(100vw - 36px), (max-width: 1100px) calc(50vw - 42px), 360px" />
+                        <img
+                          src={responsiveImage.src}
+                          srcset={responsiveImage.srcset}
+                          sizes="(max-width: 700px) calc(100vw - 36px), (max-width: 1100px) calc(50vw - 42px), 360px"
+                          alt={post?.media?.altText || post.title || ''}
+                          width={responsiveImage.width}
+                          height={responsiveImage.height}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </picture>
+                    )}
+                  </div>
+                  <div class="blog-meta">{formatDate(post.firstPublishedDate)}</div>
+                  <h3>{post.title}</h3>
+                  <span class="read-more">Read article <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+                </a>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    )}
+
+    {home.faqVisible && <section class="faq-section smc-container">
+      <div class="faq-heading" data-reveal>
+        <div class="smc-kicker">{home.faqKicker}</div>
+        <h2>{home.faqHeading}</h2>
+        <p>
+          {home.faqDescription}
+        </p>
+        <a
+          class="smc-button smc-button-secondary"
+          href={home.faqButtonLink || whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
+          {home.faqButtonLabel}
+        </a>
+      </div>
+
+      <div class="faq-list">
+        {faqs.map((faq) => (
+          <details data-reveal open={faq.isOpenByDefault}>
+            <summary>
+              <span>{faq.question}</span>
+              <i class="ph ph-plus" aria-hidden="true"></i>
+            </summary>
+            <p>{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>}
+
+    {home.finalVisible && <section class="final-cta">
+      <div class="smc-container final-cta-inner" data-reveal>
+        <div>
+          <div class="smc-kicker">{home.finalKicker}</div>
+          <h2>{home.finalHeading}</h2>
+          <p>{home.finalDescription}</p>
+        </div>
+        <div class="final-actions">
+          <a class="smc-button final-primary" href={home.finalPrimaryButtonLink}>
+            {home.finalPrimaryButtonLabel}
+            <i class="ph ph-arrow-right" aria-hidden="true"></i>
+          </a>
+          <a
+            class="smc-button final-whatsapp"
+            href={home.finalSecondaryButtonLink || whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
+            {home.finalSecondaryButtonLabel}
+          </a>
+        </div>
+      </div>
+    </section>}
+
+    <a
+      class="floating-whatsapp"
+      href={whatsappUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat with Scrap My Car UAE on WhatsApp"
+    >
+      <img src="/whatsapp.svg" alt="" aria-hidden="true" />
+    </a>
+  </main>
+</BaseLayout>
+
+<script>
+  const revealItems = document.querySelectorAll('[data-reveal]');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document
+    .querySelectorAll('.benefit-grid, .process-list, .blog-grid, .faq-list')
+    .forEach((group) => {
+      group.querySelectorAll('[data-reveal]').forEach((item, index) => {
+        item.style.setProperty('--reveal-delay', `${Math.min(index * 65, 195)}ms`);
+      });
+    });
+
+  if ('IntersectionObserver' in window && !reducedMotion) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+  } else {
+    revealItems.forEach((item) => item.classList.add('is-visible'));
+  }
+</script>
+
+<style>
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 560ms cubic-bezier(.2,.7,.2,1) var(--reveal-delay, 0ms), transform 560ms cubic-bezier(.2,.7,.2,1) var(--reveal-delay, 0ms);
+  }
+
+  [data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .hero {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--smc-line);
+    background:
+      radial-gradient(circle at 78% 18%, rgba(82, 137, 69, .13), transparent 34%),
+      linear-gradient(180deg, #f7faf5 0%, #fff 86%);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: .45;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(43, 88, 39, .045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(43, 88, 39, .045) 1px, transparent 1px);
+    background-size: 52px 52px;
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 76%);
+  }
+
+  .hero-grid {
+    position: relative;
+    min-height: 630px;
+    padding: 70px 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(390px, .72fr);
+    column-gap: 70px;
+    row-gap: 20px;
+    align-items: end;
+  }
+
+  .hero-copy {
+    grid-column: 1;
+  }
+
+  .hero-description {
+    grid-column: 1;
+  }
+
+  .eyebrow {
+    width: fit-content;
+    padding: 8px 12px;
+    border: 1px solid #dce7d8;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,.7);
+    color: #40503e;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4f963f;
+    box-shadow: 0 0 0 5px rgba(79,150,63,.11);
+  }
+
+  .hero h1 {
+    max-width: 800px;
+    margin: 18px 0 22px;
+    font-size: clamp(58px, 7vw, 92px);
+    line-height: .92;
+    letter-spacing: -.068em;
+    font-weight: 820;
+  }
+
+  .hero h1 span {
+    display: block;
+    color: var(--smc-green);
+  }
+
+  .hero-lead {
+    max-width: 655px;
+    margin: 0;
+    color: var(--smc-muted);
+    font-size: 19px;
+    line-height: 1.68;
+  }
+
+  .mobile-line-break {
+    display: none;
+  }
+
+  .hero-actions {
+    grid-column: 1;
+    margin-top: 30px;
+    display: flex;
+    gap: 11px;
+    flex-wrap: wrap;
+  }
+
+  .hero-primary {
+    min-width: 225px;
+    justify-content: space-between;
+  }
+
+  .whatsapp-button .wa-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .hero-proof {
+    grid-column: 1;
+    margin-top: 12px;
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .hero-proof > div {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .hero-proof span {
+    color: #556054;
+    font-size: 13px;
+    font-weight: 760;
+  }
+
+  .hero-proof .ph {
+    color: var(--smc-green);
+    font-size: 17px;
+  }
+
+  .hero-form {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    position: relative;
+    z-index: 3;
+    align-self: center;
+    scroll-margin-top: 30px;
+  }
+
+  .make-strip {
+    border-bottom: 1px solid var(--smc-line);
+    background: #edf6ea;
+  }
+
+  .make-strip-inner {
+    min-height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+  }
+
+  .make-label {
+    color: #868d84;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .make-marquee {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .make-list {
+    --marquee-step: 632px;
+    width: max-content;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 130px;
+    gap: 28px;
+    align-items: center;
+    animation: make-marquee 24s linear infinite;
+  }
+
+  .make-item {
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #343a33;
+  }
+
+  .make-item img {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    opacity: .72;
+    filter: grayscale(1);
+  }
+
+  .make-item strong {
+    font-size: 13px;
+    letter-spacing: .02em;
+  }
+
+  @keyframes make-marquee {
+    to { transform: translateX(calc(-1 * var(--marquee-step))); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .make-list { animation: none; }
+  }
+
+  .make-whatsapp {
+    display: none;
+  }
+
+  .benefits {
+    padding: 88px 0 92px;
+  }
+
+  .section-heading {
+    max-width: 760px;
+    margin-bottom: 34px;
+  }
+
+  .section-heading h2,
+  .process-copy h2,
+  .condition-copy h2,
+  .value-intro h2,
+  .coverage-copy h2,
+  .testimonial-side h2,
+  .blog-heading h2,
+  .faq-heading h2,
+  .final-cta h2 {
+    margin: 9px 0 16px;
+    font-size: clamp(40px, 5.2vw, 62px);
+    line-height: 1.03;
+    letter-spacing: -.05em;
+  }
+
+  .section-heading p,
+  .process-copy > p,
+  .condition-copy > p,
+  .coverage-copy > p,
+  .testimonial-side > p,
+  .faq-heading > p,
+  .final-cta p {
+    margin: 0;
+    color: var(--smc-muted);
+    font-size: 17px;
+    line-height: 1.68;
+  }
+
+  .benefit-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .benefit-card {
+    min-height: 190px;
+    padding: 22px;
+    border: 1px solid #dfe7dc;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 8px 22px rgba(29,55,25,.035);
+    transition: transform 190ms ease, box-shadow 190ms ease, border-color 190ms ease, background 190ms ease;
+  }
+
+  .benefit-card:hover {
+    transform: translateY(-4px);
+    border-color: #bfd4ba;
+    background: #fcfefb;
+    box-shadow: 0 16px 34px rgba(29,55,25,.08);
+  }
+
+  .benefit-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .benefit-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: var(--smc-green-soft);
+    color: var(--smc-green-dark);
+    transition: transform 190ms ease, background 190ms ease, color 190ms ease;
+  }
+
+  .benefit-icon > .ph {
+    font-size: 22px;
+  }
+
+  .benefit-arrow {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #dfe7dc;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: #8aa287;
+    font-size: 15px;
+    transition: transform 190ms ease, background 190ms ease, color 190ms ease, border-color 190ms ease;
+  }
+
+  .benefit-card:hover .benefit-icon,
+  .benefit-card:active .benefit-icon {
+    transform: rotate(-5deg) scale(1.04);
+    background: var(--smc-green-dark);
+    color: #fff;
+  }
+
+  .benefit-card:hover .benefit-arrow,
+  .benefit-card:active .benefit-arrow {
+    transform: translate(2px, -2px);
+    border-color: var(--smc-green);
+    background: var(--smc-green);
+    color: #fff;
+  }
+
+  .benefit-card h3 {
+    margin: 25px 0 8px;
+    font-size: 20px;
+    letter-spacing: -.035em;
+  }
+
+  .benefit-card p {
+    margin: 0;
+    color: var(--smc-muted);
+    line-height: 1.58;
+    font-size: 14px;
+  }
+
+  .process-section {
+    padding: 105px 0;
+    background: #f6f8f4;
+    border-block: 1px solid var(--smc-line);
+  }
+
+  .process-grid {
+    display: grid;
+    grid-template-columns: .85fr 1.15fr;
+    gap: 90px;
+    align-items: start;
+  }
+
+  .process-copy {
+    position: sticky;
+    top: 118px;
+  }
+
+  .text-link {
+    margin-top: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--smc-green-dark);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 850;
+  }
+
+  .text-link .ph {
+    font-size: 16px;
+  }
+
+  .process-list {
+    display: grid;
+    gap: 13px;
+  }
+
+  .process-list article {
+    position: relative;
+    min-height: 152px;
+    padding: 23px;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 18px;
+    align-items: center;
+    border: 1px solid #dce5d9;
+    border-radius: 18px;
+    background: rgba(255,255,255,.78);
+    box-shadow: 0 8px 24px rgba(25,55,24,.035);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+
+  .process-number {
+    position: absolute;
+    right: -7px;
+    bottom: -7px;
+    width: 27px;
+    height: 27px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #f6f8f4;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--smc-green-dark);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .03em;
+    line-height: 1;
+  }
+
+  .process-marker {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+  }
+
+  .process-marker > .ph {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: var(--smc-green-dark);
+    color: #fff;
+    font-size: 22px;
+    box-shadow: 0 8px 16px rgba(25,70,26,.16);
+    transition: transform 180ms ease, background 180ms ease;
+  }
+
+  .process-list article:hover {
+    transform: translateY(-3px);
+    border-color: #bcd1b7;
+    background: #fff;
+    box-shadow: 0 14px 30px rgba(25,55,24,.08);
+  }
+
+  .process-list article:hover .process-marker > .ph,
+  .process-list article:active .process-marker > .ph {
+    transform: rotate(-5deg) scale(1.04);
+    background: #2f6f2d;
+  }
+
+  .process-list h3 {
+    margin: 0 0 7px;
+    font-size: 25px;
+    letter-spacing: -.04em;
+  }
+
+  .process-list p {
+    max-width: 530px;
+    margin: 0;
+    color: var(--smc-muted);
+    line-height: 1.6;
+  }
+
+  .condition-section {
+    padding: 110px 0;
+    background: #102912;
+    color: #fff;
+  }
+
+  .condition-grid {
+    display: grid;
+    grid-template-columns: .95fr 1.05fr;
+    gap: 86px;
+    align-items: center;
+  }
+
+  .condition-visual {
+    position: relative;
+  }
+
+  .condition-image-wrap {
+    position: relative;
+    min-height: 510px;
+    display: grid;
+    place-items: center;
+  }
+
+  .condition-image-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 34px 0 18px;
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at 50% 48%, rgba(126,184,116,.18), transparent 57%),
+      linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.01));
+  }
+
+  .condition-image-wrap img {
+    position: relative;
+    z-index: 1;
+    width: 126%;
+    max-width: none;
+    height: auto;
+    object-fit: contain;
+    transform: translate(-8%, 10px);
+    filter: drop-shadow(0 34px 40px rgba(0,0,0,.34));
+  }
+
+  .condition-section .smc-kicker {
+    color: #9cc895;
+  }
+
+  .condition-copy > p {
+    color: #c6d4c4;
+    max-width: 640px;
+  }
+
+  .condition-tags {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .condition-detail {
+    border: 1px solid rgba(255,255,255,.13);
+    border-radius: 12px;
+    background: rgba(255,255,255,.035);
+    overflow: hidden;
+    transition: border-color 180ms ease, background 180ms ease;
+  }
+
+  .condition-detail[open] {
+    border-color: rgba(156,200,149,.4);
+    background: rgba(156,200,149,.09);
+  }
+
+  .condition-detail summary {
+    min-height: 48px;
+    padding: 0 13px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    cursor: pointer;
+    list-style: none;
+    color: #ecf3eb;
+    font-size: 13px;
+    font-weight: 720;
+  }
+
+  .condition-detail summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .condition-detail summary > .ph:first-child {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(156,200,149,.16);
+    color: #9cc895;
+    font-size: 12px;
+  }
+
+  .condition-detail summary > span {
+    min-width: 0;
+  }
+
+  .condition-toggle {
+    margin-left: auto;
+    color: #9cc895;
+    font-size: 16px;
+    transition: transform 180ms ease;
+  }
+
+  .condition-detail[open] .condition-toggle {
+    transform: rotate(45deg);
+  }
+
+  .condition-detail p {
+    margin: -1px 13px 14px 42px;
+    color: #c6d4c4;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .condition-button {
+    margin-top: 28px;
+    background: #fff;
+    color: #173b18;
+  }
+
+  .condition-button:hover {
+    background: #f1f5ef;
+  }
+
+  .value-section {
+    padding: 112px 0;
+  }
+
+  .value-intro {
+    max-width: 850px;
+    margin-bottom: 52px;
+  }
+
+  .value-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--smc-line);
+    border-bottom: 1px solid var(--smc-line);
+  }
+
+  .value-grid article {
+    min-height: 245px;
+    padding: 30px 34px 30px 0;
+    border-right: 1px solid var(--smc-line);
+  }
+
+  .value-grid article + article {
+    padding-left: 34px;
+  }
+
+  .value-grid article:last-child {
+    border-right: 0;
+  }
+
+  .value-grid > article > span {
+    color: #90a88c;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .1em;
+  }
+
+  .value-grid h3 {
+    margin: 44px 0 11px;
+    font-size: 34px;
+    letter-spacing: -.045em;
+  }
+
+  .value-grid p {
+    margin: 0;
+    color: var(--smc-muted);
+    line-height: 1.65;
+  }
+
+  .coverage-section {
+    padding: 105px 0;
+    background: #f4f7f2;
+    border-block: 1px solid var(--smc-line);
+  }
+
+  .coverage-grid {
+    display: grid;
+    grid-template-columns: 1fr .9fr;
+    gap: 90px;
+    align-items: center;
+  }
+
+  .location-grid {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 24px;
+  }
+
+  .location-grid span {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #424941;
+    font-size: 14px;
+    font-weight: 760;
+  }
+
+  .location-grid i {
+    color: var(--smc-green);
+    font-size: 17px;
+  }
+
+  .coverage-art {
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  .coverage-art img {
+    width: 124%;
+    max-width: none;
+    height: auto;
+    object-fit: contain;
+    transform: translateX(-2%);
+    filter: drop-shadow(0 25px 40px rgba(33,60,28,.12));
+  }
+
+  .testimonial-section {
+    padding: 96px 0;
+    display: grid;
+    grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr);
+    gap: 74px;
+    align-items: center;
+  }
+
+  .review-marquee {
+    min-width: 0;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  }
+
+  .review-track,
+  .review-track-duplicate {
+    display: flex;
+    gap: 14px;
+  }
+
+  .review-track {
+    width: max-content;
+    animation: review-marquee 34s linear infinite;
+  }
+
+  .review-card {
+    width: 290px;
+    min-height: 188px;
+    padding: 22px;
+    border: 1px solid var(--smc-line);
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 16px 38px rgba(27,48,25,.055);
+    display: flex;
+    flex-direction: column;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  .review-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 22px 46px rgba(27,48,25,.09);
+  }
+
+  .review-stars {
+    display: flex;
+    gap: 3px;
+    color: #e7ad22;
+    font-size: 15px;
+  }
+
+  .review-card p {
+    margin: 17px 0 auto;
+    color: #222722;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: -.018em;
+  }
+
+  .review-card > span {
+    margin-top: 16px;
+    color: var(--smc-muted);
+    font-size: 12px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .review-card > span .ph {
+    color: var(--smc-green);
+    font-size: 15px;
+  }
+
+  .mini-proof {
+    margin-top: 26px;
+    display: grid;
+    gap: 10px;
+  }
+
+  .mini-proof span {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--smc-line);
+    color: #424842;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mini-proof i {
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    background: var(--smc-green-soft);
+    color: var(--smc-green-dark);
+    font-size: 16px;
+  }
+
+  @keyframes review-marquee {
+    to { transform: translateX(calc(-50% - 7px)); }
+  }
+
+  .blog-section {
+    padding: 10px 0 112px;
+  }
+
+  .blog-heading {
+    margin-bottom: 36px;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 30px;
+  }
+
+  .blog-heading h2 {
+    max-width: 720px;
+    margin-bottom: 0;
+  }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+
+  .blog-card a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .blog-image {
+    aspect-ratio: 16 / 10;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #edf0eb;
+  }
+
+  .blog-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: opacity 300ms ease, filter 300ms ease, transform .24s cubic-bezier(.2,.7,.2,1);
+  }
+
+  .blog-card a:hover img {
+    transform: scale(1.025);
+  }
+
+  .blog-meta {
+    margin-top: 15px;
+    color: #899087;
+    font-size: 11px;
+    font-weight: 750;
+  }
+
+  .blog-card h3 {
+    margin: 8px 0 10px;
+    font-size: 21px;
+    line-height: 1.3;
+    letter-spacing: -.025em;
+  }
+
+  .read-more {
+    color: var(--smc-green-dark);
+    font-size: 12px;
+    font-weight: 850;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .read-more .ph {
+    font-size: 14px;
+  }
+
+  .faq-section {
+    padding: 108px 0;
+    display: grid;
+    grid-template-columns: .75fr 1.25fr;
+    gap: 90px;
+    border-top: 1px solid var(--smc-line);
+  }
+
+  .faq-heading {
+    align-self: start;
+    position: sticky;
+    top: 118px;
+  }
+
+  .faq-heading .smc-button {
+    margin-top: 24px;
+  }
+
+  .faq-list {
+    display: grid;
+  }
+
+  .faq-list details {
+    border-bottom: 1px solid var(--smc-line);
+  }
+
+  .faq-list details:first-child {
+    border-top: 1px solid var(--smc-line);
+  }
+
+  .faq-list summary {
+    min-height: 86px;
+    padding: 22px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+  }
+
+  .faq-list summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-list summary i {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--smc-line);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: var(--smc-green-dark);
+    font-style: normal;
+    transition: transform .2s ease;
+  }
+
+  .faq-list details[open] summary i {
+    transform: rotate(45deg);
+  }
+
+  .faq-list details p {
+    max-width: 670px;
+    max-height: 0;
+    margin: 0;
+    overflow: hidden;
+    opacity: 0;
+    color: var(--smc-muted);
+    line-height: 1.7;
+    transition: max-height 220ms ease, margin 220ms ease, opacity 180ms ease;
+  }
+
+  .faq-list details[open] p {
+    max-height: 180px;
+    margin: -6px 0 26px;
+    opacity: 1;
+  }
+
+  .final-cta {
+    padding: 76px 0;
+    background: #163d18;
+    color: #fff;
+  }
+
+  .final-cta-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+  }
+
+  .final-cta .smc-kicker {
+    color: #a1cd99;
+  }
+
+  .final-cta h2 {
+    max-width: 760px;
+    margin-bottom: 12px;
+  }
+
+  .final-cta p {
+    color: #c3d2c1;
+  }
+
+  .final-actions {
+    display: flex;
+    gap: 10px;
+    flex: 0 0 auto;
+  }
+
+  .final-primary,
+  .final-whatsapp {
+    color: #173b18;
+    background: #fff;
+  }
+
+  .final-whatsapp {
+    border-color: rgba(255,255,255,.18);
+    background: transparent;
+    color: #fff;
+  }
+
+  .floating-whatsapp {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 60;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #1f9d50;
+    color: #fff;
+    box-shadow: 0 15px 36px rgba(15,80,39,.28);
+    transition: transform .18s ease;
+  }
+
+  .floating-whatsapp:hover {
+    transform: translateY(-3px);
+  }
+
+  .floating-whatsapp {
+    overflow: hidden;
+  }
+
+  .floating-whatsapp img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  @media (min-width: 1041px) {
+    .hero [data-reveal] {
+      opacity: 1;
+      transform: none;
+    }
+
+    .hero-grid {
+      min-height: 620px;
+      padding: 52px 0;
+      grid-template-columns: minmax(0, 1fr) minmax(440px, 550px);
+      grid-template-rows: auto auto auto auto;
+      column-gap: 88px;
+      row-gap: 17px;
+      align-content: center;
+      align-items: start;
+    }
+
+    .hero-copy { grid-column: 1; grid-row: 1; }
+    .hero-description { grid-column: 1; grid-row: 2; }
+    .hero-actions { grid-column: 1; grid-row: 3; margin-top: 0; }
+    .hero-proof { grid-column: 1; grid-row: 4; margin-top: 0; }
+
+    .hero-form {
+      grid-column: 2;
+      grid-row: 1 / span 4;
+      width: 100%;
+      max-width: 550px;
+      align-self: center;
+    }
+
+    .hero h1 {
+      max-width: 720px;
+      margin: 16px 0 0;
+      font-size: clamp(64px, 5.8vw, 82px);
+    }
+
+    .hero-lead {
+      max-width: 610px;
+      font-size: 18px;
+      line-height: 1.55;
+    }
+  }
+
+  @media (max-width: 1040px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 36px;
+      padding-top: 56px;
+      padding-bottom: 58px;
+      align-items: start;
+    }
+
+    .hero-form {
+      grid-column: 1;
+      grid-row: auto;
+      max-width: 650px;
+    }
+
+    .benefit-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .process-grid,
+    .condition-grid,
+    .coverage-grid,
+    .testimonial-section,
+    .faq-section {
+      grid-template-columns: 1fr;
+      gap: 52px;
+    }
+
+    .process-copy,
+    .faq-heading {
+      position: static;
+    }
+
+    .condition-visual {
+      max-width: 680px;
+    }
+
+    .blog-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .hero-grid {
+      min-height: auto;
+      padding: 20px 0 18px;
+      gap: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      text-align: center;
+    }
+
+    .hero-actions {
+      display: none;
+    }
+
+    .hero-copy {
+      order: 1;
+    }
+
+    .hero-description {
+      order: 2;
+    }
+
+    .hero-form {
+      order: 3;
+      width: 100%;
+    }
+
+    .hero-proof {
+      order: 4;
+    }
+
+    .eyebrow {
+      display: none;
+    }
+
+    .hero h1 {
+      max-width: 390px;
+      margin: 0 auto;
+      font-size: clamp(39px, 11.5vw, 46px);
+      line-height: .94;
+    }
+
+    .hero-lead {
+      max-width: 390px;
+      margin-inline: auto;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .mobile-line-break {
+      display: block;
+    }
+
+    .hero-proof {
+      margin: 0;
+      padding-top: 2px;
+      justify-content: center;
+      gap: 14px 18px;
+    }
+
+    .hero-proof > div {
+      gap: 5px;
+    }
+
+    .hero-proof span {
+      font-size: 11px;
+    }
+
+    .hero-proof .ph {
+      font-size: 15px;
+    }
+
+    .make-strip-inner {
+      min-height: 0;
+      padding: 25px 0 28px;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      gap: 16px;
+    }
+
+    .make-list {
+      --marquee-step: 568px;
+      grid-auto-columns: 124px;
+      gap: 18px;
+    }
+
+    .make-item {
+      min-height: 0;
+      padding: 0;
+      flex-direction: row;
+      gap: 7px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      animation: none;
+    }
+
+    .make-item img {
+      width: 28px;
+      height: 28px;
+      opacity: .78;
+    }
+
+    .make-item strong {
+      font-size: 12px;
+    }
+
+    .make-whatsapp {
+      width: 100%;
+      display: inline-flex;
+      min-height: 50px;
+      border-color: #dce7d8;
+      color: var(--smc-green-dark);
+    }
+
+    .benefits,
+    .value-section,
+    .testimonial-section,
+    .faq-section {
+      padding: 76px 0;
+    }
+
+    .benefits {
+      padding: 58px 0;
+    }
+
+    .benefits .section-heading {
+      margin-bottom: 26px;
+    }
+
+    .benefit-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .benefit-card {
+      min-height: 0;
+      padding: 15px;
+      border-radius: 16px;
+    }
+
+    .benefit-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+    }
+
+    .benefit-icon > .ph {
+      font-size: 19px;
+    }
+
+    .benefit-arrow {
+      width: 26px;
+      height: 26px;
+      font-size: 13px;
+    }
+
+    .benefit-card h3 {
+      margin: 18px 0 6px;
+      font-size: 17px;
+      line-height: 1.1;
+    }
+
+    .benefit-card p {
+      font-size: 12px;
+      line-height: 1.48;
+    }
+
+    .process-section,
+    .coverage-section {
+      padding: 76px 0;
+    }
+
+    .condition-section {
+      padding: 46px 0 62px;
+      overflow: clip;
+    }
+
+    .condition-grid {
+      gap: 28px;
+    }
+
+    .process-list {
+      gap: 11px;
+    }
+
+    .process-list article {
+      min-height: 0;
+      grid-template-columns: 51px 1fr;
+      gap: 14px;
+      padding: 18px;
+      border-radius: 16px;
+    }
+
+    .process-marker {
+      width: 46px;
+      height: 46px;
+    }
+
+    .process-marker > .ph {
+      width: 43px;
+      height: 43px;
+      border-radius: 14px;
+      font-size: 20px;
+    }
+
+    .process-number {
+      right: -5px;
+      bottom: -5px;
+      width: 24px;
+      height: 24px;
+      font-size: 9px;
+    }
+
+    .process-list h3 {
+      margin-bottom: 6px;
+      font-size: 22px;
+    }
+
+    .process-list p {
+      font-size: 15px;
+    }
+
+    .process-list article:hover {
+      transform: none;
+      background: rgba(255,255,255,.78);
+      box-shadow: 0 8px 24px rgba(25,55,24,.035);
+    }
+
+    .condition-image-wrap {
+      min-height: 246px;
+    }
+
+    .condition-image-wrap::before {
+      inset: 24px 24px 10px;
+      box-shadow: 0 20px 36px rgba(0,0,0,.16);
+    }
+
+    .condition-visual {
+      overflow: visible;
+    }
+
+    .condition-image-wrap img {
+      width: 102%;
+      transform: translateY(2px);
+      filter: drop-shadow(0 24px 28px rgba(0,0,0,.34));
+    }
+
+    .condition-tags {
+      grid-template-columns: 1fr;
+    }
+
+    .value-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .value-grid article,
+    .value-grid article + article {
+      min-height: 190px;
+      padding: 26px 0;
+      border-right: 0;
+      border-bottom: 1px solid var(--smc-line);
+    }
+
+    .value-grid article:last-child {
+      border-bottom: 0;
+    }
+
+    .value-grid h3 {
+      margin-top: 28px;
+    }
+
+    .location-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .coverage-art img {
+      width: 112%;
+      transform: none;
+    }
+
+    .testimonial-section {
+      gap: 32px;
+    }
+
+    .review-marquee {
+      margin-inline: -20px;
+    }
+
+    .review-track,
+    .review-track-duplicate {
+      gap: 12px;
+    }
+
+    .review-card {
+      width: min(276px, calc(100vw - 78px));
+      min-height: 174px;
+      padding: 19px;
+    }
+
+    .review-card p {
+      font-size: 15px;
+    }
+
+    .blog-heading {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .blog-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .final-cta {
+      padding: 58px 0;
+    }
+
+    .final-cta-inner {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .final-actions {
+      width: 100%;
+      display: grid;
+    }
+
+    .final-actions .smc-button {
+      width: 100%;
+    }
+
+    .floating-whatsapp {
+      right: 14px;
+      bottom: 14px;
+      width: 50px;
+      height: 50px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .benefit-card,
+    .blog-image img,
+    .floating-whatsapp,
+    .make-item,
+    .review-track {
+      transition: none;
+      animation: none;
+    }
+  }
+</style>

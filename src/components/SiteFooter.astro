@@ -1,0 +1,252 @@
+---
+const year = new Date().getFullYear();
+const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
+
+const dubaiLocations = [
+  'Al Qusais',
+  'Mirdif',
+  'Dubai Marina',
+  'Business Bay',
+  'Downtown Dubai',
+  'Al Quoz'
+];
+
+const uaeLocations = [
+  'Abu Dhabi',
+  'Sharjah',
+  'Ajman',
+  'RAK',
+  'Fujairah',
+  'Al Ain'
+];
+---
+
+<footer class="smc-footer">
+  <div class="smc-footer-main">
+    <div class="smc-container footer-grid">
+      <div class="footer-brand">
+        <img
+          src="https://static.wixstatic.com/media/ff8df3_7abbb70e8dbf4941a2f88fb3caee9de1~mv2.png"
+          alt="Scrap My Car UAE"
+          width="166"
+          height="64"
+        />
+        <p>
+          Sell your scrap car hassle-free with Scrap My Car UAE. Car buyers
+          serving Dubai, Sharjah and customers across the UAE.
+        </p>
+      </div>
+
+      <div>
+        <h2>Quick links</h2>
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="/">Home</a>
+          <a href="/free-quote">Free Quote</a>
+          <a href="/contact-us">Contact Us</a>
+          <a href="/faqs">FAQs</a>
+          <a href="/blogs">Blogs</a>
+        </nav>
+      </div>
+
+      <div>
+        <h2>Dubai</h2>
+        <div class="location-list">
+          {dubaiLocations.map((location) => <span>{location}</span>)}
+        </div>
+      </div>
+
+      <div>
+        <h2>Across the UAE</h2>
+        <div class="location-list">
+          {uaeLocations.map((location) => <span>{location}</span>)}
+        </div>
+      </div>
+    </div>
+
+    <div class="smc-container contact-strip">
+      <div>
+        <span class="label"><i class="ph ph-map-pin" aria-hidden="true"></i>Address</span>
+        <span>Al Sajaa Industrial Area, Sajaa, Sharjah</span>
+      </div>
+      <div>
+        <span class="label"><i class="ph ph-phone-call" aria-hidden="true"></i>Phone</span>
+        <a href="tel:+971557458322">055 745 83 22</a>
+      </div>
+      <div>
+        <span class="label"><i class="ph ph-envelope-simple" aria-hidden="true"></i>Email</span>
+        <a href="mailto:info@scrapmycaruae.com">info@scrapmycaruae.com</a>
+      </div>
+      <div>
+        <span class="label"><img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />WhatsApp</span>
+        <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">+971 55 745 8322</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="smc-footer-bottom">
+    <div class="smc-container bottom-inner">
+      <span>© {year} Scrap My Car UAE</span>
+      <div>
+        <a href="/terms-conditions">Terms</a>
+        <a href="/privacy-policy">Privacy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .smc-footer {
+    margin-top: 0;
+    background: #102912;
+    color: #eef5ed;
+  }
+
+  .smc-footer-main {
+    padding: 58px 0 24px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.4fr .8fr .8fr .8fr;
+    gap: 44px;
+  }
+
+  .footer-brand img {
+    display: block;
+    width: 165px;
+    height: auto;
+    max-height: 64px;
+    object-fit: contain;
+    filter: brightness(1.08);
+  }
+
+  .footer-brand p {
+    max-width: 380px;
+    margin: 18px 0 0;
+    color: #c8d5c7;
+    line-height: 1.65;
+  }
+
+  .smc-footer h2 {
+    margin: 4px 0 17px;
+    color: #fff;
+    font-size: 14px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  .footer-links,
+  .location-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .footer-links a,
+  .location-list span {
+    color: #c8d5c7;
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .footer-links a:hover {
+    color: #fff;
+  }
+
+  .contact-strip {
+    margin-top: 40px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255,255,255,.11);
+    display: grid;
+    grid-template-columns: 1.25fr .65fr 1fr .75fr;
+    gap: 24px;
+  }
+
+  .contact-strip > div {
+    display: grid;
+    gap: 5px;
+    color: #e1eae0;
+    font-size: 14px;
+  }
+
+  .contact-strip .label {
+    color: #88a687;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .contact-strip .label .ph {
+    font-size: 14px;
+  }
+
+  .contact-strip .label .wa-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .contact-strip a {
+    color: #e1eae0;
+    text-decoration: none;
+  }
+
+  .smc-footer-bottom {
+    border-top: 1px solid rgba(255,255,255,.1);
+    padding: 18px 0;
+    color: #aebdad;
+    font-size: 12px;
+  }
+
+  .bottom-inner {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .bottom-inner div {
+    display: flex;
+    gap: 18px;
+  }
+
+  .bottom-inner a {
+    color: #aebdad;
+    text-decoration: none;
+  }
+
+  @media (max-width: 900px) {
+    .footer-grid {
+      grid-template-columns: 1.5fr 1fr 1fr;
+    }
+
+    .footer-brand {
+      grid-column: 1 / -1;
+    }
+
+    .contact-strip {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 34px 26px;
+    }
+
+    .footer-brand,
+    .footer-grid > div:nth-child(2) {
+      grid-column: 1 / -1;
+    }
+
+    .contact-strip {
+      grid-template-columns: 1fr;
+    }
+
+    .bottom-inner {
+      flex-direction: column;
+    }
+  }
+</style>

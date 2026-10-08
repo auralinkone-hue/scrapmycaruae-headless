@@ -1,0 +1,149 @@
+---
+import { wixResponsiveImage } from '../lib/wix-image';
+
+const { post } = Astro.props;
+const postImage = post?.media?.wixMedia?.image;
+const responsiveImage = wixResponsiveImage(postImage, {
+  widths: [320, 480, 640, 800],
+  aspectRatio: postImage?.width && postImage?.height ? postImage.width / postImage.height : 16 / 9,
+});
+const imageAlt = postImage?.altText?.trim() || post?.title || 'Related article';
+const publishDate = post?.firstPublishedDate || post?.lastPublishedDate || post?._createdDate;
+const formattedDate = publishDate
+  ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(publishDate))
+  : null;
+const minutesToRead = Number(post?.minutesToRead);
+---
+
+<article class="blog-article-card">
+  <a class="blog-article-card__link" href={`/post/${post.slug}`} aria-label={`Read ${post.title}`}>
+    {responsiveImage ? (
+      <div class="blog-article-card__image-wrap">
+        <picture>
+          <source srcset={responsiveImage.avifSrcset} sizes="(max-width: 700px) 100vw, (max-width: 1050px) 50vw, 33vw" type="image/avif" />
+          <source srcset={responsiveImage.webpSrcset} sizes="(max-width: 700px) 100vw, (max-width: 1050px) 50vw, 33vw" type="image/webp" />
+          <img
+            class="blog-article-card__image"
+            src={responsiveImage.src}
+            srcset={responsiveImage.srcset}
+            sizes="(max-width: 700px) 100vw, (max-width: 1050px) 50vw, 33vw"
+            width={responsiveImage.width}
+            height={responsiveImage.height}
+            alt={imageAlt}
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
+      </div>
+    ) : (
+      <div class="blog-article-card__image-placeholder" aria-hidden="true"></div>
+    )}
+    <div class="blog-article-card__body">
+      <div class="blog-article-card__meta">
+        {formattedDate && <time datetime={new Date(publishDate).toISOString()}>{formattedDate}</time>}
+        {formattedDate && Number.isFinite(minutesToRead) && minutesToRead > 0 && <span aria-hidden="true">•</span>}
+        {Number.isFinite(minutesToRead) && minutesToRead > 0 && <span>{minutesToRead} min read</span>}
+      </div>
+      <h3>{post.title}</h3>
+      <span class="blog-article-card__cta" aria-hidden="true">Read article <span>→</span></span>
+    </div>
+  </a>
+</article>
+
+<style>
+  .blog-article-card {
+    min-width: 0;
+    height: 100%;
+  }
+
+  .blog-article-card__link {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    overflow: hidden;
+    color: #152018;
+    border: 1px solid #d9e2d9;
+    border-radius: 18px;
+    background: #fff;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(17, 66, 28, 0.06);
+    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  }
+
+  .blog-article-card__link:hover {
+    transform: translateY(-3px);
+    border-color: #7bbf48;
+    box-shadow: 0 14px 28px rgba(17, 66, 28, 0.14);
+  }
+
+  .blog-article-card__link:focus-visible {
+    outline: 3px solid #1b6e35;
+    outline-offset: 3px;
+  }
+
+  .blog-article-card__image-wrap,
+  .blog-article-card__image-placeholder {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #e8f0e6;
+  }
+
+  .blog-article-card__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 220ms ease;
+  }
+
+  .blog-article-card__link:hover .blog-article-card__image {
+    transform: scale(1.03);
+  }
+
+  .blog-article-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .blog-article-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+    color: #4e5b51;
+    font-size: 0.84rem;
+    line-height: 1.4;
+  }
+
+  .blog-article-card h3 {
+    margin: 0;
+    color: #152018;
+    font-size: clamp(1.1rem, 1.8vw, 1.32rem);
+    line-height: 1.28;
+  }
+
+  .blog-article-card__cta {
+    margin-top: auto;
+    padding-top: 18px;
+    color: #195b2b;
+    font-weight: 800;
+    font-size: 0.92rem;
+  }
+
+  .blog-article-card__cta span {
+    display: inline-block;
+    transition: transform 160ms ease;
+  }
+
+  .blog-article-card__link:hover .blog-article-card__cta span {
+    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blog-article-card__link,
+    .blog-article-card__image,
+    .blog-article-card__cta span { transition: none; }
+  }
+</style>
