@@ -39,21 +39,17 @@ test('collection configuration remains server-only', async () => {
 
   assert.match(route, /import\.meta\.env\.WIX_QUOTE_REQUESTS_COLLECTION_ID/);
   assert.doesNotMatch(route, /PUBLIC_WIX_QUOTE_REQUESTS_COLLECTION_ID/);
-  assert.doesNotMatch(quoteForm, /WIX_CRM_API_KEY|WIX_CRM_SITE_ID/);
   assert.doesNotMatch(quoteForm, /WIX_QUOTE_REQUESTS_COLLECTION_ID|QuoteRequestsStaging/);
   assert.match(quoteForm, /fetch\('\/api\/quote'/);
 });
 
-test('CRM synchronization remains secondary to the essential CMS quote write', async () => {
+test('CMS quote save is essential before the WhatsApp response', async () => {
   const route = await readProjectFile('src/pages/api/quote.ts');
 
   assert.match(route, /normalizeUaeMobilePhone\(body\?\.whatsapp\)/);
-  assert.match(route, /syncQuoteContact\(/);
-  assert.ok(
-    route.indexOf('if (!insertResponse.ok)') < route.indexOf('syncQuoteContact('),
-    'CRM synchronization must start only after Wix CMS confirms the quote write.'
-  );
-  assert.match(route, /crmSynced/);
+  assert.match(route, /if \(!insertResponse\.ok\) throw new Error\(/);
+  assert.ok(route.indexOf('if (!insertResponse.ok)') < route.indexOf('whatsappUrl'), 'WhatsApp URL must only be returned after Wix CMS confirms the quote write.');
+  assert.doesNotMatch(route, /syncQuoteContact|crmSynced/);
 });
 
 test('quote route has no hardcoded QuoteRequests destination', async () => {

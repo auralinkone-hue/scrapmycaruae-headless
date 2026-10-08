@@ -1,7 +1,6 @@
 /**
  * Converts the UAE mobile number formats accepted by the valuation form to
- * E.164. The CMS retains the submitted digits; this normalized value is used
- * only for CRM matching and contact creation.
+ * E.164 so the quote endpoint can consistently validate mobile submissions.
  */
 export function normalizeUaeMobilePhone(value: unknown): string | null {
   const raw = String(value ?? '').trim();
@@ -24,4 +23,3 @@ export function normalizeUaeMobilePhone(value: unknown): string | null {
 
   return `+971${national}`;
 }
-
