@@ -97,6 +97,40 @@ test('creates one contact when no exact phone match exists', async () => {
   }
 });
 
+test('recovers a duplicate create through Find Matching Contacts, not a second query', async () => {
+  const originalFetch = globalThis.fetch;
+  const requests = [];
+  globalThis.fetch = async (url, init = {}) => {
+    requests.push({ url: String(url), init });
+    if (String(url).endsWith('/v5/contacts/query')) return jsonResponse({ contacts: [] });
+    if (String(url).endsWith('/v5/contacts')) {
+      return jsonResponse({ details: { applicationError: { code: 'DUPLICATE_CONTACT_EXISTS' } } }, 400);
+    }
+    if (String(url).includes('/v5/contacts/find-matching?phone=%2B971557458322')) {
+      return jsonResponse({ contacts: [{ id: 'contact-duplicate', revision: '3', name: { first: 'Existing' } }] });
+    }
+    if (String(url).endsWith('/v4/labels')) return jsonResponse({ label: { key: 'custom.staging' } });
+    if (String(url).endsWith('/v4/contacts/contact-duplicate/labels')) return jsonResponse({ contact: { id: 'contact-duplicate' } });
+    throw new Error(`Unexpected request: ${url}`);
+  };
+
+  try {
+    const result = await syncQuoteContact({
+      runtimeEnv: crmEnv,
+      normalizedPhone: '+971557458322',
+      customerName: 'New Name',
+      labelName: 'Headless Staging Test'
+    });
+    assert.deepEqual(result, { synced: true, contactId: 'contact-duplicate', created: false });
+    assert.equal(requests.filter(({ url }) => url.endsWith('/v5/contacts/query')).length, 1);
+    const matchingRequest = requests.find(({ url }) => url.includes('/v5/contacts/find-matching?phone=%2B971557458322'));
+    assert.ok(matchingRequest);
+    assert.equal(matchingRequest.init.method, 'GET');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('does not report CRM synchronization when the synchronous contact label call fails', async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url) => {

@@ -28,11 +28,13 @@ export type CrmSyncResult = {
 class WixCrmRequestError extends Error {
   readonly operation: string;
   readonly status: number;
+  readonly code?: string;
 
-  constructor(operation: string, status: number) {
+  constructor(operation: string, status: number, code?: string) {
     super(`Wix CRM ${operation} failed with HTTP ${status}.`);
     this.operation = operation;
     this.status = status;
+    this.code = code;
   }
 }
 
@@ -47,6 +49,37 @@ function contactName(customerName: string) {
 
 function hasMeaningfulName(contact: WixContact): boolean {
   return Boolean(asNonEmptyString(contact.name?.first) || asNonEmptyString(contact.name?.last));
+}
+
+function wixErrorCode(value: unknown): string | undefined {
+  if (!value || typeof value !== 'object') return undefined;
+  const error = value as {
+    code?: unknown;
+    errorCode?: unknown;
+    error?: { code?: unknown };
+    details?: { applicationError?: { code?: unknown }; code?: unknown };
+  };
+  const candidate = error.code
+    ?? error.errorCode
+    ?? error.error?.code
+    ?? error.details?.applicationError?.code
+    ?? error.details?.code;
+  return typeof candidate === 'string' ? candidate : undefined;
+}
+
+async function crmRequestError(operation: string, response: Response) {
+  let code: string | undefined;
+  try {
+    code = wixErrorCode(await response.json());
+  } catch {
+    // Error bodies are deliberately not retained or exposed.
+  }
+  return new WixCrmRequestError(operation, response.status, code);
+}
+
+function isDuplicateContactError(error: unknown): error is WixCrmRequestError {
+  return error instanceof WixCrmRequestError
+    && (error.code === 'DUPLICATE_CONTACT_EXISTS' || error.status === 409);
 }
 
 function getCrmConfiguration(runtimeEnv: RuntimeCrmEnv) {
@@ -74,7 +107,7 @@ async function crmFetch(
     headers: { ...crmHeaders(config), ...(init.headers ?? {}) }
   });
 
-  if (!response.ok) throw new WixCrmRequestError(operation, response.status);
+  if (!response.ok) throw await crmRequestError(operation, response);
   return response;
 }
 
@@ -91,6 +124,20 @@ async function findExactPhoneMatches(
       }
     })
   });
+  const data = await response.json() as { contacts?: WixContact[] };
+  return data.contacts ?? [];
+}
+
+async function findMatchingContacts(
+  config: { apiKey: string; siteId: string },
+  normalizedPhone: string
+): Promise<WixContact[]> {
+  const response = await crmFetch(
+    config,
+    'matching contact lookup',
+    `/v5/contacts/find-matching?phone=${encodeURIComponent(normalizedPhone)}`,
+    { method: 'GET' }
+  );
   const data = await response.json() as { contacts?: WixContact[] };
   return data.contacts ?? [];
 }
@@ -180,10 +227,11 @@ export async function syncQuoteContact(input: CrmSyncInput): Promise<CrmSyncResu
       contact = await createContact(config, input.customerName, input.normalizedPhone);
       created = true;
     } catch (error) {
-      // A simultaneous submission can win the duplicate-detection race. Query
-      // again rather than intentionally creating a duplicate contact.
-      if (!(error instanceof WixCrmRequestError) || error.status !== 409) throw error;
-      matches = await findExactPhoneMatches(config, input.normalizedPhone);
+      // Wix's v5 duplicate flow resolves the existing contact through Find
+      // Matching Contacts, including when the structured duplicate code is
+      // returned with a status other than 409.
+      if (!isDuplicateContactError(error)) throw error;
+      matches = await findMatchingContacts(config, input.normalizedPhone);
       if (matches.length !== 1) return { synced: false, reason: 'ambiguous-match' };
       contact = await fillMissingContactName(config, matches[0], input.customerName);
     }
