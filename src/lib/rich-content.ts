@@ -51,10 +51,12 @@ const imageUrl = (node: any) => {
   return `https://static.wixstatic.com/media/${encodeURIComponent(id)}`;
 };
 
+const asArray = <T>(value: unknown): T[] => Array.isArray(value) ? value as T[] : [];
+
 const renderText = (node: RicosNode) => {
   let html = escapeHtml(node.textData?.text ?? '');
 
-  for (const decoration of node.textData?.decorations ?? []) {
+  for (const decoration of asArray<any>(node.textData?.decorations)) {
     switch (decoration?.type) {
       case 'BOLD':
         html = `<strong>${html}</strong>`;
@@ -90,7 +92,7 @@ const renderText = (node: RicosNode) => {
 };
 
 const renderChildren = (node: RicosNode) =>
-  (node.nodes ?? []).map(renderRicosNode).join('');
+  asArray<RicosNode>(node.nodes).map(renderRicosNode).join('');
 
 export function renderRicosNode(node: RicosNode): string {
   if (!node?.type) return '';
@@ -159,7 +161,7 @@ export function renderRicosNode(node: RicosNode): string {
 }
 
 export function renderRicosDocument(richContent: any): string {
-  return (richContent?.nodes ?? []).map(renderRicosNode).join('');
+  return asArray<RicosNode>(richContent?.nodes).map(renderRicosNode).join('');
 }
 
 const validHeadingId = (value: unknown): value is string =>
