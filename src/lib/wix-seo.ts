@@ -1,4 +1,5 @@
 import { canonicalUrl } from './seo';
+import { asTrimmedString } from './wix-seo-values';
 
 type WixSeoTag = {
   type?: string;
@@ -21,13 +22,14 @@ const findTag = (tags: WixSeoTag[], predicate: (tag: WixSeoTag) => boolean) =>
 
 const stringProp = (tag: WixSeoTag | undefined, key: string) => {
   const value = tag?.props?.[key];
-  return typeof value === 'string' ? value.trim() : '';
+  return asTrimmedString(value);
 };
 
 /** Keeps Wix Blog SEO authoritative while enforcing the current environment host. */
 export function getWixPostSeo(post: WixSeoItem) {
-  const tags = post.seoData?.tags ?? [];
-  const title = findTag(tags, (tag) => tag.type === 'title')?.children?.trim();
+  const rawTags = post.seoData?.tags;
+  const tags = Array.isArray(rawTags) ? rawTags : [];
+  const title = asTrimmedString(findTag(tags, (tag) => tag.type === 'title')?.children);
   const description = stringProp(
     findTag(tags, (tag) => tag.type === 'meta' && String(tag.props?.name).toLowerCase() === 'description'),
     'content'
