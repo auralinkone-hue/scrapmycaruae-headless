@@ -90,12 +90,16 @@ const { items } = Astro.props;
   }
 
   @media (max-width: 640px) {
-    .breadcrumb { margin-bottom: 18px; }
+    .breadcrumb { margin-bottom: 16px; font-size: .8125rem; }
+
+    ol { gap: 0; overflow: hidden; }
 
     li + li::before {
-      margin-inline: 7px;
+      margin-inline: 6px;
     }
 
-    li:last-child { flex: 1 1 auto; max-width: min(100%, 26rem); }
+    li:last-child { display: none; }
+    li:nth-last-child(2) { min-width: 0; flex: 1 1 auto; }
+    li:nth-last-child(2) a { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   }
 </style>

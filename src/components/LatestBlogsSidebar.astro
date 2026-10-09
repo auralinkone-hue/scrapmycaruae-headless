@@ -66,4 +66,9 @@ const { posts = [] } = Astro.props as { posts?: Array<Record<string, unknown>> }
   .latest-blogs__copy strong { grid-column: 1 / -1; color: #172219; font-size: .9rem; line-height: 1.28; }
   .latest-blogs__item:hover strong { color: #2457e6; }
   .latest-blogs__item:focus-visible { outline: 3px solid #2457e6; outline-offset: 3px; border-radius: 4px; }
+  @media (max-width: 760px) {
+    .latest-blogs { padding: 20px; }
+    .latest-blogs__item { grid-template-columns: 84px minmax(0, 1fr); gap: 11px; }
+    .latest-blogs__media, .latest-blogs__placeholder { width: 84px; }
+  }
 </style>

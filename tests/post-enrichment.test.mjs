@@ -42,6 +42,7 @@ test('post route keeps essential article HTML separate from optional enrichment'
   assert.match(page, /posts\.getPostBySlug/);
   assert.match(page, /loadPostPageEnrichment/);
   assert.match(page, /<h1>\{postTitle\}<\/h1>/);
+  assert.doesNotMatch(page, /Scrap My Car UAE Blog/);
   assert.match(page, /<article class="article-content" set:html=\{articleHtml\}/);
   assert.match(page, /'@type': 'BlogPosting'/);
   assert.match(page, /getBreadcrumbJsonLd/);
@@ -59,13 +60,18 @@ test('blog article sidebar keeps Wix failures optional and reuses the quote form
 
   assert.match(page, /<QuoteForm makes=\{vehicleData\.makes\} models=\{vehicleData\.models\} years=\{vehicleData\.years\} variant="blog-sidebar"/);
   assert.match(page, /<LatestBlogsSidebar posts=\{latestPosts\}/);
-  assert.match(page, /grid-template-areas: 'content form' 'content latest'/);
-  assert.match(page, /grid-template-areas: 'form' 'content' 'latest'/);
+  assert.match(page, /<aside class="article-sidebar" aria-label="Article tools and latest blogs">/);
+  assert.match(page, /grid-template-areas: 'content sidebar' 'related sidebar'/);
+  assert.match(page, /grid-template-areas: 'content' 'sidebar' 'related'/);
+  assert.doesNotMatch(page, /position: sticky/);
+  assert.match(page, /<div class="article-share">[\s\S]*?<\/div>[\s\S]*?<aside class="article-sidebar"/);
   assert.match(quoteForm, /variant\?: 'default' \| 'blog-sidebar'/);
   assert.match(quoteForm, /Get your car price/);
   assert.match(quoteForm, /\/api\/quote/);
   assert.match(latestSidebar, /#2457e6/);
   assert.match(latestSidebar, /responsiveImage\.src \?/);
+  assert.doesNotMatch(quoteForm, /\{isBlogSidebar && <p class="fine-print">/);
+  assert.match(quoteForm, /background: #184D2B/);
 });
 
 test('related article cards protect malformed optional Wix values', async () => {

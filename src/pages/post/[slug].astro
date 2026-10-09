@@ -169,7 +169,6 @@ const jsonLd = post
       <BlogBreadcrumb items={breadcrumbItems} />
       <section class="article-opening">
         <div class="article-opening__copy">
-          <div class="smc-kicker">Scrap My Car UAE Blog</div>
           <h1>{postTitle}</h1>
           {postExcerpt && <p class="article-opening__excerpt">{postExcerpt}</p>}
           <div class="article-opening__details">
@@ -208,18 +207,6 @@ const jsonLd = post
       </section>
 
       <div class="article-layout">
-        <section class="blog-sidebar-form" aria-label="Get your car price">
-          {canRenderSidebarForm ? (
-            <QuoteForm makes={vehicleData.makes} models={vehicleData.models} years={vehicleData.years} variant="blog-sidebar" />
-          ) : (
-            <div class="blog-sidebar-form__fallback">
-              <h2>Get your car price</h2>
-              <p>Start your free valuation in a few simple steps.</p>
-              <a href="/free-quote" data-analytics-quote-cta="blog_sidebar_fallback">Get My Free Valuation <span aria-hidden="true">→</span></a>
-            </div>
-          )}
-        </section>
-
         <div class="article-reading">
           {renderedArticle.headingCount >= 4 && <ArticleTableOfContents items={tocItems} />}
           <article class="article-content" set:html={articleHtml} />
@@ -232,25 +219,37 @@ const jsonLd = post
             </div>
             <a href="/free-quote" data-analytics-quote-cta="blog_article">Get free quote <span aria-hidden="true">→</span></a>
           </section>
-
-          {renderableRelatedPosts.length > 0 && (
-            <section class="related-articles" aria-labelledby="related-articles-title">
-              <div class="related-articles__heading">
-                <p>More to explore</p>
-                <h2 id="related-articles-title">Related reading</h2>
-              </div>
-              <ul class="related-articles__links">
-                {renderableRelatedPosts.map((relatedPost) => <li><a href={`/post/${asSafeText(relatedPost.slug)}`}>{asSafeText(relatedPost.title)}</a></li>)}
-              </ul>
-            </section>
-          )}
-
           <div class="article-share">
             <SharePostMenu url={absoluteCanonical} title={postTitle} />
           </div>
         </div>
 
-        <div class="blog-sidebar-latest"><LatestBlogsSidebar posts={latestPosts} /></div>
+        <aside class="article-sidebar" aria-label="Article tools and latest blogs">
+          <section class="blog-sidebar-form" aria-label="Get your car price">
+            {canRenderSidebarForm ? (
+              <QuoteForm makes={vehicleData.makes} models={vehicleData.models} years={vehicleData.years} variant="blog-sidebar" />
+            ) : (
+              <div class="blog-sidebar-form__fallback">
+                <h2>Get your car price</h2>
+                <p>Start your free valuation in a few simple steps.</p>
+                <a href="/free-quote" data-analytics-quote-cta="blog_sidebar_fallback">Get My Free Valuation <span aria-hidden="true">→</span></a>
+              </div>
+            )}
+          </section>
+          <LatestBlogsSidebar posts={latestPosts} />
+        </aside>
+
+        {renderableRelatedPosts.length > 0 && (
+          <section class="related-articles" aria-labelledby="related-articles-title">
+            <div class="related-articles__heading">
+              <p>More to explore</p>
+              <h2 id="related-articles-title">Related reading</h2>
+            </div>
+            <ul class="related-articles__links">
+              {renderableRelatedPosts.map((relatedPost) => <li><a href={`/post/${asSafeText(relatedPost.slug)}`}>{asSafeText(relatedPost.title)}</a></li>)}
+            </ul>
+          </section>
+        )}
       </div>
 
     </main>
@@ -627,13 +626,13 @@ const jsonLd = post
       .article-layout {
         display: grid;
         grid-template-columns: minmax(0, 1fr) 360px;
-        grid-template-areas: 'content form' 'content latest';
-        gap: 32px 40px;
+        grid-template-areas: 'content sidebar' 'related sidebar';
+        gap: 40px;
         align-items: start;
       }
       .article-reading { grid-area: content; min-width: 0; }
-      .blog-sidebar-form { grid-area: form; position: sticky; top: 112px; z-index: 1; }
-      .blog-sidebar-latest { grid-area: latest; }
+      .article-sidebar { grid-area: sidebar; display: grid; gap: 24px; align-self: start; min-width: 0; }
+      .blog-sidebar-form { min-width: 0; }
 
       .article-reading :global(.article-toc) { max-width: none; margin: 0 0 36px; }
       .article-content { max-width: 760px; margin: 0; font-size: clamp(1.0625rem, 1.3vw, 1.125rem); line-height: 1.76; }
@@ -644,13 +643,13 @@ const jsonLd = post
         color: #5DB938;
       }
 
-      .blog-sidebar-form__fallback { padding: 24px; border-radius: 20px; background: #5DB938; box-shadow: 0 14px 30px rgba(41, 100, 27, .2); }
-      .blog-sidebar-form__fallback h2 { margin: 0 0 6px; color: #15331b; font-size: 1.65rem; }
-      .blog-sidebar-form__fallback p { margin: 0 0 18px; color: #17331d; line-height: 1.5; }
-      .blog-sidebar-form__fallback a { display: inline-flex; min-height: 48px; align-items: center; padding: 0 16px; border-radius: 12px; background: #153d20; color: #fff; font-weight: 800; text-decoration: none; }
+      .blog-sidebar-form__fallback { padding: 22px; border-radius: 20px; background: #184D2B; box-shadow: 0 10px 24px rgba(15, 52, 29, .18); }
+      .blog-sidebar-form__fallback h2 { margin: 0 0 6px; color: #fff; font-size: 1.55rem; }
+      .blog-sidebar-form__fallback p { margin: 0 0 18px; color: #d8eadb; line-height: 1.5; }
+      .blog-sidebar-form__fallback a { display: inline-flex; min-height: 48px; align-items: center; padding: 0 16px; border-radius: 12px; background: #d9efc9; color: #143b22; font-weight: 800; text-decoration: none; }
 
       .article-quote-cta { max-width: 760px; margin: 56px 0; }
-      .related-articles { max-width: 760px; margin: 0 0 36px; padding-top: 34px; }
+      .related-articles { grid-area: related; max-width: 760px; margin: 0 0 36px; padding-top: 34px; }
       .related-articles__links { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
       .related-articles__links a { color: #1b5d2c; font-weight: 750; text-decoration-thickness: 1px; text-underline-offset: 3px; }
       .related-articles__links a:hover { color: #153f1c; }
@@ -661,20 +660,28 @@ const jsonLd = post
       }
 
       @media (max-width: 760px) {
-        .article-shell { width: min(100% - 40px, 640px); padding-top: 28px; }
-        .article-opening { grid-template-columns: 1fr; gap: 26px; margin-bottom: 34px; }
+        .article-shell { width: min(100% - 36px, 640px); padding-top: 24px; }
+        .article-opening { grid-template-columns: 1fr; gap: 24px; margin-bottom: 30px; }
         .article-opening__copy { order: 1; }
+        .article-opening__copy h1 { margin: 0 0 16px; font-size: clamp(2rem, 9.5vw, 2.65rem); line-height: 1.04; }
+        .article-opening__excerpt { margin-bottom: 15px; font-size: 1rem; line-height: 1.52; }
+        .article-opening__details { gap: 5px 14px; margin-bottom: 13px; }
+        .article-opening__details p { font-size: .8rem; }
+        .author-card { min-height: 54px; gap: 9px; padding: 7px 11px 7px 7px; border-radius: 13px; }
+        .author-card img, .author-card .author-placeholder { width: 40px; height: 40px; }
+        .author-card .author-placeholder { font-size: 19px; }
+        .author-card small { font-size: .68rem; }
+        .author-card strong { font-size: .84rem; }
         .cover-wrap { order: 2; aspect-ratio: 16 / 10; }
-        .article-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'form' 'content' 'latest'; gap: 32px; }
-        .blog-sidebar-form { position: static; }
+        .article-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'content' 'sidebar' 'related'; gap: 30px; }
+        .article-sidebar { gap: 24px; }
         .article-content { font-size: 17px; }
         .article-quote-cta { margin: 42px 0; }
         .related-articles { margin-bottom: 30px; }
       }
 
       @media (max-width: 420px) {
-        .article-shell { width: min(100% - 32px, 640px); }
-        .article-opening__copy h1 { font-size: clamp(2.25rem, 12vw, 3rem); }
+        .article-shell { width: min(100% - 36px, 640px); }
         .cover-wrap, .cover { border-radius: 20px; }
       }
     </style>
