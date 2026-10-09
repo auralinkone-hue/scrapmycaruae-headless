@@ -19,6 +19,7 @@ import BlogArticleCard from '../../components/BlogArticleCard.astro';
 import ArticleTableOfContents from '../../components/ArticleTableOfContents.astro';
 import SharePostMenu from '../../components/SharePostMenu.astro';
 import { getRelatedPosts } from '../../lib/related-posts';
+import { loadPostPageEnrichment } from '../../lib/post-enrichment';
 
 const slug = Astro.params.slug ?? '';
 let post: any = null;
@@ -28,19 +29,24 @@ try {
   const result = await wixClient.posts.getPostBySlug(slug, {
     fieldsets: ['URL', 'SEO', 'RICH_CONTENT', 'CONTENT_TEXT']
   });
-  post = result.post;
+  if (!result?.post) {
+    Astro.response.status = 404;
+    loadError = 'The requested article is unavailable.';
+  } else {
+    post = result.post;
+  }
 } catch (error) {
   Astro.response.status = 404;
   loadError = error instanceof Error ? error.message : String(error);
 }
 
-const [author, categoryBreadcrumb, relatedPosts] = post
-  ? await Promise.all([
-      getBlogAuthor(post),
-      getPostCategoryBreadcrumb(post),
-      getRelatedPosts(post)
-    ])
-  : [null, null, []];
+const { author, categoryBreadcrumb, relatedPosts } = post
+  ? await loadPostPageEnrichment({
+      loadAuthor: () => getBlogAuthor(post),
+      loadCategoryBreadcrumb: () => getPostCategoryBreadcrumb(post),
+      loadRelatedPosts: () => getRelatedPosts(post)
+    })
+  : { author: null, categoryBreadcrumb: null, relatedPosts: [] };
 
 const wixSeo = post ? getWixPostSeo(post) : null;
 const seoTitle = wixSeo?.title || 'Scrap My Car UAE';
