@@ -1,9 +1,9 @@
 import { media } from '@wix/sdk';
 
 type WixImage = string | {
-  url?: string;
-  width?: number;
-  height?: number;
+  url?: unknown;
+  width?: unknown;
+  height?: unknown;
 };
 
 type ResponsiveImageOptions = {
@@ -13,7 +13,11 @@ type ResponsiveImageOptions = {
 };
 
 const rawSourceUrl = (image: WixImage | null | undefined) =>
-  typeof image === 'string' ? image : image?.url || '';
+  typeof image === 'string'
+    ? image
+    : typeof image?.url === 'string'
+      ? image.url
+      : '';
 
 const isWixCdnImage = (source: string) =>
   source.includes('static.wixstatic.com/') || source.startsWith('wix:image://') || source.startsWith('wix:');
