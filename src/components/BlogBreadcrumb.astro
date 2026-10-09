@@ -60,10 +60,18 @@ const { items } = Astro.props;
     text-decoration: none;
   }
 
+  li:first-child a {
+    color: #435046;
+  }
+
   a:hover {
     color: #153f1c;
     text-decoration: underline;
     text-underline-offset: 3px;
+  }
+
+  li:first-child a:hover {
+    color: #172219;
   }
 
   a:focus-visible {
