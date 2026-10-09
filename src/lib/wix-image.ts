@@ -49,12 +49,18 @@ const transform = (
   if (!source) return '';
   if (!isWixCdnImage(source)) return source;
 
-  return media.getScaledToFillImageUrl(source, width, height, {
-    quality,
-    autoEncode: encoding === 'auto',
-    encoding: encoding === 'avif' ? 'AVIF' : undefined,
-    allowWebpAvifTransforms: true
-  });
+  try {
+    return media.getScaledToFillImageUrl(source, width, height, {
+      quality,
+      autoEncode: encoding === 'auto',
+      encoding: encoding === 'avif' ? 'AVIF' : undefined,
+      allowWebpAvifTransforms: true
+    });
+  } catch {
+    // Image variants are an enhancement. A malformed or temporarily
+    // unsupported Wix media record must not abort the surrounding SSR page.
+    return source;
+  }
 };
 
 /**
