@@ -101,3 +101,24 @@ export async function getRelatedPosts(currentPost: WixPost): Promise<WixPost[]> 
 
   return selected;
 }
+
+/**
+ * Sidebar content is optional article enrichment. It deliberately requests
+ * only the small base post record needed for a thumbnail, title and read time;
+ * rich content is neither requested nor needed here.
+ */
+export async function getLatestPosts(currentPost: WixPost): Promise<WixPost[]> {
+  try {
+    const result = await wixClient.posts
+      .queryPosts()
+      .descending('firstPublishedDate')
+      .limit(8)
+      .find();
+
+    return (result.items ?? [])
+      .filter((post: WixPost) => isValidPost(post, currentPost))
+      .slice(0, MAX_RELATED_POSTS);
+  } catch {
+    return [];
+  }
+}

@@ -15,12 +15,14 @@ import {
   getPostCategoryBreadcrumb
 } from '../../lib/blog-breadcrumb';
 import BlogBreadcrumb from '../../components/BlogBreadcrumb.astro';
-import BlogArticleCard from '../../components/BlogArticleCard.astro';
 import ArticleTableOfContents from '../../components/ArticleTableOfContents.astro';
 import SharePostMenu from '../../components/SharePostMenu.astro';
-import { getRelatedPosts } from '../../lib/related-posts';
+import QuoteForm from '../../components/QuoteForm.astro';
+import LatestBlogsSidebar from '../../components/LatestBlogsSidebar.astro';
+import { getLatestPosts, getRelatedPosts } from '../../lib/related-posts';
 import { loadPostPageEnrichment } from '../../lib/post-enrichment';
 import { asPositiveNumber, asSafeText, asValidDate, asWixMedia, isRenderableRelatedPost } from '../../lib/wix-post-values';
+import { getVehicleData } from '../../lib/vehicle-data';
 
 const slug = Astro.params.slug ?? '';
 let post: any = null;
@@ -49,8 +51,19 @@ const { author, categoryBreadcrumb, relatedPosts } = post
     })
   : { author: null, categoryBreadcrumb: null, relatedPosts: [] };
 
+const emptyVehicleData = { makes: [], models: [], years: [] };
+const [vehicleDataResult, latestPostsResult] = post
+  ? await Promise.allSettled([getVehicleData(), getLatestPosts(post)])
+  : [{ status: 'rejected' }, { status: 'rejected' }] as const;
+const vehicleData = vehicleDataResult.status === 'fulfilled' ? vehicleDataResult.value : emptyVehicleData;
+const canRenderSidebarForm = vehicleData.makes.length > 0 && vehicleData.models.length > 0 && vehicleData.years.length > 0;
+const latestPosts = latestPostsResult.status === 'fulfilled'
+  ? latestPostsResult.value.filter(isRenderableRelatedPost)
+  : [];
+
 const wixSeo = post ? getWixPostSeo(post) : null;
 const postTitle = asSafeText(post?.title, 'Scrap My Car UAE');
+const postExcerpt = asSafeText(post?.excerpt);
 const seoTitle = wixSeo?.title || 'Scrap My Car UAE';
 const seoDescription = wixSeo?.description || '';
 const canonical = wixSeo?.canonical || canonicalUrl(`/post/${slug}`);
@@ -153,80 +166,91 @@ const jsonLd = post
 
   {post ? (
     <main class="article-shell">
-      <div class="smc-kicker">Scrap My Car UAE Blog</div>
       <BlogBreadcrumb items={breadcrumbItems} />
-      <h1>{postTitle}</h1>
-
-      <div class="article-meta-row">
-        <div>
+      <section class="article-opening">
+        <div class="article-opening__copy">
+          <div class="smc-kicker">Scrap My Car UAE Blog</div>
+          <h1>{postTitle}</h1>
+          {postExcerpt && <p class="article-opening__excerpt">{postExcerpt}</p>}
+          <div class="article-opening__details">
+            {updatedDate && <p class="article-opening__updated">Last updated: {formatDate(updatedDate)}</p>}
+            {minutesToRead > 0 && <p class="article-opening__read-time">{minutesToRead} min read</p>}
+          </div>
           {author && (
-            <div class="author">
+            <div class="author-card">
               {author.photoUrl ? (
-                <img src={author.photoUrl} alt="" width="36" height="36" />
+                <img src={author.photoUrl} alt="" width="44" height="44" />
               ) : (
                 <span class="author-placeholder"><i class="ph ph-user" aria-hidden="true"></i></span>
               )}
-              <span>{author.name}</span>
+              <span><small>Written by</small><strong>{author.name}</strong></span>
             </div>
           )}
-          <div class="meta">
-            {publishedDate && <span>{formatDate(publishedDate)}</span>}
-            {minutesToRead > 0 && <span>{minutesToRead} min read</span>}
-            {updatedDate &&
-              publishedDate &&
-              updatedDate.getTime() !== publishedDate.getTime() && (
-                <span>Updated {formatDate(updatedDate)}</span>
-              )}
+        </div>
+        {responsiveCover.src && (
+          <div class="cover-wrap" data-image-loading>
+            <picture>
+              {responsiveCover.avifSrcset && <source type="image/avif" srcset={responsiveCover.avifSrcset} sizes="(max-width: 900px) calc(100vw - 40px), 48vw" />}
+              <img
+                class="cover"
+                src={responsiveCover.src}
+                srcset={responsiveCover.srcset || undefined}
+                sizes="(max-width: 900px) calc(100vw - 40px), 48vw"
+                alt={coverAlt}
+                width={responsiveCover.width}
+                height={responsiveCover.height}
+                fetchpriority="high"
+                decoding="async"
+              />
+            </picture>
           </div>
-        </div>
-      </div>
-
-      {renderedArticle.headingCount >= 4 && <ArticleTableOfContents items={tocItems} />}
-
-      {responsiveCover.src && (
-        <div class="cover-wrap" data-image-loading>
-          <picture>
-            <source type="image/avif" srcset={responsiveCover.avifSrcset} sizes="(max-width: 936px) calc(100vw - 36px), 900px" />
-            <img
-              class="cover"
-              src={responsiveCover.src}
-              srcset={responsiveCover.srcset}
-              sizes="(max-width: 936px) calc(100vw - 36px), 900px"
-              alt={coverAlt}
-              width={responsiveCover.width}
-              height={responsiveCover.height}
-              fetchpriority="high"
-              decoding="async"
-            />
-          </picture>
-        </div>
-      )}
-
-      <article class="article-content" set:html={articleHtml} />
-
-      <section class="article-quote-cta" aria-labelledby="article-quote-title">
-        <div>
-          <p class="article-quote-cta__eyebrow">Selling a car in the UAE?</p>
-          <h2 id="article-quote-title">Get a fair quote for your car today.</h2>
-          <p>Tell us about your vehicle and get a straightforward offer from Scrap My Car UAE.</p>
-        </div>
-        <a href="/free-quote" data-analytics-quote-cta="blog_article">Get free quote <span aria-hidden="true">→</span></a>
+        )}
       </section>
 
-      {renderableRelatedPosts.length > 0 && (
-        <section class="related-articles" aria-labelledby="related-articles-title">
-          <div class="related-articles__heading">
-            <p>Keep reading</p>
-            <h2 id="related-articles-title">Related articles</h2>
-          </div>
-          <div class="related-articles__grid">
-            {renderableRelatedPosts.map((relatedPost) => <BlogArticleCard post={relatedPost} />)}
-          </div>
+      <div class="article-layout">
+        <section class="blog-sidebar-form" aria-label="Get your car price">
+          {canRenderSidebarForm ? (
+            <QuoteForm makes={vehicleData.makes} models={vehicleData.models} years={vehicleData.years} variant="blog-sidebar" />
+          ) : (
+            <div class="blog-sidebar-form__fallback">
+              <h2>Get your car price</h2>
+              <p>Start your free valuation in a few simple steps.</p>
+              <a href="/free-quote" data-analytics-quote-cta="blog_sidebar_fallback">Get My Free Valuation <span aria-hidden="true">→</span></a>
+            </div>
+          )}
         </section>
-      )}
 
-      <div class="article-share">
-        <SharePostMenu url={absoluteCanonical} title={postTitle} />
+        <div class="article-reading">
+          {renderedArticle.headingCount >= 4 && <ArticleTableOfContents items={tocItems} />}
+          <article class="article-content" set:html={articleHtml} />
+
+          <section class="article-quote-cta" aria-labelledby="article-quote-title">
+            <div>
+              <p class="article-quote-cta__eyebrow">Selling a car in the UAE?</p>
+              <h2 id="article-quote-title">Get a fair quote for your car today.</h2>
+              <p>Tell us about your vehicle and get a straightforward offer from Scrap My Car UAE.</p>
+            </div>
+            <a href="/free-quote" data-analytics-quote-cta="blog_article">Get free quote <span aria-hidden="true">→</span></a>
+          </section>
+
+          {renderableRelatedPosts.length > 0 && (
+            <section class="related-articles" aria-labelledby="related-articles-title">
+              <div class="related-articles__heading">
+                <p>More to explore</p>
+                <h2 id="related-articles-title">Related reading</h2>
+              </div>
+              <ul class="related-articles__links">
+                {renderableRelatedPosts.map((relatedPost) => <li><a href={`/post/${asSafeText(relatedPost.slug)}`}>{asSafeText(relatedPost.title)}</a></li>)}
+              </ul>
+            </section>
+          )}
+
+          <div class="article-share">
+            <SharePostMenu url={absoluteCanonical} title={postTitle} />
+          </div>
+        </div>
+
+        <div class="blog-sidebar-latest"><LatestBlogsSidebar posts={latestPosts} /></div>
       </div>
 
     </main>
@@ -543,5 +567,114 @@ const jsonLd = post
         .article-shell { width: min(100% - 40px, 860px); }
         .meta { font-size: 13px; }
         .article-content { font-size: 17px; line-height: 1.72; }
+      }
+
+      /* Article editorial layout. All Wix loading and safety logic stays above this presentation layer. */
+      .article-shell {
+        width: min(1240px, calc(100% - 48px));
+        padding: 38px 0 84px;
+      }
+
+      .article-opening {
+        display: grid;
+        grid-template-columns: minmax(0, 1.06fr) minmax(0, .94fr);
+        gap: clamp(28px, 5vw, 64px);
+        align-items: center;
+        margin-bottom: clamp(48px, 7vw, 78px);
+      }
+
+      .article-opening__copy h1 {
+        max-width: none;
+        margin: 10px 0 18px;
+        color: #172219;
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        line-height: 1.04;
+      }
+
+      .article-opening__excerpt {
+        max-width: 38rem;
+        margin: 0 0 20px;
+        color: #4c584e;
+        font-size: clamp(1rem, 1.5vw, 1.15rem);
+        line-height: 1.62;
+      }
+
+      .article-opening__details { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 18px; }
+      .article-opening__details p { margin: 0; font-size: .9rem; font-weight: 750; }
+      .article-opening__updated { color: #5DB938; }
+      .article-opening__read-time { color: #697369; }
+
+      .author-card {
+        display: inline-flex;
+        align-items: center;
+        gap: 11px;
+        min-height: 64px;
+        padding: 10px 15px 10px 10px;
+        border-radius: 16px;
+        background: #f3f5f1;
+        color: #1c281e;
+      }
+      .author-card img, .author-card .author-placeholder { width: 44px; height: 44px; border-radius: 50%; }
+      .author-card img { object-fit: cover; }
+      .author-card .author-placeholder { display: grid; place-items: center; background: #d7ddd4; color: #fff; font-size: 22px; }
+      .author-card span { display: grid; gap: 2px; }
+      .author-card small { color: #6a756c; font-size: .72rem; font-weight: 700; }
+      .author-card strong { font-size: .9rem; }
+
+      .cover-wrap { margin: 0; aspect-ratio: 4 / 3; border-radius: 24px; overflow: hidden; background: #edf2ea; }
+      .cover { border-radius: 24px; }
+
+      .article-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 360px;
+        grid-template-areas: 'content form' 'content latest';
+        gap: 32px 40px;
+        align-items: start;
+      }
+      .article-reading { grid-area: content; min-width: 0; }
+      .blog-sidebar-form { grid-area: form; position: sticky; top: 112px; z-index: 1; }
+      .blog-sidebar-latest { grid-area: latest; }
+
+      .article-reading :global(.article-toc) { max-width: none; margin: 0 0 36px; }
+      .article-content { max-width: 760px; margin: 0; font-size: clamp(1.0625rem, 1.3vw, 1.125rem); line-height: 1.76; }
+      .article-content :global(h2) { font-size: clamp(1.9rem, 3.2vw, 2.35rem); }
+      .article-content :global(h3) { font-size: clamp(1.45rem, 2.5vw, 1.75rem); }
+      .article-content :global(h2), .article-content :global(h3), .article-content :global(h4) { margin-top: 2.5em; margin-bottom: .72em; }
+      .article-content :global(li::marker) {
+        color: #5DB938;
+      }
+
+      .blog-sidebar-form__fallback { padding: 24px; border-radius: 20px; background: #5DB938; box-shadow: 0 14px 30px rgba(41, 100, 27, .2); }
+      .blog-sidebar-form__fallback h2 { margin: 0 0 6px; color: #15331b; font-size: 1.65rem; }
+      .blog-sidebar-form__fallback p { margin: 0 0 18px; color: #17331d; line-height: 1.5; }
+      .blog-sidebar-form__fallback a { display: inline-flex; min-height: 48px; align-items: center; padding: 0 16px; border-radius: 12px; background: #153d20; color: #fff; font-weight: 800; text-decoration: none; }
+
+      .article-quote-cta { max-width: 760px; margin: 56px 0; }
+      .related-articles { max-width: 760px; margin: 0 0 36px; padding-top: 34px; }
+      .related-articles__links { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+      .related-articles__links a { color: #1b5d2c; font-weight: 750; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+      .related-articles__links a:hover { color: #153f1c; }
+      .article-share { max-width: 760px; }
+
+      @media (max-width: 980px) {
+        .article-layout { grid-template-columns: minmax(0, 1fr) 320px; gap: 30px; }
+      }
+
+      @media (max-width: 760px) {
+        .article-shell { width: min(100% - 40px, 640px); padding-top: 28px; }
+        .article-opening { grid-template-columns: 1fr; gap: 26px; margin-bottom: 34px; }
+        .article-opening__copy { order: 1; }
+        .cover-wrap { order: 2; aspect-ratio: 16 / 10; }
+        .article-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'form' 'content' 'latest'; gap: 32px; }
+        .blog-sidebar-form { position: static; }
+        .article-content { font-size: 17px; }
+        .article-quote-cta { margin: 42px 0; }
+        .related-articles { margin-bottom: 30px; }
+      }
+
+      @media (max-width: 420px) {
+        .article-shell { width: min(100% - 32px, 640px); }
+        .article-opening__copy h1 { font-size: clamp(2.25rem, 12vw, 3rem); }
+        .cover-wrap, .cover { border-radius: 20px; }
       }
     </style>

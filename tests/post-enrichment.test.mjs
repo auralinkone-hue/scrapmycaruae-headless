@@ -47,6 +47,25 @@ test('post route keeps essential article HTML separate from optional enrichment'
   assert.match(page, /getBreadcrumbJsonLd/);
   assert.match(page, /relatedPosts\.filter\(isRenderableRelatedPost\)/);
   assert.match(page, /asSafeText\(post\?\.media\?\.altText, postTitle\)/);
+  assert.match(page, /Promise\.allSettled\(\[getVehicleData\(\), getLatestPosts\(post\)\]\)/);
+  assert.match(page, /canRenderSidebarForm/);
+  assert.match(page, /article-content :global\(li::marker\) \{\s*color: #5DB938;/);
+});
+
+test('blog article sidebar keeps Wix failures optional and reuses the quote form', async () => {
+  const page = await readProjectFile('src/pages/post/[slug].astro');
+  const quoteForm = await readProjectFile('src/components/QuoteForm.astro');
+  const latestSidebar = await readProjectFile('src/components/LatestBlogsSidebar.astro');
+
+  assert.match(page, /<QuoteForm makes=\{vehicleData\.makes\} models=\{vehicleData\.models\} years=\{vehicleData\.years\} variant="blog-sidebar"/);
+  assert.match(page, /<LatestBlogsSidebar posts=\{latestPosts\}/);
+  assert.match(page, /grid-template-areas: 'content form' 'content latest'/);
+  assert.match(page, /grid-template-areas: 'form' 'content' 'latest'/);
+  assert.match(quoteForm, /variant\?: 'default' \| 'blog-sidebar'/);
+  assert.match(quoteForm, /Get your car price/);
+  assert.match(quoteForm, /\/api\/quote/);
+  assert.match(latestSidebar, /#2457e6/);
+  assert.match(latestSidebar, /responsiveImage\.src \?/);
 });
 
 test('related article cards protect malformed optional Wix values', async () => {

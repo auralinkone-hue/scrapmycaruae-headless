@@ -1,0 +1,69 @@
+---
+import { wixResponsiveImage } from '../lib/wix-image';
+import { asPositiveNumber, asSafeArticleSlug, asSafeText, asWixMedia } from '../lib/wix-post-values';
+
+const { posts = [] } = Astro.props as { posts?: Array<Record<string, unknown>> };
+---
+
+{posts.length > 0 && (
+  <section class="latest-blogs" aria-labelledby="latest-blogs-title">
+    <h2 id="latest-blogs-title">Latest blogs</h2>
+    <div class="latest-blogs__list">
+      {posts.map((post) => {
+        const rawImage = (post as any)?.media?.wixMedia?.image;
+        const image = asWixMedia(rawImage);
+        const responsiveImage = wixResponsiveImage(typeof rawImage === 'string' ? rawImage : image, {
+          widths: [144, 216, 288],
+          aspectRatio: asPositiveNumber(image?.width) && asPositiveNumber(image?.height)
+            ? asPositiveNumber(image?.width) / asPositiveNumber(image?.height)
+            : 16 / 9,
+        });
+        const title = asSafeText(post.title, 'Scrap My Car UAE blog');
+        const slug = asSafeArticleSlug(post.slug);
+        const minutes = asPositiveNumber(post.minutesToRead);
+
+        return (
+          <a class="latest-blogs__item" href={`/post/${slug}`} aria-label={`Read ${title}`}>
+            {responsiveImage.src ? (
+              <picture class="latest-blogs__media">
+                {responsiveImage.avifSrcset && <source type="image/avif" srcset={responsiveImage.avifSrcset} sizes="92px" />}
+                <img
+                  src={responsiveImage.src}
+                  srcset={responsiveImage.srcset || undefined}
+                  sizes="92px"
+                  width={responsiveImage.width}
+                  height={responsiveImage.height}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
+            ) : (
+              <span class="latest-blogs__placeholder" aria-hidden="true"></span>
+            )}
+            <span class="latest-blogs__copy">
+              <span class="latest-blogs__type">Blog</span>
+              {minutes > 0 && <span class="latest-blogs__minutes">{minutes} min read</span>}
+              <strong>{title}</strong>
+            </span>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+)}
+
+<style>
+  .latest-blogs { padding: 22px; border-radius: 20px; background: #f4f6f2; }
+  .latest-blogs h2 { margin: 0 0 16px; color: #172219; font-size: 1.28rem; line-height: 1.15; }
+  .latest-blogs__list { display: grid; gap: 14px; }
+  .latest-blogs__item { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; align-items: start; color: inherit; text-decoration: none; }
+  .latest-blogs__media, .latest-blogs__placeholder { display: block; width: 92px; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 11px; background: #dce4d9; }
+  .latest-blogs__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .latest-blogs__copy { display: grid; grid-template-columns: auto 1fr; column-gap: 8px; row-gap: 3px; min-width: 0; }
+  .latest-blogs__type { color: #2457e6; font-size: .75rem; font-weight: 800; }
+  .latest-blogs__minutes { color: #697369; font-size: .75rem; }
+  .latest-blogs__copy strong { grid-column: 1 / -1; color: #172219; font-size: .9rem; line-height: 1.28; }
+  .latest-blogs__item:hover strong { color: #2457e6; }
+  .latest-blogs__item:focus-visible { outline: 3px solid #2457e6; outline-offset: 3px; border-radius: 4px; }
+</style>

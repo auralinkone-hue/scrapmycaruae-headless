@@ -7,7 +7,7 @@ const tocId = 'article-table-of-contents';
 
 <aside class="article-toc">
   <div class="article-toc__header">
-    <h2>In this article</h2>
+    <h2>What's in this article</h2>
     <button class="article-toc__toggle" type="button" aria-expanded="false" aria-controls={tocId}>
       <span class="article-toc__toggle-label">Show</span>
       <svg class="article-toc__chevron" aria-hidden="true" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" /></svg>
@@ -53,22 +53,22 @@ const tocId = 'article-table-of-contents';
     max-width: 760px;
     margin: 0 auto 36px;
     padding: 20px 24px;
-    border: 1px solid var(--smc-line);
-    border-radius: var(--smc-radius);
-    background: #fff;
-    box-shadow: 0 5px 16px rgba(22, 38, 19, 0.04);
+    border: 1px solid #e0e5dd;
+    border-radius: 18px;
+    background: #f6f8f4;
+    box-shadow: 0 7px 20px rgba(22, 38, 19, 0.045);
   }
   .article-toc__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .article-toc h2 { margin: 0; color: #17331d; font-size: 1.2rem; }
+  .article-toc h2 { margin: 0; color: #17331d; font-size: 1.28rem; letter-spacing: -.02em; }
   .article-toc__toggle { min-height: 44px; padding: 0 4px 0 12px; display: inline-flex; align-items: center; gap: 7px; border: 0; background: transparent; color: #1b5d2c; font: inherit; font-weight: 800; cursor: pointer; }
   .article-toc__chevron { width: 16px; height: 16px; transition: transform 160ms ease; }
   .article-toc__chevron.is-expanded { transform: rotate(180deg); }
   .article-toc__toggle:focus-visible, .article-toc a:focus-visible { outline: 3px solid #1b6e35; outline-offset: 3px; border-radius: 3px; }
   .article-toc nav { margin-top: 13px; }
   .article-toc ol { margin: 0; padding-left: 1.2rem; }
-  .article-toc li { margin: 7px 0; padding-left: 2px; color: #315038; }
+  .article-toc li { margin: 8px 0; padding-left: 2px; color: #315038; }
   .article-toc li ol { margin-top: 7px; }
-  .article-toc a { color: #1b5d2c; font-weight: 700; line-height: 1.4; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .article-toc a { display: inline-block; padding-block: 3px; color: #1b5d2c; font-weight: 700; line-height: 1.4; text-decoration-thickness: 1px; text-underline-offset: 3px; }
   .article-toc a:hover { color: #103d1d; }
   @media (max-width: 640px) { .article-toc { margin-bottom: 30px; padding: 16px 18px; } }
   @media (prefers-reduced-motion: reduce) { .article-toc__chevron { transition: none; } }

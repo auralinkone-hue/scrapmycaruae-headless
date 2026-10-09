@@ -25,18 +25,17 @@ const { items } = Astro.props;
 <style>
   .breadcrumb {
     max-width: 100%;
-    margin: 0 0 18px;
+    margin: 0 0 22px;
     padding: 0;
-    color: #657065;
-    font-size: 13px;
+    color: #5d685f;
+    font-size: clamp(.875rem, 1.4vw, 1rem);
     line-height: 1.45;
   }
 
   ol {
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 5px 0;
+    flex-wrap: nowrap;
+    align-items: center;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -44,27 +43,27 @@ const { items } = Astro.props;
 
   li {
     display: inline-flex;
-    align-items: baseline;
+    align-items: center;
     min-width: 0;
   }
 
   li + li::before {
     content: '›';
-    margin: 0 9px;
-    color: #6f806f;
-    font-weight: 700;
+    margin: 0 10px;
+    color: #91a095;
+    font-weight: 600;
   }
 
   a {
-    color: #1d5721;
+    color: #2c772f;
     font-weight: 700;
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 3px;
+    text-decoration: none;
   }
 
   a:hover {
-    color: #173f18;
+    color: #153f1c;
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   a:focus-visible {
@@ -75,23 +74,20 @@ const { items } = Astro.props;
 
   [aria-current='page'] {
     min-width: 0;
-    color: #344134;
-    font-weight: 650;
+    color: #697369;
+    font-weight: 600;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   @media (max-width: 640px) {
-    .breadcrumb {
-      margin-bottom: 15px;
-      font-size: 13px;
-    }
+    .breadcrumb { margin-bottom: 18px; }
 
     li + li::before {
       margin-inline: 7px;
     }
 
-    li:last-child { max-width: min(100%, 26rem); }
+    li:last-child { flex: 1 1 auto; max-width: min(100%, 26rem); }
   }
 </style>
