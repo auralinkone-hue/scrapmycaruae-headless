@@ -1,22 +1,28 @@
 ---
 import { wixResponsiveImage } from '../lib/wix-image';
+import { asIsoDate, asPositiveNumber, asSafeArticleSlug, asSafeText, asValidDate, asWixMedia } from '../lib/wix-post-values';
 
 const { post } = Astro.props;
-const postImage = post?.media?.wixMedia?.image;
+const postImage = asWixMedia(post?.media?.wixMedia?.image);
+const postTitle = asSafeText(post?.title, 'Related article');
+const postSlug = asSafeArticleSlug(post?.slug);
 const responsiveImage = wixResponsiveImage(postImage, {
   widths: [320, 480, 640, 800],
-  aspectRatio: postImage?.width && postImage?.height ? postImage.width / postImage.height : 16 / 9,
+  aspectRatio: asPositiveNumber(postImage?.width) && asPositiveNumber(postImage?.height)
+    ? asPositiveNumber(postImage?.width) / asPositiveNumber(postImage?.height)
+    : 16 / 9,
 });
-const imageAlt = postImage?.altText?.trim() || post?.title || 'Related article';
-const publishDate = post?.firstPublishedDate || post?.lastPublishedDate || post?._createdDate;
+const imageAlt = asSafeText(postImage?.altText, postTitle);
+const publishDate = asValidDate(post?.firstPublishedDate) || asValidDate(post?.lastPublishedDate) || asValidDate(post?._createdDate);
 const formattedDate = publishDate
-  ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(publishDate))
+  ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(publishDate)
   : null;
-const minutesToRead = Number(post?.minutesToRead);
+const publishDateIso = asIsoDate(publishDate);
+const minutesToRead = asPositiveNumber(post?.minutesToRead);
 ---
 
 <article class="blog-article-card">
-  <a class="blog-article-card__link" href={`/post/${post.slug}`} aria-label={`Read ${post.title}`}>
+  <a class="blog-article-card__link" href={`/post/${postSlug}`} aria-label={`Read ${postTitle}`}>
     {responsiveImage ? (
       <div class="blog-article-card__image-wrap">
         <picture>
@@ -40,11 +46,11 @@ const minutesToRead = Number(post?.minutesToRead);
     )}
     <div class="blog-article-card__body">
       <div class="blog-article-card__meta">
-        {formattedDate && <time datetime={new Date(publishDate).toISOString()}>{formattedDate}</time>}
-        {formattedDate && Number.isFinite(minutesToRead) && minutesToRead > 0 && <span aria-hidden="true">•</span>}
-        {Number.isFinite(minutesToRead) && minutesToRead > 0 && <span>{minutesToRead} min read</span>}
+        {formattedDate && publishDateIso && <time datetime={publishDateIso}>{formattedDate}</time>}
+        {formattedDate && minutesToRead > 0 && <span aria-hidden="true">•</span>}
+        {minutesToRead > 0 && <span>{minutesToRead} min read</span>}
       </div>
-      <h3>{post.title}</h3>
+      <h3>{postTitle}</h3>
       <span class="blog-article-card__cta" aria-hidden="true">Read article <span>→</span></span>
     </div>
   </a>

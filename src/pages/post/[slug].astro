@@ -20,6 +20,7 @@ import ArticleTableOfContents from '../../components/ArticleTableOfContents.astr
 import SharePostMenu from '../../components/SharePostMenu.astro';
 import { getRelatedPosts } from '../../lib/related-posts';
 import { loadPostPageEnrichment } from '../../lib/post-enrichment';
+import { asPositiveNumber, asSafeText, asValidDate, asWixMedia, isRenderableRelatedPost } from '../../lib/wix-post-values';
 
 const slug = Astro.params.slug ?? '';
 let post: any = null;
@@ -49,12 +50,13 @@ const { author, categoryBreadcrumb, relatedPosts } = post
   : { author: null, categoryBreadcrumb: null, relatedPosts: [] };
 
 const wixSeo = post ? getWixPostSeo(post) : null;
+const postTitle = asSafeText(post?.title, 'Scrap My Car UAE');
 const seoTitle = wixSeo?.title || 'Scrap My Car UAE';
 const seoDescription = wixSeo?.description || '';
 const canonical = wixSeo?.canonical || canonicalUrl(`/post/${slug}`);
 const absoluteCanonical = canonical;
 const breadcrumbItems = post
-  ? getArticleBreadcrumbItems(post.title, canonical, categoryBreadcrumb)
+  ? getArticleBreadcrumbItems(postTitle, canonical, categoryBreadcrumb)
   : [];
 const breadcrumbJsonLd = post
   ? getBreadcrumbJsonLd(breadcrumbItems)
@@ -64,6 +66,7 @@ const rawCoverImage =
   post?.media?.wixMedia?.image ||
   post?.heroImage ||
   null;
+const rawCoverMedia = asWixMedia(rawCoverImage);
 
 const normalizedCover =
   typeof rawCoverImage === 'string'
@@ -74,22 +77,19 @@ const normalizedCover =
           return null;
         }
       })()
-    : rawCoverImage?.url
-      ? rawCoverImage
+    : rawCoverMedia?.url
+      ? rawCoverMedia
       : null;
 
-const coverImage = normalizedCover?.url || '';
+const coverImage = typeof normalizedCover?.url === 'string' ? normalizedCover.url : '';
 const responsiveCover = wixResponsiveImage(normalizedCover, {
   widths: [480, 768, 1024, 1440, 1800],
-  aspectRatio: normalizedCover?.width && normalizedCover?.height
-    ? normalizedCover.width / normalizedCover.height
+  aspectRatio: asPositiveNumber(normalizedCover?.width) && asPositiveNumber(normalizedCover?.height)
+    ? asPositiveNumber(normalizedCover?.width) / asPositiveNumber(normalizedCover?.height)
     : 16 / 9
 });
 
-const coverAlt =
-  post?.media?.altText ||
-  post?.title ||
-  '';
+const coverAlt = asSafeText(post?.media?.altText, postTitle);
 
 const renderedArticle = post?.richContent
   ? renderRicosDocumentWithTableOfContents(post.richContent)
@@ -97,13 +97,11 @@ const renderedArticle = post?.richContent
 const articleHtml = renderedArticle.html;
 const tocItems = renderedArticle.items;
 
-const publishedDate = post?.firstPublishedDate
-  ? new Date(post.firstPublishedDate)
-  : null;
+const publishedDate = asValidDate(post?.firstPublishedDate);
 
-const updatedDate = post?.lastPublishedDate
-  ? new Date(post.lastPublishedDate)
-  : publishedDate;
+const updatedDate = asValidDate(post?.lastPublishedDate) || publishedDate;
+const renderableRelatedPosts = relatedPosts.filter(isRenderableRelatedPost);
+const minutesToRead = asPositiveNumber(post?.minutesToRead);
 
 const formatDate = (date: Date | null) =>
   date
@@ -118,7 +116,7 @@ const jsonLd = post
   ? {
       '@context': 'https://schema.org',
       '@type': 'BlogPosting',
-      headline: post.title,
+      headline: postTitle,
       description: seoDescription,
       datePublished: post.firstPublishedDate,
       dateModified: post.lastPublishedDate || post.firstPublishedDate,
@@ -157,7 +155,7 @@ const jsonLd = post
     <main class="article-shell">
       <div class="smc-kicker">Scrap My Car UAE Blog</div>
       <BlogBreadcrumb items={breadcrumbItems} />
-      <h1>{post.title}</h1>
+      <h1>{postTitle}</h1>
 
       <div class="article-meta-row">
         <div>
@@ -173,7 +171,7 @@ const jsonLd = post
           )}
           <div class="meta">
             {publishedDate && <span>{formatDate(publishedDate)}</span>}
-            {post.minutesToRead && <span>{post.minutesToRead} min read</span>}
+            {minutesToRead > 0 && <span>{minutesToRead} min read</span>}
             {updatedDate &&
               publishedDate &&
               updatedDate.getTime() !== publishedDate.getTime() && (
@@ -215,20 +213,20 @@ const jsonLd = post
         <a href="/free-quote" data-analytics-quote-cta="blog_article">Get free quote <span aria-hidden="true">→</span></a>
       </section>
 
-      {relatedPosts.length > 0 && (
+      {renderableRelatedPosts.length > 0 && (
         <section class="related-articles" aria-labelledby="related-articles-title">
           <div class="related-articles__heading">
             <p>Keep reading</p>
             <h2 id="related-articles-title">Related articles</h2>
           </div>
           <div class="related-articles__grid">
-            {relatedPosts.map((relatedPost) => <BlogArticleCard post={relatedPost} />)}
+            {renderableRelatedPosts.map((relatedPost) => <BlogArticleCard post={relatedPost} />)}
           </div>
         </section>
       )}
 
       <div class="article-share">
-        <SharePostMenu url={absoluteCanonical} title={post.title} />
+        <SharePostMenu url={absoluteCanonical} title={postTitle} />
       </div>
 
     </main>

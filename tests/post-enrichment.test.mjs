@@ -41,10 +41,21 @@ test('post route keeps essential article HTML separate from optional enrichment'
 
   assert.match(page, /posts\.getPostBySlug/);
   assert.match(page, /loadPostPageEnrichment/);
-  assert.match(page, /<h1>\{post\.title\}<\/h1>/);
+  assert.match(page, /<h1>\{postTitle\}<\/h1>/);
   assert.match(page, /<article class="article-content" set:html=\{articleHtml\}/);
   assert.match(page, /'@type': 'BlogPosting'/);
   assert.match(page, /getBreadcrumbJsonLd/);
+  assert.match(page, /relatedPosts\.filter\(isRenderableRelatedPost\)/);
+  assert.match(page, /asSafeText\(post\?\.media\?\.altText, postTitle\)/);
+});
+
+test('related article cards protect malformed optional Wix values', async () => {
+  const card = await readProjectFile('src/components/BlogArticleCard.astro');
+
+  assert.doesNotMatch(card, /altText\?\.trim\(\)/);
+  assert.match(card, /asSafeText\(postImage\?\.altText, postTitle\)/);
+  assert.match(card, /asValidDate\(post\?\.firstPublishedDate\)/);
+  assert.match(card, /asSafeArticleSlug\(post\?\.slug\)/);
 });
 
 test('missing essential article data returns a semantic not-found page, not a blank page', async () => {
