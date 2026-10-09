@@ -3,15 +3,22 @@ import { wixResponsiveImage } from '../lib/wix-image';
 import { asIsoDate, asPositiveNumber, asSafeArticleSlug, asSafeText, asValidDate, asWixMedia } from '../lib/wix-post-values';
 
 const { post } = Astro.props;
-const postImage = asWixMedia(post?.media?.wixMedia?.image);
+// Wix Blog returns cover media as an opaque wix:image:// string for queryPosts.
+// Keep the raw value for URL resolution and only inspect object fields after
+// verifying the response really is an object.
+const rawPostImage = post?.media?.wixMedia?.image;
+const postImage = asWixMedia(rawPostImage);
 const postTitle = asSafeText(post?.title, 'Related article');
 const postSlug = asSafeArticleSlug(post?.slug);
-const responsiveImage = wixResponsiveImage(postImage, {
+const responsiveImage = wixResponsiveImage(
+  typeof rawPostImage === 'string' ? rawPostImage : postImage,
+  {
   widths: [320, 480, 640, 800],
   aspectRatio: asPositiveNumber(postImage?.width) && asPositiveNumber(postImage?.height)
     ? asPositiveNumber(postImage?.width) / asPositiveNumber(postImage?.height)
     : 16 / 9,
-});
+  },
+);
 const imageAlt = asSafeText(postImage?.altText, postTitle);
 const publishDate = asValidDate(post?.firstPublishedDate) || asValidDate(post?.lastPublishedDate) || asValidDate(post?._createdDate);
 const formattedDate = publishDate
@@ -23,15 +30,16 @@ const minutesToRead = asPositiveNumber(post?.minutesToRead);
 
 <article class="blog-article-card">
   <a class="blog-article-card__link" href={`/post/${postSlug}`} aria-label={`Read ${postTitle}`}>
-    {responsiveImage ? (
+    {responsiveImage.src ? (
       <div class="blog-article-card__image-wrap">
         <picture>
-          <source srcset={responsiveImage.avifSrcset} sizes="(max-width: 700px) 100vw, (max-width: 1050px) 50vw, 33vw" type="image/avif" />
-          <source srcset={responsiveImage.webpSrcset} sizes="(max-width: 700px) 100vw, (max-width: 1050px) 50vw, 33vw" type="image/webp" />
+          {responsiveImage.avifSrcset && (
+            <source srcset={responsiveImage.avifSrcset} sizes="(max-width: 700px) 100vw, (max-width: 1050px) 50vw, 33vw" type="image/avif" />
+          )}
           <img
             class="blog-article-card__image"
             src={responsiveImage.src}
-            srcset={responsiveImage.srcset}
+            srcset={responsiveImage.srcset || undefined}
             sizes="(max-width: 700px) 100vw, (max-width: 1050px) 50vw, 33vw"
             width={responsiveImage.width}
             height={responsiveImage.height}

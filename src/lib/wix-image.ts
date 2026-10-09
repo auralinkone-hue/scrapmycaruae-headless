@@ -12,6 +12,12 @@ type ResponsiveImageOptions = {
   quality?: number;
 };
 
+type ResolvedWixImage = {
+  url: string;
+  width: number;
+  height: number;
+};
+
 const rawSourceUrl = (image: WixImage | null | undefined) =>
   typeof image === 'string'
     ? image
@@ -22,24 +28,44 @@ const rawSourceUrl = (image: WixImage | null | undefined) =>
 const isWixCdnImage = (source: string) =>
   source.includes('static.wixstatic.com/') || source.startsWith('wix:image://') || source.startsWith('wix:');
 
+const asPositiveNumber = (value: unknown) =>
+  typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : 0;
+
+const resolveWixImage = (image: WixImage | null | undefined): ResolvedWixImage => {
+  const source = rawSourceUrl(image);
+  const objectWidth = typeof image === 'object' && image ? asPositiveNumber(image.width) : 0;
+  const objectHeight = typeof image === 'object' && image ? asPositiveNumber(image.height) : 0;
+
+  if (!source) return { url: '', width: objectWidth, height: objectHeight };
+
+  if (source.startsWith('wix:image://') || source.startsWith('wix:')) {
+    try {
+      const resolved = media.getImageUrl(source);
+      const url = typeof resolved === 'string'
+        ? resolved
+        : resolved && typeof resolved.url === 'string'
+          ? resolved.url
+          : '';
+      return {
+        url,
+        width: objectWidth || asPositiveNumber(resolved && typeof resolved === 'object' ? resolved.width : 0),
+        height: objectHeight || asPositiveNumber(resolved && typeof resolved === 'object' ? resolved.height : 0)
+      };
+    } catch {
+      return { url: '', width: objectWidth, height: objectHeight };
+    }
+  }
+
+  return { url: source, width: objectWidth, height: objectHeight };
+};
+
 /**
  * Wix CMS IMAGE fields may return an opaque wix:image:// URI. Those values
  * are useful CMS references, but are not browser image URLs. Resolve them at
  * the server boundary so templates never emit a raw Wix media URI in src.
  */
 export function normalizeWixImage(image: WixImage | null | undefined) {
-  const source = rawSourceUrl(image);
-  if (!source) return '';
-
-  if (source.startsWith('wix:image://') || source.startsWith('wix:')) {
-    try {
-      return media.getImageUrl(source) || '';
-    } catch {
-      return '';
-    }
-  }
-
-  return source;
+  return resolveWixImage(image).url;
 }
 
 const transform = (
@@ -76,9 +102,10 @@ export function wixResponsiveImage(
   image: WixImage | null | undefined,
   { widths, aspectRatio, quality = 78 }: ResponsiveImageOptions
 ) {
-  const source = normalizeWixImage(image);
-  const originalWidth = typeof image === 'string' ? 0 : Number(image?.width || 0);
-  const originalHeight = typeof image === 'string' ? 0 : Number(image?.height || 0);
+  const resolved = resolveWixImage(image);
+  const source = resolved.url;
+  const originalWidth = resolved.width;
+  const originalHeight = resolved.height;
   const ratio = aspectRatio || (originalWidth && originalHeight ? originalWidth / originalHeight : 16 / 9);
 
   if (!source) {
