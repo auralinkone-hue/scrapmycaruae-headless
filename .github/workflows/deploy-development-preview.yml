@@ -22,6 +22,8 @@ jobs:
       WIX_QUOTE_REQUESTS_COLLECTION_ID: QuoteRequestsStaging
       PUBLIC_SEO_ENV: staging
       PUBLIC_SITE_URL: https://www.scrapmycaruae.com
+      PUBLIC_GTM_ID: GTM-TFQ7BDGX
+      PUBLIC_ANALYTICS_ENABLED: "false"
 
     steps:
       - name: Checkout development

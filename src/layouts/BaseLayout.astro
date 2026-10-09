@@ -31,6 +31,8 @@ const resolvedRobots = noindex ? 'noindex,nofollow' : robotsContent(Astro.url);
 const resolvedPrevUrl = prevUrl ? canonicalUrl(prevUrl) : '';
 const resolvedNextUrl = nextUrl ? canonicalUrl(nextUrl) : '';
 const resolvedOgImage = ogImage ? new URL(ogImage, `${siteUrl}/`).toString() : '';
+const gtmId = import.meta.env.PUBLIC_GTM_ID?.trim() || '';
+const analyticsEnabled = import.meta.env.PUBLIC_ANALYTICS_ENABLED === 'true' && Boolean(gtmId);
 ---
 
 <!doctype html>
@@ -66,10 +68,42 @@ const resolvedOgImage = ogImage ? new URL(ogImage, `${siteUrl}/`).toString() : '
     {description && <meta name="twitter:description" content={description} />}
     {resolvedOgImage && <meta name="twitter:image" content={resolvedOgImage} />}
 
+    {analyticsEnabled && (
+      <>
+        <script define:vars={{ gtmId }}>
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+          (function(w,d,s,l,i){
+            const f=d.getElementsByTagName(s)[0];
+            const j=d.createElement(s);
+            const dl=l !== 'dataLayer' ? '&l=' + l : '';
+            j.async=true;
+            j.src='https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode?.insertBefore(j,f);
+          })(window,document,'script','dataLayer',gtmId);
+        </script>
+        <script>
+          import { initializeAnalytics } from '../scripts/analytics';
+          initializeAnalytics();
+        </script>
+      </>
+    )}
+
     <slot name="head" />
   </head>
 
   <body>
+    {analyticsEnabled && (
+      <noscript>
+        <iframe
+          src={`https://www.googletagmanager.com/ns.html?id=${encodeURIComponent(gtmId)}`}
+          height="0"
+          width="0"
+          style="display:none;visibility:hidden"
+          title="Google Tag Manager"
+        />
+      </noscript>
+    )}
     <SiteHeader />
     <slot />
     <SiteFooter />

@@ -21,6 +21,24 @@ The development preview workflow sets the staging collection explicitly. Product
 deployments must set the production value explicitly; if the variable is missing or
 invalid, quote submission fails closed without exposing configuration to the browser.
 
+## Analytics foundation
+
+Google Tag Manager is the sole frontend analytics loader. The existing GA4 measurement
+ID is `G-C7Q56MNMZN`; it is retained for GTM configuration and documentation only.
+Do not add a direct `gtag.js` loader or create another GA4 property.
+
+Analytics loads only when both of these public build variables are set:
+
+```bash
+PUBLIC_GTM_ID=GTM-TFQ7BDGX
+PUBLIC_ANALYTICS_ENABLED=true
+```
+
+The development preview explicitly uses `PUBLIC_ANALYTICS_ENABLED=false`. The browser
+helper sends only minimal, non-PII events through `window.dataLayer`: `generate_lead`,
+`whatsapp_handoff`, `whatsapp_click`, `phone_click`, and `quote_cta_click`.
+It never delays CMS saving, navigation, or the WhatsApp handoff.
+
 
 ## Migration route and metadata QA
 

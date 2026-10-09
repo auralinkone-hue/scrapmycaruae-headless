@@ -209,6 +209,8 @@ const regularMakes = makes.filter((item) => !item.featuredMake);
           const response = await fetch('/api/quote', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
           const result = await response.json();
           if (!response.ok || !result.ok || !result.whatsappUrl) throw new Error(result.message || 'Submission failed.');
+          window.smcAnalytics?.track('generate_lead', { form_name: 'valuation_form', cta_location: 'quote_form', destination_type: 'whatsapp' });
+          window.smcAnalytics?.track('whatsapp_handoff', { form_name: 'valuation_form', cta_location: 'quote_form', destination_type: 'whatsapp' });
           window.location.assign(result.whatsappUrl);
         } catch (error) {
           if (submitMessage instanceof HTMLElement) {
