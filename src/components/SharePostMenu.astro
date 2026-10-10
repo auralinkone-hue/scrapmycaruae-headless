@@ -12,7 +12,8 @@ const encodedTitle = encodeURIComponent(title);
 
 <div class="share-menu" data-share-menu data-share-url={url}>
   <button class="share-trigger" type="button" aria-label={label} data-share-open>
-    <i class="ph ph-dots-three-vertical" aria-hidden="true"></i>
+    <i class="ph ph-share-network" aria-hidden="true"></i>
+    <span>{label}</span>
   </button>
 
   <dialog class="share-dialog" aria-label="Share post" data-share-dialog>
@@ -20,12 +21,12 @@ const encodedTitle = encodeURIComponent(title);
       <button class="share-dialog__close" type="button" aria-label="Close share dialog" data-share-close>
         <i class="ph ph-x" aria-hidden="true"></i>
       </button>
-      <h2>Share Post</h2>
+      <h2>Share this article</h2>
       <div class="share-dialog__actions">
         <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`} target="_blank" rel="noreferrer" aria-label="Share on Facebook" class="share-dialog__action share-dialog__action--facebook"><i class="ph ph-facebook-logo" aria-hidden="true"></i></a>
         <a href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`} target="_blank" rel="noreferrer" aria-label="Share on X" class="share-dialog__action share-dialog__action--x"><i class="ph ph-x-logo" aria-hidden="true"></i></a>
         <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`} target="_blank" rel="noreferrer" aria-label="Share on LinkedIn" class="share-dialog__action share-dialog__action--linkedin"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></a>
-        <button type="button" aria-label="Copy post link" class="share-dialog__action share-dialog__action--copy" data-share-copy><i class="ph ph-link-simple" aria-hidden="true"></i></button>
+        <button type="button" aria-label="Copy link" class="share-dialog__action share-dialog__action--copy" data-share-copy><i class="ph ph-link-simple" aria-hidden="true"></i></button>
       </div>
       <p class="share-dialog__feedback" aria-live="polite" data-share-feedback></p>
     </div>
@@ -33,8 +34,23 @@ const encodedTitle = encodeURIComponent(title);
 </div>
 
 <style>
-  .share-menu { position: relative; }
-  .share-trigger, .share-dialog__close {
+  .share-menu { position: relative; display: inline-flex; }
+  .share-trigger {
+    min-height: 42px;
+    padding: 0 15px;
+    border: 1px solid #d7e2d5;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    color: #173f27;
+    font: inherit;
+    font-weight: 750;
+    cursor: pointer;
+  }
+  .share-trigger:hover { background: #f1f7ef; border-color: #b8cfb3; }
+  .share-dialog__close {
     width: 38px;
     height: 38px;
     border: 0;
@@ -45,9 +61,9 @@ const encodedTitle = encodeURIComponent(title);
     color: #2d352d;
     cursor: pointer;
   }
-  .share-trigger:hover, .share-trigger:focus-visible, .share-dialog__close:hover, .share-dialog__close:focus-visible { background: #edf4ea; }
+  .share-dialog__close:hover, .share-dialog__close:focus-visible { background: #edf4ea; }
   .share-trigger:focus-visible, .share-dialog__close:focus-visible, .share-dialog__action:focus-visible { outline: 3px solid rgb(93 157 76 / 32%); outline-offset: 2px; }
-  .share-trigger .ph { font-size: 22px; }
+  .share-trigger .ph { font-size: 19px; }
   .share-dialog { width: min(565px, calc(100% - 34px)); padding: 0; border: 0; background: transparent; }
   .share-dialog::backdrop { background: rgb(13 20 13 / 78%); }
   .share-dialog__inner { position: relative; padding: 64px 34px 42px; border-radius: 2px; background: #fff; text-align: center; box-shadow: 0 25px 80px rgb(0 0 0 / 24%); }

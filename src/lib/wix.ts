@@ -1,6 +1,6 @@
 import { createClient, OAuthStrategy } from '@wix/sdk';
 import { categories, posts } from '@wix/blog';
-import { members } from '@wix/members';
+import { members, membersAbout } from '@wix/members';
 
 const clientId = import.meta.env.PUBLIC_WIX_CLIENT_ID;
 
@@ -12,7 +12,8 @@ export const wixClient = createClient({
   modules: {
     categories,
     posts,
-    members
+    members,
+    membersAbout
   },
   auth: OAuthStrategy({
     clientId
