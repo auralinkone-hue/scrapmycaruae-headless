@@ -1,19 +1,58 @@
 ---
 import { wixResponsiveImage } from '../lib/wix-image';
-import { asPositiveNumber, asSafeArticleSlug, asSafeText, asWixMedia } from '../lib/wix-post-values';
+import {
+  asPositiveNumber,
+  asSafeArticleSlug,
+  asSafeText,
+  asValidDate,
+  asWixMedia
+} from '../lib/wix-post-values';
 
-const { posts = [] } = Astro.props as { posts?: Array<Record<string, unknown>> };
+const {
+  posts = [],
+  variant = 'sidebar'
+} = Astro.props as {
+  posts?: Array<Record<string, unknown>>;
+  variant?: 'sidebar' | 'grid';
+};
+
+const isGrid = variant === 'grid';
+
+const formatDate = (value: unknown) => {
+  const date = asValidDate(value);
+  return date
+    ? new Intl.DateTimeFormat('en-AE', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      }).format(date)
+    : '';
+};
 ---
 
 {posts.length > 0 && (
-  <section class="latest-blogs" aria-labelledby="latest-blogs-title">
-    <h2 id="latest-blogs-title">Latest blogs</h2>
+  <section
+    class:list={['latest-blogs', { 'latest-blogs--grid': isGrid }]}
+    aria-labelledby={isGrid ? 'latest-articles-title' : 'latest-blogs-title'}
+  >
+    {isGrid ? (
+      <div class="latest-blogs__heading">
+        <div>
+          <p>Keep reading</p>
+          <h2 id="latest-articles-title">Latest Articles</h2>
+        </div>
+        <a href="/blogs">View all blogs <span aria-hidden="true">→</span></a>
+      </div>
+    ) : (
+      <h2 id="latest-blogs-title">Latest blogs</h2>
+    )}
+
     <div class="latest-blogs__list">
-      {posts.map((post) => {
+      {posts.slice(0, 3).map((post) => {
         const rawImage = (post as any)?.media?.wixMedia?.image;
         const image = asWixMedia(rawImage);
         const responsiveImage = wixResponsiveImage(typeof rawImage === 'string' ? rawImage : image, {
-          widths: [144, 216, 288],
+          widths: isGrid ? [360, 520, 720] : [144, 216, 288],
           aspectRatio: asPositiveNumber(image?.width) && asPositiveNumber(image?.height)
             ? asPositiveNumber(image?.width) / asPositiveNumber(image?.height)
             : 16 / 9,
@@ -21,16 +60,23 @@ const { posts = [] } = Astro.props as { posts?: Array<Record<string, unknown>> }
         const title = asSafeText(post.title, 'Scrap My Car UAE blog');
         const slug = asSafeArticleSlug(post.slug);
         const minutes = asPositiveNumber(post.minutesToRead);
+        const published = formatDate(post.firstPublishedDate);
 
         return (
           <a class="latest-blogs__item" href={`/post/${slug}`} aria-label={`Read ${title}`}>
             {responsiveImage.src ? (
               <picture class="latest-blogs__media">
-                {responsiveImage.avifSrcset && <source type="image/avif" srcset={responsiveImage.avifSrcset} sizes="92px" />}
+                {responsiveImage.avifSrcset && (
+                  <source
+                    type="image/avif"
+                    srcset={responsiveImage.avifSrcset}
+                    sizes={isGrid ? '(max-width: 760px) calc(100vw - 36px), 33vw' : '92px'}
+                  />
+                )}
                 <img
                   src={responsiveImage.src}
                   srcset={responsiveImage.srcset || undefined}
-                  sizes="92px"
+                  sizes={isGrid ? '(max-width: 760px) calc(100vw - 36px), 33vw' : '92px'}
                   width={responsiveImage.width}
                   height={responsiveImage.height}
                   alt=""
@@ -42,9 +88,13 @@ const { posts = [] } = Astro.props as { posts?: Array<Record<string, unknown>> }
               <span class="latest-blogs__placeholder" aria-hidden="true"></span>
             )}
             <span class="latest-blogs__copy">
-              <span class="latest-blogs__type">Blog</span>
-              {minutes > 0 && <span class="latest-blogs__minutes">{minutes} min read</span>}
+              {!isGrid && <span class="latest-blogs__type">Blog</span>}
+              <span class="latest-blogs__meta">
+                {published && <span>{published}</span>}
+                {minutes > 0 && <span>{minutes} min read</span>}
+              </span>
               <strong>{title}</strong>
+              {isGrid && <span class="latest-blogs__read">Read article <span aria-hidden="true">→</span></span>}
             </span>
           </a>
         );
@@ -54,21 +104,205 @@ const { posts = [] } = Astro.props as { posts?: Array<Record<string, unknown>> }
 )}
 
 <style>
-  .latest-blogs { padding: 22px; border-radius: 20px; background: #f4f6f2; }
-  .latest-blogs h2 { margin: 0 0 16px; color: #172219; font-size: 1.28rem; line-height: 1.15; }
-  .latest-blogs__list { display: grid; gap: 14px; }
-  .latest-blogs__item { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; align-items: start; color: inherit; text-decoration: none; }
-  .latest-blogs__media, .latest-blogs__placeholder { display: block; width: 92px; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 11px; background: #dce4d9; }
-  .latest-blogs__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .latest-blogs__copy { display: grid; grid-template-columns: auto 1fr; column-gap: 8px; row-gap: 3px; min-width: 0; }
-  .latest-blogs__type { color: #2457e6; font-size: .75rem; font-weight: 800; }
-  .latest-blogs__minutes { color: #697369; font-size: .75rem; }
-  .latest-blogs__copy strong { grid-column: 1 / -1; color: #172219; font-size: .9rem; line-height: 1.28; }
-  .latest-blogs__item:hover strong { color: #2457e6; }
-  .latest-blogs__item:focus-visible { outline: 3px solid #2457e6; outline-offset: 3px; border-radius: 4px; }
+  .latest-blogs {
+    padding: 22px;
+    border-radius: 20px;
+    background: #f4f6f2;
+  }
+
+  .latest-blogs > h2 {
+    margin: 0 0 16px;
+    color: #172219;
+    font-size: 1.28rem;
+    line-height: 1.15;
+  }
+
+  .latest-blogs__list {
+    display: grid;
+    gap: 14px;
+  }
+
+  .latest-blogs__item {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .latest-blogs__media,
+  .latest-blogs__placeholder {
+    display: block;
+    width: 92px;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: 11px;
+    background: #dce4d9;
+  }
+
+  .latest-blogs__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 220ms ease;
+  }
+
+  .latest-blogs__copy {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .latest-blogs__type {
+    color: #2457e6;
+    font-size: .75rem;
+    font-weight: 800;
+  }
+
+  .latest-blogs__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    color: #697369;
+    font-size: .75rem;
+  }
+
+  .latest-blogs__copy strong {
+    color: #172219;
+    font-size: .9rem;
+    line-height: 1.28;
+  }
+
+  .latest-blogs__item:hover strong {
+    color: #1b5d2c;
+  }
+
+  .latest-blogs__item:focus-visible {
+    outline: 3px solid #1b6e35;
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+
+  .latest-blogs--grid {
+    margin-top: 56px;
+    padding: 46px 0 0;
+    border-top: 1px solid #dce6dc;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .latest-blogs--grid .latest-blogs__heading {
+    margin-bottom: 24px;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .latest-blogs--grid .latest-blogs__heading p {
+    margin: 0 0 5px;
+    color: #27683a;
+    font-size: .76rem;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  .latest-blogs--grid .latest-blogs__heading h2 {
+    margin: 0;
+    color: #172219;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    letter-spacing: -.035em;
+  }
+
+  .latest-blogs--grid .latest-blogs__heading a {
+    color: #1b5d2c;
+    font-size: .85rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .latest-blogs--grid .latest-blogs__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+  }
+
+  .latest-blogs--grid .latest-blogs__item {
+    display: block;
+    min-width: 0;
+  }
+
+  .latest-blogs--grid .latest-blogs__media,
+  .latest-blogs--grid .latest-blogs__placeholder {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: 16px;
+  }
+
+  .latest-blogs--grid .latest-blogs__copy {
+    padding-top: 13px;
+    gap: 7px;
+  }
+
+  .latest-blogs--grid .latest-blogs__copy strong {
+    font-size: 1.02rem;
+    line-height: 1.34;
+  }
+
+  .latest-blogs__read {
+    color: #1b5d2c;
+    font-size: .78rem;
+    font-weight: 800;
+  }
+
+  .latest-blogs--grid .latest-blogs__item:hover img {
+    transform: scale(1.02);
+  }
+
   @media (max-width: 760px) {
-    .latest-blogs { padding: 20px; }
-    .latest-blogs__item { grid-template-columns: 84px minmax(0, 1fr); gap: 11px; }
-    .latest-blogs__media, .latest-blogs__placeholder { width: 84px; }
+    .latest-blogs {
+      padding: 20px;
+    }
+
+    .latest-blogs__item {
+      grid-template-columns: 84px minmax(0, 1fr);
+      gap: 11px;
+    }
+
+    .latest-blogs__media,
+    .latest-blogs__placeholder {
+      width: 84px;
+    }
+
+    .latest-blogs--grid {
+      margin-top: 40px;
+      padding: 36px 0 0;
+    }
+
+    .latest-blogs--grid .latest-blogs__heading {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .latest-blogs--grid .latest-blogs__list {
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+
+    .latest-blogs--grid .latest-blogs__item {
+      display: block;
+    }
+
+    .latest-blogs--grid .latest-blogs__media,
+    .latest-blogs--grid .latest-blogs__placeholder {
+      width: 100%;
+    }
+
+    .latest-blogs--grid .latest-blogs__copy strong {
+      font-size: 1rem;
+    }
   }
 </style>
