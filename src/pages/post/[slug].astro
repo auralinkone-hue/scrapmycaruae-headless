@@ -630,7 +630,18 @@ const jsonLd = post
         align-items: start;
       }
       .article-reading { min-width: 0; }
-      .article-sidebar { display: grid; gap: 24px; min-width: 0; align-self: start; }
+      .article-sidebar {
+        position: sticky;
+        top: 108px;
+        display: grid;
+        gap: 24px;
+        max-height: calc(100vh - 132px);
+        min-width: 0;
+        align-self: start;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-gutter: stable;
+      }
       .blog-sidebar-form { min-width: 0; }
 
       .article-reading :global(.article-toc) { max-width: none; margin: 0 0 36px; }
@@ -673,7 +684,12 @@ const jsonLd = post
         .author-card strong { font-size: .84rem; }
         .cover-wrap { order: 2; aspect-ratio: 16 / 10; }
         .article-layout { grid-template-columns: minmax(0, 1fr); gap: 30px; }
-        .article-sidebar { min-width: 0; }
+        .article-sidebar {
+          position: static;
+          max-height: none;
+          min-width: 0;
+          overflow: visible;
+        }
         .article-content { font-size: 17px; }
         .article-quote-cta { margin: 42px 0; }
         .related-articles { margin-bottom: 30px; }
