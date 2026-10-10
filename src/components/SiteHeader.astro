@@ -16,13 +16,6 @@ const isActive = (href: string) =>
 ---
 
 <header class="smc-header">
-  <div class="smc-topbar">
-    <div class="smc-container topbar-inner">
-      <span class="topbar-message"><i class="ph ph-map-pin" aria-hidden="true"></i> Sell your car anywhere in the UAE</span>
-      <a href="tel:+971557458322"><i class="ph ph-phone-call" aria-hidden="true"></i> Call now · 055 745 83 22</a>
-    </div>
-  </div>
-
   <div class="smc-nav-wrap">
     <div class="smc-container nav-inner">
       <a class="brand" href="/" aria-label="Scrap My Car UAE home">
@@ -108,38 +101,6 @@ const isActive = (href: string) =>
     position: relative;
     z-index: 40;
     background: #fff;
-  }
-
-  .smc-topbar {
-    background: #1f4d20;
-    color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: .02em;
-  }
-
-  .topbar-inner {
-    min-height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .topbar-inner a,
-  .topbar-message {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .topbar-inner a {
-    color: #fff;
-    text-decoration: none;
-  }
-
-  .topbar-inner .ph {
-    font-size: 14px;
   }
 
   .smc-nav-wrap {
@@ -347,10 +308,6 @@ const isActive = (href: string) =>
   }
 
   @media (max-width: 640px) {
-    .smc-topbar {
-      display: none;
-    }
-
     .nav-inner {
       min-height: 66px;
     }
