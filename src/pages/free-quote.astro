@@ -4,7 +4,6 @@ export const prerender = false;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import QuoteForm from '../components/QuoteForm.astro';
 import { getVehicleData } from '../lib/vehicle-data';
-import '../styles/inner-pages.css';
 
 let vehicleData = { makes: [], models: [], years: [] };
 let vehicleDataError = '';
@@ -22,36 +21,17 @@ try {
   canonical="/free-quote"
 >
   <main>
-    <section class="inner-hero">
-      <div class="smc-container inner-hero-grid">
-        <div>
-          <div class="smc-kicker">Free car valuation</div>
-          <h1>Unlock a free car scrap quote today.</h1>
-          <p>
-            Find out what your old, damaged, non-running or unwanted vehicle could be worth with a complimentary, no-obligation valuation request.
-          </p>
-        </div>
-        <aside class="inner-hero-aside">
-          <strong>No long form. No listing process.</strong>
-          <span>Select your Make, Model and Year, then add your name and WhatsApp number.</span>
-        </aside>
-      </div>
-    </section>
-
-    <section class="quote-page">
-      <div class="smc-container quote-page-grid">
-        <div class="quote-copy">
-          <div class="smc-kicker">Get your free quote today</div>
-          <h2>A simple first step before you decide what to do with your car.</h2>
-          <p>
-            Start with a vehicle valuation before making any decisions. Scrap My Car UAE serves customers across Dubai and the UAE, including Abu Dhabi, Sharjah, Ajman, Fujairah, Ras Al Khaimah and Umm Al Quwain.
-          </p>
-          <div class="quote-points">
-            <span><i class="ph ph-check" aria-hidden="true"></i> Cars in different conditions accepted for valuation</span>
-            <span><i class="ph ph-check" aria-hidden="true"></i> Free vehicle collection available</span>
-            <span><i class="ph ph-check" aria-hidden="true"></i> Direct WhatsApp support</span>
-            <span><i class="ph ph-check" aria-hidden="true"></i> No obligation to accept the valuation</span>
-          </div>
+    <section class="free-quote-hero" aria-labelledby="free-quote-title">
+      <div class="free-quote-hero__layout">
+        <div class="free-quote-hero__copy">
+          <p class="free-quote-hero__kicker">Free car valuation</p>
+          <h1 id="free-quote-title">Get your free car valuation today.</h1>
+          <p class="free-quote-hero__intro">Tell us about your vehicle and get a no-obligation valuation from Scrap My Car UAE.</p>
+          <ul class="free-quote-hero__trust" aria-label="Valuation benefits">
+            <li><i class="ph ph-check" aria-hidden="true"></i>Free valuation</li>
+            <li><i class="ph ph-check" aria-hidden="true"></i>No obligation</li>
+            <li><i class="ph ph-check" aria-hidden="true"></i>UAE-wide collection</li>
+          </ul>
         </div>
 
         <QuoteForm
@@ -59,8 +39,46 @@ try {
           models={vehicleData.models}
           years={vehicleData.years}
           dataError={vehicleDataError}
+          variant="free-quote"
         />
+      </div>
+    </section>
+
+    <section class="valuation-reassurance" aria-labelledby="valuation-reassurance-title">
+      <div class="valuation-reassurance__inner">
+        <div class="valuation-reassurance__intro">
+          <p>Simple and straightforward</p>
+          <h2 id="valuation-reassurance-title">Why request a valuation?</h2>
+        </div>
+        <ul class="valuation-reassurance__grid">
+          <li><i class="ph ph-car-profile" aria-hidden="true"></i><span>Cars in different conditions considered</span></li>
+          <li><i class="ph ph-truck" aria-hidden="true"></i><span>Free vehicle collection available</span></li>
+          <li><i class="ph ph-whatsapp-logo" aria-hidden="true"></i><span>Direct WhatsApp support</span></li>
+          <li><i class="ph ph-handshake" aria-hidden="true"></i><span>No obligation to accept</span></li>
+        </ul>
       </div>
     </section>
   </main>
 </BaseLayout>
+
+<style>
+  .free-quote-hero { background: radial-gradient(circle at 85% 15%, rgba(93, 185, 56, .10), transparent 32%), linear-gradient(180deg, #fbfdf9 0%, #f5f9f3 100%); }
+  .free-quote-hero__layout, .valuation-reassurance__inner { width: min(1240px, calc(100% - 48px)); margin: 0 auto; }
+  .free-quote-hero__layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(420px, .75fr); gap: clamp(48px, 7vw, 90px); align-items: center; padding: clamp(48px, 6vw, 74px) 0 clamp(52px, 6vw, 76px); }
+  .free-quote-hero__copy { max-width: 620px; }
+  .free-quote-hero__kicker, .valuation-reassurance__intro > p { margin: 0 0 12px; color: #337238; font-size: .76rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+  .free-quote-hero h1 { margin: 0; color: #172219; font-size: clamp(3rem, 5vw, 4.6rem); line-height: 1; letter-spacing: -.045em; }
+  .free-quote-hero__intro { max-width: 570px; margin: 22px 0 0; color: #506052; font-size: 1.08rem; line-height: 1.6; }
+  .free-quote-hero__trust { display: flex; flex-wrap: wrap; gap: 10px 12px; margin: 26px 0 0; padding: 0; list-style: none; }
+  .free-quote-hero__trust li { display: inline-flex; align-items: center; gap: 7px; color: #244a2e; font-size: .9rem; font-weight: 760; }
+  .free-quote-hero__trust i { display: grid; width: 22px; height: 22px; place-items: center; border-radius: 50%; background: #e3f1df; color: #2f7b39; font-size: .9rem; }
+  .valuation-reassurance { padding: clamp(42px, 5vw, 66px) 0; background: #f6f9f4; }
+  .valuation-reassurance__inner { display: grid; grid-template-columns: minmax(190px, .5fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: start; }
+  .valuation-reassurance__intro h2 { margin: 0; color: #1b2b1e; font-size: clamp(1.65rem, 3vw, 2.35rem); line-height: 1.08; letter-spacing: -.04em; }
+  .valuation-reassurance__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+  .valuation-reassurance__grid li { display: flex; align-items: center; gap: 12px; min-height: 72px; padding: 15px 16px; border: 1px solid #e0eade; border-radius: 15px; background: #fff; color: #2a3e2e; font-size: .92rem; font-weight: 720; line-height: 1.35; }
+  .valuation-reassurance__grid i { display: grid; flex: 0 0 auto; width: 32px; height: 32px; place-items: center; border-radius: 10px; background: #e5f1e1; color: #30733a; font-size: 1.05rem; }
+  @media (max-width: 1080px) { .free-quote-hero__layout { grid-template-columns: minmax(0, .84fr) minmax(390px, .8fr); gap: 42px; } .free-quote-hero h1 { font-size: clamp(2.85rem, 5vw, 3.9rem); } }
+  @media (max-width: 860px) { .free-quote-hero__layout { grid-template-columns: minmax(0, 600px); justify-content: center; gap: 28px; padding-block: 38px 50px; } .free-quote-hero__copy { max-width: 650px; } .valuation-reassurance__inner { grid-template-columns: 1fr; gap: 24px; } }
+  @media (max-width: 620px) { .free-quote-hero__layout, .valuation-reassurance__inner { width: min(100% - 36px, 560px); } .free-quote-hero__layout { gap: 24px; padding: 32px 0 40px; } .free-quote-hero__kicker { margin-bottom: 10px; font-size: .7rem; } .free-quote-hero h1 { font-size: clamp(2.25rem, 10vw, 3rem); line-height: 1.02; } .free-quote-hero__intro { margin-top: 16px; font-size: 16px; line-height: 1.55; } .free-quote-hero__trust { gap: 9px 13px; margin-top: 20px; } .free-quote-hero__trust li { font-size: .82rem; } .free-quote-hero__trust i { width: 20px; height: 20px; font-size: .8rem; } .valuation-reassurance { padding: 40px 0; } .valuation-reassurance__intro > p { margin-bottom: 8px; font-size: .7rem; } .valuation-reassurance__grid { grid-template-columns: 1fr; gap: 10px; } .valuation-reassurance__grid li { min-height: 64px; font-size: .88rem; } }
+</style>

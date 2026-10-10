@@ -6,16 +6,17 @@ interface Props {
   models: VehicleModel[];
   years: VehicleYear[];
   dataError?: string;
-  variant?: 'default' | 'blog-sidebar';
+  variant?: 'default' | 'blog-sidebar' | 'free-quote';
 }
 
 const { makes = [], models = [], years = [], dataError = '', variant = 'default' } = Astro.props;
 const featuredMakes = makes.filter((item) => item.featuredMake);
 const regularMakes = makes.filter((item) => !item.featuredMake);
 const isBlogSidebar = variant === 'blog-sidebar';
+const isFreeQuote = variant === 'free-quote';
 ---
 
-<div class:list={['quote-card', { 'quote-card--blog-sidebar': isBlogSidebar }]} data-quote-form>
+<div class:list={['quote-card', { 'quote-card--blog-sidebar': isBlogSidebar, 'quote-card--free-quote': isFreeQuote }]} data-quote-form>
   <div class="quote-head">
     {!isBlogSidebar && <span class="quote-kicker"><i class="ph ph-car-profile" aria-hidden="true"></i>Free vehicle valuation</span>}
     <h2>{isBlogSidebar ? 'Get your car price' : 'Tell us about your car'}</h2>
@@ -243,6 +244,7 @@ const isBlogSidebar = variant === 'blog-sidebar';
   .fine-print { margin: -2px 0 0; color: #7b8279; font-size: 10px; line-height: 1.4; } .hp-field { position: absolute !important; width: 1px !important; height: 1px !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; white-space: nowrap !important; } .submit-message, .data-error { padding: 10px 11px; border-radius: 10px; font-size: 12px; line-height: 1.4; } .submit-message { background: #eef6eb; color: var(--smc-green-dark); } .submit-message.error, .data-error { background: #fff0f0; color: #842727; }
   .sidebar-trust { margin: 0; color: #17331d; font-size: 10px; font-weight: 750; line-height: 1.45; text-align: center; } .sidebar-trust span { padding-inline: 2px; }
   .quote-card--blog-sidebar { padding: 20px; border: 1px solid rgba(220, 242, 219, .16); border-radius: 20px; background: #184D2B; box-shadow: 0 10px 24px rgba(15, 52, 29, .18); } .quote-card--blog-sidebar .quote-head h2 { color: #fff; font-size: 1.55rem; } .quote-card--blog-sidebar .quote-head p, .quote-card--blog-sidebar .field-label { color: #d7eadb; } .quote-card--blog-sidebar form { gap: 9px; margin-top: 13px; } .quote-card--blog-sidebar .field-grid { grid-template-columns: 1fr; gap: 8px; } .quote-card--blog-sidebar input, .quote-card--blog-sidebar select { height: 45px; border-color: rgba(16, 59, 34, .16); background: #fff; font-size: 14px; } .quote-card--blog-sidebar .with-icon .ph { color: #347649; } .quote-card--blog-sidebar .model-availability { color: #d7eadb; } .quote-card--blog-sidebar .submit { min-height: 48px; background: #d9efc9; color: #143b22; box-shadow: none; } .quote-card--blog-sidebar .submit:hover { background: #c6e5b4; } .quote-card--blog-sidebar .sidebar-trust { color: #d7eadb; }
-  @media (max-width: 620px) { .quote-card { padding: 18px; border-radius: 18px; box-shadow: 0 10px 24px rgba(27,55,24,.065); } .quote-head h2 { font-size: 22px; } .quote-head p { font-size: 12px; } form { gap: 10px; margin-top: 13px; } .field-grid { grid-template-columns: 1fr; gap: 10px; } .form-field { gap: 5px; } .field-label { padding-left: 1px; } .model-availability { margin: -1px 0; } input, select { height: 51px; font-size: 16px; } .submit { min-height: 53px; margin-top: 3px; } .fine-print { font-size: 10px; } }
+  .quote-card--free-quote { padding: 26px; border-color: #dce7da; border-radius: 22px; box-shadow: 0 24px 55px rgba(23, 63, 39, .10), 0 5px 16px rgba(23, 63, 39, .05); } .quote-card--free-quote .quote-head h2 { margin-top: 7px; font-size: 1.65rem; } .quote-card--free-quote form { gap: 13px; margin-top: 18px; } .quote-card--free-quote .field-grid { gap: 12px; } .quote-card--free-quote input, .quote-card--free-quote select { height: 52px; border-radius: 12px; } .quote-card--free-quote select:disabled { color: #667066; background: #f1f4ef; } .quote-card--free-quote input:focus, .quote-card--free-quote select:focus { border-color: #5DB938; box-shadow: 0 0 0 3px rgba(93,185,56,.14); } .quote-card--free-quote .submit { min-height: 54px; background: #184D2B; box-shadow: 0 7px 16px rgba(23,63,39,.11); } .quote-card--free-quote .submit:hover { background: #123D22; box-shadow: 0 8px 18px rgba(23,63,39,.16); }
+  @media (max-width: 620px) { .quote-card { padding: 18px; border-radius: 18px; box-shadow: 0 10px 24px rgba(27,55,24,.065); } .quote-head h2 { font-size: 22px; } .quote-head p { font-size: 12px; } form { gap: 10px; margin-top: 13px; } .field-grid { grid-template-columns: 1fr; gap: 10px; } .form-field { gap: 5px; } .field-label { padding-left: 1px; } .model-availability { margin: -1px 0; } input, select { height: 51px; font-size: 16px; } .submit { min-height: 53px; margin-top: 3px; } .fine-print { font-size: 10px; } .quote-card--free-quote { padding: 18px; border-radius: 18px; } .quote-card--free-quote .quote-head h2 { font-size: 22px; } .quote-card--free-quote form { gap: 10px; margin-top: 14px; } .quote-card--free-quote .field-grid { grid-template-columns: 1fr; gap: 10px; } }
   @media (max-width: 370px) { .quote-card { padding-inline: 18px; } }
 </style>
