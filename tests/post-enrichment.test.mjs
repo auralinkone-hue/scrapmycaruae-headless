@@ -64,8 +64,9 @@ test('blog article sidebar keeps Wix failures optional and reuses the quote form
   assert.match(page, /<section class="blog-sidebar-form"[\s\S]*?<LatestBlogsSidebar posts=\{latestPosts\}/);
   assert.doesNotMatch(page, /<LatestBlogsSidebar posts=\{latestPosts\} variant="grid"/);
   assert.match(page, /\.article-sidebar \{[\s\S]*?position: sticky/);
-  assert.match(page, /max-height: calc\(100vh - 132px\)/);
-  assert.match(page, /@media \(max-width: 820px\) \{[\s\S]*?\.article-sidebar \{[\s\S]*?position: static/);
+  assert.doesNotMatch(page, /\.article-sidebar \{[\s\S]*?overflow-y: auto/);
+  assert.doesNotMatch(page, /scrollbar-gutter: stable/);
+  assert.match(page, /@media \(max-width: 1100px\) \{[\s\S]*?\.article-sidebar \{[\s\S]*?position: static/);
   assert.match(page, /<div class="article-share">[\s\S]*?<\/div>[\s\S]*?<aside class="article-sidebar"/);
   assert.match(quoteForm, /variant\?: 'default' \| 'blog-sidebar'/);
   assert.match(quoteForm, /Get your car price/);
