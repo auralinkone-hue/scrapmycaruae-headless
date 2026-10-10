@@ -11,6 +11,8 @@ test('contact page keeps real conversion links in its scoped redesign', () => {
   assert.match(contact, /https:\/\/api\.whatsapp\.com\/send\?phone=%2B971557458322/);
   assert.match(contact, /href="\/free-quote"/);
   assert.match(contact, /heading-accent/);
+  assert.doesNotMatch(contact, /heading-accent::after/);
+  assert.match(contact, /grid-template-columns: repeat\(2,minmax\(0,1fr\)\)/);
   assert.match(contact, /@media \(max-width: 700px\)/);
 });
 
@@ -21,4 +23,7 @@ test('FAQ page preserves structured data, all questions, and semantic accordion 
   assert.equal((faqs.match(/\["/g) || []).length, 10);
   assert.match(faqs, /href="\/free-quote"/);
   assert.match(faqs, /heading-accent/);
+  assert.doesNotMatch(faqs, /heading-accent::after/);
+  assert.match(faqs, /faq-questions/);
+  assert.doesNotMatch(faqs, /faq-side-card \{ position: sticky/);
 });
