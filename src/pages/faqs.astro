@@ -1,72 +1,24 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/inner-pages.css';
-
 const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
 const faqs = [["What types of cars do you buy?","We accept valuation requests for cars in many different conditions, including running cars, non-running cars, accident-damaged vehicles, high-mileage cars and vehicles with mechanical or electrical faults."],["Do you buy non-running cars?","Yes. A vehicle does not need to be running to be submitted for valuation."],["Do you buy cars with accident damage?","Yes. Accident-damaged vehicles can be submitted for valuation. The final value depends on the vehicle and its condition."],["Can I sell a car with an expired Mulkiya?","You can submit the vehicle for valuation. The team can then explain the documents and handover requirements that apply to your situation."],["Is the valuation free?","Yes. Sending a vehicle valuation request through the website is free and carries no obligation to accept an offer."],["Is vehicle collection free?","Free collection is available as part of the service across supported UAE locations."],["Which areas do you cover?","We serve customers across Dubai and other UAE locations, including Sharjah, Abu Dhabi, Ajman, Ras Al Khaimah, Fujairah, Al Ain and Umm Al Quwain."],["What information do I need for a quote?","Choose the vehicle Make, Model and Year, then provide your name and WhatsApp number so our team can contact you about the valuation."],["How do I get started?","Use the Free Quote page, select your vehicle details and submit the short form. You can also contact the team directly by WhatsApp or phone."],["What happens after I accept an offer?","The team will confirm the next steps, required handover details and collection arrangements for your vehicle."]];
-const faqJsonLd = {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What types of cars do you buy?","acceptedAnswer":{"@type":"Answer","text":"We accept valuation requests for cars in many different conditions, including running cars, non-running cars, accident-damaged vehicles, high-mileage cars and vehicles with mechanical or electrical faults."}},{"@type":"Question","name":"Do you buy non-running cars?","acceptedAnswer":{"@type":"Answer","text":"Yes. A vehicle does not need to be running to be submitted for valuation."}},{"@type":"Question","name":"Do you buy cars with accident damage?","acceptedAnswer":{"@type":"Answer","text":"Yes. Accident-damaged vehicles can be submitted for valuation. The final value depends on the vehicle and its condition."}},{"@type":"Question","name":"Can I sell a car with an expired Mulkiya?","acceptedAnswer":{"@type":"Answer","text":"You can submit the vehicle for valuation. The team can then explain the documents and handover requirements that apply to your situation."}},{"@type":"Question","name":"Is the valuation free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Sending a vehicle valuation request through the website is free and carries no obligation to accept an offer."}},{"@type":"Question","name":"Is vehicle collection free?","acceptedAnswer":{"@type":"Answer","text":"Free collection is available as part of the service across supported UAE locations."}},{"@type":"Question","name":"Which areas do you cover?","acceptedAnswer":{"@type":"Answer","text":"We serve customers across Dubai and other UAE locations, including Sharjah, Abu Dhabi, Ajman, Ras Al Khaimah, Fujairah, Al Ain and Umm Al Quwain."}},{"@type":"Question","name":"What information do I need for a quote?","acceptedAnswer":{"@type":"Answer","text":"Choose the vehicle Make, Model and Year, then provide your name and WhatsApp number so our team can contact you about the valuation."}},{"@type":"Question","name":"How do I get started?","acceptedAnswer":{"@type":"Answer","text":"Use the Free Quote page, select your vehicle details and submit the short form. You can also contact the team directly by WhatsApp or phone."}},{"@type":"Question","name":"What happens after I accept an offer?","acceptedAnswer":{"@type":"Answer","text":"The team will confirm the next steps, required handover details and collection arrangements for your vehicle."}}]};
+const faqJsonLd = {"@context":"https://schema.org","@type":"FAQPage","mainEntity":faqs.map(([name, text]) => ({"@type":"Question",name,acceptedAnswer:{"@type":"Answer",text}}))};
 ---
-
-<BaseLayout
-  title="FAQs | Scrap My Car UAE - Scrap Car For Cash"
-  description="Answers to common questions about scrap car valuations, collection, vehicle condition and selling a car to Scrap My Car UAE."
-  canonical="/faqs"
->
-  <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')} />
-  </Fragment>
-
-  <main>
-    <section class="inner-hero">
-      <div class="smc-container inner-hero-grid">
-        <div>
-          <div class="smc-kicker">Frequently asked questions</div>
-          <h1>Everything you need to know before you start.</h1>
-          <p>
-            Quick answers about vehicle condition, valuations, collection and the process of selling your car.
-          </p>
-        </div>
-        <aside class="inner-hero-aside">
-          <strong>Still have a question?</strong>
-          <span>Contact us directly and we’ll help with your specific vehicle or situation.</span>
-        </aside>
-      </div>
-    </section>
-
-    <section class="page-shell">
-      <div class="smc-container content-grid">
-        <aside class="side-card">
-          <div class="smc-kicker">Need help?</div>
-          <h2>Ask the team directly.</h2>
-          <p>If your question is specific to your vehicle, WhatsApp is the easiest way to explain the situation.</p>
-          <a class="smc-button smc-button-primary" href={whatsappUrl} target="_blank" rel="noopener noreferrer"><img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />WhatsApp Us</a>
-        </aside>
-
-        <div class="faq-stack">
-          {faqs.map(([question, answer], index) => (
-            <details open={index === 0}>
-              <summary>
-                <span>{question}</span>
-                <i class="ph ph-plus" aria-hidden="true"></i>
-              </summary>
-              <p>{answer}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section class="page-cta">
-      <div class="smc-container page-cta-inner">
-        <div>
-          <div class="smc-kicker">Free valuation</div>
-          <h2>Ready to find out what your car is worth?</h2>
-          <p>Select your Make, Model and Year and send your request.</p>
-        </div>
-        <div class="page-cta-actions">
-          <a class="smc-button smc-button-primary" href="/free-quote">Get Your Vehicle Price <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
-        </div>
-      </div>
-    </section>
+<BaseLayout title="FAQs | Scrap My Car UAE - Scrap Car For Cash" description="Answers to common questions about scrap car valuations, collection, vehicle condition and selling a car to Scrap My Car UAE." canonical="/faqs">
+  <Fragment slot="head"><script type="application/ld+json" set:html={JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')} /></Fragment>
+  <main class="faq-page">
+    <section class="faq-hero"><div class="smc-container faq-hero-grid"><div><div class="smc-kicker">Frequently asked questions</div><h1>Everything you need to know <span class="heading-accent">before you start.</span></h1><p>Quick answers about vehicle condition, valuations, collection and the process of selling your car.</p></div><aside class="faq-hero-help"><i class="ph ph-question" aria-hidden="true"></i><div><strong>Can’t find your answer?</strong><p>Talk to our team about your specific vehicle.</p><a href={whatsappUrl} target="_blank" rel="noopener noreferrer"><img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />WhatsApp us <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></div></aside></div></section>
+    <section class="faq-content"><div class="smc-container faq-content-grid"><aside class="faq-side-card"><div class="smc-kicker">Need help?</div><h2>Ask the team directly.</h2><p>If your question is specific to your vehicle, WhatsApp is the easiest way to explain the situation.</p><a class="smc-button smc-button-primary" href={whatsappUrl} target="_blank" rel="noopener noreferrer"><img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />WhatsApp Us</a></aside><div><div class="faq-intro"><span>Common questions</span><p>Valuations, vehicle condition, collection and paperwork.</p></div><div class="faq-stack">{faqs.map(([question, answer], index) => <details open={index === 0}><summary><span>{question}</span><i class="ph ph-plus" aria-hidden="true"></i></summary><p>{answer}</p></details>)}</div></div></div></section>
+    <section class="faq-final-cta"><div class="smc-container faq-final-cta__inner"><div><div class="smc-kicker">Free valuation</div><h2>Ready to find out <span class="heading-accent">what your car is worth?</span></h2><p>Select your Make, Model and Year and send your request.</p></div><a class="smc-button smc-button-primary" href="/free-quote">Get Your Vehicle Price <i class="ph ph-arrow-right" aria-hidden="true"></i></a></div></section>
   </main>
 </BaseLayout>
+<style>
+  .faq-page { overflow: hidden; color: #172219; }.faq-page .heading-accent { position: relative; z-index: 0; display: inline; color: #3c8e2f; }.faq-page .heading-accent::after { content: ''; position: absolute; right: .04em; bottom: .04em; left: .04em; z-index: -1; height: .16em; border-radius: 99px; background: rgba(93,185,56,.18); }
+  .faq-hero { padding: clamp(56px,7vw,88px) 0 clamp(50px,6vw,72px); border-bottom: 1px solid #dce6d9; background: radial-gradient(circle at 86% 14%,rgba(93,185,56,.11),transparent 30%),linear-gradient(180deg,#fbfdf9 0%,#f5f9f3 100%); }.faq-hero-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(300px,.57fr); gap: clamp(44px,7vw,82px); align-items: end; }.faq-hero h1 { max-width: 760px; margin: 12px 0 18px; font-size: clamp(3rem,5vw,4.5rem); line-height: 1.01; letter-spacing: -.05em; }.faq-hero > .smc-container > div > p { max-width: 650px; margin: 0; color: #5e695f; font-size: 17px; line-height: 1.65; }
+  .faq-hero-help { display: flex; gap: 14px; padding: 22px; border: 1px solid #dce6d9; border-radius: 18px; background: #fff; box-shadow: 0 16px 38px rgba(23,63,39,.06); }.faq-hero-help > .ph { display: grid; flex: 0 0 auto; width: 36px; height: 36px; place-items: center; border-radius: 11px; background: #eef6ea; color: #3c8e2f; font-size: 20px; }.faq-hero-help strong { color: #173f27; font-size: 16px; }.faq-hero-help p { margin: 5px 0 10px; color: #5e695f; font-size: 13px; line-height: 1.55; }.faq-hero-help a { display: inline-flex; align-items: center; gap: 6px; color: #173f27; font-size: 13px; font-weight: 850; text-decoration: none; }.faq-hero-help a:hover { color: #3c8e2f; }.faq-hero-help a:focus-visible { outline: 3px solid rgba(93,185,56,.22); outline-offset: 3px; border-radius: 5px; }.faq-hero-help .wa-icon { width: 16px; height: 16px; }
+  .faq-content { padding: clamp(54px,7vw,88px) 0 clamp(58px,7vw,96px); }.faq-content-grid { display: grid; grid-template-columns: minmax(280px,320px) minmax(0,1fr); gap: clamp(42px,7vw,80px); align-items: start; }.faq-side-card { position: sticky; top: 112px; padding: 24px; border: 1px solid #dce6d9; border-radius: 18px; background: #f6f9f4; }.faq-side-card h2 { margin: 8px 0 10px; color: #173f27; font-size: 25px; letter-spacing: -.035em; }.faq-side-card p { margin: 0 0 18px; color: #5e695f; font-size: 14px; line-height: 1.65; }.faq-side-card .smc-button { width: 100%; min-height: 48px; }.faq-intro { margin-bottom: 18px; }.faq-intro span { color: #3c8e2f; font-size: 13px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }.faq-intro p { margin: 6px 0 0; color: #5e695f; font-size: 16px; }
+  .faq-stack { display: grid; gap: 12px; }.faq-stack details { overflow: hidden; border: 1px solid #dce6d9; border-radius: 16px; background: #fff; transition: border-color .16s ease, box-shadow .16s ease, background .16s ease; }.faq-stack details[open] { border-color: #aeca9f; background: #f8fbf6; box-shadow: 0 8px 20px rgba(23,63,39,.06); }.faq-stack summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 70px; padding: 17px 18px; list-style: none; cursor: pointer; color: #173f27; font-size: 17px; font-weight: 850; letter-spacing: -.02em; }.faq-stack summary::-webkit-details-marker { display: none; }.faq-stack summary:hover { color: #3c8e2f; }.faq-stack summary:focus-visible { outline: 3px solid rgba(93,185,56,.22); outline-offset: -3px; border-radius: 14px; }.faq-stack summary i { display: grid; flex: 0 0 auto; width: 30px; height: 30px; place-items: center; border-radius: 50%; background: #eef6ea; color: #3c8e2f; font-size: 17px; transition: transform .18s ease, background .18s ease; }.faq-stack details[open] summary i { transform: rotate(45deg); background: #dcefd6; }.faq-stack details p { margin: -1px 18px 20px; max-width: 780px; color: #5e695f; font-size: 15px; line-height: 1.7; }
+  .faq-final-cta { padding: clamp(48px,6vw,68px) 0; background: #173f27; color: #fff; }.faq-final-cta__inner { display: flex; align-items: center; justify-content: space-between; gap: 32px; }.faq-final-cta h2 { max-width: 740px; margin: 8px 0 10px; font-size: clamp(30px,4vw,48px); line-height: 1.05; letter-spacing: -.045em; }.faq-final-cta p { margin: 0; color: #c7d5c5; }.faq-final-cta .smc-kicker { color: #b6e2aa; }.faq-final-cta .heading-accent { color: #a9df96; }.faq-final-cta .heading-accent::after { background: rgba(169,223,150,.18); }.faq-final-cta .smc-button-primary { flex: 0 0 auto; background: #fff; color: #173f27; }
+  @media (max-width: 900px) { .faq-hero-grid,.faq-content-grid { grid-template-columns: 1fr; gap: 30px; }.faq-hero-help,.faq-side-card { max-width: 560px; }.faq-side-card { position: static; }.faq-final-cta__inner { align-items: flex-start; flex-direction: column; } }@media (max-width: 700px) { .faq-hero { padding: 36px 0 40px; }.faq-hero h1 { font-size: clamp(2.35rem,10vw,3rem); }.faq-hero > .smc-container > div > p { font-size: 16px; line-height: 1.55; }.faq-hero-help { padding: 18px; }.faq-content { padding: 46px 0 54px; }.faq-stack summary { min-height: 64px; padding: 16px 18px; font-size: 16px; }.faq-stack details p { margin: 0 18px 19px; font-size: 15px; }.faq-final-cta { padding: 46px 0; }.faq-final-cta .smc-button { width: 100%; min-height: 48px; } }@media (prefers-reduced-motion: reduce) { .faq-stack details,.faq-stack summary i { transition: none; } }
+</style>
