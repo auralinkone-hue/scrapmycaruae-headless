@@ -27,18 +27,42 @@ const escapeHtml = (value: unknown) =>
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
 
-const safeUrl = (value: unknown) => {
+const SCRAP_MY_CAR_HOSTS = new Set([
+  'scrapmycaruae.com',
+  'www.scrapmycaruae.com',
+]);
+
+/**
+ * Keeps Wix rich-content links inside the headless frontend when they point
+ * back to Scrap My Car UAE, while leaving approved external destinations
+ * untouched.
+ */
+export const normalizeRichContentUrl = (value: unknown) => {
   const url = String(value ?? '').trim();
   if (!url) return '';
-  if (url.startsWith('/') || url.startsWith('#')) return url;
+
+  // Preserve same-page and already-relative links, but never allow a
+  // protocol-relative URL (for example, //untrusted.example).
+  if (url.startsWith('#') || url.startsWith('?')) return url;
+  if (url.startsWith('/') && !url.startsWith('//')) return url;
+
   try {
     const parsed = new URL(url);
-    if (['http:', 'https:', 'mailto:', 'tel:'].includes(parsed.protocol)) {
-      return url;
+    if (!['http:', 'https:', 'mailto:', 'tel:'].includes(parsed.protocol)) {
+      return '';
     }
-  } catch {}
-  return '';
+
+    if (SCRAP_MY_CAR_HOSTS.has(parsed.hostname.toLowerCase())) {
+      return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+    }
+
+    return url;
+  } catch {
+    return '';
+  }
 };
+
+const safeUrl = normalizeRichContentUrl;
 
 const imageUrl = (node: any) => {
   const image = node?.imageData?.image;
