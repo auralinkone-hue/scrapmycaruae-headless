@@ -635,12 +635,8 @@ const jsonLd = post
         top: 108px;
         display: grid;
         gap: 24px;
-        max-height: calc(100vh - 132px);
         min-width: 0;
         align-self: start;
-        overflow-y: auto;
-        overscroll-behavior: contain;
-        scrollbar-gutter: stable;
       }
       .blog-sidebar-form { min-width: 0; }
 
@@ -667,6 +663,10 @@ const jsonLd = post
 
       @media (max-width: 1100px) {
         .article-layout { grid-template-columns: minmax(0, 1fr); gap: 30px; }
+        .article-sidebar {
+          position: static;
+          min-width: 0;
+        }
       }
 
       @media (max-width: 820px) {
@@ -685,10 +685,7 @@ const jsonLd = post
         .cover-wrap { order: 2; aspect-ratio: 16 / 10; }
         .article-layout { grid-template-columns: minmax(0, 1fr); gap: 30px; }
         .article-sidebar {
-          position: static;
-          max-height: none;
           min-width: 0;
-          overflow: visible;
         }
         .article-content { font-size: 17px; }
         .article-quote-cta { margin: 42px 0; }
