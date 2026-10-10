@@ -197,7 +197,7 @@ const jsonLd = post
                 </div>
               )
             )}
-            <SharePostMenu url={absoluteCanonical} title={postTitle} />
+            <SharePostMenu url={absoluteCanonical} title={postTitle} variant="article-opening" />
           </div>
         </div>
         {responsiveCover.src && (
@@ -695,15 +695,35 @@ const jsonLd = post
         .article-opening { grid-template-columns: 1fr; gap: 24px; margin-bottom: 30px; }
         .article-opening__copy { order: 1; }
         .article-opening__copy h1 { margin: 0 0 16px; font-size: clamp(2rem, 9.5vw, 2.65rem); line-height: 1.04; }
-        .article-opening__excerpt { margin-bottom: 15px; font-size: 1rem; line-height: 1.52; }
-        .article-opening__details { gap: 5px 14px; margin-bottom: 13px; }
+        .article-opening__excerpt { margin-bottom: 16px; font-size: 1rem; line-height: 1.52; }
+        .article-opening__details { gap: 5px 14px; margin-bottom: 12px; }
         .article-opening__details p { font-size: .8rem; }
-        .author-card { min-height: 54px; gap: 9px; padding: 7px 11px 7px 7px; border-radius: 13px; }
+        .article-opening__actions {
+          align-items: stretch;
+          flex-wrap: nowrap;
+          gap: 10px;
+          margin: 0;
+        }
+        .author-card {
+          flex: 1 1 auto;
+          min-width: 0;
+          min-height: 58px;
+          gap: 8px;
+          padding: 8px 11px;
+          border-radius: 14px;
+        }
         .author-card img, .author-card .author-placeholder { width: 40px; height: 40px; }
         .author-card .author-placeholder { font-size: 19px; }
         .author-card small { font-size: .68rem; }
-        .author-card strong { font-size: .84rem; }
-        .article-opening__actions { align-items: flex-start; flex-direction: column; gap: 12px; }
+        .author-card strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .84rem; }
+        .article-opening__actions :global(.share-menu) { display: flex; flex: 0 0 auto; }
+        .article-opening__actions :global(.share-trigger) {
+          min-height: 58px;
+          padding: 0 14px;
+          border-color: #d6e1d3;
+          border-radius: 14px;
+          box-shadow: 0 4px 12px rgba(23, 63, 39, .06);
+        }
         .cover-wrap { order: 2; aspect-ratio: 16 / 10; }
         .article-layout { grid-template-columns: minmax(0, 1fr); gap: 30px; }
         .article-sidebar {

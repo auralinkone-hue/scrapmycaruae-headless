@@ -53,3 +53,16 @@ test('share controls are visible and available at the article top and bottom', a
   assert.match(article, /article-opening__actions[\s\S]*?<SharePostMenu/);
   assert.match(article, /<div class="article-share">[\s\S]*?Share this article[\s\S]*?<SharePostMenu/);
 });
+
+test('mobile article author and share controls stay in one compact action row', async () => {
+  const article = await readProjectFile('src/pages/post/[slug].astro');
+  const share = await readProjectFile('src/components/SharePostMenu.astro');
+
+  assert.match(article, /SharePostMenu url=\{absoluteCanonical\} title=\{postTitle\} variant="article-opening"/);
+  assert.match(article, /\.article-opening__actions \{\s*align-items: stretch;\s*flex-wrap: nowrap;\s*gap: 10px;/);
+  assert.match(article, /\.author-card \{\s*flex: 1 1 auto;\s*min-width: 0;\s*min-height: 58px;/);
+  assert.match(article, /\.article-opening__actions :global\(\.share-menu\) \{ display: flex; flex: 0 0 auto; \}/);
+  assert.match(article, /\.article-opening__actions :global\(\.share-trigger\) \{\s*min-height: 58px;/);
+  assert.match(share, /variant\?: 'default' \| 'article-opening'/);
+  assert.match(share, /prefers-reduced-motion: reduce/);
+});

@@ -3,14 +3,15 @@ interface Props {
   url: string;
   title: string;
   label?: string;
+  variant?: 'default' | 'article-opening';
 }
 
-const { url, title, label = 'Share post' } = Astro.props;
+const { url, title, label = 'Share post', variant = 'default' } = Astro.props;
 const encodedUrl = encodeURIComponent(url);
 const encodedTitle = encodeURIComponent(title);
 ---
 
-<div class="share-menu" data-share-menu data-share-url={url}>
+<div class:list={['share-menu', variant === 'article-opening' && 'share-menu--article-opening']} data-share-menu data-share-url={url}>
   <button class="share-trigger" type="button" aria-label={label} data-share-open>
     <i class="ph ph-share-network" aria-hidden="true"></i>
     <span>{label}</span>
@@ -48,8 +49,11 @@ const encodedTitle = encodeURIComponent(title);
     font: inherit;
     font-weight: 750;
     cursor: pointer;
+    box-shadow: 0 2px 6px rgba(23, 63, 39, .03);
+    transition: transform 160ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
   }
-  .share-trigger:hover { background: #f1f7ef; border-color: #b8cfb3; }
+  .share-trigger:hover { background: #f1f7ef; border-color: #aeca9f; box-shadow: 0 7px 16px rgba(23, 63, 39, .10); transform: translateY(-1px); }
+  .share-trigger:active { transform: translateY(0) scale(.98); }
   .share-dialog__close {
     width: 38px;
     height: 38px;
@@ -62,8 +66,10 @@ const encodedTitle = encodeURIComponent(title);
     cursor: pointer;
   }
   .share-dialog__close:hover, .share-dialog__close:focus-visible { background: #edf4ea; }
-  .share-trigger:focus-visible, .share-dialog__close:focus-visible, .share-dialog__action:focus-visible { outline: 3px solid rgb(93 157 76 / 32%); outline-offset: 2px; }
+  .share-trigger:focus-visible, .share-dialog__close:focus-visible, .share-dialog__action:focus-visible { outline: 3px solid rgba(93, 185, 56, .22); outline-offset: 2px; }
   .share-trigger .ph { font-size: 19px; }
+  .share-trigger:hover .ph { transform: rotate(-6deg) scale(1.06); }
+  .share-trigger .ph { transition: transform 160ms ease; }
   .share-dialog { width: min(565px, calc(100% - 34px)); padding: 0; border: 0; background: transparent; }
   .share-dialog::backdrop { background: rgb(13 20 13 / 78%); }
   .share-dialog__inner { position: relative; padding: 64px 34px 42px; border-radius: 2px; background: #fff; text-align: center; box-shadow: 0 25px 80px rgb(0 0 0 / 24%); }
@@ -84,6 +90,10 @@ const encodedTitle = encodeURIComponent(title);
     .share-dialog__actions { gap: 15px; }
     .share-dialog__action { width: 50px; height: 50px; }
     .share-dialog__action .ph { font-size: 23px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .share-trigger, .share-trigger .ph { transition: none; }
+    .share-trigger:hover, .share-trigger:active { transform: none; }
   }
 </style>
 
