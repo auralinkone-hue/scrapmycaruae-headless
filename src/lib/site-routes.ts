@@ -1,6 +1,7 @@
 /** Production route manifest verified against the live Wix site on 6 October 2026. */
 export const indexableStaticRoutes = [
   '/',
+  '/sell-my-car/',
   '/free-quote',
   '/contact-us',
   '/faqs',

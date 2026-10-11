@@ -3,7 +3,7 @@ const pathname = Astro.url.pathname;
 const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
 const links = [
   { href: '/', label: 'Home', icon: 'ph-house' },
-  { href: '/free-quote', label: 'Free Quote', icon: 'ph-car-profile' },
+  { href: '/sell-my-car/', label: 'Sell My Car', icon: 'ph-car-profile' },
   { href: '/contact-us', label: 'Contact Us', icon: 'ph-chat-circle-text' },
   { href: '/faqs', label: 'FAQs', icon: 'ph-question' },
   { href: '/blogs', label: 'Blogs', icon: 'ph-newspaper-clipping' }
@@ -62,9 +62,9 @@ const isActive = (href: string) =>
             Home
             <i class="ph ph-arrow-up-right mobile-link-arrow" aria-hidden="true"></i>
           </a>
-          <a href="/free-quote" class:list={['mobile-link', { active: isActive('/free-quote') }]}>
+          <a href="/sell-my-car/" class:list={['mobile-link', { active: isActive('/sell-my-car/') }]}>
             <i class="ph ph-car-profile" aria-hidden="true"></i>
-            Free Quote
+            Sell My Car
             <i class="ph ph-arrow-up-right mobile-link-arrow" aria-hidden="true"></i>
           </a>
           <a href="/contact-us" class:list={['mobile-link', { active: isActive('/contact-us') }]}>
