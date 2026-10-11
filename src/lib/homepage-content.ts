@@ -4,7 +4,9 @@ import { normalizeWixImage } from './wix-image';
 const QUERY_URL = 'https://www.wixapis.com/data/v2/items/query';
 const FRESH_CACHE_TTL_MS = 5 * 60 * 1000;
 const EDGE_RETENTION_SECONDS = 24 * 60 * 60;
-const EDGE_CACHE_KEY = new Request('https://homepage-content-cache.invalid/v1/content');
+// Bump the key whenever cache semantics change so an older edge entry cannot
+// override current CMS content after deployment.
+const EDGE_CACHE_KEY = new Request('https://homepage-content-cache.invalid/v2/content');
 
 type CmsData = Record<string, unknown>;
 
@@ -246,7 +248,8 @@ function normalizePageImages(page: CmsData): CmsData {
 }
 
 function isFresh(entry: CachedHomepage) {
-  return Date.now() - entry.cachedAt < FRESH_CACHE_TTL_MS;
+  const age = Date.now() - entry.cachedAt;
+  return Number.isFinite(age) && age >= 0 && age < FRESH_CACHE_TTL_MS;
 }
 
 async function readEdgeCache(): Promise<CachedHomepage | undefined> {
