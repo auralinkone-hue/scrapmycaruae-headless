@@ -12,11 +12,28 @@ test('homepage CMS images are normalized before templates render them', async ()
   assert.match(images, /export function normalizeWixImage/);
   assert.match(images, /media\.getImageUrl\(source\)/);
   assert.match(loader, /conditionsImage: normalizeCmsImage\(page\.conditionsImage\)/);
+  assert.match(loader, /valueImage: normalizeCmsImage\(page\.valueImage\)/);
   assert.match(loader, /coverageImage: normalizeCmsImage\(page\.coverageImage\)/);
   assert.match(page, /const conditionsResponsiveImage = wixResponsiveImage/);
+  assert.match(page, /const valueResponsiveImage = wixResponsiveImage/);
   assert.match(page, /const coverageResponsiveImage = wixResponsiveImage/);
   assert.doesNotMatch(page, /src=\{home\.conditionsImage/);
+  assert.doesNotMatch(page, /src=\{home\.valueImage/);
   assert.doesNotMatch(page, /src=\{home\.coverageImage/);
+});
+
+test('value section keeps its CMS image optional and responsive', async () => {
+  const loader = await readSource('../src/lib/homepage-content.ts');
+  const page = await readSource('../src/pages/index.astro');
+
+  assert.match(loader, /valueImage: ''/);
+  assert.match(loader, /valueImageAlt: 'Car prepared for valuation and collection by Scrap My Car UAE'/);
+  assert.match(loader, /valueImageDecorative: false/);
+  assert.match(page, /widths: \[480, 720, 960, 1200\]/);
+  assert.match(page, /\{valueResponsiveImage\.src && <div class="value-image"/);
+  assert.match(page, /loading="lazy"/);
+  assert.match(page, /decoding="async"/);
+  assert.match(page, /class:list=\{\['value-content-grid', \{ 'value-content-grid--text-only': !valueResponsiveImage\.src \}\]\}/);
 });
 
 test('homepage CMS loader uses an edge cache with a stale fallback', async () => {

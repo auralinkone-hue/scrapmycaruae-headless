@@ -81,6 +81,9 @@ const pageDefaults: CmsData = {
   valueVisible: true,
   valueKicker: 'Easy. Fast. Fair.',
   valueHeading: 'Designed around the way people actually want to sell a car.',
+  valueImage: '',
+  valueImageAlt: 'Car prepared for valuation and collection by Scrap My Car UAE',
+  valueImageDecorative: false,
   coverageVisible: true,
   coverageKicker: 'UAE vehicle collection',
   coverageHeading: 'Wherever your car is, start with the same simple form.',
@@ -237,6 +240,7 @@ function normalizePageImages(page: CmsData): CmsData {
   return {
     ...page,
     conditionsImage: normalizeCmsImage(page.conditionsImage),
+    valueImage: normalizeCmsImage(page.valueImage),
     coverageImage: normalizeCmsImage(page.coverageImage)
   };
 }
