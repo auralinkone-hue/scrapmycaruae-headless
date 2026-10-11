@@ -4,6 +4,7 @@ export const prerender = false;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { wixClient } from '../lib/wix';
 import { wixResponsiveImage } from '../lib/wix-image';
+import { createBlogArchivePostsQuery, readBlogArchivePostsResponse } from '../lib/blog-archive-query';
 
 const PAGE_SIZE = 12;
 const DIRECT_CATEGORY_LIMIT = 4;
@@ -52,22 +53,19 @@ const categoryById = new Map(categories.map((category) => [category._id, categor
 
 let posts: any[] = [];
 let totalCount = 0;
+let postQueryFailed = false;
 
 try {
-  let postQuery: any = wixClient.posts
-    .queryPosts()
-    .descending('firstPublishedDate')
-    .limit(PAGE_SIZE)
-    .skip((requestedPage - 1) * PAGE_SIZE);
-
-  if (activeCategory) {
-    postQuery = postQuery.hasSome('categoryIds', [activeCategory._id]);
-  }
-
-  const postResult: any = await postQuery.find();
-  posts = postResult.items ?? [];
-  totalCount = Number(postResult.totalCount ?? postResult.pagingMetadata?.total ?? posts.length);
+  // This established archive request has no filter for All Articles.
+  const postResult = await wixClient.posts.queryPosts(
+    createBlogArchivePostsQuery(requestedPage, PAGE_SIZE, activeCategory?._id)
+  );
+  const archiveResult = readBlogArchivePostsResponse(postResult);
+  posts = archiveResult.posts;
+  totalCount = archiveResult.totalCount;
 } catch (error) {
+  postQueryFailed = true;
+  Astro.response.status = 500;
   console.error('Unable to load Wix Blog posts for archive.', error);
 }
 
@@ -208,7 +206,13 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
     </section>
 
     {posts.length === 0 && (
-      <p class="empty-state">{categoryLoadFailed ? 'Articles are temporarily unavailable. Please try again shortly.' : 'No articles found in this category yet.'}</p>
+      <p class="empty-state">
+        {postQueryFailed
+          ? 'Unable to load articles right now. Please try again shortly.'
+          : activeCategory
+            ? 'No articles found in this category yet.'
+            : 'No articles found right now. Please try again shortly.'}
+      </p>
     )}
 
     {totalPages > 1 && (
