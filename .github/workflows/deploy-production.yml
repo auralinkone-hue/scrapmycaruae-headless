@@ -1,0 +1,56 @@
+name: Deploy production release
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: scrapmycaruae-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # A manual run opened from another branch must not deploy that branch.
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+
+    env:
+      # Astro's Cloudflare adapter reads this while generating dist/server/wrangler.json.
+      # It must agree with the explicit Wrangler deploy environment below.
+      CLOUDFLARE_ENV: production
+      PUBLIC_WIX_CLIENT_ID: f3ac0e15-b92a-42ce-8340-f9ec2a40d267
+      WIX_QUOTE_REQUESTS_COLLECTION_ID: QuoteRequests
+      PUBLIC_SEO_ENV: production
+      PUBLIC_SITE_URL: https://www.scrapmycaruae.com
+      PUBLIC_GTM_ID: GTM-TFQ7BDGX
+      PUBLIC_ANALYTICS_ENABLED: "true"
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify production SEO configuration
+        run: npm run seo:verify-production
+
+      - name: Build Astro
+        run: npm run build
+
+      - name: Deploy distinct production Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --env production

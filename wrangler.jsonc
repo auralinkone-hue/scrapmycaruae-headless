@@ -13,5 +13,10 @@
   },
   "observability": {
     "enabled": true
+  },
+  "env": {
+    "production": {
+      "name": "smc-headless-production"
+    }
   }
 }
