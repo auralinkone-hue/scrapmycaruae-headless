@@ -41,7 +41,7 @@ const isActive = (href: string) =>
       <div class="desktop-actions">
         <a class="smc-button smc-button-primary" href="/free-quote" data-analytics-quote-cta="header_desktop">
           <i class="ph ph-car-profile" aria-hidden="true"></i>
-          Get Free Quote
+          Get a Free Valuation
         </a>
       </div>
 
@@ -84,11 +84,11 @@ const isActive = (href: string) =>
           </a>
           <a class="smc-button smc-button-primary mobile-quote" href="/free-quote" data-analytics-quote-cta="header_mobile">
             <i class="ph ph-car-profile" aria-hidden="true"></i>
-            Get Free Quote
+            Get My Free Valuation
           </a>
           <a class="mobile-whatsapp" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
             <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
-            WhatsApp Us
+            Chat on WhatsApp
           </a>
         </div>
       </details>
@@ -104,13 +104,13 @@ const isActive = (href: string) =>
   }
 
   .smc-nav-wrap {
-    border-bottom: 1px solid var(--smc-line);
+    border-bottom: 1px solid rgba(20,40,20,.08);
     background: rgba(255,255,255,.96);
     backdrop-filter: blur(12px);
   }
 
   .nav-inner {
-    min-height: 74px;
+    min-height: 76px;
     display: flex;
     align-items: center;
     gap: 24px;
@@ -134,27 +134,29 @@ const isActive = (href: string) =>
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 22px;
+    gap: 28px;
   }
 
   .nav-link {
     position: relative;
-    color: #3f433e;
+    color: #333a33;
     text-decoration: none;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 650;
+    letter-spacing: -.012em;
   }
 
   .nav-link::after {
     content: '';
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 50%;
+    width: 18px;
     bottom: -10px;
     height: 2px;
     border-radius: 2px;
     background: var(--smc-green);
-    transform: scaleX(0);
+    transform: translateX(-50%) scaleX(0);
+    transform-origin: center;
     transition: transform 180ms ease;
   }
 
@@ -165,7 +167,7 @@ const isActive = (href: string) =>
 
   .nav-link:hover::after,
   .nav-link.active::after {
-    transform: scaleX(1);
+    transform: translateX(-50%) scaleX(1);
   }
 
   .nav-link:focus-visible,
@@ -179,7 +181,7 @@ const isActive = (href: string) =>
   .desktop-actions {
     display: flex;
     align-items: center;
-    margin-left: 4px;
+    margin-left: 8px;
   }
 
   .mobile-menu {
@@ -199,7 +201,7 @@ const isActive = (href: string) =>
     background: var(--smc-green-soft);
     color: var(--smc-green-dark);
     font-size: 11px;
-    font-weight: 850;
+    font-weight: 700;
     line-height: 1;
     text-decoration: none;
     white-space: nowrap;
@@ -254,7 +256,7 @@ const isActive = (href: string) =>
     border-radius: 10px;
     text-decoration: none;
     font-size: 15px;
-    font-weight: 750;
+    font-weight: 650;
   }
 
   .mobile-link > .ph:first-child {
@@ -283,7 +285,7 @@ const isActive = (href: string) =>
     text-align: center;
     text-decoration: none;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 700;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -364,7 +366,7 @@ const isActive = (href: string) =>
       border-radius: 0;
       color: #fff;
       font-size: 18px;
-      font-weight: 750;
+      font-weight: 650;
     }
 
     .mobile-link > .ph:first-child { color: #9bd394; }
