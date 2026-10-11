@@ -10,6 +10,7 @@ type ResponsiveImageOptions = {
   widths: number[];
   aspectRatio?: number;
   quality?: number;
+  fit?: 'fill' | 'fit';
 };
 
 type ResolvedWixImage = {
@@ -73,14 +74,18 @@ const transform = (
   width: number,
   height: number,
   encoding: 'auto' | 'avif',
-  quality: number
+  quality: number,
+  fit: 'fill' | 'fit'
 ) => {
   const source = normalizeWixImage(image);
   if (!source) return '';
   if (!isWixCdnImage(source)) return source;
 
   try {
-    return media.getScaledToFillImageUrl(source, width, height, {
+    const transform = fit === 'fit'
+      ? media.getScaledToFitImageUrl
+      : media.getScaledToFillImageUrl;
+    return transform(source, width, height, {
       quality,
       autoEncode: encoding === 'auto',
       encoding: encoding === 'avif' ? 'AVIF' : undefined,
@@ -100,7 +105,7 @@ const transform = (
  */
 export function wixResponsiveImage(
   image: WixImage | null | undefined,
-  { widths, aspectRatio, quality = 78 }: ResponsiveImageOptions
+  { widths, aspectRatio, quality = 78, fit = 'fill' }: ResponsiveImageOptions
 ) {
   const resolved = resolveWixImage(image);
   const source = resolved.url;
@@ -126,8 +131,8 @@ export function wixResponsiveImage(
     const height = Math.max(1, Math.round(width / ratio));
     return {
       width,
-      auto: transform(image, width, height, 'auto', quality),
-      avif: transform(image, width, height, 'avif', quality)
+      auto: transform(image, width, height, 'auto', quality, fit),
+      avif: transform(image, width, height, 'avif', quality, fit)
     };
   });
   const largest = variants[variants.length - 1];

@@ -30,6 +30,8 @@ test('value section keeps its CMS image optional and responsive', async () => {
   assert.match(loader, /valueImageAlt: 'Car prepared for valuation and collection by Scrap My Car UAE'/);
   assert.match(loader, /valueImageDecorative: false/);
   assert.match(page, /widths: \[480, 720, 960, 1200\]/);
+  assert.match(page, /fit: 'fit'/);
+  assert.match(page, /object-fit: contain/);
   assert.match(page, /\{valueResponsiveImage\.src && <div class="value-image"/);
   assert.match(page, /loading="lazy"/);
   assert.match(page, /decoding="async"/);

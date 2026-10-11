@@ -40,7 +40,7 @@ const conditionsResponsiveImage = wixResponsiveImage(
 );
 const valueResponsiveImage = wixResponsiveImage(
   home.valueImage,
-  { widths: [480, 720, 960, 1200], aspectRatio: 4 / 3 }
+  { widths: [480, 720, 960, 1200], aspectRatio: 4 / 3, fit: 'fit' }
 );
 const coverageResponsiveImage = wixResponsiveImage(
   home.coverageImage || '/sections/uae-collection-coverage.webp',
@@ -1220,7 +1220,8 @@ const faqJsonLd = {
   }
 
   .value-image img {
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
   }
 
   .value-list {
