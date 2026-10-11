@@ -1,0 +1,105 @@
+---
+import type { BlogBreadcrumbItem } from '../lib/blog-breadcrumb';
+
+interface Props {
+  items: BlogBreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    {items.map((item) => (
+      <li>
+        {item.current ? (
+          <span aria-current="page">{item.label}</span>
+        ) : (
+          <a href={item.href}>{item.label}</a>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .breadcrumb {
+    max-width: 100%;
+    margin: 0 0 22px;
+    padding: 0;
+    color: #5d685f;
+    font-size: clamp(.875rem, 1.4vw, 1rem);
+    line-height: 1.45;
+  }
+
+  ol {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  li + li::before {
+    content: '›';
+    margin: 0 10px;
+    color: #91a095;
+    font-weight: 600;
+  }
+
+  a {
+    color: #2c772f;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  li:first-child a {
+    color: #435046;
+  }
+
+  a:hover {
+    color: #153f1c;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  li:first-child a:hover {
+    color: #172219;
+  }
+
+  a:focus-visible {
+    outline: 3px solid rgba(47, 111, 45, 0.3);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  [aria-current='page'] {
+    min-width: 0;
+    color: #697369;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .breadcrumb { margin-bottom: 16px; font-size: .8125rem; }
+
+    ol { gap: 0; overflow: hidden; }
+
+    li + li::before {
+      margin-inline: 6px;
+    }
+
+    li:last-child { display: none; }
+    li:nth-last-child(2) { min-width: 0; flex: 1 1 auto; }
+    li:nth-last-child(2) a { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  }
+</style>
