@@ -1,477 +1,295 @@
 ---
 export const prerender = false;
 
-import { media } from '@wix/sdk';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { wixClient } from '../lib/wix';
 import { wixResponsiveImage } from '../lib/wix-image';
-import { getBlogAuthor } from '../lib/blog-author';
 
 const PAGE_SIZE = 12;
+const DIRECT_CATEGORY_LIMIT = 4;
 
-const rawPage = Number(Astro.url.searchParams.get('page') || '1');
-const requestedPage = Number.isFinite(rawPage) && rawPage > 0
-  ? Math.floor(rawPage)
-  : 1;
+type BlogCategory = {
+  _id: string;
+  label?: string | null;
+  title?: string | null;
+  slug?: string | null;
+  postCount?: number | null;
+};
+
+const requestedCategorySlug = Astro.url.searchParams.get('category')?.trim().toLowerCase() ?? '';
+const requestedPage = Math.max(1, Number.parseInt(Astro.url.searchParams.get('page') ?? '1', 10) || 1);
+
+let categories: BlogCategory[] = [];
+let categoryLoadFailed = false;
+
+try {
+  const categoryResult = await wixClient.categories
+    .queryCategories()
+    .ascending('displayPosition')
+    .limit(100)
+    .find();
+
+  categories = (categoryResult.items ?? [])
+    .filter((category): category is BlogCategory => Boolean(category?._id && category.slug))
+    .filter((category) => (category.postCount ?? 1) > 0);
+} catch (error) {
+  categoryLoadFailed = true;
+  console.error('Unable to load Wix Blog categories for archive navigation.', error);
+}
+
+const activeCategory = requestedCategorySlug
+  ? categories.find((category) => category.slug?.toLowerCase() === requestedCategorySlug)
+  : undefined;
+
+if (requestedCategorySlug && !categoryLoadFailed && !activeCategory) {
+  return Astro.redirect('/blogs', 302);
+}
+
+const directCategories = categories.slice(0, DIRECT_CATEGORY_LIMIT);
+const moreCategories = categories.slice(DIRECT_CATEGORY_LIMIT);
+const activeCategoryIsInMore = Boolean(activeCategory && moreCategories.some((category) => category._id === activeCategory._id));
+const categoryById = new Map(categories.map((category) => [category._id, category]));
 
 let posts: any[] = [];
 let totalCount = 0;
-let errorMessage = '';
 
 try {
-  const result = await wixClient.posts.queryPosts({
-    paging: {
-      limit: PAGE_SIZE,
-      offset: (requestedPage - 1) * PAGE_SIZE
-    },
-    sort: [
-      {
-        fieldName: 'firstPublishedDate',
-        order: 'DESC'
-      }
-    ]
-  });
+  let postQuery: any = wixClient.posts
+    .queryPosts()
+    .descending('firstPublishedDate')
+    .limit(PAGE_SIZE)
+    .skip((requestedPage - 1) * PAGE_SIZE);
 
-  posts = result.posts ?? [];
-  totalCount = result.pagingMetadata?.total ?? posts.length;
-} catch (error) {
-  Astro.response.status = 500;
-  errorMessage = error instanceof Error ? error.message : String(error);
-}
-
-const postAuthors = await Promise.all(posts.map((post) => getBlogAuthor(post)));
-
-const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
-const page = Math.min(requestedPage, totalPages);
-
-if (!errorMessage && requestedPage > totalPages && totalCount > 0) {
-  return Astro.redirect('/blogs');
-}
-
-const canonical =
-  page > 1
-    ? `/blogs?page=${page}`
-    : '/blogs';
-
-const previousUrl =
-  page > 2
-    ? `/blogs?page=${page - 1}`
-    : page === 2
-      ? '/blogs'
-      : '';
-
-const nextUrl =
-  page < totalPages
-    ? `/blogs?page=${page + 1}`
-    : '';
-
-const seoTitle =
-  page === 1
-    ? 'Blogs | Scrap My Car Uae'
-    : `Blogs - Page ${page} | Scrap My Car UAE`;
-
-const seoDescription =
-  'Discover expert insights and tips on selling your faulty car hassle-free with Scrap My Car UAE. Get valuable information on dealing with mechanical issues, accident damage, and more. Sell your car easily in the UAE today!';
-
-const getImage = (post: any) => {
-  const image = post?.media?.wixMedia?.image;
-  if (!image) return null;
-
-  if (typeof image === 'string') {
-    try {
-      return media.getImageUrl(image);
-    } catch {
-      return null;
-    }
+  if (activeCategory) {
+    postQuery = postQuery.hasSome('categoryIds', [activeCategory._id]);
   }
 
-  if (image?.url) return image;
-  return null;
+  const postResult: any = await postQuery.find();
+  posts = postResult.items ?? [];
+  totalCount = Number(postResult.totalCount ?? postResult.pagingMetadata?.total ?? posts.length);
+} catch (error) {
+  console.error('Unable to load Wix Blog posts for archive.', error);
+}
+
+const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+
+if (requestedPage > totalPages) {
+  const categoryQuery = activeCategory?.slug ? '?category=' + encodeURIComponent(activeCategory.slug) : '';
+  return Astro.redirect('/blogs' + categoryQuery, 302);
+}
+
+const archiveUrl = (page: number) => {
+  const searchParams = new URLSearchParams();
+
+  if (activeCategory?.slug) {
+    searchParams.set('category', activeCategory.slug);
+  }
+
+  if (page > 1) {
+    searchParams.set('page', String(page));
+  }
+
+  const query = searchParams.toString();
+  return query ? '/blogs?' + query : '/blogs';
 };
 
-const formatDate = (value: string | Date | undefined) => {
+const getPostHref = (post: any) => '/post/' + post.slug;
+const getPostImage = (post: any) => post?.media?.wixMedia?.image ?? post?.media?.wixMedia;
+const getPrimaryCategory = (post: any) => {
+  const categoryId = (post.categoryIds ?? []).find((id: string) => categoryById.has(id));
+  return categoryId ? categoryById.get(categoryId) : undefined;
+};
+const categoryLabel = (category: BlogCategory) => category.label || category.title || 'Articles';
+const formatDate = (value?: string | Date | null) => {
   if (!value) return '';
-  return new Intl.DateTimeFormat('en-AE', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric'
-  }).format(new Date(value));
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? ''
+    : new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
 };
-
-const pageNumbers = (() => {
-  const numbers: number[] = [];
-  const start = Math.max(1, page - 2);
-  const end = Math.min(totalPages, page + 2);
-  for (let i = start; i <= end; i++) numbers.push(i);
-  return numbers;
-})();
+const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' min read' : '';
 ---
 
 <BaseLayout
-  title={seoTitle}
-  description={seoDescription}
-  canonical={canonical}
-  prevUrl={previousUrl}
-  nextUrl={nextUrl}
+  title="Blogs | Scrap My Car UAE"
+  description="Practical car scrapping, disposal, recycling and safety guidance from Scrap My Car UAE."
+  canonical="/blogs"
+  noindex={Boolean(activeCategory)}
 >
-  <main class="smc-container page-shell">
-    <section class="intro">
-      <div class="smc-kicker">Scrap My Car UAE</div>
+  <main class="blog-archive">
+    <section class="archive-hero">
+      <p class="eyebrow">SCRAP MY CAR UAE</p>
       <h1>Blogs</h1>
-      <p>
-        Guides, practical advice and useful information about selling,
-        scrapping and understanding vehicles in the UAE.
-      </p>
+      <p>Expert practical advice on car scrapping, recycling, disposal and safer vehicle ownership in the UAE.</p>
     </section>
 
-    {errorMessage ? (
-      <div class="error">
-        <strong>Unable to load the blog right now.</strong>
-        {import.meta.env.DEV && <pre>{errorMessage}</pre>}
-      </div>
-    ) : (
-      <>
-        <section class="grid" aria-label="Blog posts">
-          {posts.map((post: any, index) => {
-            const image = getImage(post);
-            const responsiveImage = wixResponsiveImage(image, {
-              widths: [320, 480, 640, 800],
-              aspectRatio: 900 / 506
-            });
-            const postUrl = `/post/${post.slug}`;
-            const author = postAuthors[index];
-
-            return (
-              <article class="card">
-                <a class="card-link" href={postUrl}>
-                  <div class="image-wrap" data-image-loading>
-                    {responsiveImage.src ? (
-                      <picture>
-                        <source type="image/avif" srcset={responsiveImage.avifSrcset} sizes="(max-width: 700px) calc(100vw - 36px), (max-width: 1100px) calc(50vw - 42px), 360px" />
-                        <img
-                          src={responsiveImage.src}
-                          srcset={responsiveImage.srcset}
-                          sizes="(max-width: 700px) calc(100vw - 36px), (max-width: 1100px) calc(50vw - 42px), 360px"
-                          alt={post?.media?.altText || post.title || ''}
-                          width={responsiveImage.width}
-                          height={responsiveImage.height}
-                          loading={index === 0 ? 'eager' : 'lazy'}
-                          fetchpriority={index === 0 ? 'high' : 'auto'}
-                          decoding="async"
-                        />
-                      </picture>
-                    ) : null}
-                  </div>
+    <nav class="category-nav" aria-label="Blog categories">
+      <div class="category-rail">
+        <a class:list={['category-button', !activeCategory && 'is-active']} href="/blogs" aria-current={!activeCategory ? 'page' : undefined}>All Articles</a>
+        {directCategories.map((category) => (
+          <a
+            class:list={['category-button', activeCategory?._id === category._id && 'is-active']}
+            href={'/blogs?category=' + encodeURIComponent(category.slug ?? '')}
+            aria-current={activeCategory?._id === category._id ? 'page' : undefined}
+          >
+            {categoryLabel(category)}
+          </a>
+        ))}
+        {moreCategories.length > 0 && (
+          <details class:list={['more-categories', activeCategoryIsInMore && 'has-active-category']}>
+            <summary class="category-button" aria-haspopup="menu" aria-expanded="false">
+              More <span aria-hidden="true">⌄</span>
+            </summary>
+            <div class="more-menu" role="menu">
+              {moreCategories.map((category) => (
+                <a
+                  href={'/blogs?category=' + encodeURIComponent(category.slug ?? '')}
+                  role="menuitem"
+                  aria-current={activeCategory?._id === category._id ? 'page' : undefined}
+                >
+                  {categoryLabel(category)}
+                  {typeof category.postCount === 'number' && <small>{category.postCount}</small>}
                 </a>
-                <div class="card-body">
-                  <div class="card-top">
-                    {author?.slug ? (
-                      <a class="author-line author-line--link" href={`/author/${author.slug}`} aria-label={`View articles by ${author.name}`}>
-                        {author.photoUrl ? (
-                          <img src={author.photoUrl} alt="" width="36" height="36" />
-                        ) : (
-                          <span class="author-placeholder"><i class="ph ph-user" aria-hidden="true"></i></span>
-                        )}
-                        <span>
-                          <span class="author-name">{author.name}</span>
-                          <span class="date">{formatDate(post.firstPublishedDate)} {post.minutesToRead && `• ${post.minutesToRead} min read`}</span>
-                        </span>
-                      </a>
-                    ) : (
-                      <div class="author-line">
-                        {author?.photoUrl ? (
-                          <img src={author.photoUrl} alt="" width="36" height="36" />
-                        ) : (
-                          <span class="author-placeholder"><i class="ph ph-user" aria-hidden="true"></i></span>
-                        )}
-                        <span>
-                          {author && <span class="author-name">{author.name}</span>}
-                          <span class="date">{formatDate(post.firstPublishedDate)} {post.minutesToRead && `• ${post.minutesToRead} min read`}</span>
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <a class="card-title-link" href={postUrl}>
-                    <h2>{post.title}</h2>
-                    {post.excerpt && <p>{post.excerpt}</p>}
-                  </a>
-                </div>
-              </article>
-            );
-          })}
-        </section>
-
-        {totalPages > 1 && (
-          <nav class="pagination" aria-label="Blog pagination">
-            {page > 1 && (
-              <a
-                class="direction"
-                href={page === 2 ? '/blogs' : `/blogs?page=${page - 1}`}
-                rel="prev"
-              >
-                Previous
-              </a>
-            )}
-
-            {pageNumbers[0] > 1 && (
-              <>
-                <a href="/blogs">1</a>
-                {pageNumbers[0] > 2 && <span aria-hidden="true">…</span>}
-              </>
-            )}
-
-            {pageNumbers.map((number) =>
-              number === page ? (
-                <span class="current" aria-current="page">{number}</span>
-              ) : (
-                <a href={number === 1 ? '/blogs' : `/blogs?page=${number}`}>
-                  {number}
-                </a>
-              )
-            )}
-
-            {pageNumbers[pageNumbers.length - 1] < totalPages && (
-              <>
-                {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
-                  <span aria-hidden="true">…</span>
-                )}
-                <a href={`/blogs?page=${totalPages}`}>{totalPages}</a>
-              </>
-            )}
-
-            {page < totalPages && (
-              <a class="direction" href={`/blogs?page=${page + 1}`} rel="next">
-                Next
-              </a>
-            )}
-          </nav>
+              ))}
+            </div>
+          </details>
         )}
-      </>
+      </div>
+    </nav>
+
+    <section class="archive-grid" aria-label={activeCategory ? categoryLabel(activeCategory) + ' articles' : 'All articles'}>
+      {posts.map((post) => {
+        const postCategory = getPrimaryCategory(post);
+        const postHref = getPostHref(post);
+        const responsiveImage = wixResponsiveImage(getPostImage(post), {
+          widths: [320, 480, 640, 800],
+          aspectRatio: 16 / 9
+        });
+        const publishedDate = formatDate(post.firstPublishedDate);
+        const readTime = readingTime(post);
+
+        return (
+          <article class="archive-card">
+            <a class="card-image-link" href={postHref} aria-label={'Read ' + post.title}>
+              <div class="card-image">
+                {responsiveImage.src && (
+                  <picture>
+                    <source type="image/avif" srcset={responsiveImage.avifSrcset} sizes="(max-width: 620px) calc(100vw - 32px), (max-width: 900px) calc(50vw - 30px), 390px" />
+                    <img
+                      src={responsiveImage.src}
+                      srcset={responsiveImage.srcset}
+                      sizes="(max-width: 620px) calc(100vw - 32px), (max-width: 900px) calc(50vw - 30px), 390px"
+                      alt={post.media?.altText || post.title}
+                      width={responsiveImage.width}
+                      height={responsiveImage.height}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </picture>
+                )}
+                {postCategory && <span class="category-badge" title={categoryLabel(postCategory)}>{categoryLabel(postCategory)}</span>}
+              </div>
+            </a>
+            <div class="card-content">
+              <h2><a href={postHref}>{post.title}</a></h2>
+              {post.excerpt && <p class="card-excerpt">{post.excerpt}</p>}
+              <footer class="card-footer">
+                <p class="publication-meta">
+                  {publishedDate}
+                  {publishedDate && readTime && <span aria-hidden="true"> • </span>}
+                  {readTime && <span>{readTime}</span>}
+                </p>
+                <a class="read-more" href={postHref}>Read more <span aria-hidden="true">→</span></a>
+              </footer>
+            </div>
+          </article>
+        );
+      })}
+    </section>
+
+    {posts.length === 0 && (
+      <p class="empty-state">{categoryLoadFailed ? 'Articles are temporarily unavailable. Please try again shortly.' : 'No articles found in this category yet.'}</p>
+    )}
+
+    {totalPages > 1 && (
+      <nav class="pagination" aria-label="Blog archive pages">
+        {requestedPage > 1 && <a href={archiveUrl(requestedPage - 1)}>← Previous</a>}
+        <span>Page {requestedPage} of {totalPages}</span>
+        {requestedPage < totalPages && <a href={archiveUrl(requestedPage + 1)}>Next →</a>}
+      </nav>
     )}
   </main>
 </BaseLayout>
 
+<script>
+  document.querySelectorAll('.more-categories').forEach((menu) => {
+    const summary = menu.querySelector('summary');
+    if (!summary) return;
+
+    const syncExpandedState = () => summary.setAttribute('aria-expanded', String(menu.open));
+    menu.addEventListener('toggle', syncExpandedState);
+    document.addEventListener('click', (event) => {
+      if (event.target instanceof Node && !menu.contains(event.target)) menu.removeAttribute('open');
+    });
+    menu.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        menu.removeAttribute('open');
+        summary.focus();
+      }
+    });
+  });
+</script>
+
 <style>
-  .page-shell {
-    padding: 66px 0 30px;
-  }
-
-  .intro {
-    max-width: 760px;
-    margin-bottom: 44px;
-  }
-
-  .intro h1 {
-    margin: 8px 0 15px;
-    font-size: clamp(44px, 7vw, 72px);
-    line-height: 1;
-    letter-spacing: -.055em;
-  }
-
-  .intro p {
-    margin: 0;
-    color: var(--smc-muted);
-    font-size: 18px;
-    line-height: 1.65;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 36px 24px;
-  }
-
-  .card-link,
-  .card-title-link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .image-wrap {
-    aspect-ratio: 16 / 10;
-    overflow: hidden;
-    border-radius: var(--smc-radius);
-    background: #eef0ec;
-  }
-
-  .image-wrap img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: opacity 300ms ease, filter 300ms ease, transform 240ms cubic-bezier(.2,.7,.2,1);
-  }
-
-  .card-link:hover .image-wrap img {
-    transform: scale(1.025);
-  }
-
-  .card-body {
-    padding-top: 15px;
-  }
-
-  .card-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-
-  .author-line {
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    gap: 9px;
-  }
-  .author-line > span { min-width: 0; display: grid; gap: 1px; }
-  .author-line--link { color: inherit; text-decoration: none; }
-  .author-line--link:hover .author-name { color: #1b5d2c; text-decoration: underline; text-underline-offset: 3px; }
-  .author-line--link:focus-visible { outline: 3px solid rgba(47, 111, 45, .3); outline-offset: 3px; border-radius: 8px; }
-
-  .author-line img,
-  .author-placeholder {
-    width: 36px;
-    height: 36px;
-    flex: 0 0 auto;
-    border-radius: 50%;
-  }
-
-  .author-line img { object-fit: cover; }
-  .author-placeholder {
-    display: grid;
-    place-items: center;
-    background: #dfe2de;
-    color: #fff;
-    font-size: 19px;
-  }
-
-  .author-name {
-    overflow: hidden;
-    color: #4f574f;
-    font-size: 12px;
-    font-weight: 750;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .date {
-    color: #7a7f79;
-    font-size: 12px;
-    font-weight: 750;
-  }
-
-  .card h2 {
-    margin: 7px 0 9px;
-    font-size: 22px;
-    line-height: 1.22;
-    letter-spacing: -.025em;
-  }
-
-  .card p {
-    margin: 0;
-    color: var(--smc-muted);
-    line-height: 1.55;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .pagination {
-    margin-top: 62px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .pagination a,
-  .pagination span {
-    min-width: 42px;
-    height: 42px;
-    padding: 0 13px;
-    border: 1px solid var(--smc-line);
-    border-radius: 999px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 800;
-  }
-
-  .pagination .current {
-    background: var(--smc-green-dark);
-    border-color: var(--smc-green-dark);
-    color: #fff;
-  }
-
-  .pagination .direction {
-    min-width: auto;
-  }
-
-  .error {
-    padding: 22px;
-    border: 1px solid #f0c9c9;
-    border-radius: 12px;
-    background: #fff6f6;
-  }
-
-  @media (max-width: 900px) {
-    .grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
+  .blog-archive { max-width: 1240px; margin: 0 auto; padding: 4.5rem 1.25rem 5rem; }
+  .archive-hero { max-width: 730px; margin-bottom: 1.75rem; }
+  .eyebrow { color: #2f7d32; font-size: .78rem; font-weight: 850; letter-spacing: .1em; margin: 0 0 .6rem; }
+  h1 { color: #184d2b; font-size: clamp(2.25rem, 5vw, 4rem); line-height: 1.04; margin: 0; }
+  .archive-hero > p:last-child { color: #536057; font-size: 1.05rem; line-height: 1.65; margin: 1rem 0 0; }
+  .category-nav { margin-bottom: 1.75rem; }
+  .category-rail { align-items: center; background: #f8faf7; border: 1px solid #dce6d9; border-radius: 14px; display: flex; gap: 6px; padding: 6px; position: relative; }
+  .category-button { align-items: center; border: 0; border-radius: 10px; color: #405447; cursor: pointer; display: inline-flex; font-size: 14px; font-weight: 750; justify-content: center; min-height: 42px; padding: 0 16px; text-decoration: none; transition: background-color .18s ease, color .18s ease; white-space: nowrap; }
+  .category-button:hover, .category-button:focus-visible { background: #edf6e8; color: #184d2b; outline: none; }
+  .category-button.is-active, .has-active-category > .category-button { background: #184d2b; color: #fff; }
+  .more-categories { position: relative; }
+  .more-categories summary { list-style: none; }
+  .more-categories summary::-webkit-details-marker { display: none; }
+  .more-menu { background: #fff; border: 1px solid #dce6d9; border-radius: 12px; box-shadow: 0 14px 30px rgba(22, 38, 19, .12); min-width: 235px; padding: 6px; position: absolute; right: 0; top: calc(100% + 8px); z-index: 10; }
+  .more-menu a { align-items: center; border-radius: 8px; color: #294032; display: flex; font-size: 14px; font-weight: 700; gap: 12px; justify-content: space-between; padding: 11px 12px; text-decoration: none; }
+  .more-menu a:hover, .more-menu a:focus-visible { background: #edf6e8; color: #184d2b; outline: none; }
+  .more-menu [aria-current='page'] { background: #edf6e8; color: #184d2b; }
+  .more-menu small { color: #7a837b; font-size: 11px; }
+  .archive-grid { display: grid; gap: 22px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .archive-card { background: #fff; border: 1px solid #dce4da; border-radius: 16px; box-shadow: 0 6px 18px rgba(22, 38, 19, .045); display: flex; flex-direction: column; overflow: hidden; transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease; }
+  .archive-card:hover { border-color: #cbd8c8; box-shadow: 0 14px 30px rgba(22, 38, 19, .08); transform: translateY(-3px); }
+  .card-image-link { display: block; }
+  .card-image { aspect-ratio: 16 / 9; background: #edf0eb; overflow: hidden; position: relative; }
+  .card-image img { height: 100%; object-fit: cover; width: 100%; }
+  .category-badge { background: rgba(24, 77, 43, .96); border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, .12); color: #fff; font-size: 10px; font-weight: 850; letter-spacing: .06em; max-width: 70%; overflow: hidden; padding: 7px 10px; position: absolute; right: 12px; text-overflow: ellipsis; text-transform: uppercase; top: 12px; white-space: nowrap; z-index: 2; }
+  .card-content { display: flex; flex: 1; flex-direction: column; padding: 17px 18px 16px; }
+  .card-content h2 { font-size: clamp(1.12rem, 1.5vw, 1.35rem); line-height: 1.24; margin: 0; }
+  .card-content h2 a { color: #173c24; text-decoration: none; }
+  .card-content h2 a:hover, .card-content h2 a:focus-visible { color: #2f7d32; text-decoration: underline; }
+  .card-excerpt { -webkit-box-orient: vertical; -webkit-line-clamp: 3; color: #5c685f; display: -webkit-box; font-size: 14px; line-height: 1.58; margin: .8rem 0 1.1rem; overflow: hidden; }
+  .card-footer { align-items: center; border-top: 1px solid #edf0eb; display: flex; flex-wrap: wrap; gap: .6rem 1rem; justify-content: space-between; margin-top: auto; padding-top: 14px; }
+  .publication-meta { color: #7a837b; font-size: 12px; font-weight: 650; margin: 0; }
+  .read-more { color: #2f7d32; font-size: 12px; font-weight: 850; letter-spacing: .03em; text-decoration: none; transition: color .18s ease, transform .18s ease; }
+  .read-more:hover, .read-more:focus-visible { color: #184d2b; outline: none; transform: translateX(2px); }
+  .empty-state { color: #5c685f; margin: 2rem 0; text-align: center; }
+  .pagination { align-items: center; display: flex; gap: 1rem; justify-content: center; margin-top: 2.5rem; }
+  .pagination a { color: #184d2b; font-weight: 800; text-decoration: none; }
+  .pagination span { color: #5c685f; font-size: .9rem; }
+  @media (max-width: 900px) { .archive-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 620px) {
-    .page-shell {
-      padding-top: 42px;
-    }
-
-    .grid {
-      grid-template-columns: 1fr;
-    }
-
-    .intro h1 {
-      font-size: 46px;
-    }
-  }
-
-  /* Archive editorial system: intentionally quieter than the marketing pages. */
-  .page-shell { padding-top: 48px; padding-bottom: 68px; }
-  .intro { max-width: 660px; margin-bottom: 34px; }
-  .intro h1 { font-size: clamp(2.6rem, 6vw, 4.25rem); line-height: 1.04; }
-  .intro p { max-width: 610px; font-size: 17px; }
-  .grid { gap: 28px 22px; }
-  .card {
-    overflow: hidden;
-    border: 1px solid var(--smc-line);
-    border-radius: var(--smc-radius);
-    background: #fff;
-    box-shadow: 0 6px 18px rgba(22, 38, 19, .045);
-    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
-  }
-  .card:hover { transform: translateY(-3px); border-color: #cbd6c8; box-shadow: var(--smc-shadow); }
-  .card-link:focus-visible, .card-title-link:focus-visible { outline: 3px solid rgba(47, 111, 45, .35); outline-offset: -3px; }
-  .image-wrap { border-radius: 0; aspect-ratio: 16 / 9; }
-  .card-body { display: flex; min-height: 188px; flex-direction: column; padding: 16px 17px 18px; }
-  .card-top { justify-content: flex-start; }
-  .author-line { gap: 8px; }
-  .author-line img, .author-placeholder { width: 32px; height: 32px; }
-  .author-name { font-size: 12px; }
-  .date { font-size: 12px; color: #687268; }
-  .card h2 { margin: 13px 0 8px; font-size: clamp(1.14rem, 1.65vw, 1.34rem); line-height: 1.25; }
-  .card p { font-size: 14px; line-height: 1.58; -webkit-line-clamp: 3; }
-  .pagination { margin-top: 48px; }
-  .pagination a, .pagination span { min-width: 44px; height: 44px; border-radius: 10px; }
-  @media (max-width: 620px) {
-    .page-shell { padding-top: 34px; }
-    .intro { margin-bottom: 28px; }
-    .intro h1 { font-size: 2.55rem; }
-    .intro p { font-size: 16px; line-height: 1.65; }
-    .grid { gap: 18px; }
-    .card-body { min-height: 0; padding: 15px 16px 17px; }
+    .blog-archive { padding: 3.1rem 1rem 3.5rem; }
+    .category-nav { margin-left: -1rem; margin-right: -1rem; overflow: hidden; padding: 0 1rem; }
+    .category-rail { border-radius: 0; overflow-x: auto; scrollbar-width: none; }
+    .category-rail::-webkit-scrollbar { display: none; }
+    .category-button, .more-categories { flex: 0 0 auto; }
+    .more-menu { position: fixed; right: 1rem; }
+    .archive-grid { gap: 16px; grid-template-columns: 1fr; }
+    .category-badge { right: 10px; top: 10px; }
+    .card-content { padding: 15px 16px; }
+    .card-footer { gap: .45rem .75rem; }
   }
 </style>

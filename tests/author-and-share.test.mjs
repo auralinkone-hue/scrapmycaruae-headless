@@ -31,14 +31,14 @@ test('author route queries only the selected author posts and supports cursor pa
   assert.match(page, /canonical=\{canonical\}/);
 });
 
-test('article and archive author links avoid nested anchors and fail safely', async () => {
+test('article author links are preserved while archive cards omit author controls', async () => {
   const article = await readProjectFile('src/pages/post/[slug].astro');
   const archive = await readProjectFile('src/pages/blogs.astro');
 
   assert.match(article, /href=\{`\/author\/\$\{author\.slug\}`\}/);
-  assert.match(archive, /href=\{`\/author\/\$\{author\.slug\}`\}/);
   assert.match(article, /author\.slug \?/);
-  assert.match(archive, /author\?\.slug \?/);
+  assert.doesNotMatch(archive, /getBlogAuthor/);
+  assert.doesNotMatch(archive, /author-line/);
 });
 
 test('share controls are visible and available at the article top and bottom', async () => {
