@@ -32,6 +32,9 @@ test('value section keeps its CMS image optional and responsive', async () => {
   assert.match(page, /widths: \[480, 720, 960, 1200\]/);
   assert.match(page, /fit: 'fit'/);
   assert.match(page, /object-fit: contain/);
+  assert.match(page, /coverageResponsiveImage = wixResponsiveImage\([\s\S]*fit: 'fit'/);
+  assert.match(page, /\.coverage-art \{[\s\S]*overflow: visible/);
+  assert.match(page, /\.coverage-art img \{[\s\S]*width: 100%;[\s\S]*max-width: 100%;/);
   assert.match(page, /\{valueResponsiveImage\.src && <div class="value-image"/);
   assert.match(page, /loading="lazy"/);
   assert.match(page, /decoding="async"/);
