@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "scrapmycaruae-headless",
+ "name": "smc-headless-worker",
   "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-09-21",
   "compatibility_flags": [

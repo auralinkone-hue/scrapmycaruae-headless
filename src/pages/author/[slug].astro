@@ -1,0 +1,120 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogArticleCard from '../../components/BlogArticleCard.astro';
+import { getBlogAuthorBySlug } from '../../lib/blog-author';
+import { wixClient } from '../../lib/wix';
+
+const PAGE_SIZE = 12;
+const requestedSlug = Astro.params.slug ?? '';
+const cursor = Astro.url.searchParams.get('cursor') || '';
+
+let author = await getBlogAuthorBySlug(requestedSlug);
+let posts: any[] = [];
+let nextCursor = '';
+let previousCursor = '';
+
+if (author) {
+  try {
+    let query = wixClient.posts
+      .queryPosts()
+      .eq('memberId', author.id)
+      .descending('firstPublishedDate')
+      .limit(PAGE_SIZE);
+    if (cursor) query = query.skipTo(cursor);
+    const result = await query.find();
+    posts = result.items ?? [];
+    nextCursor = typeof result.cursors?.next === 'string' ? result.cursors.next : '';
+    previousCursor = typeof result.cursors?.prev === 'string' ? result.cursors.prev : '';
+  } catch {
+    // The author profile itself still renders if the optional post list is temporarily unavailable.
+    posts = [];
+  }
+} else {
+  Astro.response.status = 404;
+}
+
+const canonical = author ? `/author/${author.slug}` : `/author/${requestedSlug}`;
+const title = author ? `Articles by ${author.name} | Scrap My Car UAE` : 'Author not found | Scrap My Car UAE';
+const description = author ? `Read articles published by ${author.name} on Scrap My Car UAE.` : 'The requested author is unavailable.';
+const pageUrl = (value: string) => `/author/${encodeURIComponent(author?.slug || requestedSlug)}?cursor=${encodeURIComponent(value)}`;
+---
+
+<BaseLayout title={title} description={description} canonical={canonical} noindex={!author}>
+  {author ? (
+    <main class="author-page smc-container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">›</span><a href="/blogs">Blogs</a><span aria-hidden="true">›</span><span aria-current="page">{author.name}</span>
+      </nav>
+
+      <header class="author-hero">
+        {author.photoUrl ? (
+          <img src={author.photoUrl} alt="" width="112" height="112" />
+        ) : (
+          <span class="author-hero__placeholder"><i class="ph ph-user" aria-hidden="true"></i></span>
+        )}
+        <div>
+          <p class="smc-kicker">Blog author</p>
+          <h1>{author.name}</h1>
+          {author.about && <p>{author.about}</p>}
+        </div>
+      </header>
+
+      <section aria-labelledby="author-articles-title">
+        <div class="section-heading">
+          <div>
+            <p class="smc-kicker">From the blog</p>
+            <h2 id="author-articles-title">Articles by {author.name}</h2>
+          </div>
+          <a href="/blogs">All articles <span aria-hidden="true">→</span></a>
+        </div>
+
+        {posts.length ? (
+          <div class="posts-grid">
+            {posts.map((post) => <BlogArticleCard post={post} />)}
+          </div>
+        ) : (
+          <p class="empty">There are no published articles to show for this author right now.</p>
+        )}
+
+        {(previousCursor || nextCursor) && (
+          <nav class="pagination" aria-label="Author article pagination">
+            {previousCursor && <a href={pageUrl(previousCursor)}>Previous</a>}
+            {nextCursor && <a href={pageUrl(nextCursor)}>Next</a>}
+          </nav>
+        )}
+      </section>
+    </main>
+  ) : (
+    <main class="not-found smc-container">
+      <h1>Author not found</h1>
+      <p>The requested author is unavailable.</p>
+      <a href="/blogs">Return to all articles</a>
+    </main>
+  )}
+</BaseLayout>
+
+<style>
+  .author-page { padding: 42px 0 84px; }
+  .breadcrumbs { display: flex; flex-wrap: wrap; gap: 7px; color: #687268; font-size: .9rem; }
+  .breadcrumbs a { color: #1b5d2c; font-weight: 750; text-decoration: none; }
+  .breadcrumbs a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .author-hero { display: flex; align-items: center; gap: 22px; margin: 28px 0 56px; padding: clamp(24px, 5vw, 46px); border: 1px solid #dbe8d7; border-radius: 24px; background: linear-gradient(135deg, #f4f9f1, #fff); }
+  .author-hero img, .author-hero__placeholder { width: 112px; height: 112px; flex: 0 0 auto; border-radius: 50%; }
+  .author-hero img { object-fit: cover; }
+  .author-hero__placeholder { display: grid; place-items: center; background: #d7e3d4; color: #315b39; font-size: 42px; }
+  .author-hero h1 { margin: 7px 0 0; color: #172219; font-size: clamp(2.25rem, 5vw, 4rem); line-height: 1; letter-spacing: -.055em; }
+  .author-hero p:not(.smc-kicker) { max-width: 700px; margin: 15px 0 0; color: #4c584e; font-size: 1rem; line-height: 1.65; }
+  .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+  .section-heading h2 { margin: 7px 0 0; color: #172219; font-size: clamp(1.8rem, 3vw, 2.45rem); line-height: 1.1; letter-spacing: -.04em; }
+  .section-heading > a, .pagination a, .not-found a { color: #1b5d2c; font-weight: 800; text-decoration: none; }
+  .section-heading > a:hover, .pagination a:hover, .not-found a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .posts-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .empty { padding: 25px; border: 1px solid var(--smc-line); border-radius: 16px; color: var(--smc-muted); }
+  .pagination { display: flex; justify-content: space-between; gap: 15px; margin-top: 42px; }
+  .pagination a { min-height: 44px; padding: 0 16px; border: 1px solid #d7e2d5; border-radius: 10px; display: inline-flex; align-items: center; }
+  .not-found { padding: 96px 0; text-align: center; }
+  @media (max-width: 900px) { .posts-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 620px) { .author-page { padding-top: 32px; } .author-hero { align-items: flex-start; flex-direction: column; gap: 16px; margin-bottom: 36px; padding: 25px; border-radius: 20px; } .author-hero img, .author-hero__placeholder { width: 82px; height: 82px; } .author-hero__placeholder { font-size: 32px; } .section-heading { align-items: flex-start; flex-direction: column; gap: 14px; } .posts-grid { grid-template-columns: 1fr; gap: 18px; } }
+</style>

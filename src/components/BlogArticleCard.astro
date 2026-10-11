@@ -1,0 +1,163 @@
+---
+import { wixResponsiveImage } from '../lib/wix-image';
+import { asIsoDate, asPositiveNumber, asSafeArticleSlug, asSafeText, asValidDate, asWixMedia } from '../lib/wix-post-values';
+
+const { post } = Astro.props;
+// Wix Blog returns cover media as an opaque wix:image:// string for queryPosts.
+// Keep the raw value for URL resolution and only inspect object fields after
+// verifying the response really is an object.
+const rawPostImage = post?.media?.wixMedia?.image;
+const postImage = asWixMedia(rawPostImage);
+const postTitle = asSafeText(post?.title, 'Related article');
+const postSlug = asSafeArticleSlug(post?.slug);
+const responsiveImage = wixResponsiveImage(
+  typeof rawPostImage === 'string' ? rawPostImage : postImage,
+  {
+  widths: [320, 480, 640, 800],
+  aspectRatio: asPositiveNumber(postImage?.width) && asPositiveNumber(postImage?.height)
+    ? asPositiveNumber(postImage?.width) / asPositiveNumber(postImage?.height)
+    : 16 / 9,
+  },
+);
+const imageAlt = asSafeText(postImage?.altText, postTitle);
+const publishDate = asValidDate(post?.firstPublishedDate) || asValidDate(post?.lastPublishedDate) || asValidDate(post?._createdDate);
+const formattedDate = publishDate
+  ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(publishDate)
+  : null;
+const publishDateIso = asIsoDate(publishDate);
+const minutesToRead = asPositiveNumber(post?.minutesToRead);
+---
+
+<article class="blog-article-card">
+  <a class="blog-article-card__link" href={`/post/${postSlug}`} aria-label={`Read ${postTitle}`}>
+    {responsiveImage.src ? (
+      <div class="blog-article-card__image-wrap">
+        <picture>
+          {responsiveImage.avifSrcset && (
+            <source srcset={responsiveImage.avifSrcset} sizes="(max-width: 700px) 100vw, (max-width: 1050px) 50vw, 33vw" type="image/avif" />
+          )}
+          <img
+            class="blog-article-card__image"
+            src={responsiveImage.src}
+            srcset={responsiveImage.srcset || undefined}
+            sizes="(max-width: 700px) 100vw, (max-width: 1050px) 50vw, 33vw"
+            width={responsiveImage.width}
+            height={responsiveImage.height}
+            alt={imageAlt}
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
+      </div>
+    ) : (
+      <div class="blog-article-card__image-placeholder" aria-hidden="true"></div>
+    )}
+    <div class="blog-article-card__body">
+      <div class="blog-article-card__meta">
+        {formattedDate && publishDateIso && <time datetime={publishDateIso}>{formattedDate}</time>}
+        {formattedDate && minutesToRead > 0 && <span aria-hidden="true">•</span>}
+        {minutesToRead > 0 && <span>{minutesToRead} min read</span>}
+      </div>
+      <h3>{postTitle}</h3>
+      <span class="blog-article-card__cta" aria-hidden="true">Read article <span>→</span></span>
+    </div>
+  </a>
+</article>
+
+<style>
+  .blog-article-card {
+    min-width: 0;
+    height: 100%;
+  }
+
+  .blog-article-card__link {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    overflow: hidden;
+    color: #152018;
+    border: 1px solid #d9e2d9;
+    border-radius: 18px;
+    background: #fff;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(17, 66, 28, 0.06);
+    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  }
+
+  .blog-article-card__link:hover {
+    transform: translateY(-3px);
+    border-color: #7bbf48;
+    box-shadow: 0 14px 28px rgba(17, 66, 28, 0.14);
+  }
+
+  .blog-article-card__link:focus-visible {
+    outline: 3px solid #1b6e35;
+    outline-offset: 3px;
+  }
+
+  .blog-article-card__image-wrap,
+  .blog-article-card__image-placeholder {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #e8f0e6;
+  }
+
+  .blog-article-card__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 220ms ease;
+  }
+
+  .blog-article-card__link:hover .blog-article-card__image {
+    transform: scale(1.03);
+  }
+
+  .blog-article-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .blog-article-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+    color: #4e5b51;
+    font-size: 0.84rem;
+    line-height: 1.4;
+  }
+
+  .blog-article-card h3 {
+    margin: 0;
+    color: #152018;
+    font-size: clamp(1.1rem, 1.8vw, 1.32rem);
+    line-height: 1.28;
+  }
+
+  .blog-article-card__cta {
+    margin-top: auto;
+    padding-top: 18px;
+    color: #195b2b;
+    font-weight: 800;
+    font-size: 0.92rem;
+  }
+
+  .blog-article-card__cta span {
+    display: inline-block;
+    transition: transform 160ms ease;
+  }
+
+  .blog-article-card__link:hover .blog-article-card__cta span {
+    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blog-article-card__link,
+    .blog-article-card__image,
+    .blog-article-card__cta span { transition: none; }
+  }
+</style>
