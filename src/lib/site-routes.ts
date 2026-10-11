@@ -5,6 +5,7 @@ export const indexableStaticRoutes = [
   '/contact-us',
   '/faqs',
   '/blogs',
+  '/author/smc-uae',
   '/terms-conditions',
   '/privacy-policy'
 ] as const;
