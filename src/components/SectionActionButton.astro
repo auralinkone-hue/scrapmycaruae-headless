@@ -1,0 +1,9 @@
+---
+interface Props { href: string; label: string; }
+const { href, label } = Astro.props;
+---
+<a class="section-action" href={href}>{label} <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+<style>
+  .section-action { display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0 17px; border:1px solid #b8caf7; border-radius:11px; background:#eef4ff; color:#2f64e5; font-size:14px; font-weight:750; text-decoration:none; transition:border-color 160ms ease,color 160ms ease; }
+  .section-action:hover { color:#204eb8; border-color:#91acef; }.section-action:focus-visible { outline:3px solid #2f64e5; outline-offset:3px; }
+</style>

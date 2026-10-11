@@ -46,6 +46,18 @@ test('sell my car refinement keeps the form ahead of trust content and uses the 
   assert.match(home, /makeLogoForName\(make\.name\)/);
 });
 
+test('sell my car final page exposes the full visible FAQ schema and cautious official-source facts', async () => {
+  const page = await readProjectFile('src/pages/sell-my-car.astro');
+
+  assert.equal((page.match(/\['(?:Valuation & process|Vehicle condition|Ownership & paperwork|Collection)'/g) ?? []).length, 20);
+  assert.match(page, /mainEntity: faqs\.map/);
+  assert.match(page, /UAE vehicle facts at a glance/);
+  assert.match(page, /Dubai RTA vehicle services/);
+  assert.match(page, /rel="noopener noreferrer"/);
+  assert.match(page, /<SectionActionButton href="\/blogs" label="View all blogs"/);
+  assert.match(page, /<ul class="factor-list">/);
+});
+
 test('sell my car route is registered once for the production sitemap and header navigation', async () => {
   const header = await readProjectFile('src/components/SiteHeader.astro');
 
