@@ -11,9 +11,10 @@ test('the real indexable author route is included once in the static sitemap man
 });
 
 test('compatibility redirects are dynamic permanent responses and retain query strings', async () => {
-  const [blog, privacy] = await Promise.all([
+  const [blog, privacy, privacyDestination] = await Promise.all([
     readProjectFile('src/pages/blog.astro'),
-    readProjectFile('src/pages/privay-policy.astro')
+    readProjectFile('src/pages/privay-policy.astro'),
+    readProjectFile('src/pages/privacy-policy.astro')
   ]);
 
   assert.deepEqual(permanentRedirects, {
@@ -29,4 +30,6 @@ test('compatibility redirects are dynamic permanent responses and retain query s
     assert.match(source, /status:\s*301/);
     assert.ok(source.includes(`Location: \`${destination}\${Astro.url.search}\``));
   }
+
+  assert.match(privacyDestination, /export const prerender = false/);
 });
