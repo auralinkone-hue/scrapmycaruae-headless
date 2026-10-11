@@ -1,0 +1,41 @@
+---
+import { makeLogoForName } from '../lib/make-logos';
+
+interface Props {
+  makes: string[];
+}
+
+const { makes } = Astro.props;
+const visibleMakes = makes.filter(Boolean);
+---
+
+<div class="make-logo-rail" aria-label="Popular vehicle makes">
+  <div class="make-logo-rail__track">
+    {[false, true].map((duplicate) => (
+      <ul class="make-logo-rail__group" aria-hidden={duplicate ? 'true' : undefined}>
+        {visibleMakes.map((name) => {
+          const logo = makeLogoForName(name);
+          return <li class="make-logo-rail__item">
+            {logo ? <img src={logo} alt={duplicate ? '' : `${name} logo`} width="44" height="44" loading="lazy" decoding="async" /> : <span class="make-logo-rail__monogram" aria-hidden="true">{name.slice(0, 1)}</span>}
+            <strong>{name}</strong>
+          </li>;
+        })}
+      </ul>
+    ))}
+  </div>
+</div>
+
+<style>
+  .make-logo-rail { overflow: hidden; margin: 0 -4px; padding: 4px; }
+  .make-logo-rail__track { display: flex; width: max-content; animation: make-rail 32s linear infinite; }
+  .make-logo-rail:hover .make-logo-rail__track, .make-logo-rail:focus-within .make-logo-rail__track { animation-play-state: paused; }
+  .make-logo-rail__group { display: flex; flex: 0 0 auto; gap: 14px; margin: 0; padding: 0 7px; list-style: none; }
+  .make-logo-rail__item { display: flex; align-items: center; gap: 12px; min-width: 176px; min-height: 76px; padding: 14px 18px; border: 1px solid #dce6d9; border-radius: 16px; background: #fff; color: #203e27; font-size: 14px; letter-spacing: -.01em; transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease; }
+  .make-logo-rail__item:hover { transform: translateY(-3px); border-color: #bfcfbc; box-shadow: 0 10px 20px rgba(20, 53, 29, .07); }
+  .make-logo-rail__item img, .make-logo-rail__monogram { display: grid; flex: 0 0 auto; width: 36px; height: 36px; place-items: center; object-fit: contain; opacity: .82; transition: opacity 180ms ease, transform 180ms ease; }
+  .make-logo-rail__item:hover img { opacity: 1; transform: scale(1.035); }
+  .make-logo-rail__monogram { border-radius: 50%; background: #edf4e9; color: #416742; font-size: 14px; font-weight: 800; }
+  @keyframes make-rail { to { transform: translateX(-50%); } }
+  @media (max-width: 700px) { .make-logo-rail { overflow-x: auto; scrollbar-width: none; }.make-logo-rail::-webkit-scrollbar { display: none; }.make-logo-rail__track { animation: none; }.make-logo-rail__group[aria-hidden="true"] { display: none; }.make-logo-rail__group { gap: 10px; }.make-logo-rail__item { min-width: 156px; min-height: 64px; padding: 12px 14px; } }
+  @media (prefers-reduced-motion: reduce) { .make-logo-rail { overflow-x: auto; }.make-logo-rail__track { animation: none; }.make-logo-rail__group[aria-hidden="true"] { display: none; } }
+</style>

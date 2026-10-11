@@ -31,6 +31,21 @@ test('sell my car hub avoids future-route links while using existing data source
   assert.doesNotMatch(page, /href="\/cars\//);
 });
 
+test('sell my car refinement keeps the form ahead of trust content and uses the shared make rail', async () => {
+  const page = await readProjectFile('src/pages/sell-my-car.astro');
+  const rail = await readProjectFile('src/components/MakeLogoRail.astro');
+  const home = await readProjectFile('src/pages/index.astro');
+
+  assert.ok(page.indexOf('sell-hero__form') < page.indexOf('trust-points'));
+  assert.match(page, /grid-template-areas: 'copy form' 'trust form'/);
+  assert.match(page, /class="smc-container intro-bento"/);
+  assert.match(page, /class="factor-list"/);
+  assert.match(page, /<MakeLogoRail makes=\{selectedMakes\}/);
+  assert.match(rail, /prefers-reduced-motion/);
+  assert.match(rail, /makeLogoForName/);
+  assert.match(home, /makeLogoForName\(make\.name\)/);
+});
+
 test('sell my car route is registered once for the production sitemap and header navigation', async () => {
   const header = await readProjectFile('src/components/SiteHeader.astro');
 

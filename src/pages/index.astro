@@ -8,6 +8,7 @@ import { getHomepageContent } from '../lib/homepage-content';
 import { getVehicleData } from '../lib/vehicle-data';
 import { wixClient } from '../lib/wix';
 import { wixResponsiveImage } from '../lib/wix-image';
+import { makeLogoForName } from '../lib/make-logos';
 
 const homepage = await getHomepageContent();
 const home = homepage.page as Record<string, any>;
@@ -179,13 +180,13 @@ const faqJsonLd = {
             <div class="make-list">
               {popularMakes.map((make) => (
                 <div class="make-item">
-                  <img src={make.image || make.icon} alt={make.imageDecorative ? '' : make.imageAlt} aria-hidden={make.imageDecorative ? 'true' : undefined} loading="lazy" decoding="async" />
+                  <img src={make.image || make.icon || makeLogoForName(make.name)} alt={make.imageDecorative ? '' : make.imageAlt} aria-hidden={make.imageDecorative ? 'true' : undefined} loading="lazy" decoding="async" />
                   <strong>{make.name}</strong>
                 </div>
               ))}
               {popularMakes.map((make) => (
                 <div class="make-item" aria-hidden="true">
-                  <img src={make.image || make.icon} alt={make.imageDecorative ? '' : make.imageAlt} aria-hidden={make.imageDecorative ? 'true' : undefined} loading="lazy" decoding="async" />
+                  <img src={make.image || make.icon || makeLogoForName(make.name)} alt={make.imageDecorative ? '' : make.imageAlt} aria-hidden={make.imageDecorative ? 'true' : undefined} loading="lazy" decoding="async" />
                   <strong>{make.name}</strong>
                 </div>
               ))}
