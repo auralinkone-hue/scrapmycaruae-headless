@@ -143,9 +143,9 @@ const faqJsonLd = {
         </div>
 
         <div class="hero-actions" data-reveal>
-          <a class="smc-button smc-button-primary hero-primary" href={home.heroPrimaryButtonLink} data-analytics-quote-cta="hero">
-            {home.heroPrimaryButtonLabel}
-            <i class="ph ph-calculator" aria-hidden="true"></i>
+          <a class="smc-button smc-button-primary hero-primary" href="#how-it-works">
+            See how selling works
+            <i class="ph ph-list-checks" aria-hidden="true"></i>
           </a>
           <a
             class="smc-button smc-button-secondary whatsapp-button"
@@ -225,7 +225,7 @@ const faqJsonLd = {
       </div>
     </section>}
 
-    {home.processVisible && <section class="process-section">
+    {home.processVisible && <section id="how-it-works" class="process-section">
       <div class="smc-container process-grid">
         <div class="process-copy" data-reveal>
           <div class="smc-kicker">{home.processKicker}</div>
@@ -234,7 +234,7 @@ const faqJsonLd = {
             {home.processDescription}
           </p>
           <a class="text-link" href={home.processButtonLink}>
-            {home.processButtonLabel} <i class="ph ph-list-checks" aria-hidden="true"></i>
+            Start with my car details <i class="ph ph-calculator" aria-hidden="true"></i>
           </a>
         </div>
 
@@ -303,7 +303,7 @@ const faqJsonLd = {
           </div>
 
           <a class="smc-button condition-button" href={home.conditionsButtonLink}>
-            {home.conditionsButtonLabel}
+            Value a car with problems
             <i class="ph ph-calculator" aria-hidden="true"></i>
           </a>
         </div>
@@ -490,7 +490,7 @@ const faqJsonLd = {
         </div>
         <div class="final-actions">
           <a class="smc-button final-primary" href={home.finalPrimaryButtonLink} data-analytics-quote-cta="final_cta">
-            {home.finalPrimaryButtonLabel}
+            Send my vehicle details
             <i class="ph ph-calculator" aria-hidden="true"></i>
           </a>
           <a

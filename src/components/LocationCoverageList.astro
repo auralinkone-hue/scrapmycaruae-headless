@@ -1,5 +1,6 @@
 ---
 import { uaeLocationGroups } from '../lib/locations';
+import SectionActionButton from './SectionActionButton.astro';
 
 const groupIcons: Record<string, string> = {
   dubai: 'ph-buildings',
@@ -38,6 +39,10 @@ const locationIcon = (location: string) => {
         </ul>
       </section>
     ))}
+  </div>
+  <div class="location-coverage__actions" aria-label="Location coverage actions">
+    <SectionActionButton href="/contact-us" label="Talk to the team" intent="contact" />
+    <SectionActionButton href="/sell-my-car/#process-title" label="How selling works" intent="process" />
   </div>
 </div>
 
@@ -133,6 +138,14 @@ const locationIcon = (location: string) => {
     line-height: 1.35;
   }
 
+  .location-coverage__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
   .location-item__icon {
     display: grid;
     flex: 0 0 auto;
@@ -165,5 +178,7 @@ const locationIcon = (location: string) => {
     .location-group ul,
     .location-group--dubai ul { grid-template-columns: 1fr; }
     .location-group li { padding: 6px 0; font-size: 12.5px; }
+    .location-coverage__actions { display: grid; grid-template-columns: 1fr; }
+    .location-coverage__actions :global(.section-action) { width: 100%; justify-content: center; }
   }
 </style>

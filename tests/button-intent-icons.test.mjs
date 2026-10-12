@@ -17,6 +17,7 @@ test('shared section actions require a semantic intent icon', async () => {
 
 test('every shared section action declares its intent', async () => {
   const pages = await Promise.all([
+    readProjectFile('src/components/LocationCoverageList.astro'),
     readProjectFile('src/pages/index.astro'),
     readProjectFile('src/pages/sell-my-car.astro'),
     readProjectFile('src/pages/sell-damaged-car.astro')
@@ -25,6 +26,28 @@ test('every shared section action declares its intent', async () => {
   const usages = pages.flatMap((page) => page.match(/<SectionActionButton\b[^>]*\/>/g) ?? []);
   assert.ok(usages.length > 0);
   for (const usage of usages) assert.match(usage, /\sintent="(?:valuation|contact|blogs|process|faqs)"/);
+});
+
+test('the exact free valuation label is reserved for the form submit', async () => {
+  const [form, header, home, sellMyCar, damagedCar, contact, faqs, article, notFound] = await Promise.all([
+    readProjectFile('src/components/QuoteForm.astro'),
+    readProjectFile('src/components/SiteHeader.astro'),
+    readProjectFile('src/pages/index.astro'),
+    readProjectFile('src/pages/sell-my-car.astro'),
+    readProjectFile('src/pages/sell-damaged-car.astro'),
+    readProjectFile('src/pages/contact-us.astro'),
+    readProjectFile('src/pages/faqs.astro'),
+    readProjectFile('src/pages/post/[slug].astro'),
+    readProjectFile('src/pages/404.astro')
+  ]);
+
+  assert.match(form, />Get My Free Valuation <i class="ph ph-calculator"/);
+  for (const source of [header, home, sellMyCar, damagedCar, contact, faqs, article, notFound]) {
+    assert.doesNotMatch(source, />Get My Free Valuation\s*</);
+  }
+  assert.match(damagedCar, /Tell us about the damage/);
+  assert.match(damagedCar, /Compare before you repair/);
+  assert.match(damagedCar, /Check your car's value/);
 });
 
 test('valuation buttons and forms use the calculator icon instead of generic arrows', async () => {

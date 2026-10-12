@@ -15,7 +15,7 @@ test('sell my car hub has transactional SEO, schemas, and the reusable valuation
   assert.match(page, /'@type': 'BreadcrumbList'/);
   assert.match(page, /'@type': 'FAQPage'/);
   assert.match(page, /<QuoteForm[\s\S]*?variant="free-quote"/);
-  assert.match(page, /Get My Free Valuation/);
+  assert.match(page, /Start with my car details/);
   assert.doesNotMatch(page, /No obligation\. Your details are saved securely before we open WhatsApp\./);
 });
 
@@ -66,7 +66,7 @@ test('sell my car final page exposes the full visible FAQ schema and cautious of
 test('sell my car visual polish keeps section hierarchy concise and centers the blog action', async () => {
   const page = await readProjectFile('src/pages/sell-my-car.astro');
 
-  assert.match(page, /href="\/free-quote" data-analytics-quote-cta="sell_my_car_intro">Get My Free Valuation/);
+  assert.match(page, /href="\/free-quote" data-analytics-quote-cta="sell_my_car_intro">Start with my car details/);
   assert.match(page, /class="section-heading section-heading--centered"/);
   assert.match(page, /Helpful answers and practical guidance for selling, valuing and managing your vehicle in the UAE/);
   assert.match(page, /\.guides__action \{ justify-content:center/);
@@ -82,5 +82,5 @@ test('sell my car route is registered once for the production sitemap and header
   assert.equal(indexableStaticRoutes.filter((route) => route === '/sell-my-car/').length, 1);
   assert.match(header, /href: '\/sell-my-car\/', label: 'Sell My Car'/);
   assert.match(header, /href="\/sell-my-car\/"/);
-  assert.match(header, /Get a Free Valuation/);
+  assert.match(header, /Value My Car/);
 });

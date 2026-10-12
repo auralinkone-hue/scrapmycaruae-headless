@@ -63,6 +63,9 @@ test('all rendered coverage sections use the shared icon-led grouped design', as
   assert.match(list, /locationIcon/);
   assert.match(list, /location-item__icon/);
   assert.match(list, /location-group--dubai/);
+  assert.match(list, /label="Talk to the team" intent="contact"/);
+  assert.match(list, /label="How selling works" intent="process"/);
+  assert.match(list, /location-coverage__actions/);
   assert.match(list, /background-image: url\("data:image\/svg\+xml/);
   assert.doesNotMatch(list, /<details|max-height:\s*\d+px|overflow:\s*auto/);
   assert.match(list, /@media \(max-width: 480px\)/);

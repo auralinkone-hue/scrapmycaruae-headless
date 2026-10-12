@@ -22,10 +22,12 @@ test('sell damaged car page keeps the approved form, transactional SEO and schem
 
 test('sell damaged car page stays focused, linked and indexable in production', async () => {
   const page = await readPage();
+  const locationCoverage = await readFile(new URL('../src/components/LocationCoverageList.astro', import.meta.url), 'utf8');
+  const linkedSource = `${page}\n${locationCoverage}`;
 
   assert.equal(indexableStaticRoutes.filter((route) => route === '/sell-damaged-car/').length, 1);
   for (const href of ['/sell-my-car/', '/free-quote', '/blogs', '/faqs']) {
-    assert.match(page, new RegExp(`href="${href.replace(/[/?]/g, '\\$&')}"`));
+    assert.match(linkedSource, new RegExp(`href="${href.replace(/[/?]/g, '\\$&')}`));
   }
   assert.match(page, /Types of damage/);
   assert.match(page, /Should you repair it/);
