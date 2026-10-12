@@ -443,7 +443,7 @@ const faqJsonLd = {
         <div class="blog-heading" data-reveal>
           <div>
             <div class="smc-kicker">{home.blogKicker}</div>
-            <h2>{home.blogHeading}</h2>
+            <h2>{home.blogHeading.includes('UAE car owners') ? <>{home.blogHeading.split('UAE car owners')[0]}<span class="heading-accent">UAE car owners</span>{home.blogHeading.split('UAE car owners')[1]}</> : home.blogHeading}</h2>
           </div>
           <SectionActionButton href={home.blogButtonLink || '/blogs'} label={home.blogButtonLabel || 'View all blogs'} />
         </div>
@@ -1444,6 +1444,8 @@ const faqJsonLd = {
     max-width: 720px;
     margin-bottom: 0;
   }
+
+  .heading-accent { color: #3c8e2f; }
 
   .blog-grid {
     display: grid;
