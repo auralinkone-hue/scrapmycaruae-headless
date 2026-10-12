@@ -1,0 +1,32 @@
+---
+interface Props { label?: string; }
+const { label = 'UAE vehicle collection illustration' } = Astro.props;
+---
+
+<div class="collection-illustration" role="img" aria-label={label}>
+  <svg viewBox="0 0 520 330" fill="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="collection-bg" x1="46" y1="24" x2="474" y2="305" gradientUnits="userSpaceOnUse"><stop stop-color="#F4FAF2"/><stop offset="1" stop-color="#E7F3E4"/></linearGradient>
+      <linearGradient id="collection-truck" x1="164" y1="140" x2="350" y2="245" gradientUnits="userSpaceOnUse"><stop stop-color="#205A2B"/><stop offset="1" stop-color="#367B3E"/></linearGradient>
+    </defs>
+    <rect x="12" y="12" width="496" height="306" rx="28" fill="url(#collection-bg)"/>
+    <path d="M78 245C156 208 244 281 331 220C382 184 417 170 463 182" stroke="#B6D9B0" stroke-width="2" stroke-dasharray="5 9"/>
+    <path d="M91 94C132 60 178 61 220 90C262 119 296 116 335 85C370 57 408 61 446 86" stroke="#D2E7CE" stroke-width="2" stroke-dasharray="3 10"/>
+    <circle cx="92" cy="245" r="5" fill="#70AC64"/><circle cx="463" cy="182" r="5" fill="#70AC64"/>
+    <path d="M128 115C128 78 157 51 194 51C231 51 260 78 260 115C260 160 194 204 194 204C194 204 128 160 128 115Z" fill="#E9F5E6" stroke="#5A9C51" stroke-width="3"/>
+    <circle cx="194" cy="113" r="24" fill="#2F7D32"/><path d="M184 113L191 120L205 105" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M154 204H325C337 204 347 214 347 226V239H154V204Z" fill="url(#collection-truck)"/>
+    <path d="M326 183H373L402 218V239H326V183Z" fill="#34783B"/>
+    <path d="M342 196H368L383 216H342V196Z" fill="#DDF0DA"/>
+    <path d="M163 191H306" stroke="#A8D9A0" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="198" cy="246" r="22" fill="#17331D"/><circle cx="198" cy="246" r="9" fill="#DCEAD8"/><circle cx="365" cy="246" r="22" fill="#17331D"/><circle cx="365" cy="246" r="9" fill="#DCEAD8"/>
+    <path d="M76 274H444" stroke="#B6D9B0" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="415" cy="103" r="28" fill="#F8FCF7" stroke="#C9E3C4" stroke-width="2"/><path d="M407 103H423M415 95V111" stroke="#3D873F" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<style>
+  .collection-illustration { position:relative; overflow:hidden; border:1px solid #d4e6d1; border-radius:24px; background:#f0f8ed; box-shadow:0 18px 38px rgba(28,72,33,.07); }
+  .collection-illustration::after { position:absolute; inset:0; background-image:radial-gradient(rgba(56,122,61,.13) 1px,transparent 1px); background-size:15px 15px; content:''; mask-image:linear-gradient(135deg,transparent 12%,#000 72%,transparent); opacity:.32; pointer-events:none; }
+  svg { display:block; width:100%; height:auto; }
+</style>
