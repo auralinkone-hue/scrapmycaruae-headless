@@ -85,6 +85,7 @@ test('sell my car condition cards use an equal responsive grid and reserve detai
   assert.match(page, /@media \(max-width:980px\) \{ \.condition-grid \{ grid-template-columns:repeat\(2,minmax\(0,1fr\)\);/);
   assert.match(page, /@media \(max-width:700px\) \{ \.condition-grid \{ grid-template-columns:1fr;/);
   assert.match(page, /min-height:228px; padding:24px/);
+  assert.doesNotMatch(page, /article:last-child \{ grid-column:auto; grid-row:auto; display:flex/);
   assert.equal((page.match(/View details/g) ?? []).length, 1);
 });
 
