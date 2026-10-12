@@ -181,7 +181,24 @@ const isActive = (href: string) =>
   .desktop-actions {
     display: flex;
     align-items: center;
-    margin-left: 8px;
+    margin-left: 16px;
+    padding-left: 4px;
+  }
+
+  .desktop-actions .smc-button {
+    min-height: 46px;
+    padding-left: 16px;
+    gap: 9px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .018em;
+    white-space: nowrap;
+  }
+
+  .desktop-actions .smc-button .ph {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
   }
 
   .mobile-menu {
