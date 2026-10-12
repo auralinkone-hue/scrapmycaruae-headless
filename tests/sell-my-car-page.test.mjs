@@ -54,8 +54,10 @@ test('sell my car final page exposes the full visible FAQ schema and cautious of
 
   assert.equal((page.match(/\['(?:Valuation & process|Vehicle condition|Ownership & paperwork|Collection)'/g) ?? []).length, 20);
   assert.match(page, /mainEntity: faqs\.map/);
-  assert.match(page, /UAE vehicle facts at a glance/);
-  assert.match(page, /Dubai RTA vehicle services/);
+  assert.match(page, /UAE vehicle data at a glance/);
+  assert.match(page, /UAE Ministry of Interior/);
+  assert.match(page, /FCSC/);
+  assert.match(page, /Dubai RTA/);
   assert.match(page, /rel="noopener noreferrer"/);
   assert.match(page, /<SectionActionButton href="\/blogs" label="View all blogs"/);
   assert.match(page, /<ul class="factor-list">/);
