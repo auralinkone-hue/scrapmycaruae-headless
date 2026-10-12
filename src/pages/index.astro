@@ -1670,7 +1670,7 @@ const faqJsonLd = {
       min-height: 620px;
       padding: 52px 0;
       grid-template-columns: minmax(0, 1fr) minmax(440px, 550px);
-      grid-template-rows: auto auto auto auto;
+      grid-template-rows: auto auto auto;
       column-gap: 88px;
       row-gap: 17px;
       align-content: center;
@@ -1679,12 +1679,15 @@ const faqJsonLd = {
 
     .hero-copy { grid-column: 1; grid-row: 1; }
     .hero-description { grid-column: 1; grid-row: 2; }
-    .hero-actions { grid-column: 1; grid-row: 3; margin-top: 0; }
-    .hero-proof { grid-column: 1; grid-row: 4; margin-top: 0; }
+    .hero-actions { display: none; }
+    .hero-proof { grid-column: 1; grid-row: 3; margin-top: 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; max-width: 610px; }
+    .hero-proof > div { min-height: 70px; padding: 12px 14px; border: 1px solid #d7e4d4; border-radius: 14px; background: rgba(255,255,255,.82); box-shadow: 0 8px 18px rgba(21,61,28,.05); align-items: flex-start; gap: 9px; }
+    .hero-proof span { color: #28432c; font-size: 12px; font-weight: 700; line-height: 1.3; }
+    .hero-proof .ph { display: grid; width: 28px; height: 28px; flex: 0 0 auto; place-items: center; border-radius: 9px; background: #e7f2e3; color: #2f7d32; font-size: 16px; }
 
     .hero-form {
       grid-column: 2;
-      grid-row: 1 / span 4;
+      grid-row: 1 / span 3;
       width: 100%;
       max-width: 550px;
       align-self: center;
