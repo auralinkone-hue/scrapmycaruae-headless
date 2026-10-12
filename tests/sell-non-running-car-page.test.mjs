@@ -17,7 +17,7 @@ test('non-running car page has the approved service-page hero and SEO schemas', 
   assert.match(page, /<QuoteForm[\s\S]*?variant="free-quote"/);
   assert.match(page, /grid-template-areas:'copy form' 'trust form'/);
   assert.match(page, /Sell your non-running car/);
-  assert.match(page, /Get a valuation without repairing it first/);
+  assert.match(page, /Get a valuation\./);
   assert.match(page, /data-service-motion/);
 });
 
@@ -33,10 +33,12 @@ test('non-running car page is linked, indexable and uses shared collection cover
     assert.match(page, new RegExp(`href="${href.replace(/[/?]/g, '\\$&')}`));
   }
   assert.match(page, /engine failure/i);
+  assert.match(page, /Fuel-system faults/);
   assert.match(page, /Gearbox failure/);
   assert.match(page, /3-step process/);
   assert.match(page, /<LocationCoverageList \/>/);
   assert.match(page, /Non-running-car FAQs/);
+  assert.match(page, /class="stat-grid"/);
   assert.match(coverage, /location-coverage::before/);
   assert.match(sellMyCar, /'Non-running cars'[\s\S]*?'\/sell-non-running-car\//);
   assert.match(sellMyCar, /condition-card-link__details/);

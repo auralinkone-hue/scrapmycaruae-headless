@@ -10,7 +10,7 @@
 
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const revealTargets = page.querySelectorAll<HTMLElement>(
-        '.section-heading, .damage-types__layout, .damage-grid, .repair-decision__panel, .repair-panel, .repair-decision__steps, .check-list, .valuation-list, .factor-list, .process-grid, .collection__grid, .collection > .smc-container > .location-coverage, .guide-grid, .faq-stack, .final-valuation__inner'
+        '.section-heading, .damage-types__layout, .damage-grid, .repair-decision__panel, .repair-panel, .repair-decision__steps, .check-list, .repair-decision__choices, .repair-decision__action, .stat-grid, .valuation-list, .factor-list, .process-grid, .collection__grid, .collection > .smc-container > .location-coverage, .guide-grid, .faq-stack, .final-valuation__inner'
       );
 
       revealTargets.forEach((target) => target.dataset.serviceReveal = '');
