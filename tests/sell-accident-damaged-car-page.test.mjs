@@ -16,10 +16,10 @@ test('accident-damaged car page has transactional SEO, form-first hero and schem
   assert.match(page, /'@type': 'FAQPage'/);
   assert.match(page, /<QuoteForm[\s\S]*?variant="free-quote"/);
   assert.match(page, /grid-template-areas:'copy form' 'trust form'/);
-  assert.match(page, /Sell your accident-damaged car/);
-  assert.match(page, /Get a valuation before spending more on repairs/);
+  assert.match(page, /class="accident-word">accident-damaged/);
+  assert.match(page, /class="valuation-message">Get a valuation/);
   assert.match(page, /<MakeLogoRail makes=\{selectedMakes\}/);
-  assert.match(page, /--accident-accent:#bd8420/);
+  assert.match(page, /\.accident-hero h1 \.accident-word\{color:#bd8420\}/);
 });
 
 test('accident-damaged page is linked, indexable in production and uses shared UAE coverage', async () => {
@@ -36,7 +36,9 @@ test('accident-damaged page is linked, indexable in production and uses shared U
   assert.match(page, /<LocationCoverageList \/>/);
   assert.match(coverage, /location-coverage::before/);
   assert.match(page, /class="process-grid"/);
-  assert.match(page, /process-grid__arrow/);
+  assert.match(page, /ph-car-profile process-grid__icon/);
+  assert.match(page, /ph-chat-text process-grid__icon/);
+  assert.match(page, /ph-handshake process-grid__icon/);
   assert.match(page, /Accident-damaged car FAQs/);
   assert.match(sellMyCar, /'Accident-damaged cars'[\s\S]*?'\/sell-accident-damaged-car\//);
   assert.match(sellMyCar, /condition-card-link__details/);
