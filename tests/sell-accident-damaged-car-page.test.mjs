@@ -18,6 +18,8 @@ test('accident-damaged car page has transactional SEO, form-first hero and schem
   assert.match(page, /grid-template-areas:'copy form' 'trust form'/);
   assert.match(page, /Sell your accident-damaged car/);
   assert.match(page, /Get a valuation before spending more on repairs/);
+  assert.match(page, /<MakeLogoRail makes=\{selectedMakes\}/);
+  assert.match(page, /--accident-accent:#bd8420/);
 });
 
 test('accident-damaged page is linked, indexable in production and uses shared UAE coverage', async () => {
@@ -34,6 +36,7 @@ test('accident-damaged page is linked, indexable in production and uses shared U
   assert.match(page, /<LocationCoverageList \/>/);
   assert.match(coverage, /location-coverage::before/);
   assert.match(page, /class="process-grid"/);
+  assert.match(page, /process-grid__arrow/);
   assert.match(page, /Accident-damaged car FAQs/);
   assert.match(sellMyCar, /'Accident-damaged cars'[\s\S]*?'\/sell-accident-damaged-car\//);
   assert.match(sellMyCar, /condition-card-link__details/);
