@@ -16,8 +16,8 @@ test('accident-damaged car page has transactional SEO, form-first hero and schem
   assert.match(page, /'@type': 'FAQPage'/);
   assert.match(page, /<QuoteForm[\s\S]*?variant="free-quote"/);
   assert.match(page, /grid-template-areas:'copy form' 'trust form'/);
-  assert.match(page, /class="accident-word">accident-damaged/);
-  assert.match(page, /class="valuation-message">Get a valuation/);
+  assert.match(page, /Sell <span class="accident-word">accident-damaged<\/span> cars\./);
+  assert.match(page, /class="valuation-message">Get a valuation\./);
   assert.match(page, /<MakeLogoRail makes=\{selectedMakes\}/);
   assert.match(page, /\.accident-hero h1 \.accident-word\{color:#bd8420\}/);
 });

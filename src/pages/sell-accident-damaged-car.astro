@@ -56,7 +56,7 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
 <BaseLayout title={title} description={description} canonical="/sell-accident-damaged-car/">
   <Fragment slot="head"><script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c')} /><script type="application/ld+json" set:html={JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')} /></Fragment>
   <main class="accident-page">
-    <section class="accident-hero" aria-labelledby="accident-title"><div class="smc-container"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">›</span><a href="/sell-my-car/">Sell My Car</a><span aria-hidden="true">›</span><span aria-current="page">Accident-damaged car</span></nav><div class="accident-hero__grid"><div class="accident-hero__copy"><h1 id="accident-title">Sell your <span class="accident-word">accident-damaged</span> car.<span class="valuation-message">Get a valuation</span> before spending more on repairs.</h1><p>Share the car's make, model and year first. You can explain the accident damage directly with the team before deciding on another repair.</p></div><div class="accident-hero__form"><QuoteForm makes={vehicleData.makes} models={vehicleData.models} years={vehicleData.years} dataError={vehicleDataError} variant="free-quote" /></div><ul class="trust-points" aria-label="Accident-damaged valuation benefits"><li><i class="ph ph-check" aria-hidden="true"></i>Free valuation</li><li><i class="ph ph-check" aria-hidden="true"></i>Accident damage considered as-is</li><li><i class="ph ph-check" aria-hidden="true"></i>UAE collection discussion</li></ul></div></div></section>
+    <section class="accident-hero" aria-labelledby="accident-title"><div class="smc-container"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">›</span><a href="/sell-my-car/">Sell My Car</a><span aria-hidden="true">›</span><span aria-current="page">Accident-damaged car</span></nav><div class="accident-hero__grid"><div class="accident-hero__copy"><h1 id="accident-title">Sell <span class="accident-word">accident-damaged</span> cars.<span class="valuation-message">Get a valuation.</span></h1><p>Share the car's make, model and year, then explain the damage before spending more on repairs.</p></div><div class="accident-hero__form"><QuoteForm makes={vehicleData.makes} models={vehicleData.models} years={vehicleData.years} dataError={vehicleDataError} variant="free-quote" /></div><ul class="trust-points" aria-label="Accident-damaged valuation benefits"><li><i class="ph ph-check" aria-hidden="true"></i>Free valuation</li><li><i class="ph ph-check" aria-hidden="true"></i>Accident damage considered as-is</li><li><i class="ph ph-check" aria-hidden="true"></i>UAE collection discussion</li></ul></div></div></section>
 
     <section class="section damage-section" aria-labelledby="damage-title"><div class="smc-container"><div class="section-heading"><h2 id="damage-title">Accident damage <span class="heading-accent">we consider.</span></h2><p>Accurate details are more useful than a repaired-looking story. Tell the team what is visible and what changed after the accident.</p></div><div class="damage-grid">{damageExamples.map(([icon, heading, copy]) => <article><i class:list={['ph', icon]} aria-hidden="true"></i><h3>{heading}</h3><p>{copy}</p></article>)}</div><div class="section-cta"><SectionActionButton href="/free-quote" label="Request a damaged car valuation" intent="valuation" /></div></div></section>
 
@@ -84,8 +84,8 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   /* Accident is highlighted only in the hero; the service page otherwise uses the shared green system. */
   .accident-page{--accident-accent:#286633;--accident-soft:#edf6ed}
   .accident-hero{background:linear-gradient(180deg,#fcfdfb,#f8faf7)}
-  .accident-hero__copy{max-width:690px}
-  .accident-hero h1{font-size:clamp(2.8rem,3.35vw,3.8rem);line-height:1.02}
+  .accident-hero__copy{max-width:620px}
+  .accident-hero h1{font-size:clamp(2.55rem,2.8vw,3.25rem);line-height:1.04}
   .accident-hero h1 .accident-word{color:#bd8420}
   .accident-hero h1 .valuation-message{display:block;color:#286633;white-space:nowrap}
   .damage-grid article:hover{border-color:#9abf9b;box-shadow:0 13px 24px rgba(42,102,51,.08)}
@@ -93,5 +93,5 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .process-grid li:hover{border-color:rgba(156,205,151,.72)}
   .process-grid__icon{display:grid;width:46px;height:46px;place-items:center;border-radius:14px;background:rgba(138,196,134,.18);color:#bce3ae;font-size:24px;transition:transform 160ms ease,background-color 160ms ease}
   .process-grid li:hover .process-grid__icon{background:rgba(188,227,174,.28);transform:scale(1.06)}
-  @media(max-width:700px){.accident-hero h1{font-size:clamp(2.45rem,10.7vw,3.15rem);line-height:1}.accident-hero h1 .valuation-message{white-space:normal}}
+  @media(max-width:700px){.accident-hero h1{font-size:clamp(2.3rem,9.7vw,2.8rem);line-height:1}.accident-hero h1 .valuation-message{white-space:normal}}
 </style>
