@@ -43,6 +43,9 @@ test('sell my car refinement keeps the form ahead of trust content and uses the 
   assert.match(page, /<MakeLogoRail makes=\{selectedMakes\}/);
   assert.match(rail, /prefers-reduced-motion/);
   assert.match(rail, /makeLogoForName/);
+  assert.match(rail, /animation-duration: 38s/);
+  assert.match(page, /class="mobile-makes"/);
+  assert.match(page, /\.makes \{ display:none; \}/);
   assert.match(home, /makeLogoForName\(make\.name\)/);
 });
 

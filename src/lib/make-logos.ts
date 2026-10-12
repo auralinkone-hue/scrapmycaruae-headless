@@ -4,6 +4,8 @@ const logoByMake: Record<string, string> = {
   'MERCEDES-BENZ': '/brands/mercedes.svg',
   BMW: '/brands/bmw.svg',
   HONDA: '/brands/honda.svg',
+  LEXUS: '/brands/lexus.svg',
+  MITSUBISHI: '/brands/mitsubishi.svg',
   HYUNDAI: '/brands/hyundai.svg'
 };
 

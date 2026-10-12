@@ -36,6 +36,6 @@ const visibleMakes = makes.filter(Boolean);
   .make-logo-rail__item:hover img { opacity: 1; transform: scale(1.035); }
   .make-logo-rail__monogram { border-radius: 50%; background: #edf4e9; color: #416742; font-size: 14px; font-weight: 800; }
   @keyframes make-rail { to { transform: translateX(-50%); } }
-  @media (max-width: 700px) { .make-logo-rail { overflow-x: auto; scrollbar-width: none; }.make-logo-rail::-webkit-scrollbar { display: none; }.make-logo-rail__track { animation: none; }.make-logo-rail__group[aria-hidden="true"] { display: none; }.make-logo-rail__group { gap: 10px; }.make-logo-rail__item { min-width: 156px; min-height: 64px; padding: 12px 14px; } }
+  @media (max-width: 700px) { .make-logo-rail { overflow: hidden; }.make-logo-rail__track { animation-duration: 38s; }.make-logo-rail__group { gap: 10px; }.make-logo-rail__item { min-width: 156px; min-height: 64px; padding: 12px 14px; } }
   @media (prefers-reduced-motion: reduce) { .make-logo-rail { overflow-x: auto; }.make-logo-rail__track { animation: none; }.make-logo-rail__group[aria-hidden="true"] { display: none; } }
 </style>

@@ -129,6 +129,14 @@ const faqJsonLd = {
       </div>
     </section>
 
+    <section class="mobile-makes" aria-labelledby="mobile-makes-title">
+      <div class="smc-container">
+        <p class="sell-kicker">Popular makes</p>
+        <h2 id="mobile-makes-title">Popular makes we buy.</h2>
+      </div>
+      <MakeLogoRail makes={selectedMakes} />
+    </section>
+
     <section class="section section--intro" aria-labelledby="simple-title">
       <div class="smc-container intro-bento">
         <div class="intro-bento__copy"><p class="sell-kicker">Simple from the start</p><h2 id="simple-title">A simpler way to <span class="heading-accent">sell your car</span> in the UAE.</h2><p>Selling privately can mean writing listings, answering repeated messages, negotiating with different buyers and arranging viewings. Scrap My Car UAE gives vehicle owners a more direct starting point.</p></div>
@@ -177,6 +185,8 @@ const faqJsonLd = {
   .section--intro { padding-block:clamp(60px,5vw,72px); }.intro-bento { gap:12px; }.intro-bento__copy { align-self:center; }.intro-bento__feature { min-height:164px; padding:24px 28px; }.intro-bento__small { min-height:142px; }
   @media (max-width:980px) { .condition-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }.condition-grid article:first-child,.condition-grid article:nth-child(2),.condition-grid article:nth-child(3),.condition-grid article:nth-child(n+4) { grid-column:auto; }.data-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
   .guides__action { display:flex; justify-content:flex-end; margin-top:22px; }.coverage__action { display:flex; justify-content:flex-start; margin-top:16px; }
+  .mobile-makes { display:none; }
   @media (max-width:700px) { .section,.section--intro,.section--dark { padding:clamp(52px,14vw,60px) 0; }.sell-hero__grid { row-gap:16px; }.sell-hero__copy { text-align:center; }.sell-hero h1 { margin-inline:auto; }.sell-hero__lead { margin:14px auto 0; font-size:15px; line-height:1.45; }.sell-hero__lead span { display:block; }.condition-grid,.data-grid { grid-template-columns:1fr; }.condition-grid article { min-height:0; }.intro-bento__feature { min-height:0; }.guides__heading { align-items:flex-start; }.guides__action,.coverage__action { justify-content:stretch; margin-top:18px; }.section-action { width:100%; justify-content:center; }.faq-heading { margin-bottom:26px; }.faq-group { margin-top:22px; }.faq-stack summary { font-size:15px; } }
+  @media (max-width:700px) { .mobile-makes { display:block; padding:32px 0 30px; overflow:hidden; background:#fff; border-bottom:1px solid #e1e9df; }.mobile-makes .smc-container { padding-bottom:15px; }.mobile-makes h2 { margin:0; color:#17331d; font-size:1.55rem; letter-spacing:-.04em; }.mobile-makes .sell-kicker { margin-bottom:7px; }.makes { display:none; } }
   @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
 </style>
