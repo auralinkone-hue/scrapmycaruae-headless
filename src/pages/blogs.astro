@@ -197,7 +197,7 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
                   {publishedDate && readTime && <span aria-hidden="true"> • </span>}
                   {readTime && <span>{readTime}</span>}
                 </p>
-                <a class="read-more" href={postHref}>Read more <span aria-hidden="true">→</span></a>
+                <a class="read-more" href={postHref}>Read more <i class="ph ph-book-open-text" aria-hidden="true"></i></a>
               </footer>
             </div>
           </article>
@@ -217,9 +217,9 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
 
     {totalPages > 1 && (
       <nav class="pagination" aria-label="Blog archive pages">
-        {requestedPage > 1 && <a href={archiveUrl(requestedPage - 1)}>← Previous</a>}
+        {requestedPage > 1 && <a href={archiveUrl(requestedPage - 1)}><i class="ph ph-caret-left" aria-hidden="true"></i> Previous</a>}
         <span>Page {requestedPage} of {totalPages}</span>
-        {requestedPage < totalPages && <a href={archiveUrl(requestedPage + 1)}>Next →</a>}
+        {requestedPage < totalPages && <a href={archiveUrl(requestedPage + 1)}>Next <i class="ph ph-caret-right" aria-hidden="true"></i></a>}
       </nav>
     )}
   </main>
@@ -277,11 +277,12 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
   .card-excerpt { -webkit-box-orient: vertical; -webkit-line-clamp: 3; color: #5c685f; display: -webkit-box; font-size: 14px; line-height: 1.58; margin: .8rem 0 1.1rem; overflow: hidden; }
   .card-footer { align-items: center; border-top: 1px solid #edf0eb; display: flex; flex-wrap: wrap; gap: .6rem 1rem; justify-content: space-between; margin-top: auto; padding-top: 14px; }
   .publication-meta { color: #7a837b; font-size: 12px; font-weight: 650; margin: 0; }
-  .read-more { color: #2f7d32; font-size: 12px; font-weight: 850; letter-spacing: .03em; text-decoration: none; transition: color .18s ease, transform .18s ease; }
-  .read-more:hover, .read-more:focus-visible { color: #184d2b; outline: none; transform: translateX(2px); }
+  .read-more { align-items: center; color: #2f7d32; display: inline-flex; gap: 6px; font-size: 12px; font-weight: 850; letter-spacing: .03em; text-decoration: none; transition: color .18s ease; }
+  .read-more .ph { font-size: 15px; }
+  .read-more:hover, .read-more:focus-visible { color: #184d2b; outline: none; }
   .empty-state { color: #5c685f; margin: 2rem 0; text-align: center; }
   .pagination { align-items: center; display: flex; gap: 1rem; justify-content: center; margin-top: 2.5rem; }
-  .pagination a { color: #184d2b; font-weight: 800; text-decoration: none; }
+  .pagination a { align-items: center; color: #184d2b; display: inline-flex; gap: 5px; font-weight: 800; text-decoration: none; }
   .pagination span { color: #5c685f; font-size: .9rem; }
   @media (max-width: 900px) { .archive-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 620px) {

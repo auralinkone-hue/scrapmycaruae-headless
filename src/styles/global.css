@@ -135,7 +135,6 @@ img {
 
 .smc-button-primary:hover .ph {
   background: #fff;
-  transform: translateX(3px);
 }
 
 .smc-button-secondary {

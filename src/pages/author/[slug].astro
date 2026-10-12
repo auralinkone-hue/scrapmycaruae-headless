@@ -67,7 +67,7 @@ const pageUrl = (value: string) => `/author/${encodeURIComponent(author?.slug ||
             <p class="smc-kicker">From the blog</p>
             <h2 id="author-articles-title">Articles by {author.name}</h2>
           </div>
-          <a href="/blogs">All articles <span aria-hidden="true">→</span></a>
+          <a href="/blogs">All articles <i class="ph ph-newspaper-clipping" aria-hidden="true"></i></a>
         </div>
 
         {posts.length ? (
@@ -109,6 +109,7 @@ const pageUrl = (value: string) => `/author/${encodeURIComponent(author?.slug ||
   .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
   .section-heading h2 { margin: 7px 0 0; color: #172219; font-size: clamp(1.8rem, 3vw, 2.45rem); line-height: 1.1; letter-spacing: -.04em; }
   .section-heading > a, .pagination a, .not-found a { color: #1b5d2c; font-weight: 800; text-decoration: none; }
+  .section-heading > a { display: inline-flex; align-items: center; gap: 7px; }
   .section-heading > a:hover, .pagination a:hover, .not-found a:hover { text-decoration: underline; text-underline-offset: 4px; }
   .posts-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
   .empty { padding: 25px; border: 1px solid var(--smc-line); border-radius: 16px; color: var(--smc-muted); }

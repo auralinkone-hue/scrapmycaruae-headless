@@ -59,7 +59,7 @@ const minutesToRead = asPositiveNumber(post?.minutesToRead);
         {minutesToRead > 0 && <span>{minutesToRead} min read</span>}
       </div>
       <h3>{postTitle}</h3>
-      <span class="blog-article-card__cta" aria-hidden="true">Read article <span>→</span></span>
+      <span class="blog-article-card__cta" aria-hidden="true">Read article <i class="ph ph-book-open-text"></i></span>
     </div>
   </a>
 </article>
@@ -146,20 +146,13 @@ const minutesToRead = asPositiveNumber(post?.minutesToRead);
     font-size: 0.92rem;
   }
 
-  .blog-article-card__cta span {
-    display: inline-block;
-    transition: transform 160ms ease;
-  }
-
-  .blog-article-card__link:hover .blog-article-card__cta span {
-    transform: translateX(3px);
-  }
+  .blog-article-card__cta .ph { margin-left: 5px; font-size: 16px; vertical-align: -2px; }
 
   .blog-article-card__link:hover .blog-article-card__cta { color: #204eb8; }
 
   @media (prefers-reduced-motion: reduce) {
     .blog-article-card__link,
     .blog-article-card__image,
-    .blog-article-card__cta span { transition: none; }
+    .blog-article-card__cta .ph { transition: none; }
   }
 </style>

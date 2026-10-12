@@ -41,7 +41,7 @@ const formatDate = (value: unknown) => {
           <p>Keep reading</p>
           <h2 id="latest-articles-title">Latest Articles</h2>
         </div>
-        <a href="/blogs">View all blogs <span aria-hidden="true">→</span></a>
+        <a href="/blogs">View all blogs <i class="ph ph-newspaper-clipping" aria-hidden="true"></i></a>
       </div>
     ) : (
       <h2 id="latest-blogs-title">Latest blogs</h2>
@@ -94,7 +94,7 @@ const formatDate = (value: unknown) => {
                 {minutes > 0 && <span>{minutes} min read</span>}
               </span>
               <strong>{title}</strong>
-              {isGrid && <span class="latest-blogs__read">Read article <span aria-hidden="true">→</span></span>}
+              {isGrid && <span class="latest-blogs__read">Read article <i class="ph ph-book-open-text" aria-hidden="true"></i></span>}
             </span>
           </a>
         );
@@ -218,6 +218,9 @@ const formatDate = (value: unknown) => {
   }
 
   .latest-blogs--grid .latest-blogs__heading a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     color: #1b5d2c;
     font-size: .85rem;
     font-weight: 800;
@@ -252,10 +255,16 @@ const formatDate = (value: unknown) => {
   }
 
   .latest-blogs__read {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     color: #1b5d2c;
     font-size: .78rem;
     font-weight: 800;
   }
+
+  .latest-blogs__read .ph,
+  .latest-blogs__heading a .ph { font-size: 1rem; }
 
   .latest-blogs--grid .latest-blogs__item:hover img {
     transform: scale(1.02);

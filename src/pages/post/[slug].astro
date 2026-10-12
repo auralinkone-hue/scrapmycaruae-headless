@@ -184,7 +184,7 @@ const jsonLd = post
                   ) : (
                     <span class="author-placeholder"><i class="ph ph-user" aria-hidden="true"></i></span>
                   )}
-                  <span><small>Written by</small><strong>{author.name} <i class="ph ph-arrow-right" aria-hidden="true"></i></strong></span>
+                  <span><small>Written by</small><strong>{author.name} <i class="ph ph-user-circle" aria-hidden="true"></i></strong></span>
                 </a>
               ) : (
                 <div class="author-card">
@@ -231,7 +231,7 @@ const jsonLd = post
               <h2 id="article-quote-title">Get a fair quote for your car today.</h2>
               <p>Tell us about your vehicle and get a straightforward offer from Scrap My Car UAE.</p>
             </div>
-            <a href="/free-quote" data-analytics-quote-cta="blog_article">Get My Free Valuation <span aria-hidden="true">→</span></a>
+            <a href="/free-quote" data-analytics-quote-cta="blog_article">Get My Free Valuation <i class="ph ph-calculator" aria-hidden="true"></i></a>
           </section>
           <div class="article-share">
             <p>Share this article</p>
@@ -247,7 +247,7 @@ const jsonLd = post
               <div class="blog-sidebar-form__fallback">
                 <h2>Get your car price</h2>
                 <p>Start your free valuation in a few simple steps.</p>
-                <a href="/free-quote" data-analytics-quote-cta="blog_sidebar_fallback">Get My Free Valuation <span aria-hidden="true">→</span></a>
+                <a href="/free-quote" data-analytics-quote-cta="blog_sidebar_fallback">Get My Free Valuation <i class="ph ph-calculator" aria-hidden="true"></i></a>
               </div>
             )}
           </section>
@@ -484,6 +484,9 @@ const jsonLd = post
       }
 
       .article-quote-cta a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
         flex: 0 0 auto;
         padding: 12px 17px;
         border-radius: 10px;
@@ -672,7 +675,7 @@ const jsonLd = post
       .blog-sidebar-form__fallback { padding: 22px; border-radius: 20px; background: #184D2B; box-shadow: 0 10px 24px rgba(15, 52, 29, .18); }
       .blog-sidebar-form__fallback h2 { margin: 0 0 6px; color: #fff; font-size: 1.55rem; }
       .blog-sidebar-form__fallback p { margin: 0 0 18px; color: #d8eadb; line-height: 1.5; }
-      .blog-sidebar-form__fallback a { display: inline-flex; min-height: 48px; align-items: center; padding: 0 16px; border-radius: 12px; background: #d9efc9; color: #143b22; font-weight: 800; text-decoration: none; }
+      .blog-sidebar-form__fallback a { display: inline-flex; min-height: 48px; align-items: center; gap: 8px; padding: 0 16px; border-radius: 12px; background: #d9efc9; color: #143b22; font-weight: 800; text-decoration: none; }
 
       .article-quote-cta { max-width: 760px; margin: 56px 0; }
       .related-articles { max-width: 760px; margin: 52px 0 36px; padding-top: 34px; border-top: 1px solid #dce6dc; }
