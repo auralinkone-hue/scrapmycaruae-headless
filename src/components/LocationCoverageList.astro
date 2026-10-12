@@ -19,6 +19,10 @@ const locationIcon = (location: string) => {
 ---
 
 <div class="location-coverage">
+  <div class="location-coverage__actions" aria-label="Location coverage actions">
+    <SectionActionButton href="/contact-us" label="Talk to the team" intent="contact" />
+    <SectionActionButton href="/sell-my-car/#process-title" label="How selling works" intent="process" />
+  </div>
   <div class="location-coverage__groups">
     {uaeLocationGroups.map((group) => (
       <section class:list={['location-group', `location-group--${group.id}`]} aria-labelledby={`location-group-${group.id}`}>
@@ -39,10 +43,6 @@ const locationIcon = (location: string) => {
         </ul>
       </section>
     ))}
-  </div>
-  <div class="location-coverage__actions" aria-label="Location coverage actions">
-    <SectionActionButton href="/contact-us" label="Talk to the team" intent="contact" />
-    <SectionActionButton href="/sell-my-car/#process-title" label="How selling works" intent="process" />
   </div>
 </div>
 
@@ -143,7 +143,7 @@ const locationIcon = (location: string) => {
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
-    margin-top: 22px;
+    margin-bottom: 22px;
   }
 
   .location-item__icon {
