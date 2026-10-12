@@ -61,6 +61,19 @@ test('sell my car final page exposes the full visible FAQ schema and cautious of
   assert.match(page, /<ul class="factor-list">/);
 });
 
+test('sell my car visual polish keeps section hierarchy concise and centers the blog action', async () => {
+  const page = await readProjectFile('src/pages/sell-my-car.astro');
+
+  assert.match(page, /href="\/free-quote" data-analytics-quote-cta="sell_my_car_intro">Get My Free Valuation/);
+  assert.match(page, /class="section-heading section-heading--centered"/);
+  assert.match(page, /Helpful answers and practical guidance for selling, valuing and managing your vehicle in the UAE/);
+  assert.match(page, /\.guides__action \{ justify-content:center/);
+  assert.doesNotMatch(page, />Simple from the start</);
+  assert.doesNotMatch(page, />Understanding a valuation</);
+  assert.doesNotMatch(page, />From the blog</);
+  assert.doesNotMatch(page, />Questions answered</);
+});
+
 test('sell my car route is registered once for the production sitemap and header navigation', async () => {
   const header = await readProjectFile('src/components/SiteHeader.astro');
 
