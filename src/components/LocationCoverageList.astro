@@ -1,143 +1,165 @@
 ---
-import { priorityCoverageLocations, uaeLocationGroups } from '../lib/locations';
+import { uaeLocationGroups } from '../lib/locations';
 
-interface Props {
-  variant?: 'cards' | 'lines';
-  showAllLabel?: string;
-}
+const groupIcons: Record<string, string> = {
+  dubai: 'ph-buildings',
+  'abu-dhabi': 'ph-bank',
+  'other-emirates': 'ph-map-trifold'
+};
 
-const {
-  variant = 'cards',
-  showAllLabel = 'View all covered areas'
-} = Astro.props;
+const locationIcon = (location: string) => {
+  if (/Road|Street/.test(location)) return 'ph-road-horizon';
+  if (/Island|Beach|Waterfront|Al Bandar|Al Zeina|Al Ghadeer/.test(location)) return 'ph-waves';
+  if (/Gardens|Greens|Jumeirah Park|Arabian Ranches/.test(location)) return 'ph-tree-palm';
+  if (/Golf|Sports/.test(location)) return 'ph-trophy';
+  if (/City|Downtown|DIFC|Media|Internet|Business Bay|Investments Park|Silicon Oasis/.test(location)) return 'ph-buildings';
+  return 'ph-map-pin';
+};
 ---
 
-<div class:list={['location-coverage', `location-coverage--${variant}`]}>
-  <ul class="location-coverage__priority" aria-label="Priority UAE coverage locations">
-    {priorityCoverageLocations.map((location) => (
-      <li><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</li>
+<div class="location-coverage">
+  <div class="location-coverage__groups">
+    {uaeLocationGroups.map((group) => (
+      <section class:list={['location-group', `location-group--${group.id}`]} aria-labelledby={`location-group-${group.id}`}>
+        <header>
+          <span class="location-group__icon"><i class:list={['ph', groupIcons[group.id]]} aria-hidden="true"></i></span>
+          <div>
+            <h3 id={`location-group-${group.id}`}>{group.label}</h3>
+            <p>{group.locations.length} covered locations</p>
+          </div>
+        </header>
+        <ul>
+          {[...group.locations].sort((a, b) => a.localeCompare(b)).map((location) => (
+            <li>
+              <span class="location-item__icon"><i class:list={['ph', locationIcon(location)]} aria-hidden="true"></i></span>
+              <span>{location}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
     ))}
-  </ul>
-
-  <details class="location-coverage__all">
-    <summary>
-      <span>{showAllLabel}</span>
-      <i class="ph ph-caret-down" aria-hidden="true"></i>
-    </summary>
-    <div class="location-coverage__groups">
-      {uaeLocationGroups.map((group) => (
-        <section aria-labelledby={`location-group-${group.id}`}>
-          <h3 id={`location-group-${group.id}`}>{group.label}</h3>
-          <ul>
-            {group.locations.map((location) => <li>{location}</li>)}
-          </ul>
-        </section>
-      ))}
-    </div>
-  </details>
+  </div>
 </div>
 
 <style>
-  .location-coverage__priority {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  .location-coverage {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    width: 100%;
+    margin-top: clamp(30px, 4vw, 48px);
+    padding: clamp(18px, 2.5vw, 30px);
+    border: 1px solid rgba(92, 139, 82, .2);
+    border-radius: 26px;
+    background:
+      radial-gradient(circle at 8% 12%, rgba(151, 207, 127, .18), transparent 26%),
+      radial-gradient(circle at 92% 86%, rgba(72, 142, 75, .12), transparent 28%),
+      linear-gradient(145deg, rgba(249, 252, 247, .98), rgba(240, 247, 237, .94));
+    box-shadow: 0 22px 55px rgba(26, 70, 33, .07);
   }
 
-  .location-coverage__priority li {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    min-width: 0;
-    color: #29442e;
-    font-size: 14px;
-    font-weight: 650;
+  .location-coverage::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='640' viewBox='0 0 1200 640'%3E%3Cg fill='none' stroke='%235da05c' stroke-width='2'%3E%3Cpath opacity='.14' stroke-dasharray='7 13' d='M-40 470C160 285 296 560 492 344S818 160 1240 294'/%3E%3Cpath opacity='.1' d='M-20 178C204 64 348 264 552 176s350-4 668-148'/%3E%3Cpath opacity='.08' stroke-dasharray='3 12' d='M84 606C264 420 430 580 656 452s340-82 548-190'/%3E%3C/g%3E%3Cg fill='%235da05c' opacity='.13'%3E%3Ccircle cx='182' cy='390' r='7'/%3E%3Ccircle cx='492' cy='344' r='7'/%3E%3Ccircle cx='760' cy='238' r='7'/%3E%3Ccircle cx='1034' cy='274' r='7'/%3E%3C/g%3E%3C/svg%3E");
+    background-position: center;
+    background-size: cover;
+    content: '';
+    pointer-events: none;
   }
-
-  .location-coverage--cards .location-coverage__priority li {
-    min-height: 58px;
-    padding: 14px;
-    border: 1px solid #dce6d9;
-    border-radius: 14px;
-    background: #fff;
-    box-shadow: 0 7px 18px rgba(20, 53, 29, .045);
-  }
-
-  .location-coverage--lines .location-coverage__priority {
-    gap: 0 18px;
-  }
-
-  .location-coverage--lines .location-coverage__priority li {
-    min-height: 39px;
-    padding: 8px 0;
-    border-bottom: 1px solid #dce6d9;
-  }
-
-  .location-coverage--lines .location-coverage__priority li:nth-child(-n + 2) {
-    border-top: 1px solid #dce6d9;
-  }
-
-  .location-coverage__priority i {
-    flex: 0 0 auto;
-    color: #3c8e2f;
-    font-size: 18px;
-  }
-
-  .location-coverage__all {
-    margin-top: 14px;
-    border: 1px solid #d4e2d1;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, .82);
-  }
-
-  .location-coverage__all summary {
-    display: flex;
-    min-height: 48px;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 11px 15px;
-    list-style: none;
-    cursor: pointer;
-    color: #245c2d;
-    font-size: 13px;
-    font-weight: 800;
-  }
-
-  .location-coverage__all summary::-webkit-details-marker { display: none; }
-  .location-coverage__all summary i { transition: transform 160ms ease; }
-  .location-coverage__all[open] summary i { transform: rotate(180deg); }
 
   .location-coverage__groups {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
-    max-height: 360px;
-    overflow: auto;
-    padding: 6px 15px 17px;
-    border-top: 1px solid #e1ebe0;
+    gap: 16px;
   }
 
-  .location-coverage__groups section:first-child { grid-column: 1 / -1; }
-  .location-coverage__groups h3 { margin: 12px 0 8px; color: #17331d; font-size: 13px; }
-  .location-coverage__groups ul {
+  .location-group {
+    padding: clamp(20px, 2.4vw, 28px);
+    border: 1px solid rgba(178, 204, 172, .7);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, .82);
+    box-shadow: 0 9px 24px rgba(30, 71, 35, .045);
+    backdrop-filter: blur(8px);
+  }
+
+  .location-group--dubai { grid-column: 1 / -1; }
+
+  .location-group header {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #dce8d9;
+  }
+
+  .location-group__icon {
+    display: grid;
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #2d7836, #3f9343);
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(41, 112, 50, .2);
+    font-size: 22px;
+  }
+
+  .location-group h3 { margin: 0; color: #17331d; font-size: 18px; letter-spacing: -.025em; }
+  .location-group header p { margin: 3px 0 0; color: #748074; font-size: 12px; }
+
+  .location-group ul {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 7px 14px;
+    gap: 6px 18px;
     margin: 0;
     padding: 0;
     list-style: none;
   }
-  .location-coverage__groups li { color: #5c685d; font-size: 12px; line-height: 1.45; }
 
-  @media (max-width: 620px) {
-    .location-coverage__priority { gap: 8px; }
-    .location-coverage--cards .location-coverage__priority li { min-height: 50px; padding: 11px; font-size: 13px; }
-    .location-coverage__groups { grid-template-columns: 1fr; max-height: 420px; }
-    .location-coverage__groups section:first-child { grid-column: auto; }
-    .location-coverage__groups ul { grid-template-columns: 1fr; }
+  .location-group--dubai ul { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+  .location-group li {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 0;
+    color: #4e5d50;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .location-item__icon {
+    display: grid;
+    flex: 0 0 auto;
+    width: 27px;
+    height: 27px;
+    place-items: center;
+    border-radius: 9px;
+    background: #e7f2e3;
+    color: #347d3b;
+    font-size: 14px;
+  }
+
+  @media (max-width: 980px) {
+    .location-group--dubai ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 760px) {
+    .location-coverage__groups { grid-template-columns: 1fr; }
+    .location-group--dubai { grid-column: auto; }
+    .location-group--dubai ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 480px) {
+    .location-coverage { margin-top: 24px; padding: 12px; border-radius: 20px; }
+    .location-group { padding: 18px 15px; border-radius: 16px; }
+    .location-group ul,
+    .location-group--dubai ul { grid-template-columns: 1fr; }
+    .location-group li { padding: 6px 0; font-size: 12.5px; }
   }
 </style>

@@ -6,7 +6,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import QuoteForm from '../components/QuoteForm.astro';
 import LocationCoverageList from '../components/LocationCoverageList.astro';
 import SectionActionButton from '../components/SectionActionButton.astro';
-import UaeCollectionIllustration from '../components/UaeCollectionIllustration.astro';
 import { getHomepageContent } from '../lib/homepage-content';
 import { getVehicleData } from '../lib/vehicle-data';
 import { wixClient } from '../lib/wix';
@@ -363,10 +362,8 @@ const faqJsonLd = {
             {home.coverageDescription}
           </p>
 
-          <LocationCoverageList variant="cards" />
         </div>
-
-        <div class="coverage-art" data-reveal><UaeCollectionIllustration /></div>
+        <LocationCoverageList />
       </div>
     </section>}
 
@@ -771,6 +768,20 @@ const faqJsonLd = {
 
   @keyframes make-marquee {
     to { transform: translateX(calc(-1 * var(--marquee-step))); }
+  }
+
+  .coverage-grid {
+    display: block;
+  }
+
+  .coverage-copy {
+    max-width: 760px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .coverage-copy > p {
+    margin-inline: auto;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1248,13 +1259,6 @@ const faqJsonLd = {
     grid-template-columns: 1fr .9fr;
     gap: 90px;
     align-items: center;
-  }
-
-  .coverage-art {
-    width: 100%;
-    display: grid;
-    place-items: center;
-    overflow: visible;
   }
 
   .testimonial-section {

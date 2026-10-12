@@ -43,7 +43,7 @@ test('location source keeps normalized Dubai and UAE names in clear groups', () 
   assert.ok(!abuDhabiLocations.includes('Khalifa City B'));
 });
 
-test('all rendered coverage lists use the shared source and reusable disclosure', async () => {
+test('all rendered coverage sections use the shared icon-led grouped design', async () => {
   const [home, sellMyCar, damagedCar, footer, list] = await Promise.all([
     readProjectFile('src/pages/index.astro'),
     readProjectFile('src/pages/sell-my-car.astro'),
@@ -54,13 +54,16 @@ test('all rendered coverage lists use the shared source and reusable disclosure'
 
   for (const page of [home, sellMyCar, damagedCar]) {
     assert.match(page, /<LocationCoverageList/);
-    assert.match(page, /<UaeCollectionIllustration/);
+    assert.doesNotMatch(page, /UaeCollectionIllustration/);
   }
 
   assert.match(footer, /footerDubaiLocations/);
   assert.match(footer, /footerUaeLocations/);
-  assert.match(list, /priorityCoverageLocations/);
   assert.match(list, /uaeLocationGroups/);
-  assert.match(list, /<details class="location-coverage__all">/);
-  assert.match(list, /@media \(max-width: 620px\)/);
+  assert.match(list, /locationIcon/);
+  assert.match(list, /location-item__icon/);
+  assert.match(list, /location-group--dubai/);
+  assert.match(list, /background-image: url\("data:image\/svg\+xml/);
+  assert.doesNotMatch(list, /<details|max-height:\s*\d+px|overflow:\s*auto/);
+  assert.match(list, /@media \(max-width: 480px\)/);
 });

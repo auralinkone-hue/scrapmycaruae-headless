@@ -34,14 +34,14 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
       <div>
         <h2>Dubai</h2>
         <div class="location-list">
-          {footerDubaiLocations.map((location) => <span>{location}</span>)}
+          {footerDubaiLocations.map((location) => <span><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</span>)}
         </div>
       </div>
 
       <div>
         <h2>Across the UAE</h2>
         <div class="location-list">
-          {footerUaeLocations.map((location) => <span>{location}</span>)}
+          {footerUaeLocations.map((location) => <span><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</span>)}
         </div>
       </div>
     </div>
@@ -130,6 +130,9 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
     text-decoration: none;
     font-size: 14px;
   }
+
+  .location-list span { display: flex; align-items: center; gap: 7px; }
+  .location-list i { color: #8fc682; font-size: 14px; }
 
   .footer-links a:hover {
     color: #fff;
