@@ -17,5 +17,7 @@ test('sell-service heroes share typography and spacing rhythm', async () => {
     assert.match(page, new RegExp(desktopScale.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     assert.match(page, new RegExp(mobileScale.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     assert.match(page, /column-gap:clamp\(44px,6vw,84px\);row-gap:20px;margin-top:28px/);
+    assert.match(page, /@media\(min-width:981px\)\{\.[\w-]+__copy\{align-self:end\}\}/);
+    assert.match(page, /@media\(max-width:980px\)\{\.[\w-]+__copy\{align-self:auto\}\}/);
   }
 });
