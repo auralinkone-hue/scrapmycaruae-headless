@@ -19,7 +19,7 @@ test('accident-damaged car page has transactional SEO, form-first hero and schem
   assert.match(page, /Sell <span class="accident-word">accident-damaged<\/span> cars\./);
   assert.match(page, /class="valuation-message">Get a valuation\./);
   assert.match(page, /<MakeLogoRail makes=\{selectedMakes\}/);
-  assert.match(page, /\.accident-hero h1 \.accident-word\{color:#bd8420\}/);
+  assert.match(page, /\.accident-hero h1 \.accident-word\{display:inline;color:#bd8420\}/);
 });
 
 test('accident-damaged page is linked, indexable in production and uses shared UAE coverage', async () => {
