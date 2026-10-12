@@ -67,3 +67,13 @@ test('all rendered coverage sections use the shared icon-led grouped design', as
   assert.doesNotMatch(list, /<details|max-height:\s*\d+px|overflow:\s*auto/);
   assert.match(list, /@media \(max-width: 480px\)/);
 });
+
+test('homepage location coverage stays full width instead of the old split layout', async () => {
+  const homepage = await readProjectFile('src/pages/index.astro');
+
+  assert.match(homepage, /\.coverage-grid\s*\{\s*display:\s*block;/);
+  assert.doesNotMatch(
+    homepage,
+    /\.coverage-grid\s*\{[^}]*grid-template-columns:\s*1fr\s+\.9fr;/s
+  );
+});

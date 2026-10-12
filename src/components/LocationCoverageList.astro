@@ -120,7 +120,7 @@ const locationIcon = (location: string) => {
     list-style: none;
   }
 
-  .location-group--dubai ul { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .location-group--dubai ul { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 
   .location-group li {
     display: flex;
@@ -145,7 +145,11 @@ const locationIcon = (location: string) => {
     font-size: 14px;
   }
 
-  @media (max-width: 980px) {
+  @media (max-width: 1080px) {
+    .location-group--dubai ul { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 900px) {
     .location-group--dubai ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
 

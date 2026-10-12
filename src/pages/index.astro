@@ -770,20 +770,6 @@ const faqJsonLd = {
     to { transform: translateX(calc(-1 * var(--marquee-step))); }
   }
 
-  .coverage-grid {
-    display: block;
-  }
-
-  .coverage-copy {
-    max-width: 760px;
-    margin-inline: auto;
-    text-align: center;
-  }
-
-  .coverage-copy > p {
-    margin-inline: auto;
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .make-list { animation: none; }
   }
@@ -1255,10 +1241,17 @@ const faqJsonLd = {
   }
 
   .coverage-grid {
-    display: grid;
-    grid-template-columns: 1fr .9fr;
-    gap: 90px;
-    align-items: center;
+    display: block;
+  }
+
+  .coverage-copy {
+    max-width: 800px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .coverage-copy > p {
+    margin-inline: auto;
   }
 
   .testimonial-section {
@@ -1667,7 +1660,6 @@ const faqJsonLd = {
     .process-grid,
     .condition-grid,
     .value-content-grid,
-    .coverage-grid,
     .testimonial-section,
     .faq-section {
       grid-template-columns: 1fr;
