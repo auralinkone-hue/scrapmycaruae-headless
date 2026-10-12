@@ -1,24 +1,7 @@
 ---
 const year = new Date().getFullYear();
 const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
-
-const dubaiLocations = [
-  'Al Qusais',
-  'Mirdif',
-  'Dubai Marina',
-  'Business Bay',
-  'Downtown Dubai',
-  'Al Quoz'
-];
-
-const uaeLocations = [
-  'Abu Dhabi',
-  'Sharjah',
-  'Ajman',
-  'RAK',
-  'Fujairah',
-  'Al Ain'
-];
+import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
 ---
 
 <footer class="smc-footer">
@@ -51,14 +34,14 @@ const uaeLocations = [
       <div>
         <h2>Dubai</h2>
         <div class="location-list">
-          {dubaiLocations.map((location) => <span>{location}</span>)}
+          {footerDubaiLocations.map((location) => <span>{location}</span>)}
         </div>
       </div>
 
       <div>
         <h2>Across the UAE</h2>
         <div class="location-list">
-          {uaeLocations.map((location) => <span>{location}</span>)}
+          {footerUaeLocations.map((location) => <span>{location}</span>)}
         </div>
       </div>
     </div>

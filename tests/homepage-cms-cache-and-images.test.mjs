@@ -16,13 +16,13 @@ test('homepage CMS images are normalized before templates render them', async ()
   assert.match(loader, /coverageImage: normalizeCmsImage\(page\.coverageImage\)/);
   assert.match(page, /const conditionsResponsiveImage = wixResponsiveImage/);
   assert.match(page, /const valueResponsiveImage = wixResponsiveImage/);
-  assert.match(page, /const coverageResponsiveImage = wixResponsiveImage/);
+  assert.match(page, /import UaeCollectionIllustration/);
   assert.doesNotMatch(page, /src=\{home\.conditionsImage/);
   assert.doesNotMatch(page, /src=\{home\.valueImage/);
   assert.doesNotMatch(page, /src=\{home\.coverageImage/);
 });
 
-test('value section keeps its CMS image optional and responsive', async () => {
+test('value image stays responsive while coverage uses the shared illustration', async () => {
   const loader = await readSource('../src/lib/homepage-content.ts');
   const page = await readSource('../src/pages/index.astro');
 
@@ -32,9 +32,8 @@ test('value section keeps its CMS image optional and responsive', async () => {
   assert.match(page, /widths: \[480, 720, 960, 1200\]/);
   assert.match(page, /fit: 'fit'/);
   assert.match(page, /object-fit: contain/);
-  assert.match(page, /coverageResponsiveImage = wixResponsiveImage\([\s\S]*fit: 'fit'/);
+  assert.match(page, /<UaeCollectionIllustration \/>/);
   assert.match(page, /\.coverage-art \{[\s\S]*overflow: visible/);
-  assert.match(page, /\.coverage-art img \{[\s\S]*width: 100%;[\s\S]*max-width: 100%;/);
   assert.match(page, /\{valueResponsiveImage\.src && <div class="value-image"/);
   assert.match(page, /loading="lazy"/);
   assert.match(page, /decoding="async"/);

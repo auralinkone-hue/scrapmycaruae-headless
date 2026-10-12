@@ -3,6 +3,7 @@ export const prerender = false;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BlogArticleCard from '../components/BlogArticleCard.astro';
+import LocationCoverageList from '../components/LocationCoverageList.astro';
 import QuoteForm from '../components/QuoteForm.astro';
 import SectionActionButton from '../components/SectionActionButton.astro';
 import UaeCollectionIllustration from '../components/UaeCollectionIllustration.astro';
@@ -26,7 +27,6 @@ const valuationFactors = [
   ['ph-map-pin', 'Location & collection access', 'The vehicle location and practical collection access help plan the next step.']
 ];
 
-const locations = ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman', 'Ras Al Khaimah', 'Fujairah', 'Umm Al Quwain', 'Al Ain'];
 const faqs = [
   ['Can I sell a damaged car in the UAE?', 'Yes. Send the make, model, year and a clear description of the damage for a free valuation. The team can then discuss the practical next step with you.'],
   ['Do I need to repair my damaged car before selling?', 'Not necessarily. Repair costs, the vehicle’s condition and current demand all matter. Request a valuation based on the car as it is before deciding whether repairs make sense.'],
@@ -114,7 +114,7 @@ const faqJsonLd = {
 
     <section class="section section--dark process" aria-labelledby="process-title"><div class="smc-container"><div class="section-heading section-heading--centered section-heading--dark"><h2 id="process-title">A clear process for a damaged vehicle.</h2></div><ol class="process-grid"><li><span>01</span><h3>Send the vehicle details</h3><p>Choose the make, model and year, then add your contact details.</p></li><li><span>02</span><h3>Describe the damage</h3><p>Continue on WhatsApp with useful information about accident, body or mechanical damage.</p></li><li><span>03</span><h3>Discuss collection</h3><p>If you choose to proceed, the team can confirm the practical collection next step.</p></li></ol></div></section>
 
-    <section class="section collection" aria-labelledby="collection-title"><div class="smc-container collection__grid"><div class="collection__copy"><h2 id="collection-title">Damaged vehicle collection <span class="heading-accent">across the UAE.</span></h2><p>Tell us where the vehicle is and whether it can move. Collection availability depends on the location, condition and practical access, so the team confirms what is possible after the review.</p><div class="collection__actions"><SectionActionButton href="/contact-us" label="Talk to the team" /><SectionActionButton href="/sell-my-car/" label="How selling works" /></div></div><div class="collection__visual"><UaeCollectionIllustration /><ul>{locations.map((location) => <li><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</li>)}</ul></div></div></section>
+    <section class="section collection" aria-labelledby="collection-title"><div class="smc-container collection__grid"><div class="collection__copy"><h2 id="collection-title">Damaged vehicle collection <span class="heading-accent">across the UAE.</span></h2><p>Tell us where the vehicle is and whether it can move. Collection availability depends on the location, condition and practical access, so the team confirms what is possible after the review.</p><div class="collection__actions"><SectionActionButton href="/contact-us" label="Talk to the team" /><SectionActionButton href="/sell-my-car/" label="How selling works" /></div></div><div class="collection__visual"><UaeCollectionIllustration /><LocationCoverageList variant="lines" /></div></div></section>
 
     {helpfulPosts.length > 0 && <section class="section section--soft guides" aria-labelledby="guides-title"><div class="smc-container"><div class="section-heading section-heading--centered"><h2 id="guides-title">Helpful guides for <span class="heading-accent">damaged-car owners.</span></h2><p>Read relevant existing guides from the Scrap My Car UAE blog before deciding your next step.</p></div><div class="guide-grid">{helpfulPosts.slice(0, 3).map((post) => <BlogArticleCard post={post} />)}</div><div class="guides__action"><SectionActionButton href="/blogs" label="View all blogs" /></div></div></section>}
 

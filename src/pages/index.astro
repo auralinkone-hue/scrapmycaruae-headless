@@ -4,7 +4,9 @@ export const prerender = false;
 import { media } from '@wix/sdk';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import QuoteForm from '../components/QuoteForm.astro';
+import LocationCoverageList from '../components/LocationCoverageList.astro';
 import SectionActionButton from '../components/SectionActionButton.astro';
+import UaeCollectionIllustration from '../components/UaeCollectionIllustration.astro';
 import { getHomepageContent } from '../lib/homepage-content';
 import { getVehicleData } from '../lib/vehicle-data';
 import { wixClient } from '../lib/wix';
@@ -44,11 +46,6 @@ const valueResponsiveImage = wixResponsiveImage(
   home.valueImage,
   { widths: [480, 720, 960, 1200], aspectRatio: 4 / 3, fit: 'fit' }
 );
-const coverageResponsiveImage = wixResponsiveImage(
-  home.coverageImage || '/sections/uae-collection-coverage.webp',
-  { widths: [480, 720, 960, 1280], aspectRatio: 1456 / 1092, fit: 'fit' }
-);
-
 let latestPosts: any[] = [];
 
 try {
@@ -87,7 +84,6 @@ const formatDate = (value: string | Date | undefined) => {
 
 const benefits = homepage.badges.filter((item) => item.group === 'benefits');
 const conditions = homepage.badges.filter((item) => item.group === 'conditions');
-const locations = homepage.badges.filter((item) => item.group === 'locations');
 const heroProof = homepage.badges.filter((item) => item.group === 'heroProof');
 const testimonialProof = homepage.badges.filter((item) => item.group === 'testimonialProof');
 const reviews = homepage.reviews;
@@ -367,38 +363,10 @@ const faqJsonLd = {
             {home.coverageDescription}
           </p>
 
-          <div class="location-grid">
-            {locations.map((location) => (
-              <span>
-                <i class:list={['ph', location.icon]} aria-hidden="true"></i>
-                {location.title}
-              </span>
-            ))}
-          </div>
+          <LocationCoverageList variant="cards" />
         </div>
 
-        <div class="coverage-art" data-reveal>
-          <picture>
-            {coverageResponsiveImage.avifSrcset && (
-              <source
-                type="image/avif"
-                srcset={coverageResponsiveImage.avifSrcset}
-                sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
-              />
-            )}
-            <img
-              src={coverageResponsiveImage.src}
-              srcset={coverageResponsiveImage.srcset || undefined}
-              sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
-              alt={home.coverageImageDecorative ? '' : home.coverageImageAlt}
-              aria-hidden={home.coverageImageDecorative ? 'true' : undefined}
-              width={coverageResponsiveImage.width || 1456}
-              height={coverageResponsiveImage.height || 1092}
-              loading="lazy"
-              decoding="async"
-            />
-          </picture>
-        </div>
+        <div class="coverage-art" data-reveal><UaeCollectionIllustration /></div>
       </div>
     </section>}
 
@@ -1282,46 +1250,11 @@ const faqJsonLd = {
     align-items: center;
   }
 
-  .location-grid {
-    margin-top: 30px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px 24px;
-  }
-
-  .location-grid span {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    color: #424941;
-    font-size: 14px;
-    font-weight: 760;
-  }
-
-  .location-grid i {
-    color: var(--smc-green);
-    font-size: 17px;
-  }
-
   .coverage-art {
     width: 100%;
     display: grid;
     place-items: center;
     overflow: visible;
-  }
-
-  .coverage-art picture {
-    width: 100%;
-    display: block;
-  }
-
-  .coverage-art img {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    object-fit: contain;
-    transform: none;
-    filter: drop-shadow(0 25px 40px rgba(33,60,28,.12));
   }
 
   .testimonial-section {
@@ -2029,15 +1962,6 @@ const faqJsonLd = {
     }
 
     .value-list article:hover {
-      transform: none;
-    }
-
-    .location-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .coverage-art img {
-      width: 100%;
       transform: none;
     }
 
