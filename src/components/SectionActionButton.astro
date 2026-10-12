@@ -4,6 +4,7 @@ const { href, label } = Astro.props;
 ---
 <a class="section-action" href={href}>{label} <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
 <style>
-  .section-action { display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0 17px; border:1px solid #b8caf7; border-radius:11px; background:#eef4ff; color:#2f64e5; font-size:14px; font-weight:750; text-decoration:none; transition:border-color 160ms ease,color 160ms ease; }
-  .section-action:hover { color:#204eb8; border-color:#91acef; }.section-action:focus-visible { outline:3px solid #2f64e5; outline-offset:3px; }
+  .section-action { display:inline-flex; align-items:center; gap:10px; min-height:46px; padding:0 6px 0 17px; border:1px solid #b7cfb5; border-radius:999px; background:#fff; color:#245c2d; font-size:14px; font-weight:800; letter-spacing:-.01em; text-decoration:none; box-shadow:0 5px 14px rgba(24,67,31,.06); transition:background-color 160ms ease,border-color 160ms ease,color 160ms ease,box-shadow 160ms ease,transform 160ms ease; }
+  .section-action i { display:grid; width:32px; height:32px; place-items:center; border-radius:50%; background:#e8f3e5; color:#2f7d32; font-size:16px; transition:background-color 160ms ease,color 160ms ease,transform 160ms ease; }
+  .section-action:hover { border-color:#2f7d32; background:#245c2d; color:#fff; box-shadow:0 10px 22px rgba(24,67,31,.16); transform:translateY(-1px); }.section-action:hover i { background:#a9df96; color:#174020; transform:translateX(2px); }.section-action:focus-visible { outline:3px solid #2f7d32; outline-offset:3px; }
 </style>
