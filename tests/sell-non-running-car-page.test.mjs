@@ -39,6 +39,10 @@ test('non-running car page is linked, indexable and uses shared collection cover
   assert.match(page, /<LocationCoverageList \/>/);
   assert.match(page, /Non-running-car FAQs/);
   assert.match(page, /class="stat-grid"/);
+  assert.match(page, /grid-auto-columns:minmax\(258px,78vw\)/);
+  assert.match(page, /scroll-snap-type:x mandatory/);
+  assert.match(page, /vehicle-grid\{grid-template-columns:minmax\(0,1fr\)!important\}/);
+  assert.match(page, /guide-grid\{display:grid;grid-auto-columns:minmax\(272px,82vw\)/);
   assert.match(coverage, /location-coverage::before/);
   assert.match(sellMyCar, /'Non-running cars'[\s\S]*?'\/sell-non-running-car\//);
   assert.match(sellMyCar, /condition-card-link__details/);
