@@ -19,14 +19,15 @@ test('sell my car hub has transactional SEO, schemas, and the reusable valuation
   assert.doesNotMatch(page, /No obligation\. Your details are saved securely before we open WhatsApp\./);
 });
 
-test('sell my car hub avoids future-route links while using existing data sources', async () => {
+test('sell my car hub links only the available damaged-car service while using existing data sources', async () => {
   const page = await readProjectFile('src/pages/sell-my-car.astro');
 
   assert.match(page, /getVehicleData/);
   assert.match(page, /getLatestPosts/);
   assert.match(page, /BlogArticleCard/);
   assert.match(page, /wixResponsiveImage/);
-  assert.doesNotMatch(page, /href="\/sell-damaged-car\//);
+  assert.match(page, /'Damaged cars'[\s\S]*?'\/sell-damaged-car\//);
+  assert.match(page, /condition-card-link__arrow/);
   assert.doesNotMatch(page, /href="\/sell-non-running-car\//);
   assert.doesNotMatch(page, /href="\/cars\//);
 });
@@ -83,4 +84,8 @@ test('sell my car route is registered once for the production sitemap and header
   assert.match(header, /href: '\/sell-my-car\/', label: 'Sell My Car'/);
   assert.match(header, /href="\/sell-my-car\/"/);
   assert.match(header, /Value My Car/);
+  assert.match(header, /const sellMyCarServices/);
+  assert.match(header, /label: 'Sell Damaged Car'/);
+  assert.match(header, /label: 'Sell Accident-Damaged Car'/);
+  assert.match(header, /children: sellMyCarServices/);
 });

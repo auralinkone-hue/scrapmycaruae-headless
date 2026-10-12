@@ -1,9 +1,21 @@
 ---
 const pathname = Astro.url.pathname;
 const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
+// Prepared for the future Sell My Car menu. The header deliberately remains a flat navigation for now.
+const sellMyCarServices = [
+  { href: '/sell-my-car/', label: 'Sell My Car' },
+  { href: '/sell-damaged-car/', label: 'Sell Damaged Car' },
+  { href: null, label: 'Sell Accident-Damaged Car' },
+  { href: null, label: 'Sell Non-Running Car' },
+  { href: null, label: 'Engine Problems' },
+  { href: null, label: 'Gearbox Problems' },
+  { href: null, label: 'Old / Unwanted Cars' },
+  { href: null, label: 'Car Removal' },
+  { href: null, label: 'Fleet Disposal' }
+] as const;
 const links = [
   { href: '/', label: 'Home', icon: 'ph-house' },
-  { href: '/sell-my-car/', label: 'Sell My Car', icon: 'ph-car-profile' },
+  { href: '/sell-my-car/', label: 'Sell My Car', icon: 'ph-car-profile', children: sellMyCarServices },
   { href: '/contact-us', label: 'Contact Us', icon: 'ph-chat-circle-text' },
   { href: '/faqs', label: 'FAQs', icon: 'ph-question' },
   { href: '/blogs', label: 'Blogs', icon: 'ph-newspaper-clipping' }
