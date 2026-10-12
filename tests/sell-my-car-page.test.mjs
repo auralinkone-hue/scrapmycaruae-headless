@@ -27,7 +27,8 @@ test('sell my car hub links only the available damaged-car service while using e
   assert.match(page, /BlogArticleCard/);
   assert.match(page, /wixResponsiveImage/);
   assert.match(page, /'Damaged cars'[\s\S]*?'\/sell-damaged-car\//);
-  assert.match(page, /condition-card-link__arrow/);
+  assert.match(page, /View details/);
+  assert.match(page, /condition-card-link__details/);
   assert.doesNotMatch(page, /href="\/sell-non-running-car\//);
   assert.doesNotMatch(page, /href="\/cars\//);
 });
@@ -75,6 +76,16 @@ test('sell my car visual polish keeps section hierarchy concise and centers the 
   assert.doesNotMatch(page, />Understanding a valuation</);
   assert.doesNotMatch(page, />From the blog</);
   assert.doesNotMatch(page, />Questions answered</);
+});
+
+test('sell my car condition cards use an equal responsive grid and reserve details treatment for the live route', async () => {
+  const page = await readProjectFile('src/pages/sell-my-car.astro');
+
+  assert.match(page, /\.condition-grid \{ grid-template-columns:repeat\(3,minmax\(0,1fr\)\); grid-auto-rows:1fr;/);
+  assert.match(page, /@media \(max-width:980px\) \{ \.condition-grid \{ grid-template-columns:repeat\(2,minmax\(0,1fr\)\);/);
+  assert.match(page, /@media \(max-width:700px\) \{ \.condition-grid \{ grid-template-columns:1fr;/);
+  assert.match(page, /min-height:228px; padding:24px/);
+  assert.equal((page.match(/View details/g) ?? []).length, 1);
 });
 
 test('sell my car route is registered once for the production sitemap and header navigation', async () => {
