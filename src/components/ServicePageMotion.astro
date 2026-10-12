@@ -1,0 +1,125 @@
+---
+// Shared, deliberately restrained motion for transactional service pages.
+---
+
+<script>
+  const initialiseServiceMotion = () => {
+    document.querySelectorAll<HTMLElement>('[data-service-motion]').forEach((page) => {
+      if (page.dataset.serviceMotionReady === 'true') return;
+      page.dataset.serviceMotionReady = 'true';
+
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const revealTargets = page.querySelectorAll<HTMLElement>(
+        '.section-heading, .damage-types__layout, .damage-grid, .repair-decision__panel, .repair-panel, .repair-decision__steps, .check-list, .valuation-list, .factor-list, .process-grid, .collection__grid, .collection > .smc-container > .location-coverage, .guide-grid, .faq-stack, .final-valuation__inner'
+      );
+
+      revealTargets.forEach((target) => target.dataset.serviceReveal = '');
+
+      if (reducedMotion || !('IntersectionObserver' in window)) {
+        revealTargets.forEach((target) => target.classList.add('is-service-visible'));
+        return;
+      }
+
+      const revealObserver = new IntersectionObserver(
+        (entries, observer) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-service-visible');
+            observer.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.09, rootMargin: '0px 0px -34px 0px' }
+      );
+
+      revealTargets.forEach((target) => revealObserver.observe(target));
+
+      const canParallax = window.matchMedia('(min-width: 981px)').matches;
+      if (!canParallax) return;
+
+      const sections = Array.from(page.querySelectorAll<HTMLElement>(':scope > .section'))
+        .filter((_, index) => index === 1 || index === 4 || index === 6);
+
+      sections.forEach((section) => {
+        section.dataset.serviceParallax = '';
+        const glow = document.createElement('span');
+        glow.className = 'service-motion-glow';
+        glow.setAttribute('aria-hidden', 'true');
+        section.prepend(glow);
+      });
+
+      let frame = 0;
+      const updateParallax = () => {
+        frame = 0;
+        const viewportCentre = window.innerHeight / 2;
+        sections.forEach((section) => {
+          const rect = section.getBoundingClientRect();
+          const shift = Math.max(-24, Math.min(24, (rect.top + rect.height / 2 - viewportCentre) * -0.055));
+          section.style.setProperty('--service-parallax-shift', `${shift.toFixed(1)}px`);
+        });
+      };
+      const requestUpdate = () => {
+        if (frame) return;
+        frame = window.requestAnimationFrame(updateParallax);
+      };
+
+      updateParallax();
+      window.addEventListener('scroll', requestUpdate, { passive: true });
+      window.addEventListener('resize', requestUpdate, { passive: true });
+    });
+  };
+
+  initialiseServiceMotion();
+  document.addEventListener('astro:page-load', initialiseServiceMotion);
+</script>
+
+<style is:global>
+  [data-service-motion] [data-service-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 560ms cubic-bezier(.2,.7,.2,1), transform 560ms cubic-bezier(.2,.7,.2,1);
+  }
+
+  [data-service-motion] [data-service-reveal].is-service-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  [data-service-motion] [data-service-parallax] {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+  }
+
+  [data-service-motion] [data-service-parallax] > .smc-container {
+    position: relative;
+    z-index: 1;
+  }
+
+  [data-service-motion] .service-motion-glow {
+    position: absolute;
+    z-index: -1;
+    width: clamp(230px,26vw,410px);
+    aspect-ratio: 1;
+    right: clamp(-150px,-7vw,-60px);
+    top: 28%;
+    border-radius: 50%;
+    background: radial-gradient(circle,rgba(91,170,83,.13),rgba(91,170,83,0) 68%);
+    transform: translate3d(0,var(--service-parallax-shift,0px),0);
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  [data-service-motion] .section--dark .service-motion-glow {
+    background: radial-gradient(circle,rgba(175,224,150,.13),rgba(175,224,150,0) 68%);
+  }
+
+  @media (max-width:980px), (prefers-reduced-motion:reduce) {
+    [data-service-motion] [data-service-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    [data-service-motion] .service-motion-glow { display:none; }
+  }
+</style>

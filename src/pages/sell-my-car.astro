@@ -6,6 +6,7 @@ import BlogArticleCard from '../components/BlogArticleCard.astro';
 import MakeLogoRail from '../components/MakeLogoRail.astro';
 import LocationCoverageList from '../components/LocationCoverageList.astro';
 import SectionActionButton from '../components/SectionActionButton.astro';
+import ServicePageMotion from '../components/ServicePageMotion.astro';
 import QuoteForm from '../components/QuoteForm.astro';
 import { getHomepageContent } from '../lib/homepage-content';
 import { getLatestPosts } from '../lib/related-posts';
@@ -111,7 +112,7 @@ const faqJsonLd = {
     <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')} />
   </Fragment>
 
-  <main class="sell-page">
+  <main class="sell-page" data-service-motion>
     <section class="sell-hero" aria-labelledby="sell-my-car-title">
       <div class="smc-container">
         <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">›</span><span aria-current="page">Sell My Car</span></nav>
@@ -176,6 +177,7 @@ const faqJsonLd = {
 
     <section class="final-valuation"><div class="smc-container final-valuation__inner"><div><p class="sell-kicker">Ready when you are</p><h2>Tell us about the car you want to sell.</h2><p>Start with the make, model and year. The form saves your details before opening WhatsApp.</p></div><a class="smc-button" href="/free-quote" data-analytics-quote-cta="sell_my_car_final">Send my vehicle details <i class="ph ph-calculator" aria-hidden="true"></i></a></div></section>
   </main>
+  <ServicePageMotion />
 </BaseLayout>
 
 <style>

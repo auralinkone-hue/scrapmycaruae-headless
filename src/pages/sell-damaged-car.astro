@@ -6,6 +6,7 @@ import BlogArticleCard from '../components/BlogArticleCard.astro';
 import LocationCoverageList from '../components/LocationCoverageList.astro';
 import QuoteForm from '../components/QuoteForm.astro';
 import SectionActionButton from '../components/SectionActionButton.astro';
+import ServicePageMotion from '../components/ServicePageMotion.astro';
 import { getLatestPosts } from '../lib/related-posts';
 import { getVehicleData } from '../lib/vehicle-data';
 
@@ -77,7 +78,7 @@ const faqJsonLd = {
     <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')} />
   </Fragment>
 
-  <main class="damaged-page">
+  <main class="damaged-page" data-service-motion>
     <section class="damaged-hero" aria-labelledby="damaged-car-title">
       <div class="smc-container">
         <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">›</span><span aria-current="page">Sell Damaged Car</span></nav>
@@ -121,6 +122,7 @@ const faqJsonLd = {
 
     <section class="final-valuation"><div class="smc-container final-valuation__inner"><div><p class="section-label">Free valuation</p><h2>Tell us about the damaged car.</h2><p>Start with the make, model and year. You can explain the damage when the conversation continues on WhatsApp.</p></div><a class="smc-button" href="/free-quote" data-analytics-quote-cta="sell_damaged_car_final">Send my vehicle details <i class="ph ph-calculator" aria-hidden="true"></i></a></div></section>
   </main>
+  <ServicePageMotion />
 </BaseLayout>
 
 <style>

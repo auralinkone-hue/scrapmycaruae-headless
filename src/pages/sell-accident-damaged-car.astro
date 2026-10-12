@@ -7,6 +7,7 @@ import LocationCoverageList from '../components/LocationCoverageList.astro';
 import MakeLogoRail from '../components/MakeLogoRail.astro';
 import QuoteForm from '../components/QuoteForm.astro';
 import SectionActionButton from '../components/SectionActionButton.astro';
+import ServicePageMotion from '../components/ServicePageMotion.astro';
 import { getLatestPosts } from '../lib/related-posts';
 import { getVehicleData } from '../lib/vehicle-data';
 
@@ -55,7 +56,7 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
 
 <BaseLayout title={title} description={description} canonical="/sell-accident-damaged-car/">
   <Fragment slot="head"><script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c')} /><script type="application/ld+json" set:html={JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')} /></Fragment>
-  <main class="accident-page">
+  <main class="accident-page" data-service-motion>
     <section class="accident-hero" aria-labelledby="accident-title"><div class="smc-container"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">›</span><a href="/sell-my-car/">Sell My Car</a><span aria-hidden="true">›</span><span aria-current="page">Accident-damaged car</span></nav><div class="accident-hero__grid"><div class="accident-hero__copy"><h1 id="accident-title"><span class="accident-line">Sell your <span class="accident-word">accident-damaged</span> car.</span><span class="valuation-message">Get a valuation.</span></h1><p>Share the car's make, model and year, then explain the damage before spending more on repairs.</p></div><div class="accident-hero__form"><QuoteForm makes={vehicleData.makes} models={vehicleData.models} years={vehicleData.years} dataError={vehicleDataError} variant="free-quote" /></div><ul class="trust-points" aria-label="Accident-damaged valuation benefits"><li><i class="ph ph-check" aria-hidden="true"></i>Free valuation</li><li><i class="ph ph-check" aria-hidden="true"></i>Accident damage considered as-is</li><li><i class="ph ph-check" aria-hidden="true"></i>UAE collection discussion</li></ul></div></div></section>
 
     <section class="section damage-section" aria-labelledby="damage-title"><div class="smc-container"><div class="section-heading"><h2 id="damage-title">Accident damage <span class="heading-accent">we consider.</span></h2><p>Accurate details are more useful than a repaired-looking story. Tell the team what is visible and what changed after the accident.</p></div><div class="damage-grid">{damageExamples.map(([icon, heading, copy]) => <article><i class:list={['ph', icon]} aria-hidden="true"></i><h3>{heading}</h3><p>{copy}</p></article>)}</div><div class="section-cta"><SectionActionButton href="/free-quote" label="Request a damaged car valuation" intent="valuation" /></div></div></section>
@@ -75,6 +76,7 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
     <section class="section accident-faq" aria-labelledby="faq-title"><div class="smc-container"><div class="section-heading"><h2 id="faq-title">Accident-damaged car FAQs</h2><p>Quick answers about selling an accident-damaged vehicle in the UAE.</p></div><div class="faq-stack">{faqs.map(([question, answer], index) => <details open={index === 0}><summary><span>{question}</span><i class="ph ph-plus" aria-hidden="true"></i></summary><p>{answer}</p></details>)}</div><div class="section-cta"><SectionActionButton href="/faqs" label="Browse all FAQs" intent="faqs" /></div></div></section>
     <section class="final-valuation"><div class="smc-container final-valuation__inner"><div><h2>Get clarity before paying for another repair.</h2><p>Start with the vehicle details, then tell the team what happened to the car.</p></div><a class="smc-button" href="/free-quote" data-analytics-quote-cta="sell_accident_damaged_car_final">Get my free valuation <i class="ph ph-calculator" aria-hidden="true"></i></a></div></section>
   </main>
+  <ServicePageMotion />
 </BaseLayout>
 
 <style>
