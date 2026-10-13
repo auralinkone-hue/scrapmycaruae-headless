@@ -124,19 +124,88 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
             Blogs
             <i class="ph ph-caret-right mobile-link-arrow" aria-hidden="true"></i>
           </a>
-          <a class="smc-button smc-button-primary mobile-quote" href="/free-quote" data-analytics-quote-cta="header_mobile">
-            <i class="ph ph-calculator" aria-hidden="true"></i>
-            Value My Car
-          </a>
-          <a class="mobile-whatsapp" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-            <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
-            Chat on WhatsApp
-          </a>
+          <div class="mobile-menu-actions">
+            <a class="smc-button smc-button-primary mobile-quote" href="/free-quote" data-analytics-quote-cta="header_mobile">
+              <i class="ph ph-calculator" aria-hidden="true"></i>
+              Value My Car
+            </a>
+            <a class="mobile-whatsapp" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+              <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
+              Chat on WhatsApp
+            </a>
+          </div>
         </div>
       </details>
     </div>
   </div>
 </header>
+
+<script>
+  const mobileMenu = document.querySelector<HTMLDetailsElement>('.mobile-menu');
+  const mobileQuery = window.matchMedia('(max-width: 640px)');
+
+  if (mobileMenu) {
+    let savedScrollY = 0;
+    let locked = false;
+    let savedBodyStyles = {
+      position: '',
+      top: '',
+      width: '',
+      overflow: ''
+    };
+
+    const lockPage = () => {
+      if (locked || !mobileQuery.matches) return;
+
+      savedScrollY = window.scrollY;
+      savedBodyStyles = {
+        position: document.body.style.position,
+        top: document.body.style.top,
+        width: document.body.style.width,
+        overflow: document.body.style.overflow
+      };
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${savedScrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+      locked = true;
+    };
+
+    const unlockPage = () => {
+      if (!locked) return;
+
+      document.body.style.position = savedBodyStyles.position;
+      document.body.style.top = savedBodyStyles.top;
+      document.body.style.width = savedBodyStyles.width;
+      document.body.style.overflow = savedBodyStyles.overflow;
+      window.scrollTo(0, savedScrollY);
+      locked = false;
+    };
+
+    mobileMenu.addEventListener('toggle', () => {
+      if (mobileMenu.open) lockPage();
+      else unlockPage();
+    });
+
+    mobileMenu.querySelectorAll<HTMLAnchorElement>('.mobile-panel a').forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileMenu.open = false;
+      });
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && mobileMenu.open) {
+        mobileMenu.open = false;
+        mobileMenu.querySelector<HTMLElement>('summary')?.focus();
+      }
+    });
+
+    mobileQuery.addEventListener('change', () => {
+      if (!mobileQuery.matches && mobileMenu.open) mobileMenu.open = false;
+      if (!mobileQuery.matches) unlockPage();
+    });
+  }
+</script>
 
 <style>
   .smc-header {
@@ -542,6 +611,10 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     margin-top: 8px;
   }
 
+  .mobile-menu-actions {
+    display: grid;
+  }
+
   .mobile-whatsapp {
     padding: 11px;
     color: var(--smc-green-dark);
@@ -686,20 +759,35 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     }
 
     .mobile-quote {
-      min-height: 54px;
-      margin-top: 22px;
+      margin-top: 0;
+    }
+
+    .mobile-menu-actions {
+      gap: 13px;
+      margin-top: 26px;
+      width: 100%;
+    }
+
+    .mobile-menu-actions .mobile-quote,
+    .mobile-menu-actions .mobile-whatsapp {
+      width: 100%;
+      min-height: 52px;
+      box-sizing: border-box;
       justify-content: center;
+      border-radius: 12px;
+    }
+
+    .mobile-menu-actions .mobile-quote {
       background: #fff;
       color: #17491b;
       border: 1px solid #fff;
     }
 
-    .mobile-whatsapp {
-      min-height: 48px;
+    .mobile-menu-actions .mobile-whatsapp {
       color: #fff;
       font-size: 15px;
       border: 1px solid rgba(255,255,255,.22);
-      border-radius: 12px;
+      background: transparent;
     }
 
     .mobile-whatsapp .wa-icon {
@@ -710,11 +798,11 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     .mobile-menu[open] > summary {
       position: relative;
       z-index: 41;
-      border-color: rgba(255,255,255,.24);
-      background: rgba(255,255,255,.1);
+      border-color: #c8ddc5;
+      background: #edf6ea;
     }
 
-    .mobile-menu[open] > summary .ph { color: #fff; }
+    .mobile-menu[open] > summary .ph { color: #17491b; }
     .mobile-menu[open] .menu-open-icon { display: none; }
     .mobile-menu[open] .menu-close-icon { display: block; }
 
