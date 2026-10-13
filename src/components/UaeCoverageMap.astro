@@ -1,0 +1,38 @@
+---
+import { priorityCoverageLocations } from '../lib/locations';
+
+const points = [
+  { name: 'Abu Dhabi', x: 34, y: 69 },
+  { name: 'Al Ain', x: 46, y: 79 },
+  { name: 'Dubai', x: 57, y: 53 },
+  { name: 'Sharjah', x: 62, y: 48 },
+  { name: 'Ajman', x: 67, y: 43 },
+  { name: 'Umm Al Quwain', x: 72, y: 37 },
+  { name: 'Ras Al Khaimah', x: 78, y: 27 },
+  { name: 'Fujairah', x: 84, y: 61 }
+].filter((point) => priorityCoverageLocations.includes(point.name as typeof priorityCoverageLocations[number]));
+---
+
+<div class="coverage-map" aria-label="UAE collection coverage across Dubai, Abu Dhabi, Sharjah, Ajman, Ras Al Khaimah, Fujairah, Umm Al Quwain and Al Ain">
+  <svg class="coverage-map__art" viewBox="0 0 520 360" role="img" aria-labelledby="coverage-map-title coverage-map-desc">
+    <title id="coverage-map-title">UAE vehicle collection coverage</title>
+    <desc id="coverage-map-desc">A stylised UAE network with collection nodes in major locations.</desc>
+    <defs>
+      <linearGradient id="land" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#f5fbf2"/><stop offset="1" stop-color="#dcefd8"/></linearGradient>
+      <linearGradient id="route" x1="0" x2="1"><stop stop-color="#2d8338"/><stop offset="1" stop-color="#277ab0"/></linearGradient>
+      <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#185022" flood-opacity=".16"/></filter>
+    </defs>
+    <path class="coverage-map__water" d="M0 0h520v360H0z" aria-hidden="true"/>
+    <path class="coverage-map__land" d="M64 116l37-44 45 8 34-32 61 13 34 37 52-3 35 38 47 27-9 35 42 29-31 39-52 9-30 37-66-21-35 17-52-20-45 14-52-39-55-16 9-35-28-32z" aria-hidden="true"/>
+    <g class="coverage-map__grid" aria-hidden="true"><path d="M36 84h448M25 155h466M25 226h466M25 297h466M104 28v302M204 28v302M304 28v302M404 28v302"/></g>
+    <g class="coverage-map__routes" aria-hidden="true"><path d="M177 248L239 284 296 191 322 174 348 155 374 133 405 97 436 220"/><path d="M296 191L348 155"/></g>
+    {points.map((point) => <g class="coverage-map__point" transform={`translate(${point.x * 5.2} ${point.y * 3.6})`}><circle r="10"/><circle class="coverage-map__core" r="4"/><text x="14" y="4">{point.name}</text></g>)}
+    <g class="coverage-map__legend" aria-hidden="true"><circle cx="60" cy="326" r="5"/><text x="72" y="330">Collection discussion</text></g>
+  </svg>
+  <p><i class="ph ph-navigation-arrow" aria-hidden="true"></i>Collection location and access are reviewed with your request.</p>
+</div>
+
+<style>
+  .coverage-map{position:relative;overflow:hidden;border:1px solid #cfe3cb;border-radius:26px;background:linear-gradient(145deg,#fafff8,#edf7eb);box-shadow:0 22px 50px rgba(25,71,33,.08)}
+  .coverage-map__art{display:block;width:100%;height:auto;min-height:300px}.coverage-map__water{fill:#f5fbfd}.coverage-map__land{fill:url(#land);stroke:#b3d3b0;stroke-width:2}.coverage-map__grid{fill:none;stroke:#6fa5be;stroke-width:1;opacity:.14}.coverage-map__routes{fill:none;stroke:url(#route);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:5 8;opacity:.9}.coverage-map__point circle{fill:#fff;stroke:#277c38;stroke-width:3;filter:url(#shadow)}.coverage-map__point .coverage-map__core{fill:#2f8539;stroke:none}.coverage-map__point text{fill:#24442b;font-family:inherit;font-size:12px;font-weight:750}.coverage-map__legend circle{fill:#2f8539}.coverage-map__legend text{fill:#4f6553;font-family:inherit;font-size:11px;font-weight:700}.coverage-map>p{display:flex;align-items:center;gap:8px;margin:0;padding:14px 20px;border-top:1px solid #dcebd8;background:rgba(255,255,255,.72);color:#426246;font-size:13px;font-weight:650}.coverage-map>p i{color:#2376ad;font-size:18px}@media(max-width:620px){.coverage-map{border-radius:20px}.coverage-map__art{min-height:260px}.coverage-map__point text{font-size:10px}.coverage-map__legend{display:none}}
+</style>
