@@ -3,10 +3,10 @@ const pathname = Astro.url.pathname;
 const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
 // Future service routes remain prepared here, but only live routes are exposed in the menu.
 const sellMyCarServices = [
-  { href: '/sell-my-car/', label: 'Sell My Car' },
-  { href: '/sell-damaged-car/', label: 'Sell Damaged Car' },
-  { href: '/sell-accident-damaged-car/', label: 'Sell Accident-Damaged Car' },
-  { href: '/sell-non-running-car/', label: 'Sell Non-Running Car' },
+  { href: '/sell-my-car/', label: 'Sell My Car', icon: 'ph-car-profile' },
+  { href: '/sell-damaged-car/', label: 'Sell Damaged Car', icon: 'ph-car' },
+  { href: '/sell-accident-damaged-car/', label: 'Sell Accident-Damaged Car', icon: 'ph-warning-octagon' },
+  { href: '/sell-non-running-car/', label: 'Sell Non-Running Car', icon: 'ph-engine' },
   { href: null, label: 'Engine Problems' },
   { href: null, label: 'Gearbox Problems' },
   { href: null, label: 'Old / Unwanted Cars' },
@@ -26,7 +26,7 @@ const isActive = (href: string) =>
     ? pathname === '/'
     : pathname === href || pathname.startsWith(href + '/');
 const visibleSellMyCarServices = sellMyCarServices.filter(
-  (service): service is { href: string; label: string } => Boolean(service.href)
+  (service): service is { href: string; label: string; icon: string } => Boolean(service.href)
 );
 const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isActive(service.href));
 ---
@@ -52,7 +52,11 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
             </summary>
             <div class="nav-dropdown__panel">
               {visibleSellMyCarServices.map((service) => (
-                <a href={service.href} class:list={{ active: isActive(service.href) }}>{service.label}</a>
+                <a href={service.href} class:list={{ active: isActive(service.href) }}>
+                  <span class="service-link-icon"><i class:list={['ph', service.icon]} aria-hidden="true"></i></span>
+                  <span>{service.label}</span>
+                  <i class="ph ph-arrow-up-right service-link-arrow" aria-hidden="true"></i>
+                </a>
               ))}
             </div>
           </details>
@@ -97,7 +101,11 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
             </summary>
             <div class="mobile-services__links">
               {visibleSellMyCarServices.map((service) => (
-                <a href={service.href} class:list={{ active: isActive(service.href) }}>{service.label}</a>
+                <a href={service.href} class:list={{ active: isActive(service.href) }}>
+                  <span class="service-link-icon"><i class:list={['ph', service.icon]} aria-hidden="true"></i></span>
+                  <span>{service.label}</span>
+                  <i class="ph ph-arrow-up-right service-link-arrow" aria-hidden="true"></i>
+                </a>
               ))}
             </div>
           </details>
@@ -232,40 +240,74 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
 
   .nav-dropdown__panel {
     position: absolute;
-    top: calc(100% + 18px);
+    top: calc(100% + 17px);
     left: 50%;
     z-index: 5;
-    width: 244px;
-    padding: 8px;
-    border: 1px solid #dbe6d8;
-    border-radius: 14px;
-    background: #fff;
-    box-shadow: 0 16px 32px rgba(20, 53, 29, .12);
+    width: 272px;
+    padding: 9px;
+    border: 1px solid rgba(202, 220, 199, .9);
+    border-radius: 20px;
+    background: linear-gradient(145deg, rgba(255,255,255,.98), rgba(246,250,245,.98));
+    box-shadow: 0 22px 44px rgba(13, 52, 23, .14), 0 2px 6px rgba(13, 52, 23, .05);
+    backdrop-filter: blur(14px);
     transform: translateX(-50%);
     transform-origin: top center;
-    animation: service-menu-in 170ms ease-out both;
+    animation: service-menu-in 190ms cubic-bezier(.2,.8,.2,1) both;
   }
 
   .nav-dropdown__panel a {
-    display: block;
-    padding: 10px 12px;
-    border-radius: 9px;
-    color: #334236;
-    font-size: 13px;
-    font-weight: 650;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 13px;
+    color: #273b2b;
+    font-size: 13.5px;
+    font-weight: 700;
     line-height: 1.35;
     text-decoration: none;
+    transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+  }
+
+  .service-link-icon {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: #e9f3e6;
+    color: var(--smc-green-dark);
+    font-size: 16px;
     transition: color 160ms ease, background-color 160ms ease;
+  }
+
+  .service-link-arrow {
+    margin-left: auto;
+    color: #66926b;
+    font-size: 14px;
+    opacity: 0;
+    transform: translate(-3px, 3px);
+    transition: opacity 160ms ease, transform 160ms ease, color 160ms ease;
   }
 
   .nav-dropdown__panel a:hover,
   .nav-dropdown__panel a.active {
+    border-color: #dbead8;
     background: #edf6ea;
     color: var(--smc-green-dark);
   }
 
+  .nav-dropdown__panel a:hover { transform: translateX(2px); }
+  .nav-dropdown__panel a:hover .service-link-icon,
+  .nav-dropdown__panel a.active .service-link-icon { background: var(--smc-green); color: #fff; }
+  .nav-dropdown__panel a:hover .service-link-arrow,
+  .nav-dropdown__panel a.active .service-link-arrow { opacity: 1; transform: translate(0, 0); color: var(--smc-green-dark); }
+
   @keyframes service-menu-in {
-    from { opacity: 0; transform: translate(-50%, -5px); }
+    from { opacity: 0; transform: translate(-50%, -7px) scale(.97); }
     to { opacity: 1; transform: translate(-50%, 0); }
   }
 
@@ -389,11 +431,11 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     right: 0;
     top: 54px;
     width: min(310px, calc(100vw - 30px));
-    padding: 12px;
+    padding: 13px;
     border: 1px solid var(--smc-line);
-    border-radius: 16px;
-    background: #fff;
-    box-shadow: var(--smc-shadow);
+    border-radius: 20px;
+    background: linear-gradient(145deg, #fff, #f6faf5);
+    box-shadow: 0 22px 48px rgba(13,52,23,.14);
     display: grid;
     gap: 4px;
   }
@@ -418,10 +460,12 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
 
   .mobile-services__links {
     display: grid;
-    gap: 2px;
-    margin: 4px 0 8px 31px;
-    padding-left: 14px;
-    border-left: 1px solid #d8e5d6;
+    gap: 4px;
+    margin: 6px 0 9px 17px;
+    padding: 7px;
+    border: 1px solid #dce9d9;
+    border-radius: 14px;
+    background: rgba(237,246,234,.55);
     transform-origin: top;
   }
 
@@ -430,12 +474,29 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
   }
 
   .mobile-services__links a {
-    padding: 9px 10px;
-    border-radius: 8px;
+    min-height: 42px;
+    padding: 7px 9px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    border-radius: 10px;
     color: #4f5b51;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 650;
     text-decoration: none;
+  }
+
+  .mobile-services__links .service-link-icon {
+    width: 27px;
+    height: 27px;
+    flex-basis: 27px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  .mobile-services__links .service-link-arrow {
+    opacity: .7;
+    transform: none;
   }
 
   .mobile-services__links a:hover,
@@ -532,18 +593,21 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
 
     .mobile-panel {
       position: fixed;
-      inset: 0;
+      inset: 10px;
       z-index: 50;
       width: auto;
-      min-height: 100dvh;
-      padding: 104px 24px max(28px, env(safe-area-inset-bottom));
-      border: 0;
-      border-radius: 0;
-      background: #123816;
-      box-shadow: none;
+      min-height: calc(100dvh - 20px);
+      padding: 82px 16px max(18px, env(safe-area-inset-bottom));
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 88% 2%, rgba(133,202,116,.2), transparent 32%),
+        linear-gradient(145deg, #0e3415, #19521f);
+      box-shadow: 0 26px 68px rgba(7,25,10,.34);
       align-content: start;
       gap: 7px;
       overflow-y: auto;
+      animation: mobile-menu-in 220ms cubic-bezier(.2,.8,.2,1) both;
     }
 
     .mobile-menu-kicker {
@@ -556,10 +620,11 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     }
 
     .mobile-link {
-      min-height: 58px;
-      padding: 14px 4px;
-      border-bottom: 1px solid rgba(255,255,255,.14);
-      border-radius: 0;
+      min-height: 54px;
+      padding: 12px 13px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px;
+      background: rgba(255,255,255,.055);
       color: #fff;
       font-size: 18px;
       font-weight: 650;
@@ -571,25 +636,39 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     .mobile-link:hover,
     .mobile-link.active {
       color: #fff;
-      background: transparent;
+      border-color: rgba(180,225,171,.28);
+      background: rgba(255,255,255,.11);
     }
 
     .mobile-services__links {
-      margin: 5px 0 9px 28px;
-      padding-left: 15px;
-      border-left-color: rgba(255,255,255,.2);
+      margin: 7px 0 10px 14px;
+      padding: 7px;
+      border-color: rgba(255,255,255,.14);
+      background: rgba(0,0,0,.12);
     }
 
     .mobile-services__links a {
-      padding: 10px 8px;
+      min-height: 40px;
+      padding: 7px 8px;
       color: #d5e7d3;
-      font-size: 15px;
+      font-size: 13.5px;
     }
 
     .mobile-services__links a:hover,
     .mobile-services__links a.active {
-      background: rgba(255,255,255,.08);
+      background: rgba(255,255,255,.11);
       color: #fff;
+    }
+
+    .mobile-services__links .service-link-icon {
+      background: rgba(155,211,148,.14);
+      color: #a9df9f;
+    }
+
+    .mobile-services__links a.active .service-link-icon,
+    .mobile-services__links a:hover .service-link-icon {
+      background: #9bd394;
+      color: #17491b;
     }
 
     .mobile-quote {
@@ -616,8 +695,8 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
 
     .mobile-menu[open] summary {
       position: fixed;
-      top: max(11px, env(safe-area-inset-top));
-      right: 16px;
+      top: max(21px, env(safe-area-inset-top));
+      right: 26px;
       z-index: 51;
       border-color: rgba(255,255,255,.24);
       background: rgba(255,255,255,.1);
@@ -626,6 +705,11 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     .mobile-menu[open] summary .ph { color: #fff; }
     .mobile-menu[open] .menu-open-icon { display: none; }
     .mobile-menu[open] .menu-close-icon { display: block; }
+
+    @keyframes mobile-menu-in {
+      from { opacity: 0; transform: translateY(-10px) scale(.975); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
   }
 
   @media (max-width: 360px) {
