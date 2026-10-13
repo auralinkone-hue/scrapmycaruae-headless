@@ -50,6 +50,10 @@ test('non-running car page is linked, indexable and uses shared collection cover
   assert.match(page, /class="repair-decision__related"/);
   assert.doesNotMatch(page, /label="Compare before repairing"/);
   assert.match(page, /\.guide-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}\}/);
+  assert.match(page, /initialiseNonRunningProcessRail/);
+  assert.match(page, /index = \(index \+ 1\) % cards\.length/);
+  assert.match(page, /prefers-reduced-motion: reduce/);
+  assert.match(page, /\.repair-decision__action \.section-action\{width:fit-content/);
   assert.match(coverage, /location-coverage::before/);
   assert.match(sellMyCar, /'Non-running cars'[\s\S]*?'\/sell-non-running-car\//);
   assert.match(sellMyCar, /condition-card-link__details/);
