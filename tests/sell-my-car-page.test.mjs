@@ -19,7 +19,7 @@ test('sell my car hub has transactional SEO, schemas, and the reusable valuation
   assert.doesNotMatch(page, /No obligation\. Your details are saved securely before we open WhatsApp\./);
 });
 
-test('sell my car hub links only the available damaged-car service while using existing data sources', async () => {
+test('sell my car hub links the live service pages while using existing data sources', async () => {
   const page = await readProjectFile('src/pages/sell-my-car.astro');
 
   assert.match(page, /getVehicleData/);
@@ -29,6 +29,7 @@ test('sell my car hub links only the available damaged-car service while using e
   assert.match(page, /'Damaged cars'[\s\S]*?'\/sell-damaged-car\//);
   assert.match(page, /View details/);
   assert.match(page, /condition-card-link__details/);
+  assert.match(page, /'Engine problems'[\s\S]*?'\/sell-car-with-engine-problems\//);
   assert.doesNotMatch(page, /href="\/sell-non-running-car\//);
   assert.doesNotMatch(page, /href="\/cars\//);
 });
@@ -102,7 +103,8 @@ test('sell my car route is registered once for the production sitemap and header
   assert.match(header, /children: sellMyCarServices/);
   assert.match(header, /class:list=\{\['nav-dropdown'/);
   assert.match(header, /class:list=\{\['mobile-services'/);
-  for (const href of ['/sell-my-car/', '/sell-damaged-car/', '/sell-accident-damaged-car/', '/sell-non-running-car/']) {
+  assert.match(header, /label: 'Engine Problems'/);
+  for (const href of ['/sell-my-car/', '/sell-damaged-car/', '/sell-accident-damaged-car/', '/sell-non-running-car/', '/sell-car-with-engine-problems/']) {
     assert.match(header, new RegExp(`href: '${href.replaceAll('/', '\\/')}'`));
   }
   assert.match(header, /nav-dropdown__panel/);
