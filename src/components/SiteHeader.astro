@@ -1,12 +1,12 @@
 ---
 const pathname = Astro.url.pathname;
 const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
-// Prepared for the future Sell My Car menu. The header deliberately remains a flat navigation for now.
+// Future service routes remain prepared here, but only live routes are exposed in the menu.
 const sellMyCarServices = [
   { href: '/sell-my-car/', label: 'Sell My Car' },
   { href: '/sell-damaged-car/', label: 'Sell Damaged Car' },
-  { href: null, label: 'Sell Accident-Damaged Car' },
-  { href: null, label: 'Sell Non-Running Car' },
+  { href: '/sell-accident-damaged-car/', label: 'Sell Accident-Damaged Car' },
+  { href: '/sell-non-running-car/', label: 'Sell Non-Running Car' },
   { href: null, label: 'Engine Problems' },
   { href: null, label: 'Gearbox Problems' },
   { href: null, label: 'Old / Unwanted Cars' },
@@ -25,6 +25,10 @@ const isActive = (href: string) =>
   href === '/'
     ? pathname === '/'
     : pathname === href || pathname.startsWith(href + '/');
+const visibleSellMyCarServices = sellMyCarServices.filter(
+  (service): service is { href: string; label: string } => Boolean(service.href)
+);
+const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isActive(service.href));
 ---
 
 <header class="smc-header">
@@ -40,13 +44,20 @@ const isActive = (href: string) =>
       </a>
 
       <nav class="desktop-nav" aria-label="Primary navigation">
-        {links.map((link) => (
-          <a
-            href={link.href}
-            class:list={['nav-link', { active: isActive(link.href) }]}
-          >
-            {link.label}
-          </a>
+        {links.map((link) => link.children ? (
+          <details class:list={['nav-dropdown', { active: isSellMyCarServiceActive }]}>
+            <summary class="nav-link nav-dropdown__trigger">
+              {link.label}
+              <i class="ph ph-caret-down" aria-hidden="true"></i>
+            </summary>
+            <div class="nav-dropdown__panel">
+              {visibleSellMyCarServices.map((service) => (
+                <a href={service.href} class:list={{ active: isActive(service.href) }}>{service.label}</a>
+              ))}
+            </div>
+          </details>
+        ) : (
+          <a href={link.href} class:list={['nav-link', { active: isActive(link.href) }]}>{link.label}</a>
         ))}
       </nav>
 
@@ -78,11 +89,18 @@ const isActive = (href: string) =>
             Home
             <i class="ph ph-caret-right mobile-link-arrow" aria-hidden="true"></i>
           </a>
-          <a href="/sell-my-car/" class:list={['mobile-link', { active: isActive('/sell-my-car/') }]}>
-            <i class="ph ph-car-profile" aria-hidden="true"></i>
-            Sell My Car
-            <i class="ph ph-caret-right mobile-link-arrow" aria-hidden="true"></i>
-          </a>
+          <details class:list={['mobile-services', { active: isSellMyCarServiceActive }]} open={isSellMyCarServiceActive}>
+            <summary class="mobile-link">
+              <i class="ph ph-car-profile" aria-hidden="true"></i>
+              Sell My Car
+              <i class="ph ph-caret-down mobile-link-arrow" aria-hidden="true"></i>
+            </summary>
+            <div class="mobile-services__links">
+              {visibleSellMyCarServices.map((service) => (
+                <a href={service.href} class:list={{ active: isActive(service.href) }}>{service.label}</a>
+              ))}
+            </div>
+          </details>
           <a href="/contact-us" class:list={['mobile-link', { active: isActive('/contact-us') }]}>
             <i class="ph ph-chat-circle-text" aria-hidden="true"></i>
             Contact Us
@@ -184,6 +202,71 @@ const isActive = (href: string) =>
   .nav-link:hover::after,
   .nav-link.active::after {
     transform: translateX(-50%) scaleX(1);
+  }
+
+  .nav-dropdown {
+    position: relative;
+  }
+
+  .nav-dropdown__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .nav-dropdown__trigger::-webkit-details-marker,
+  .mobile-services summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .nav-dropdown__trigger .ph {
+    font-size: 13px;
+    transition: transform 160ms ease;
+  }
+
+  .nav-dropdown[open] .nav-dropdown__trigger .ph {
+    transform: rotate(180deg);
+  }
+
+  .nav-dropdown__panel {
+    position: absolute;
+    top: calc(100% + 18px);
+    left: 50%;
+    z-index: 5;
+    width: 244px;
+    padding: 8px;
+    border: 1px solid #dbe6d8;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 16px 32px rgba(20, 53, 29, .12);
+    transform: translateX(-50%);
+    transform-origin: top center;
+    animation: service-menu-in 170ms ease-out both;
+  }
+
+  .nav-dropdown__panel a {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 9px;
+    color: #334236;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.35;
+    text-decoration: none;
+    transition: color 160ms ease, background-color 160ms ease;
+  }
+
+  .nav-dropdown__panel a:hover,
+  .nav-dropdown__panel a.active {
+    background: #edf6ea;
+    color: var(--smc-green-dark);
+  }
+
+  @keyframes service-menu-in {
+    from { opacity: 0; transform: translate(-50%, -5px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
   }
 
   .nav-link:focus-visible,
@@ -324,6 +407,52 @@ const isActive = (href: string) =>
     font-weight: 650;
   }
 
+  .mobile-services {
+    margin: 0;
+  }
+
+  .mobile-services summary {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .mobile-services__links {
+    display: grid;
+    gap: 2px;
+    margin: 4px 0 8px 31px;
+    padding-left: 14px;
+    border-left: 1px solid #d8e5d6;
+    transform-origin: top;
+  }
+
+  .mobile-services[open] .mobile-services__links {
+    animation: mobile-service-links-in 180ms ease-out both;
+  }
+
+  .mobile-services__links a {
+    padding: 9px 10px;
+    border-radius: 8px;
+    color: #4f5b51;
+    font-size: 14px;
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .mobile-services__links a:hover,
+  .mobile-services__links a.active {
+    background: var(--smc-green-soft);
+    color: var(--smc-green-dark);
+  }
+
+  .mobile-services[open] .mobile-link-arrow {
+    transform: rotate(180deg);
+  }
+
+  @keyframes mobile-service-links-in {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   .mobile-link > .ph:first-child {
     font-size: 20px;
   }
@@ -372,6 +501,8 @@ const isActive = (href: string) =>
       align-items: center;
       gap: 11px;
     }
+
+    .nav-dropdown { display: none; }
   }
 
   @media (max-width: 640px) {
@@ -441,6 +572,24 @@ const isActive = (href: string) =>
     .mobile-link.active {
       color: #fff;
       background: transparent;
+    }
+
+    .mobile-services__links {
+      margin: 5px 0 9px 28px;
+      padding-left: 15px;
+      border-left-color: rgba(255,255,255,.2);
+    }
+
+    .mobile-services__links a {
+      padding: 10px 8px;
+      color: #d5e7d3;
+      font-size: 15px;
+    }
+
+    .mobile-services__links a:hover,
+    .mobile-services__links a.active {
+      background: rgba(255,255,255,.08);
+      color: #fff;
     }
 
     .mobile-quote {

@@ -94,10 +94,17 @@ test('sell my car route is registered once for the production sitemap and header
 
   assert.equal(indexableStaticRoutes.filter((route) => route === '/sell-my-car/').length, 1);
   assert.match(header, /href: '\/sell-my-car\/', label: 'Sell My Car'/);
-  assert.match(header, /href="\/sell-my-car\/"/);
+  assert.match(header, /href: '\/sell-my-car\/', label: 'Sell My Car'/);
   assert.match(header, /Value My Car/);
   assert.match(header, /const sellMyCarServices/);
   assert.match(header, /label: 'Sell Damaged Car'/);
   assert.match(header, /label: 'Sell Accident-Damaged Car'/);
   assert.match(header, /children: sellMyCarServices/);
+  assert.match(header, /class:list=\{\['nav-dropdown'/);
+  assert.match(header, /class:list=\{\['mobile-services'/);
+  for (const href of ['/sell-my-car/', '/sell-damaged-car/', '/sell-accident-damaged-car/', '/sell-non-running-car/']) {
+    assert.match(header, new RegExp(`href: '${href.replaceAll('/', '\\/')}'`));
+  }
+  assert.match(header, /nav-dropdown__panel/);
+  assert.match(header, /mobile-services__links/);
 });
