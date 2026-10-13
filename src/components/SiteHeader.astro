@@ -313,7 +313,7 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
 
   .nav-link:focus-visible,
   .mobile-link:focus-visible,
-  .mobile-menu summary:focus-visible {
+  .mobile-menu > summary:focus-visible {
     outline: 3px solid rgba(47, 111, 45, .16);
     outline-offset: 3px;
     border-radius: 10px;
@@ -401,7 +401,7 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     font-size: 18px;
   }
 
-  .mobile-menu summary {
+  .mobile-menu > summary {
     width: 44px;
     height: 44px;
     border: 1px solid var(--smc-line);
@@ -413,11 +413,11 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     list-style: none;
   }
 
-  .mobile-menu summary::-webkit-details-marker {
+  .mobile-menu > summary::-webkit-details-marker {
     display: none;
   }
 
-  .mobile-menu summary .ph {
+  .mobile-menu > summary .ph {
     color: #202420;
     font-size: 22px;
   }
@@ -451,11 +451,19 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
 
   .mobile-services {
     margin: 0;
+    width: 100%;
   }
 
-  .mobile-services summary {
+  .mobile-services > summary.mobile-link {
+    width: 100%;
+    height: auto;
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
     list-style: none;
     cursor: pointer;
+    white-space: nowrap;
   }
 
   .mobile-services__links {
@@ -581,7 +589,7 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
       display: inline-flex;
     }
 
-    .mobile-menu summary {
+    .mobile-menu > summary {
       width: 44px;
       height: 44px;
     }
@@ -699,14 +707,14 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
       height: 19px;
     }
 
-    .mobile-menu[open] summary {
+    .mobile-menu[open] > summary {
       position: relative;
       z-index: 41;
       border-color: rgba(255,255,255,.24);
       background: rgba(255,255,255,.1);
     }
 
-    .mobile-menu[open] summary .ph { color: #fff; }
+    .mobile-menu[open] > summary .ph { color: #fff; }
     .mobile-menu[open] .menu-open-icon { display: none; }
     .mobile-menu[open] .menu-close-icon { display: block; }
 
@@ -722,6 +730,6 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     .mobile-call { width: 44px; padding: 0; justify-content: center; }
     .mobile-call span { display: none; }
     .mobile-menu { width: 44px; flex: 0 0 44px; }
-    .mobile-menu summary { width: 44px; box-sizing: border-box; }
+    .mobile-menu > summary { width: 44px; box-sizing: border-box; }
   }
 </style>
