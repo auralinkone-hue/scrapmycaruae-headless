@@ -93,7 +93,7 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
             Home
             <i class="ph ph-caret-right mobile-link-arrow" aria-hidden="true"></i>
           </a>
-          <details class:list={['mobile-services', { active: isSellMyCarServiceActive }]} open={isSellMyCarServiceActive}>
+          <details class:list={['mobile-services', { active: isSellMyCarServiceActive }]}>
             <summary class="mobile-link">
               <i class="ph ph-car-profile" aria-hidden="true"></i>
               Sell My Car
@@ -593,25 +593,29 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
 
     .mobile-panel {
       position: fixed;
-      inset: 10px;
-      z-index: 50;
+      top: 66px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 39;
       width: auto;
-      min-height: calc(100dvh - 20px);
-      padding: 82px 16px max(18px, env(safe-area-inset-bottom));
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 28px;
+      min-height: calc(100dvh - 66px);
+      padding: 24px 24px max(24px, env(safe-area-inset-bottom));
+      border: 0;
+      border-top: 1px solid rgba(255,255,255,.12);
+      border-radius: 0;
       background:
-        radial-gradient(circle at 88% 2%, rgba(133,202,116,.2), transparent 32%),
-        linear-gradient(145deg, #0e3415, #19521f);
-      box-shadow: 0 26px 68px rgba(7,25,10,.34);
+        radial-gradient(circle at 92% 4%, rgba(133,202,116,.14), transparent 28%),
+        #123816;
+      box-shadow: none;
       align-content: start;
-      gap: 7px;
+      gap: 0;
       overflow-y: auto;
-      animation: mobile-menu-in 220ms cubic-bezier(.2,.8,.2,1) both;
+      animation: mobile-menu-in 200ms cubic-bezier(.2,.8,.2,1) both;
     }
 
     .mobile-menu-kicker {
-      margin: 0 0 12px;
+      margin: 0 0 14px;
       color: #a9caa7;
       font-size: 11px;
       font-weight: 850;
@@ -620,11 +624,12 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     }
 
     .mobile-link {
-      min-height: 54px;
-      padding: 12px 13px;
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 14px;
-      background: rgba(255,255,255,.055);
+      min-height: 58px;
+      padding: 14px 2px;
+      border: 0;
+      border-bottom: 1px solid rgba(255,255,255,.14);
+      border-radius: 0;
+      background: transparent;
       color: #fff;
       font-size: 18px;
       font-weight: 650;
@@ -636,44 +641,45 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     .mobile-link:hover,
     .mobile-link.active {
       color: #fff;
-      border-color: rgba(180,225,171,.28);
-      background: rgba(255,255,255,.11);
+      background: transparent;
     }
 
     .mobile-services__links {
-      margin: 7px 0 10px 14px;
-      padding: 7px;
-      border-color: rgba(255,255,255,.14);
-      background: rgba(0,0,0,.12);
+      margin: 0;
+      padding: 8px 0 10px 32px;
+      border: 0;
+      border-bottom: 1px solid rgba(255,255,255,.14);
+      border-radius: 0;
+      background: transparent;
     }
 
     .mobile-services__links a {
-      min-height: 40px;
-      padding: 7px 8px;
+      min-height: 44px;
+      padding: 8px 0;
       color: #d5e7d3;
-      font-size: 13.5px;
+      font-size: 15px;
     }
 
     .mobile-services__links a:hover,
     .mobile-services__links a.active {
-      background: rgba(255,255,255,.11);
+      background: transparent;
       color: #fff;
     }
 
     .mobile-services__links .service-link-icon {
-      background: rgba(155,211,148,.14);
+      background: rgba(155,211,148,.12);
       color: #a9df9f;
     }
 
     .mobile-services__links a.active .service-link-icon,
     .mobile-services__links a:hover .service-link-icon {
-      background: #9bd394;
-      color: #17491b;
+      background: rgba(155,211,148,.22);
+      color: #b9efb2;
     }
 
     .mobile-quote {
       min-height: 54px;
-      margin-top: 24px;
+      margin-top: 22px;
       justify-content: center;
       background: #fff;
       color: #17491b;
@@ -694,10 +700,8 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     }
 
     .mobile-menu[open] summary {
-      position: fixed;
-      top: max(21px, env(safe-area-inset-top));
-      right: 26px;
-      z-index: 51;
+      position: relative;
+      z-index: 41;
       border-color: rgba(255,255,255,.24);
       background: rgba(255,255,255,.1);
     }
