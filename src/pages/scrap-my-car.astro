@@ -101,7 +101,7 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
 
     <section class="section collection-section" style="--section-index:'08'" aria-labelledby="collection-title"><div class="smc-container"><div class="section-heading"><p class="section-label">Where the vehicle is matters</p><h2 id="collection-title">UAE collection, clearly <span>mapped.</span></h2><p>Share the exact location, access and whether the car starts or moves. This allows collection feasibility to be discussed with the vehicle's actual condition in mind.</p></div><div class="collection-section__grid"><figure class="collection-map-artwork">
           <span class="collection-map-artwork__glow" aria-hidden="true"></span>
-          <img src="/sections/uae-collection-coverage-map.jpg" alt="Map of UAE collection coverage showing Dubai, Abu Dhabi, Sharjah, Ajman, Ras Al Khaimah, Fujairah, Umm Al Quwain and Al Ain" width="720" height="540" loading="lazy" decoding="async" />
+          <img src="/sections/uae-collection-travel-map.webp" alt="UAE collection coverage map showing Dubai, Abu Dhabi, Sharjah, Ajman, Ras Al Khaimah, Fujairah, Umm Al Quwain and Al Ain" width="800" height="533" loading="lazy" decoding="async" />
           <figcaption><i class="ph ph-map-pin" aria-hidden="true"></i> Collection coverage across the UAE</figcaption>
         </figure><div class="collection-section__side"><h3>Collection starts with the details.</h3><p>Tell us where the car is parked, whether keys and documents are available, and whether recovery access is straightforward.</p><ul><li><i class="ph ph-check" aria-hidden="true"></i>Dubai and Abu Dhabi coverage</li><li><i class="ph ph-check" aria-hidden="true"></i>Other emirates reviewed with the request</li><li><i class="ph ph-check" aria-hidden="true"></i>Non-running vehicle access can be discussed</li></ul><SectionActionButton href="/free-quote" label="Request a collection discussion" intent="valuation" /></div></div><LocationCoverageList /></div></section>
 
@@ -202,4 +202,22 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .collection-map-artwork figcaption i{color:#2f7d37;font-size:15px}
   @media (hover:hover) and (min-width:981px){.collection-map-artwork:hover img{transform:scale(1.018);box-shadow:0 18px 34px rgba(29,81,39,.15)}}
   @media(max-width:700px){.collection-map-artwork{padding:8px;border-radius:21px}.collection-map-artwork::before{inset:8px;border-radius:15px}.collection-map-artwork img{border-radius:14px}.collection-map-artwork figcaption{max-width:calc(100% - 16px);margin:-11px 0 0 8px;padding:7px 10px;font-size:10.5px}.collection-map-artwork__glow{right:-24%;bottom:-35%;width:64%}}
+
+  /* UAE coverage: supplied map artwork with a restrained, centred layout. */
+  .collection-section{padding:clamp(58px,6.2vw,88px) 0}
+  .collection-section .section-heading{max-width:720px;margin:0 auto 28px;text-align:center}
+  .collection-section .section-heading .section-label{justify-content:center}
+  .collection-section .section-heading h2{max-width:15ch;margin-inline:auto}
+  .collection-section__grid{max-width:1260px;margin:0 auto;gap:clamp(20px,2.6vw,34px);align-items:stretch}
+  .collection-map-artwork{display:flex;flex-direction:column;justify-content:center;min-height:0;padding:clamp(12px,1.8vw,20px);border-radius:28px;background:radial-gradient(circle at 78% 18%,rgba(120,202,112,.24),transparent 25%),linear-gradient(145deg,#eff9ee,#f8fcf8 60%,#e9f5ec)}
+  .collection-map-artwork img{width:100%;height:auto;min-height:0;border:0;border-radius:0;background:transparent;box-shadow:none;object-fit:contain}
+  .collection-map-artwork figcaption{align-self:flex-start;margin:-4px 0 0 4px}
+  .collection-section__side{justify-content:center;padding:clamp(28px,3.4vw,42px)}
+  .collection-section__side h3{max-width:13ch;line-height:1.12}
+  .collection-section__side>p{margin:15px 0 21px;line-height:1.6}
+  .collection-section__side ul{gap:12px;margin:0 0 27px}
+  .collection-section__side li{gap:10px;line-height:1.45}
+  .collection-section__side .section-action{align-self:flex-start;justify-content:flex-start;width:auto;margin-top:0;white-space:nowrap}
+  @media(max-width:980px){.collection-section__grid{max-width:760px}.collection-section__side{min-height:0}.collection-map-artwork{max-width:760px}}
+  @media(max-width:700px){.collection-section{padding:54px 0}.collection-section .section-heading{margin-bottom:24px}.collection-section .section-heading h2{max-width:13ch}.collection-section__grid{gap:18px}.collection-map-artwork{padding:10px;border-radius:21px}.collection-map-artwork img{border-radius:0}.collection-map-artwork figcaption{margin:0 0 0 2px}.collection-section__side{padding:27px 22px;border-radius:21px}.collection-section__side h3{max-width:none;font-size:clamp(1.55rem,7vw,2rem)}.collection-section__side>p{margin:13px 0 20px;font-size:14px}.collection-section__side ul{margin-bottom:24px}.collection-section__side .section-action{align-self:stretch;width:100%;justify-content:center;white-space:normal}}
 </style>
