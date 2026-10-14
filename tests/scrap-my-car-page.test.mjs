@@ -16,6 +16,8 @@ test('scrap hub includes the interactive, accessible experience and real quote f
   assert.match(page, /data-route-tab/);
   assert.match(page, /data-condition=/);
   assert.match(page, /aria-pressed/);
+  assert.match(page, /scrap-car-pickup-dubai\.webp/);
+  assert.match(page, /Ready to move on from a/);
   assert.match(page, /Vehicle details[\s\S]*?Valuation[\s\S]*?Decide route[\s\S]*?Collection[\s\S]*?Next use/);
   assert.match(page, /'@type': 'BreadcrumbList'/);
   assert.match(page, /'@type': 'FAQPage'/);
@@ -38,3 +40,4 @@ test('scrap hub is indexable, linked in the header and uses verified official gu
     assert.match(coverageMap, new RegExp(location));
   }
 });
+
