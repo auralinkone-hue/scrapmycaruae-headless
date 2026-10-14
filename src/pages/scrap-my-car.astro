@@ -257,6 +257,21 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
     .lifecycle__journey b{display:block;margin:0;font-size:16px;text-align:left}
     .lifecycle__journey small{display:block;margin:5px 0 0;max-width:21ch;text-align:left}
     .journey-icon{box-shadow:0 0 0 7px #173f20}
-  }</style>
+  }
+
+  /* Keep the lifecycle readable and centred on narrow screens. */
+  @media(max-width:700px){
+    .lifecycle{padding:54px 0 58px}
+    .lifecycle__heading{width:100%;max-width:352px;margin-inline:auto;text-align:center}
+    .lifecycle h2{max-width:352px;margin:11px auto 0;font-size:clamp(2rem,8.6vw,2.2rem);line-height:1.05;letter-spacing:-.052em;text-wrap:balance}
+    .lifecycle__journey{width:min(calc(100% - 40px),330px);margin:30px auto 0}
+    .lifecycle__journey::before{top:29px;bottom:29px;left:29px}
+    .lifecycle__journey li{grid-template-columns:58px minmax(0,1fr);gap:18px;padding-bottom:25px}
+    .journey-icon{width:58px;height:58px;font-size:24px}
+    .lifecycle__journey li>div{max-width:none}
+    .lifecycle__journey b{font-size:16px;line-height:1.25}
+    .lifecycle__journey small{max-width:20ch;line-height:1.45}
+  }
+</style>
 
 
