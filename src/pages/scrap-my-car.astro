@@ -259,4 +259,15 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
     .lifecycle__journey small{margin:5px auto 0;max-width:22ch;text-align:center}
     .journey-icon{box-shadow:0 0 0 7px #173f20}
   }
+
+  /* Mobile lifecycle: keep each icon paired with its own copy in one centred timeline. */
+  @media(max-width:700px){
+    .lifecycle__journey{width:min(100%,318px);margin:34px auto 0}
+    .lifecycle__journey::before{top:31px;bottom:31px;left:31px;right:auto;transform:none}
+    .lifecycle__journey li{grid-template-columns:62px minmax(0,1fr);align-items:center;justify-items:start;gap:16px;padding:0 0 24px;text-align:left}
+    .lifecycle__journey li>div{display:block;justify-self:start;max-width:21ch;text-align:left}
+    .lifecycle__journey b{display:block;margin:0;font-size:16px;text-align:left}
+    .lifecycle__journey small{display:block;margin:5px 0 0;max-width:21ch;text-align:left}
+    .journey-icon{box-shadow:0 0 0 7px #173f20}
+  }
 </style>
