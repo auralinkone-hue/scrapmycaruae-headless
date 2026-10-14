@@ -138,5 +138,57 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .condition-explorer{display:none}.vehicle-assessment{background:linear-gradient(180deg,#fff,#f7fbf6)}.vehicle-assessment__heading{max-width:720px;margin-bottom:32px}.vehicle-assessment__layout{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:clamp(28px,5vw,74px);align-items:center}.vehicle-assessment__details{border-top:1px solid #d7e4d5}.vehicle-assessment__details details{border-bottom:1px solid #d7e4d5}.vehicle-assessment__details summary{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:62px;list-style:none;cursor:pointer;color:#23482a;font-size:15px;font-weight:800}.vehicle-assessment__details summary::-webkit-details-marker{display:none}.vehicle-assessment__details summary span{display:flex;align-items:center;gap:10px}.vehicle-assessment__details summary span>i{display:grid;width:29px;height:29px;place-items:center;border-radius:9px;background:#e6f3e3;color:#2c7837;font-size:17px}.vehicle-assessment__details summary>i{display:grid;width:26px;height:26px;place-items:center;border:1px solid #d5e4d2;border-radius:50%;color:#287437;font-size:15px;transition:transform 150ms ease}.vehicle-assessment__details details[open] summary>i{transform:rotate(45deg)}.vehicle-assessment__details details p{margin:-2px 0 17px;padding-left:39px;color:#607062;font-size:14px;line-height:1.6}.vehicle-assessment__action{margin-top:23px}.vehicle-assessment__visual{position:relative;isolation:isolate;margin:0;padding:13px 13px 0 0}.vehicle-assessment__visual::before{position:absolute;z-index:-1;inset:6% 1% 4% 7%;border:1px solid rgba(38,117,52,.18);border-radius:28px;background:radial-gradient(circle at 76% 18%,rgba(122,203,110,.3),transparent 26%),linear-gradient(135deg,#205d2c,#67ad68);box-shadow:0 24px 50px rgba(29,81,39,.14);content:'';transform:rotate(1.4deg)}.vehicle-assessment__halo{position:absolute;z-index:-2;right:-8%;bottom:-12%;width:48%;aspect-ratio:1;border:1px solid rgba(58,138,66,.16);border-radius:50%;box-shadow:0 0 0 22px rgba(70,153,78,.07),0 0 0 44px rgba(70,153,78,.04)}.vehicle-assessment__visual img{display:block;width:100%;height:auto;border:1px solid rgba(30,92,42,.14);border-radius:22px;background:#f6faf5;box-shadow:0 16px 34px rgba(18,54,25,.11)}@media(max-width:980px){.vehicle-assessment__layout{grid-template-columns:1fr;gap:32px}.vehicle-assessment__visual{max-width:760px;order:-1}.vehicle-assessment__details{max-width:720px}}@media(max-width:700px){.vehicle-assessment{padding:54px 0}.vehicle-assessment__heading{margin-bottom:26px}.vehicle-assessment__heading .section-label{justify-content:center}.vehicle-assessment__details summary{min-height:58px;font-size:14px}.vehicle-assessment__details details p{padding-left:0;font-size:13px}.vehicle-assessment__action .section-action{width:100%;justify-content:center}.vehicle-assessment__visual{padding:7px 7px 0 0}.vehicle-assessment__visual::before{border-radius:20px}.vehicle-assessment__visual img{border-radius:16px}.vehicle-assessment__halo{right:-16%;bottom:-16%;width:62%}}
   .route-selector__content[hidden]{display:none}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+  /* Scrap hub finish: a compact editorial desktop layout with restrained interactions. */
+  .vehicle-assessment{position:relative;overflow:hidden}
+  .vehicle-assessment::after{position:absolute;z-index:0;inset:auto -10% -36% auto;width:39vw;max-width:560px;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(102,177,104,.12),transparent 68%);content:'';pointer-events:none}
+  .vehicle-assessment .smc-container{position:relative;z-index:1}
+  .vehicle-assessment__heading{margin-left:auto;margin-right:auto;text-align:center}
+  .vehicle-assessment__heading .section-label{justify-content:center}
+  .vehicle-assessment__heading h2{margin-left:auto;margin-right:auto;max-width:17ch}
+  .vehicle-assessment__layout{max-width:1240px;margin:0 auto}
+  .vehicle-assessment__details{border-radius:18px;background:rgba(255,255,255,.68);box-shadow:0 16px 38px rgba(25,70,33,.055)}
+  .vehicle-assessment__details details{padding:0 17px;transition:background-color 180ms ease,transform 180ms ease}
+  .vehicle-assessment__details details[open]{background:linear-gradient(90deg,rgba(231,244,229,.78),rgba(255,255,255,.15))}
+  .vehicle-assessment__details details:first-child{border-radius:18px 18px 0 0}
+  .vehicle-assessment__details details:nth-last-child(2){border-radius:0 0 18px 18px}
+  .vehicle-assessment__action{padding-left:17px}
+  .vehicle-assessment__visual{overflow:visible}
+  .vehicle-assessment__visual img,.scrap-pickup__visual img,.scrap-aftercare__visual img{transition:transform 520ms cubic-bezier(.2,.8,.2,1),filter 520ms ease,box-shadow 520ms ease}
+  .vehicle-assessment__visual::before,.scrap-pickup__visual::before,.scrap-aftercare__visual::before{transition:transform 520ms cubic-bezier(.2,.8,.2,1),filter 520ms ease}
+  .scrap-reveal{opacity:0;transform:translateY(24px);transition:opacity 650ms ease,transform 650ms cubic-bezier(.2,.75,.25,1)}
+  .scrap-reveal.is-visible{opacity:1;transform:none}
+  @media (min-width:981px){
+    .vehicle-assessment{padding:74px 0 86px}
+    .vehicle-assessment__heading{margin-bottom:35px}
+    .vehicle-assessment__heading h2{font-size:clamp(2.65rem,4vw,4.05rem);line-height:1.03}
+    .vehicle-assessment__layout{grid-template-columns:minmax(370px,.82fr) minmax(540px,1.18fr);gap:clamp(44px,6vw,88px)}
+    .vehicle-assessment__details details:hover{background:rgba(233,245,231,.72);transform:translateX(4px)}
+    .vehicle-assessment__visual:hover img,.scrap-pickup__visual:hover img,.scrap-aftercare__visual:hover img{filter:saturate(1.06) contrast(1.02);transform:scale(1.025) translate(-3px,-4px)}
+    .vehicle-assessment__visual:hover::before{filter:saturate(1.12);transform:rotate(2.4deg) scale(1.015)}
+    .scrap-pickup__visual:hover::before{filter:saturate(1.12);transform:rotate(3.5deg) scale(1.015)}
+    .scrap-aftercare__visual:hover::before{filter:saturate(1.12);transform:rotate(-2.8deg) scale(1.015)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .scrap-reveal{opacity:1;transform:none;transition:none}
+    .vehicle-assessment__visual img,.scrap-pickup__visual img,.scrap-aftercare__visual img,.vehicle-assessment__visual::before,.scrap-pickup__visual::before,.scrap-aftercare__visual::before{transition:none}
+  }
+
+<script>
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const animatedSections = Array.from(document.querySelectorAll('.scrap-page > section:not(.scrap-hero)'));
+  if (!reducedMotion && 'IntersectionObserver' in window) {
+    animatedSections.forEach((section) => section.classList.add('scrap-reveal'));
+    const observer = new IntersectionObserver((entries, currentObserver) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          currentObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -44px' });
+    animatedSections.forEach((section) => observer.observe(section));
+  }
+</script>
+
 </style>
 
