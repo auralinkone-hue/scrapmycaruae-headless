@@ -244,4 +244,19 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
     .guide-grid{scrollbar-width:none;-ms-overflow-style:none;padding-bottom:4px}
     .guide-grid::-webkit-scrollbar{display:none;width:0;height:0}
   }
+
+  /* Compact mobile route choices and fully centred lifecycle. */
+  @media(max-width:700px){
+    .route-selector__tabs{display:flex;justify-content:center;gap:4px;padding:7px}
+    .route-tab{flex:0 1 auto;min-width:0;padding:0 12px;gap:6px}
+    .route-selector__content :global(.section-action){width:100%;justify-content:center;gap:10px;padding:0 14px}
+    .route-selector__content :global(.section-action i){flex:0 0 34px}
+    .lifecycle__journey{width:min(100%,300px);margin:32px auto 0}
+    .lifecycle__journey::before{top:60px;bottom:57px;left:50%;right:auto;transform:translateX(-.5px)}
+    .lifecycle__journey li{grid-template-columns:1fr;justify-items:center;gap:9px;padding:0 0 30px;text-align:center}
+    .lifecycle__journey li>div{display:grid;justify-items:center;max-width:20ch}
+    .lifecycle__journey b{margin:0;font-size:16px}
+    .lifecycle__journey small{margin:5px auto 0;max-width:22ch;text-align:center}
+    .journey-icon{box-shadow:0 0 0 7px #173f20}
+  }
 </style>
