@@ -7,6 +7,7 @@ export const indexableStaticRoutes = [
   '/sell-non-running-car/',
   '/sell-car-with-engine-problems/',
   '/scrap-my-car/',
+  '/scrap-car-value/',
   '/free-quote',
   '/contact-us',
   '/faqs',
@@ -21,3 +22,4 @@ export const permanentRedirects = {
   '/blog': '/blogs',
   '/privay-policy': '/privacy-policy'
 } as const;
+
