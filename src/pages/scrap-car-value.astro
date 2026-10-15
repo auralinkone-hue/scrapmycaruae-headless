@@ -14,13 +14,13 @@ const title = 'Scrap Car Value UAE | Find Out What Your Car Is Worth';
 const description = 'Find out what affects scrap car value in the UAE, including vehicle condition, make, model, usable parts, mechanical faults and collection requirements. Request a free valuation.';
 
 const factors = [
-  { key: 'details', icon: 'ph-car-profile', label: 'Vehicle details', title: 'Vehicle details', copy: 'Make, model, year and variant help put the car in context. They can influence parts relevance, demand and the practical route worth discussing.', details: ['Make, model and exact variant', 'Year and vehicle age', 'Parts relevance for that model', 'Accurate vehicle identity details'] },
-  { key: 'condition', icon: 'ph-warning-circle', label: 'Condition', title: 'Current vehicle condition', copy: 'Accident damage, body damage, flood exposure, severe wear and long-term parked condition can change what remains usable and what next step makes sense.', details: ['Accident and body damage', 'Flood exposure or corrosion', 'Severe wear or missing items', 'How long the car has been parked'] },
-  { key: 'mechanical', icon: 'ph-engine', label: 'Mechanical state', title: 'Mechanical state', copy: 'Engine or gearbox failure, electrical faults, overheating and whether the car starts or moves are useful details for a current-condition valuation.', details: ['Whether the engine starts', 'Whether the vehicle moves', 'Known engine or gearbox faults', 'Electrical or overheating symptoms'] },
-  { key: 'parts', icon: 'ph-circles-three-plus', label: 'Reusable parts', title: 'Reusable components', copy: 'Body parts, mechanical components, wheels, interior pieces and electronics may be relevant when they remain usable. Not every component has resale value.', details: ['Usable body and mechanical parts', 'Wheels and tyre condition', 'Interior and electronic components', 'Relevance of parts to practical demand'] },
-  { key: 'demand', icon: 'ph-chart-line-up', label: 'Market / salvage demand', title: 'Demand and salvage relevance', copy: 'Different vehicles and components can have different practical demand. The review is based on the vehicle itself, not a claimed fixed market price.', details: ['Make and model context', 'Demand for relevant components', 'Condition of the individual vehicle', 'A current review rather than a fixed table'] },
-  { key: 'access', icon: 'ph-map-pin', label: 'Collection & access', title: 'Collection and access', copy: 'The emirate, underground parking, keys, rolling wheels and whether a recovery truck can reach the vehicle all help shape collection arrangements.', details: ['Emirate and exact location', 'Parking level and vehicle access', 'Keys, wheels and rolling condition', 'Recovery-truck access'] },
-  { key: 'status', icon: 'ph-file-text', label: 'Documents / status', title: 'Documents and vehicle status', copy: 'Registration, finance, fines or restrictions may need attention before a transaction is completed. The exact requirements depend on the authority and route.', details: ['Registration or Mulkiya details', 'Finance status', 'Fines or restrictions', 'Plate and authority guidance'] }
+  { key: 'details', icon: 'ph-car-profile', label: 'Vehicle details', shortLabel: 'Vehicle', title: 'Vehicle details', copy: 'Make, model, year and variant help put the car in context. They can influence parts relevance, demand and the practical route worth discussing.', details: ['Make, model and exact variant', 'Year and vehicle age', 'Parts relevance for that model', 'Accurate vehicle identity details'] },
+  { key: 'condition', icon: 'ph-warning-circle', label: 'Condition', shortLabel: 'Condition', title: 'Current vehicle condition', copy: 'Accident damage, body damage, flood exposure, severe wear and long-term parked condition can change what remains usable and what next step makes sense.', details: ['Accident and body damage', 'Flood exposure or corrosion', 'Severe wear or missing items', 'How long the car has been parked'] },
+  { key: 'mechanical', icon: 'ph-engine', label: 'Mechanical state', shortLabel: 'Mechanical', title: 'Mechanical state', copy: 'Engine or gearbox failure, electrical faults, overheating and whether the car starts or moves are useful details for a current-condition valuation.', details: ['Whether the engine starts', 'Whether the vehicle moves', 'Known engine or gearbox faults', 'Electrical or overheating symptoms'] },
+  { key: 'parts', icon: 'ph-circles-three-plus', label: 'Reusable parts', shortLabel: 'Parts', title: 'Reusable components', copy: 'Body parts, mechanical components, wheels, interior pieces and electronics may be relevant when they remain usable. Not every component has resale value.', details: ['Usable body and mechanical parts', 'Wheels and tyre condition', 'Interior and electronic components', 'Relevance of parts to practical demand'] },
+  { key: 'demand', icon: 'ph-chart-line-up', label: 'Market / salvage demand', shortLabel: 'Demand', title: 'Demand and salvage relevance', copy: 'Different vehicles and components can have different practical demand. The review is based on the vehicle itself, not a claimed fixed market price.', details: ['Make and model context', 'Demand for relevant components', 'Condition of the individual vehicle', 'A current review rather than a fixed table'] },
+  { key: 'access', icon: 'ph-map-pin', label: 'Collection & access', shortLabel: 'Collection', title: 'Collection and access', copy: 'The emirate, underground parking, keys, rolling wheels and whether a recovery truck can reach the vehicle all help shape collection arrangements.', details: ['Emirate and exact location', 'Parking level and vehicle access', 'Keys, wheels and rolling condition', 'Recovery-truck access'] },
+  { key: 'status', icon: 'ph-file-text', label: 'Documents / status', shortLabel: 'Documents', title: 'Documents and vehicle status', copy: 'Registration, finance, fines or restrictions may need attention before a transaction is completed. The exact requirements depend on the authority and route.', details: ['Registration or Mulkiya details', 'Finance status', 'Fines or restrictions', 'Plate and authority guidance'] }
 ];
 const conditions = [
   ['Running older car', 'Overall condition, remaining usability and current vehicle details.', 'Service history, known faults and where the vehicle is located.', 'An as-is sale or valuation may be worth comparing before choosing a route.'],
@@ -69,13 +69,13 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   <main class="value-page">
     <section class="value-hero" aria-labelledby="page-title"><div class="smc-container"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">></span><a href="/scrap-my-car/">Scrap My Car</a><span aria-hidden="true">></span><span aria-current="page">Scrap car value</span></nav><div class="value-hero__grid"><div class="value-hero__copy"><h1 id="page-title">What is my scrap car <span>worth in the UAE?</span></h1><p>Your car's practical value depends on more than age alone. Share the make, model, year and current condition to start with a free valuation before deciding whether to sell, repair or scrap it.</p></div><div class="value-hero__form"><QuoteForm makes={vehicleData.makes} models={vehicleData.models} years={vehicleData.years} dataError={vehicleDataError} variant="free-quote" /></div><ul class="hero-trust"><li><i class="ph ph-check" aria-hidden="true"></i>Free valuation</li><li><i class="ph ph-check" aria-hidden="true"></i>No repair required first</li><li><i class="ph ph-check" aria-hidden="true"></i>Damaged and non-running cars considered</li><li><i class="ph ph-check" aria-hidden="true"></i>UAE collection discussion</li></ul></div></div></section>
 
-    <section class="section composition" aria-labelledby="shapes-title"><div class="smc-container"><header class="section-heading"><h2 id="shapes-title">What shapes your car's <span>value?</span></h2><p>There is no single fixed scrap-car price. A practical valuation is a clear review of the vehicle, its condition, usable components and the real collection situation.</p></header><div class="composition__layout"><div class="factor-selector" role="tablist" aria-label="Vehicle valuation factors" aria-orientation="vertical">{factors.map((factor, index) => <button class:list={[{ active: index === 0 }]} id={`factor-tab-${factor.key}`} type="button" role="tab" aria-selected={index === 0 ? 'true' : 'false'} aria-controls={`factor-panel-${factor.key}`} tabindex={index === 0 ? 0 : -1} data-factor={factor.key}><i class:list={['ph', factor.icon]} aria-hidden="true"></i><span>{factor.label}</span><i class="ph ph-caret-right factor-selector__arrow" aria-hidden="true"></i></button>)}</div><div class="factor-panel">{factors.map((factor, index) => <article id={`factor-panel-${factor.key}`} role="tabpanel" aria-labelledby={`factor-tab-${factor.key}`} tabindex="0" data-factor-panel={factor.key} hidden={index !== 0}><div class="factor-panel__icon"><i class:list={['ph', factor.icon]} aria-hidden="true"></i></div><p class="eyebrow">Valuation factor</p><h3>{factor.title}</h3><p class="factor-panel__copy">{factor.copy}</p><ul class="factor-panel__details">{factor.details.map((detail) => <li><i class="ph ph-check" aria-hidden="true"></i>{detail}</li>)}</ul></article>)}</div></div></div></section>
+    <section class="section composition" aria-labelledby="shapes-title"><div class="smc-container"><header class="section-heading"><h2 id="shapes-title">What shapes your car's <span>value?</span></h2><p>There is no single fixed scrap-car price. A practical valuation is a clear review of the vehicle, its condition, usable components and the real collection situation.</p></header><div class="composition__layout"><div class="factor-selector" role="tablist" aria-label="Vehicle valuation factors" aria-orientation="vertical">{factors.map((factor, index) => <button class:list={[{ active: index === 0 }]} id={`factor-tab-${factor.key}`} type="button" role="tab" aria-label={factor.label} aria-selected={index === 0 ? 'true' : 'false'} aria-controls={`factor-panel-${factor.key}`} tabindex={index === 0 ? 0 : -1} data-factor={factor.key}><i class:list={['ph', factor.icon]} aria-hidden="true"></i><span class="factor-selector__label"><span class="factor-selector__label-long">{factor.label}</span><span class="factor-selector__label-short">{factor.shortLabel}</span></span><i class="ph ph-caret-right factor-selector__arrow" aria-hidden="true"></i></button>)}</div><div class="factor-panel">{factors.map((factor, index) => <article id={`factor-panel-${factor.key}`} role="tabpanel" aria-labelledby={`factor-tab-${factor.key}`} tabindex="0" data-factor-panel={factor.key} hidden={index !== 0}><div class="factor-panel__icon"><i class:list={['ph', factor.icon]} aria-hidden="true"></i></div><p class="eyebrow">Valuation factor</p><h3>{factor.title}</h3><p class="factor-panel__copy">{factor.copy}</p><ul class="factor-panel__details">{factor.details.map((detail) => <li><i class="ph ph-check" aria-hidden="true"></i>{detail}</li>)}</ul></article>)}</div></div></div></section>
 
     <section class="section difference" aria-labelledby="difference-title"><div class="smc-container difference__layout"><div><p class="eyebrow">A useful reality check</p><h2 id="difference-title">Why two similar cars can have <span>different values.</span></h2><p>Two cars of the same make, model and year can still be in completely different condition. One may run, another may have major accident damage, engine failure, more usable components or difficult recovery access.</p><SectionActionButton href="/free-quote" label="Get my free valuation" intent="valuation" /></div><ul><li><i class="ph ph-check" aria-hidden="true"></i>One runs while one does not</li><li><i class="ph ph-check" aria-hidden="true"></i>Mechanical and body damage can differ</li><li><i class="ph ph-check" aria-hidden="true"></i>Collection access and status can need attention</li></ul></div></section>
 
     <section class="section condition-strip" aria-labelledby="condition-title"><div class="smc-container"><header class="section-heading"><h2 id="condition-title">What matters for different <span>vehicle conditions.</span></h2><p>Use the condition closest to your vehicle as a practical checklist before you request a valuation.</p></header><div class="condition-strip__tabs" role="tablist" aria-label="Vehicle condition types">{conditions.map((item, index) => <button id={`condition-tab-${index}`} type="button" role="tab" aria-selected={index === 0 ? 'true' : 'false'} aria-controls={`condition-panel-${index}`} tabindex={index === 0 ? 0 : -1} data-condition-tab={index}>{item[0]}</button>)}</div>{conditions.map((item, index) => <article id={`condition-panel-${index}`} class="condition-detail" role="tabpanel" aria-labelledby={`condition-tab-${index}`} tabindex="0" data-condition-panel={index} hidden={index !== 0}><h3>{item[0]}</h3><div><p><b>What matters most</b>{item[1]}</p><p><b>What to tell us</b>{item[2]}</p><p><b>Practical consideration</b>{item[3]}</p></div></article>)}</div></section>
 
-    <section class="section options" aria-labelledby="options-title"><div class="smc-container"><header class="section-heading"><h2 id="options-title">Is scrap value always the <span>best route?</span></h2><p>Not necessarily. Start with the vehicle's current condition, then compare the practical paths.</p></header><div class="options__lanes"><div class="options__start"><i class="ph ph-car-profile" aria-hidden="true"></i>Start with the vehicle's current condition</div><article><i class="ph ph-wrench" aria-hidden="true"></i><h3>Repair</h3><p>May make sense where the fault is understood, controlled and the vehicle is otherwise in good shape.</p></article><article><i class="ph ph-car" aria-hidden="true"></i><h3>Sell as-is</h3><p>May make sense where the car still has practical next-use value and you do not want to arrange repairs.</p></article><article><i class="ph ph-recycle" aria-hidden="true"></i><h3>Scrap</h3><p>May make sense for an end-of-life vehicle with major or multiple issues.</p></article></div><div class="section-cta"><SectionActionButton href="/free-quote" label="Compare my options" intent="valuation" /></div><p class="options__link"><a href="/scrap-my-car/">Learn more about the complete scrap-car process <span aria-hidden="true">&rarr;</span></a></p></div></section>
+    <section class="section options" aria-labelledby="options-title"><div class="smc-container"><header class="section-heading"><h2 id="options-title">Is scrap value always the <span>best route?</span></h2><p>Not necessarily. Start with the vehicle's current condition, then compare the practical paths.</p></header><div class="options__lanes"><div class="options__start"><i class="ph ph-car-profile" aria-hidden="true"></i>Start with the vehicle's current condition</div><article><i class="ph ph-wrench" aria-hidden="true"></i><h3>Repair</h3><p><span class="options__desktop-copy">May make sense where the fault is understood, controlled and the vehicle is otherwise in good shape.</span><span class="options__mobile-copy">For a known, manageable fault when the car is otherwise in good shape.</span></p></article><article><i class="ph ph-car" aria-hidden="true"></i><h3>Sell as-is</h3><p><span class="options__desktop-copy">May make sense where the car still has practical next-use value and you do not want to arrange repairs.</span><span class="options__mobile-copy">For a car with practical next-use value that you do not want to repair.</span></p></article><article><i class="ph ph-recycle" aria-hidden="true"></i><h3>Scrap</h3><p><span class="options__desktop-copy">May make sense for an end-of-life vehicle with major or multiple issues.</span><span class="options__mobile-copy">For an end-of-life vehicle with major or multiple issues.</span></p></article></div><div class="section-cta"><SectionActionButton href="/free-quote" label="Compare my options" intent="valuation" /></div><p class="options__link"><a href="/scrap-my-car/">Learn more about the complete scrap-car process <span aria-hidden="true">&rarr;</span></a></p></div></section>
 
     <section class="section details" aria-labelledby="details-title"><div class="smc-container details__layout"><div><h2 id="details-title">Practical details that can affect <span>the next step.</span></h2><p>Share what you know. Requirements and processes can differ by emirate and final transaction route.</p></div><div class="details__list"><article><i class="ph ph-identification-card" aria-hidden="true"></i><p><b>Registration / Mulkiya</b>Keep the vehicle details available for the discussion.</p></article><article><i class="ph ph-bank" aria-hidden="true"></i><p><b>Finance, fines or restrictions</b>These may require attention before a transaction is completed.</p></article><article><i class="ph ph-map-pin" aria-hidden="true"></i><p><b>Location and accessibility</b>Tell us the emirate, access situation and whether the car can move.</p></article><article><i class="ph ph-key" aria-hidden="true"></i><p><b>Plates and vehicle status</b>Confirm current authority guidance for the route that applies to your vehicle.</p></article></div></div></section>
 
@@ -91,6 +91,11 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   <script is:inline>
     const factorButtons = [...document.querySelectorAll('[data-factor]')];
     const factorPanels = [...document.querySelectorAll('[data-factor-panel]')];
+    const factorSelector = document.querySelector('.factor-selector');
+    const factorMobileQuery = window.matchMedia('(max-width: 800px)');
+    const syncFactorOrientation = () => factorSelector?.setAttribute('aria-orientation', factorMobileQuery.matches ? 'horizontal' : 'vertical');
+    syncFactorOrientation();
+    factorMobileQuery.addEventListener('change', syncFactorOrientation);
     const setFactor = (button, moveFocus = false) => {
       const key = button.dataset.factor;
       factorButtons.forEach((button) => {
@@ -100,7 +105,12 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
         button.classList.toggle('active', isActive);
       });
       factorPanels.forEach((panel) => { panel.hidden = panel.dataset.factorPanel !== key; });
-      if (moveFocus) button.focus();
+      if (factorSelector && factorMobileQuery.matches) {
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const left = factorSelector.scrollLeft + button.getBoundingClientRect().left - factorSelector.getBoundingClientRect().left - ((factorSelector.clientWidth - button.clientWidth) / 2);
+        factorSelector.scrollTo({ left, behavior: reducedMotion ? 'auto' : 'smooth' });
+      }
+      if (moveFocus) button.focus({ preventScroll: true });
     };
     factorButtons.forEach((button, index) => {
       button.addEventListener('click', () => setFactor(button));
@@ -169,6 +179,7 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .factor-selector button{display:grid;grid-template-columns:34px 1fr 20px;gap:12px;align-items:center;min-height:61px;padding:11px 17px;border:0;border-bottom:1px solid #e2ebe0;background:#fff;color:#38573d;font:inherit;font-size:14px;font-weight:800;text-align:left;cursor:pointer;transition:background .18s ease,color .18s ease}
   .factor-selector button:last-child{border-bottom:0}
   .factor-selector button>i:first-child{display:grid;width:34px;height:34px;place-items:center;border-radius:9px;background:#edf5eb;color:#2f7438;font-size:18px}
+  .factor-selector__label-short{display:none}
   .factor-selector__arrow{justify-self:end;color:#729077;font-size:15px}
   .factor-selector button:hover{background:#f3f8f1}
   .factor-selector button.active{background:#194f25;color:#fff}
@@ -213,6 +224,7 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .options__lanes article>i{color:#2a7838;font-size:25px}
   .options__lanes h3{margin:16px 0 8px;font-size:21px}
   .options__lanes p{margin:0;color:#5d6b5e;line-height:1.65}
+  .options__mobile-copy{display:none}
   .section-cta{display:flex;justify-content:center;margin-top:27px}
   .options__link{text-align:center}
   .options__link a{color:#1769aa;font-size:14px;font-weight:800;text-decoration:none}
@@ -254,6 +266,25 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .composition__layout,.difference__layout,.details__layout,.coverage__layout{grid-template-columns:1fr}
   .condition-detail>div{grid-template-columns:1fr}
   .guide-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:800px){.factor-selector{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scroll-snap-type:x proximity;padding:2px 2px 10px;border:0;border-radius:0;background:transparent;box-shadow:none}
+  .factor-selector button,.factor-selector button:last-child{flex:0 0 auto;display:grid;grid-template-columns:27px auto;gap:7px;min-height:48px;padding:7px 11px;border:1px solid #cfdfcc;border-radius:12px;background:#fff;scroll-snap-align:center;white-space:nowrap}
+  .factor-selector button>i:first-child{width:27px;height:27px;border-radius:7px;font-size:15px}
+  .factor-selector__label-long,.factor-selector__arrow{display:none}
+  .factor-selector__label-short{display:inline;font-size:12px}
+  .factor-selector button.active{border-color:#194f25;background:#194f25}
+  .composition__layout{gap:18px}
+  .options .section-heading h2{font-size:clamp(1.85rem,8vw,2.3rem)}
+  .options__lanes{display:grid;grid-template-columns:1fr;gap:0;padding-top:0;border:1px solid #d4e3d1;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 12px 30px rgba(27,74,33,.06)}
+  .options__start{position:static;justify-content:center;max-width:none;padding:11px 15px;border:0;border-bottom:1px solid #dce8da;border-radius:0;background:#edf6eb;font-size:11px;line-height:1.35;white-space:normal;text-align:center;transform:none}
+  .options__lanes article,.options__lanes article:nth-child(3),.options__lanes article:nth-child(4){display:grid;grid-template-columns:38px 1fr;grid-template-rows:auto auto;column-gap:12px;padding:16px 17px;border:0;border-bottom:1px solid #e0e9de;background:transparent;box-shadow:none}
+  .options__lanes article:last-child{border-bottom:0}
+  .options__lanes article>i{grid-row:1/3;display:grid;width:38px;height:38px;place-items:center;border-radius:10px;background:#e8f3e6;font-size:20px}
+  .options__lanes h3{margin:0 0 3px;font-size:17px;line-height:1.25}
+  .options__lanes p{font-size:13px;line-height:1.45}
+  .options__desktop-copy{display:none}
+  .options__mobile-copy{display:inline}
+  .options .section-cta{margin-top:18px}
+  .options .section-cta :global(.section-action){width:100%;justify-content:center}}
   @media(max-width:700px){.value-hero{padding-top:16px}
   .value-hero__grid{gap:18px;margin-top:23px;justify-items:center}
   .value-hero__copy{width:100%;max-width:390px;text-align:center}
@@ -264,9 +295,6 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .section{padding:56px 0}
   .section-heading{margin-bottom:27px}
   .section-heading h2,.difference h2,.details h2,.coverage h2,.final-cta h2{font-size:clamp(2.05rem,9vw,2.65rem)}
-  .composition__layout{gap:18px}
-  .factor-selector{border-radius:14px}
-  .factor-selector button{min-height:56px;padding:9px 14px}
   .factor-panel{min-height:0;padding:25px;border-radius:14px}
   .factor-panel__details{grid-template-columns:1fr}
   .difference__layout{text-align:center}
@@ -275,8 +303,6 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .condition-strip__tabs{display:flex;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;border-radius:12px}
   .condition-strip__tabs button{flex:0 0 158px;scroll-snap-align:start}
   .condition-detail{grid-template-columns:1fr;gap:22px;padding:25px}
-  .options__lanes{grid-template-columns:1fr;padding-top:66px}
-  .options__start{max-width:calc(100% - 20px);font-size:11px;white-space:normal;text-align:center}
   .details__layout{text-align:center}
   .details h2{margin-inline:auto}
   .details__list{text-align:left}
