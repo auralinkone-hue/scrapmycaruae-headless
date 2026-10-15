@@ -26,3 +26,11 @@ test('fleet disposal is registered once in the production sitemap and linked fro
   assert.equal(indexableStaticRoutes.filter(route => route === '/fleet-disposal/').length, 1);
   assert.match(await read('src/pages/scrap-my-car.astro'), /href="\/fleet-disposal\/">fleet disposal guide/);
 });
+
+test('fleet brief and process use semantic icons without decorative numbering', async () => {
+  const page = await read('src/pages/fleet-disposal.astro');
+  assert.match(page, /preparation\.map\(\(\[icon, heading, copy\]/);
+  assert.doesNotMatch(page, /\['0[1-6]',|padStart\(|\[number, heading/);
+  assert.match(page, /<dl class="brief-list">/);
+  assert.match(page, /<ol class="process-band">/);
+});

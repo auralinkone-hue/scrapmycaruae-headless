@@ -18,12 +18,12 @@ const businesses = [
   ['ph-buildings', 'Company vehicle fleets', 'Multiple business vehicles being reviewed for sale, salvage or end-of-life disposal.']
 ];
 const preparation = [
-  ['01', 'Number of vehicles', 'Give the approximate fleet size and identify which vehicles are ready for review.'],
-  ['02', 'Makes, models & years', 'An existing vehicle list is a useful starting point. Add mileage and vehicle identifiers where available.'],
-  ['03', 'Condition & mobility', 'Note damage, known faults, missing parts and whether each vehicle starts, drives, rolls or steers.'],
-  ['04', 'Locations', 'Group vehicles by emirate and site, and identify the person who can coordinate each location.'],
-  ['05', 'Access / parking', 'Include gates, height limits, loading space, parking levels, keys and any site access requirements.'],
-  ['06', 'Ownership / finance / status', 'Flag available registration details, the authorised business contact and any known finance, fines or restrictions.']
+  ['ph-stack', 'Number of vehicles', 'Give the approximate fleet size and identify which vehicles are ready for review.'],
+  ['ph-car-profile', 'Makes, models & years', 'An existing vehicle list is a useful starting point. Add mileage and vehicle identifiers where available.'],
+  ['ph-engine', 'Condition & mobility', 'Note damage, known faults, missing parts and whether each vehicle starts, drives, rolls or steers.'],
+  ['ph-map-pin', 'Locations', 'Group vehicles by emirate and site, and identify the person who can coordinate each location.'],
+  ['ph-key', 'Access / parking', 'Include gates, height limits, loading space, parking levels, keys and any site access requirements.'],
+  ['ph-shield-check', 'Ownership / finance / status', 'Flag available registration details, the authorised business contact and any known finance, fines or restrictions.']
 ];
 const conditions = [
   { icon: 'ph-car-profile', label: 'Unwanted but running', status: 'Next-use review', note: 'Mileage, service history, condition and remaining usability.', route: 'An as-is sale may be worth considering; running vehicles are not assumed to be scrap.' },
@@ -90,7 +90,7 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
 
     <section class="section brief-section" aria-labelledby="brief-title"><div class="smc-container">
       <header class="split-heading"><div><p class="eyebrow">Prepare the fleet brief</p><h2 id="brief-title">What we <span>need to know</span></h2></div><p>An existing spreadsheet or vehicle list can help you prepare for the conversation. Keep each vehicle tied to its condition, site and status. Flag unknowns rather than guessing.</p></header>
-      <dl class="brief-list">{preparation.map(([number, heading, copy]) => <div><dt><span aria-hidden="true">{number}</span>{heading}</dt><dd>{copy}</dd></div>)}</dl>
+      <dl class="brief-list">{preparation.map(([icon, heading, copy]) => <div><dt><i class:list={['ph', icon]} aria-hidden="true"></i><span>{heading}</span></dt><dd>{copy}</dd></div>)}</dl>
       <p class="inline-note"><i class="ph ph-info" aria-hidden="true"></i>Have the list ready for the follow-up discussion; the initial form does not accept fleet-list uploads.</p>
     </div></section>
 
@@ -99,7 +99,7 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
       <div class="condition-matrix"><table><caption class="sr-only">Fleet conditions, information to prepare and practical route considerations</caption><thead><tr><th scope="col">Vehicle condition</th><th scope="col">Information to prepare</th><th scope="col">Route consideration</th></tr></thead><tbody>{conditions.map((condition) => <tr><th scope="row"><div class="condition-name"><i class:list={['ph', condition.icon]} aria-hidden="true"></i><span>{condition.label}</span></div><span class="review-status"><span aria-hidden="true"></span>{condition.status}</span></th><td><span class="mobile-label" aria-hidden="true">Information to prepare</span>{condition.note}</td><td><span class="mobile-label" aria-hidden="true">Route consideration</span>{condition.route}{condition.href && <a class="info-link" href={condition.href}>{condition.link}<i class:list={['ph', condition.icon]} aria-hidden="true"></i></a>}</td></tr>)}</tbody></table></div>
     </div></section>
 
-    <section class="section process-section" aria-labelledby="process-title"><div class="smc-container"><header class="section-heading"><p class="eyebrow">From fleet list to an agreed plan</p><h2 id="process-title">How fleet disposal works</h2><p>Separate the vehicle review from the practical arrangements.</p></header><ol class="process-band">{steps.map(([icon, heading, copy], index) => <li><div class="step-top"><span>{String(index + 1).padStart(2, '0')}</span><i class:list={['ph', icon]} aria-hidden="true"></i></div><h3>{heading}</h3><p>{copy}</p></li>)}</ol></div></section>
+    <section class="section process-section" aria-labelledby="process-title"><div class="smc-container"><header class="section-heading"><p class="eyebrow">From fleet list to an agreed plan</p><h2 id="process-title">How fleet disposal works</h2><p>Separate the vehicle review from the practical arrangements.</p></header><ol class="process-band">{steps.map(([icon, heading, copy]) => <li><div class="step-top"><i class:list={['ph', icon]} aria-hidden="true"></i></div><h3>{heading}</h3><p>{copy}</p></li>)}</ol></div></section>
 
     <section class="section sites-section" aria-labelledby="sites-title"><div class="smc-container sites-layout">
       <div><p class="eyebrow">Multi-location collection</p><h2 id="sites-title">Plan around the sites,<span>not just the vehicles.</span></h2><p class="section-lead">Your vehicles may be spread across depots, workshops, company parking or industrial yards in different emirates. Site access and each vehicle’s mobility affect what can be arranged.</p><a class="info-link" href="/car-removal/"><i class="ph ph-truck" aria-hidden="true"></i>Vehicle collection and access checks</a></div>
@@ -154,31 +154,39 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .business-list li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;padding:14px 0;border-top:1px solid #dee7dc}
   .business-list li>i{display:grid;width:32px;height:32px;place-items:center;background:#e9f1e5;color:#3b7346;border-radius:8px;font-size:19px}
   .business-list p{margin:4px 0 0;color:#5f7166;font-size:13px;line-height:1.6}
-  .brief-section{background:#f1f5f3;border-block:1px solid #dbe5df}
+  .brief-section{background:radial-gradient(ellipse at 5% 10%,#e1eddc,transparent 52%),linear-gradient(125deg,#f1f6ee,#edf4f7);border-block:1px solid #dbe5df}
   .split-heading{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr);gap:50px;align-items:end;margin-bottom:30px}
   .split-heading h2 span{display:block}
   .split-heading>p{margin:0;color:#5b6e64;line-height:1.75;font-size:15px}
-  .brief-list{margin:0;border-top:1px solid #cbdad0}
-  .brief-list>div{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:28px;border-bottom:1px solid #cbdad0;padding:20px 0}
-  .brief-list dt{display:flex;gap:18px;align-items:baseline;font-size:16px;font-weight:750}
-  .brief-list dt span{font-size:11px;font-weight:800;color:#578064;letter-spacing:.07em}
-  .brief-list dd{margin:0;color:#5a6d62;font-size:14px;line-height:1.7}
+  .brief-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:0}
+  .brief-list>div{--tile-accent:#3c7850;--tile-soft:#e6f2df;--tile-line:#c9dfbc;position:relative;padding:25px;border:1px solid #d8e5d5;border-radius:19px;background:linear-gradient(150deg,#fff 65%,#f3f8ef);box-shadow:0 8px 22px rgba(25,62,39,.045);transition:box-shadow 200ms ease,border-color 200ms ease}
+  .brief-list>div:nth-child(3n+2){--tile-accent:#2c7195;--tile-soft:#e5f1f8;--tile-line:#c5ddea;background:linear-gradient(150deg,#fff 65%,#f1f7fa);border-color:#d2e1e9}
+  .brief-list>div:nth-child(3n){--tile-accent:#637342;--tile-soft:#eef2dd;--tile-line:#d8e1bb}
+  .brief-list dt{display:flex;flex-direction:column;gap:18px;font-size:16px;font-weight:750;line-height:1.4}
+  .brief-list dt>i{display:grid;width:50px;height:50px;place-items:center;border:1px solid var(--tile-line);border-radius:14px;background:var(--tile-soft);color:var(--tile-accent);font-size:25px;box-shadow:0 4px 10px rgba(40,75,46,.05)}
+  .brief-list dd{margin:10px 0 0;color:#5a6d62;font-size:13px;line-height:1.75}
   .inline-note{display:flex;gap:9px;margin:21px 0 0;color:#5a6f64;font-size:12px;line-height:1.65}
   .inline-note i{flex:0 0 auto;font-size:18px;color:#3e7850}
-  .condition-matrix{border:1px solid #d1dfd5;border-radius:15px;overflow:hidden}
-  table{width:100%;border-collapse:collapse;table-layout:fixed;text-align:left}
-  th,td{padding:24px;border-bottom:1px solid #dae5dd;vertical-align:top;font-size:14px;line-height:1.65}
-  thead th{background:#e8f0e9;color:#41624b;font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;padding-block:15px}
+  .matrix-section{background:linear-gradient(#fff,#f7faf6)}
+  .condition-matrix{padding:0 5px 5px}
+  table{width:100%;border-collapse:separate;border-spacing:0 12px;table-layout:fixed;text-align:left}
+  th,td{padding:24px;border-block:1px solid #d6e3d7;vertical-align:top;font-size:14px;line-height:1.65}
+  thead th{border:0;background:#214b38;color:#e0eddf;font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;padding-block:17px}
+  thead th:first-child{border-radius:13px 0 0 13px}
+  thead th:last-child{border-radius:0 13px 13px 0}
   th:first-child{width:31%}
-  tbody th{background:#f7faf6}
-  tbody tr:last-child>*{border-bottom:0}
+  tbody tr{--row-accent:#3c7850;--row-soft:#e8f3e0;--row-line:#c9ddbd;--row-wash:#f2f8ec;filter:drop-shadow(0 5px 7px rgba(27,64,39,.045))}
+  tbody tr:nth-child(2){--row-accent:#926a27;--row-soft:#f8efd9;--row-line:#e7d6ae;--row-wash:#fcf8ee}
+  tbody tr:nth-child(3){--row-accent:#306f91;--row-soft:#e4f0f7;--row-line:#c3dce9;--row-wash:#f0f7fb}
+  tbody tr:nth-child(4){--row-accent:#4d6b65;--row-soft:#e4efeb;--row-line:#c5d9d0;--row-wash:#f0f6f3}
+  tbody th{border-left:1px solid #d6e3d7;border-radius:15px 0 0 15px;background:linear-gradient(120deg,var(--row-wash),#fff)}
+  tbody td{background:#fff;transition:background-color 180ms ease}
+  tbody td:last-child{border-right:1px solid #d6e3d7;border-radius:0 15px 15px 0}
   td{color:#5a6f61}
-  .condition-name{display:flex;gap:11px;align-items:flex-start;line-height:1.5;font-size:15px}
-  .condition-name i{flex:0 0 auto;font-size:23px;color:#477c50}
-  .review-status{display:inline-flex;align-items:center;gap:6px;margin:12px 0 0 34px;padding:3px 7px;border-radius:4px;border:1px solid #ceded5;background:#edf4f0;color:#456959;font-size:10px;font-weight:650}
-  .review-status>span{width:5px;height:5px;background:#629477;border-radius:50%}
-  tr:nth-child(2n) .review-status{color:#3a6b80;background:#eaf2f5;border-color:#cadfe8}
-  tr:nth-child(2n) .review-status>span{background:#588aa1}
+  .condition-name{display:flex;gap:13px;align-items:center;line-height:1.5;font-size:15px}
+  .condition-name i{display:grid;width:45px;height:45px;place-items:center;flex:0 0 45px;border:1px solid var(--row-line);border-radius:13px;background:var(--row-soft);font-size:24px;color:var(--row-accent)}
+  .review-status{display:inline-flex;align-items:center;gap:6px;margin:13px 0 0 58px;padding:4px 8px;border-radius:6px;border:1px solid var(--row-line);background:var(--row-soft);color:var(--row-accent);font-size:10px;font-weight:700}
+  .review-status>span{width:5px;height:5px;background:var(--row-accent);border-radius:50%}
   .info-link{display:inline-flex;align-items:center;gap:8px;color:#216b98;font-size:13px;font-weight:750;line-height:1.6;text-decoration:none}
   .info-link:hover{text-decoration:underline;color:#124e76}
   .info-link i{font-size:18px;flex:0 0 auto}
@@ -195,9 +203,8 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .process-band li{padding:25px 23px 29px;border-right:1px solid #456354}
   .process-band li:first-child{padding-left:0}
   .process-band li:last-child{border-right:0;padding-right:0}
-  .step-top{display:flex;align-items:center;gap:18px;margin-bottom:21px;color:#bed9b3}
-  .step-top span{font-size:12px;letter-spacing:.1em;font-weight:800}
-  .step-top i{font-size:28px}
+  .step-top{display:flex;align-items:center;margin-bottom:21px;color:#bed9b3}
+  .step-top i{display:grid;width:56px;height:56px;place-items:center;border:1px solid #5c7e67;border-radius:16px;background:linear-gradient(135deg,#315e41,#234a37);color:#c8e4b8;font-size:28px;box-shadow:0 7px 18px rgba(6,24,15,.15)}
   .process-band h3{font-size:18px}
   .process-band p{margin:11px 0 0;color:#c2d2c9;font-size:13px;line-height:1.75}
   .sites-layout,.paperwork-layout,.coverage-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(30px,6vw,80px);align-items:center}
@@ -241,16 +248,17 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .final-actions :global(.section-action){background:#e1f1d5;color:#1b462b;border-color:#e1f1d5}
   .final-actions>a{display:flex;align-items:center;gap:8px;color:#c9dfbb;font-size:12px;font-weight:700;text-decoration:none}
   a:focus-visible,summary:focus-visible{outline:3px solid #6898b6;outline-offset:4px;border-radius:4px}
-  @media(hover:hover) and (pointer:fine){summary:hover{color:#2e743e;background:#eaf1e6}.condition-matrix tbody tr:hover>*{background:#eff6ec}.final-actions>a:hover{text-decoration:underline;color:#fff}}
+  @media(hover:hover) and (pointer:fine){summary:hover{color:#2e743e;background:#eaf1e6}.brief-list>div:hover{border-color:var(--tile-line);box-shadow:0 13px 27px rgba(25,62,39,.09)}.condition-matrix tbody tr:hover>td{background:#f8fbf6}.final-actions>a:hover{text-decoration:underline;color:#fff}}
   @media(max-width:1100px){.hero-grid{grid-template-columns:minmax(0,1fr) minmax(380px,.95fr);gap:25px 30px}.hero-lead{font-size:16px}.process-band li{padding-inline:17px}.process-band h3{font-size:16px}th,td{padding:20px}}
   @media(max-width:980px){.hero-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:'copy' 'form' 'points';gap:24px}.hero-copy{max-width:720px}.hero-form{width:min(100%,650px)}.hero-points{grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.hero-points li{align-items:flex-start}.hero-points i{flex:0 0 auto}.business-layout{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:28px}.split-heading{gap:30px}.sites-layout,.paperwork-layout,.coverage-layout{grid-template-columns:minmax(0,1fr);gap:30px}.guide-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.final-layout{grid-template-columns:minmax(0,1fr);gap:25px}}
+  @media(min-width:701px) and (max-width:980px){.brief-list{grid-template-columns:repeat(2,minmax(0,1fr))}.condition-matrix th,.condition-matrix td{padding:18px 15px}.condition-name{flex-direction:column;align-items:flex-start;gap:11px}.review-status{margin-left:0}}
   @media(max-width:700px){
     .fleet-hero{padding:16px 0 42px}.breadcrumb{font-size:11px;gap:7px}.hero-grid{margin-top:26px;gap:22px}.hero-copy{text-align:center}.hero-copy .eyebrow{justify-content:center;font-size:10px}h1{font-size:clamp(2.45rem,10.6vw,3.6rem);margin-top:15px;line-height:1.03;letter-spacing:-.055em}.hero-lead{font-size:15px;line-height:1.65;margin-top:19px}.hero-context{border:0;padding:0;font-size:12px;margin-top:14px}.hero-form{width:100%}.form-intro{font-size:11px;gap:10px}.form-intro strong{font-size:13px}.form-intro>i{padding:8px;font-size:21px}.form-footnote{font-size:10px}.hero-points{grid-template-columns:minmax(0,1fr);gap:12px}.hero-points li{font-size:12px;align-items:center}
     .section{padding:49px 0}h2{font-size:clamp(1.9rem,8vw,2.6rem)}.eyebrow{font-size:10px}.section-lead{font-size:14px;line-height:1.7}.business-layout{grid-template-columns:minmax(0,1fr);gap:26px}.business-layout>div>.eyebrow,.business-layout>div>h2,.business-layout>div>.section-lead{text-align:center;justify-content:center}.operations-image{padding:8px;border-radius:18px}.operations-image img{border-radius:11px}.operations-image figcaption{font-size:10px}.business-list li{padding:14px 0}.business-list h3{font-size:15px}.business-list p{font-size:12px}
-    .split-heading{grid-template-columns:minmax(0,1fr);gap:16px;margin-bottom:26px;text-align:center}.split-heading .eyebrow{justify-content:center}.split-heading>p{font-size:14px;line-height:1.7}.brief-list>div{grid-template-columns:minmax(0,1fr);gap:8px;padding:17px 0}.brief-list dt{font-size:15px;gap:13px}.brief-list dd{font-size:13px;padding-left:29px}.inline-note{font-size:11px}
-    .condition-matrix{border-radius:12px}.condition-matrix table,.condition-matrix tbody,.condition-matrix tr,.condition-matrix th,.condition-matrix td{display:block;width:100%}.condition-matrix thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.condition-matrix tbody tr{padding:20px;border-bottom:1px solid #d5e1d6}.condition-matrix tbody tr:last-child{border-bottom:0}.condition-matrix th,.condition-matrix td{padding:0;border:0;background:transparent;font-size:13px;line-height:1.65}.condition-matrix td{margin-top:14px}.condition-name{font-size:16px}.review-status{margin-top:9px;font-size:10px}.mobile-label{display:block;margin-bottom:4px;color:#456d52;font-size:10px;letter-spacing:.07em;text-transform:uppercase;font-weight:800}.info-link{font-size:12px}
-    .section-heading{margin-bottom:26px}.section-heading>p:not(.eyebrow){font-size:14px}.process-band{grid-template-columns:minmax(0,1fr);margin-top:26px}.process-band li,.process-band li:first-child,.process-band li:last-child{display:grid;grid-template-columns:46px minmax(0,1fr);gap:0 17px;border-right:0;border-bottom:1px solid #456354;padding:22px 0}.process-band li:last-child{border-bottom:0}.step-top{grid-row:1/3;flex-direction:column;gap:11px;margin:0}.step-top i{font-size:25px}.step-top span{font-size:10px}.process-band h3{font-size:17px}.process-band p{font-size:13px;margin-top:8px}
+    .split-heading{grid-template-columns:minmax(0,1fr);gap:16px;margin-bottom:26px;text-align:center}.split-heading .eyebrow{justify-content:center}.split-heading>p{font-size:14px;line-height:1.7}.brief-list{grid-template-columns:minmax(0,1fr);gap:12px}.brief-list>div{padding:19px;border-radius:16px}.brief-list dt{flex-direction:row;align-items:center;font-size:15px;gap:13px}.brief-list dt>i{width:42px;height:42px;flex:0 0 42px;border-radius:12px;font-size:22px}.brief-list dd{font-size:13px;margin-top:12px}.inline-note{font-size:11px}
+    .condition-matrix{padding:0 2px 2px}.condition-matrix table,.condition-matrix tbody,.condition-matrix tr,.condition-matrix th,.condition-matrix td{display:block;width:100%}.condition-matrix table{border-spacing:0}.condition-matrix thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.condition-matrix tbody{display:grid;gap:14px}.condition-matrix tbody tr{padding:0;border:1px solid #d5e1d6;border-radius:16px;background:#fff;overflow:hidden;filter:none;box-shadow:0 6px 16px rgba(27,64,39,.05)}.condition-matrix th,.condition-matrix td{border:0;border-radius:0;font-size:13px;line-height:1.65}.condition-matrix tbody th{padding:18px;background:linear-gradient(120deg,var(--row-wash),#fff);border-bottom:1px solid #e0e9df}.condition-matrix tbody td{margin:0;padding:15px 18px 0;background:#fff}.condition-matrix tbody td:last-child{padding-bottom:18px;border:0;border-radius:0}.condition-name{font-size:16px;gap:12px}.condition-name i{width:40px;height:40px;flex-basis:40px;font-size:22px;border-radius:11px}.review-status{margin:10px 0 0 52px;font-size:10px}.mobile-label{display:block;margin-bottom:5px;color:#456d52;font-size:10px;letter-spacing:.07em;text-transform:uppercase;font-weight:800}.info-link{font-size:12px}
+    .section-heading{margin-bottom:26px}.section-heading>p:not(.eyebrow){font-size:14px}.process-band{grid-template-columns:minmax(0,1fr);margin-top:26px}.process-band li,.process-band li:first-child,.process-band li:last-child{display:grid;grid-template-columns:46px minmax(0,1fr);gap:0 17px;border-right:0;border-bottom:1px solid #456354;padding:22px 0}.process-band li:last-child{border-bottom:0}.step-top{grid-row:1/3;margin:0;align-items:flex-start}.step-top i{width:46px;height:46px;border-radius:13px;font-size:24px}.process-band h3{font-size:17px}.process-band p{font-size:13px;margin-top:8px}
     .sites-layout>div:first-child,.paperwork-layout>header,.coverage-layout>header{text-align:center}.sites-layout .eyebrow,.paperwork-layout .eyebrow,.coverage-layout .eyebrow{justify-content:center}.site-plan{padding:21px;border-radius:14px}.plan-label{font-size:10px}.site-plan li{gap:10px;padding:17px 0}.site-plan h3{font-size:15px}.site-plan li p{font-size:12px}.plan-footer{font-size:11px}summary{font-size:14px;min-height:62px;padding:14px 0;gap:12px}summary>span{gap:10px}summary>span>i{font-size:20px}details>p{font-size:13px;line-height:1.75}.paperwork-list details>p{padding-left:30px}.coverage-section{padding-block:41px}.coverage-list{padding:0;border:0;gap:15px 12px}.coverage-list li{font-size:12px;gap:7px}.coverage-list i{font-size:17px}.guide-grid{grid-template-columns:minmax(0,1fr)}.final-section{padding:46px 0}.final-layout{text-align:center;gap:25px}.final-section .eyebrow{justify-content:center}.final-section p:not(.eyebrow){font-size:14px}.final-actions{justify-items:center}.final-actions :global(.section-action){width:100%;justify-content:center}
   }
-  @media(prefers-reduced-motion:reduce){summary>.ph-plus{transition:none}}
+  @media(prefers-reduced-motion:reduce){summary>.ph-plus,.brief-list>div,.condition-matrix tbody td{transition:none}}
 </style>
