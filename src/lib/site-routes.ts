@@ -8,6 +8,7 @@ export const indexableStaticRoutes = [
   '/sell-car-with-engine-problems/',
   '/scrap-my-car/',
   '/scrap-car-value/',
+  '/car-removal/',
   '/free-quote',
   '/contact-us',
   '/faqs',
