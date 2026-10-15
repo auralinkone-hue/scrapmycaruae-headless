@@ -25,12 +25,12 @@ const routes = [
   { icon: 'ph-recycle', label: 'Scrap', fit: 'Severe wear, major damage or multiple issues that make further use impractical.', weigh: 'Potential reuse or salvage, vehicle status and the practical collection route.' }
 ];
 const factors = [
-  ['Make, model & year', 'Vehicle identity gives age, parts relevance and demand some context. Include the mileage if known.'],
-  ['Current condition', 'Explain body damage, wear, missing parts and known mechanical or electrical issues.'],
-  ['Whether it runs', 'Tell us whether it starts, moves and rolls, and how long it has been parked.'],
-  ['Reusable components', 'Some serviceable parts may still be relevant. Not every component has practical resale value.'],
-  ['Documents & status', 'Available registration details and any known finance or restrictions help clarify the next step.'],
-  ['Collection access', 'Share the exact location, parking level, keys and whether a recovery vehicle can reach the car.']
+  ['ph-car-profile', 'Make, model & year', 'Vehicle identity gives age, parts relevance and demand some context. Include the mileage if known.'],
+  ['ph-warning-circle', 'Current condition', 'Explain body damage, wear, missing parts and known mechanical or electrical issues.'],
+  ['ph-engine', 'Whether it runs', 'Tell us whether it starts, moves and rolls, and how long it has been parked.'],
+  ['ph-gear', 'Reusable components', 'Some serviceable parts may still be relevant. Not every component has practical resale value.'],
+  ['ph-file-text', 'Documents & status', 'Available registration details and any known finance or restrictions help clarify the next step.'],
+  ['ph-truck', 'Collection access', 'Share the exact location, parking level, keys and whether a recovery vehicle can reach the car.']
 ];
 const steps = [
   ['ph-car-profile', 'Details', 'Share the make, model and year, then explain the condition and known faults.'],
@@ -85,15 +85,14 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
       </div>
     </div></section>
 
-    <section class="section life-section" aria-labelledby="life-title"><div class="smc-container">
-      <div class="editorial-heading"><div><p class="eyebrow">Age is only part of the story</p><h2 id="life-title">When does an old car become an <span>end-of-life car?</span></h2></div><p>An older vehicle is not automatically an end-of-life vehicle. What matters is whether it remains practical to use, what work it needs and whether further repairs make sense for your circumstances.</p></div>
+    <section class="section life-section" aria-labelledby="life-title"><div class="smc-container life-layout">
       <figure class="old-car-photo"><img src="/sections/older-worn-car-uae.webp" alt="Older silver sedan with faded paint, worn headlights and everyday body wear outside a workshop" width="1536" height="1024" loading="lazy" decoding="async" /><figcaption><i class="ph ph-car-profile" aria-hidden="true"></i>Look at the whole vehicle, not just its age.</figcaption></figure>
-      <div class="life-context"><article><h3>Age gives context</h3><p>A model year does not tell you how the car has been maintained or what still works.</p></article><article><h3>Mileage needs a closer look</h3><p>Use and service history matter alongside the current condition and known faults.</p></article><article><h3>Practicality guides the decision</h3><p>Consider the work ahead, remaining usability and alternatives before choosing a route.</p></article></div>
+      <div class="life-copy"><p class="eyebrow">Age is only part of the story</p><h2 id="life-title">When does an old car become an <span>end-of-life car?</span></h2><p class="life-lead">An older vehicle is not automatically an end-of-life vehicle. What matters is whether it remains practical to use, what work it needs and whether further repairs make sense for your circumstances.</p><div class="life-context"><article><i class="ph ph-calendar-blank" aria-hidden="true"></i><div><h3>Age gives context</h3><p>A model year does not tell you how the car has been maintained or what still works.</p></div></article><article><i class="ph ph-gauge" aria-hidden="true"></i><div><h3>Mileage needs a closer look</h3><p>Use and service history matter alongside the current condition and known faults.</p></div></article><article><i class="ph ph-scales" aria-hidden="true"></i><div><h3>Practicality guides the decision</h3><p>Consider the work ahead, remaining usability and alternatives before choosing a route.</p></div></article></div></div>
     </div></section>
 
     <section class="section signs-section" aria-labelledby="signs-title"><div class="smc-container">
       <header class="section-heading"><p class="eyebrow">A useful point to pause</p><h2 id="signs-title">Signs it may be time <span>to move on</span></h2><p>These are reasons to review the options, not automatic reasons to scrap the car.</p></header>
-      <div class="signs-layout"><div class="signs-accordion">{signs.map((sign, index) => <details name="old-car-signs" open={index === 0}><summary><span><i class:list={['ph', sign.icon]} aria-hidden="true"></i>{sign.title}</span><i class="ph ph-plus accordion-toggle" aria-hidden="true"></i></summary><div class="sign-content"><p>{sign.copy}</p>{sign.href && <a class="info-link" href={sign.href}>{sign.link} <span aria-hidden="true">→</span></a>}</div></details>)}</div><aside class="decision-note"><i class="ph ph-scales" aria-hidden="true"></i><p class="eyebrow">Before committing to more work</p><h3>Look beyond the next repair bill.</h3><p>What is known about the fault? What else needs attention? Will the car still meet your needs?</p><p>A current-condition valuation gives you another option to weigh up.</p><SectionActionButton href="/free-quote" label="Value my old car" intent="valuation" /></aside></div>
+      <div class="signs-layout"><div class="signs-accordion">{signs.map((sign, index) => <details name="old-car-signs" open={index === 0}><summary><span><i class:list={['ph', sign.icon]} aria-hidden="true"></i>{sign.title}</span><i class="ph ph-plus accordion-toggle" aria-hidden="true"></i></summary><div class="sign-content"><p>{sign.copy}</p>{sign.href && <a class="info-link" href={sign.href}><i class:list={['ph', sign.icon]} aria-hidden="true"></i>{sign.link}</a>}</div></details>)}</div><aside class="decision-note"><i class="ph ph-scales" aria-hidden="true"></i><p class="eyebrow">Before committing to more work</p><h3>Look beyond the next repair bill.</h3><p>What is known about the fault? What else needs attention? Will the car still meet your needs?</p><p>A current-condition valuation gives you another option to weigh up.</p><SectionActionButton href="/free-quote" label="Value my old car" intent="valuation" /></aside></div>
     </div></section>
 
     <section class="section comparison-section" aria-labelledby="comparison-title"><div class="smc-container">
@@ -103,21 +102,21 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
     </div></section>
 
     <section class="section matters-section" aria-labelledby="matters-title"><div class="smc-container">
-      <div class="editorial-heading"><div><p class="eyebrow">The car still has a story to tell</p><h2 id="matters-title">What still matters <span>in an old car?</span></h2></div><div><p>Share an honest picture of the vehicle. Age is only one detail in a review of its condition, usability and practical next route.</p><a class="info-link" href="/scrap-car-value/">Understand scrap-car value <span aria-hidden="true">→</span></a></div></div>
-      <ol class="matters-list">{factors.map(([heading, copy], index) => <li><span class="list-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span><div><h3>{heading}</h3><p>{copy}</p></div></li>)}</ol>
+      <div class="editorial-heading"><div><p class="eyebrow">The car still has a story to tell</p><h2 id="matters-title">What still matters <span>in an old car?</span></h2></div><div><p>Share an honest picture of the vehicle. Age is only one detail in a review of its condition, usability and practical next route.</p><a class="info-link" href="/scrap-car-value/"><i class="ph ph-calculator" aria-hidden="true"></i>Understand scrap-car value</a></div></div>
+      <ol class="matters-list">{factors.map(([icon, heading, copy]) => <li><i class:list={['ph', icon, 'matter-icon']} aria-hidden="true"></i><div><h3>{heading}</h3><p>{copy}</p></div></li>)}</ol>
     </div></section>
 
-    <section class="section process-section" aria-labelledby="process-title"><div class="smc-container"><header class="section-heading"><p class="eyebrow">From uncertainty to a next step</p><h2 id="process-title">How the <span>process works</span></h2><p>Start with the details. Choose the route after the discussion.</p></header><ol class="process-list">{steps.map(([icon, heading, copy], index) => <li><div class="step-marker"><i class:list={['ph', icon]} aria-hidden="true"></i><span>Step {index + 1}</span></div><div><h3>{heading}</h3><p>{copy}</p></div></li>)}</ol></div></section>
+    <section class="section process-section" aria-labelledby="process-title"><div class="smc-container"><header class="section-heading"><p class="eyebrow">From uncertainty to a next step</p><h2 id="process-title">How the <span>process works</span></h2><p>Start with the details. Choose the route after the discussion.</p></header><ol class="process-list">{steps.map(([icon, heading, copy], index) => <li><div class="step-marker"><i class:list={['ph', icon]} aria-hidden="true"></i><span>Step {index + 1}</span></div><div><h3>{heading}</h3><p>{copy}</p></div>{index < steps.length - 1 && <span class="step-connector" aria-hidden="true"><i class="ph ph-arrow-right"></i></span>}</li>)}</ol></div></section>
 
-    <section class="section status-section" aria-labelledby="status-title"><div class="smc-container status-layout"><header><p class="eyebrow">Check the status before the handover</p><h2 id="status-title">UAE paperwork <span>& vehicle status</span></h2><p>Requirements depend on the emirate, registration authority and agreed route. Confirm the current requirements before taking any transfer or cancellation steps.</p><div class="official-links"><a class="info-link" href="https://www.rta.ae/wps/portal/rta/ae/home/rta-services/service-details?serviceId=525" target="_blank" rel="noopener noreferrer">RTA registration cancellation guidance <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a><a class="info-link" href="https://u.ae/en/information-and-services/transportation/registering-vehicles" target="_blank" rel="noopener noreferrer">UAE government vehicle registration guide <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></div></header><ul class="status-list">{paperwork.map(([icon, heading, copy]) => <li><i class:list={['ph', icon]} aria-hidden="true"></i><div><h3>{heading}</h3><p>{copy}</p></div></li>)}</ul></div></section>
+    <section class="section status-section" aria-labelledby="status-title"><div class="smc-container status-layout"><header><p class="eyebrow">Check the status before the handover</p><h2 id="status-title">UAE paperwork <span>& vehicle status</span></h2><p>Requirements depend on the emirate, registration authority and agreed route. Confirm the current requirements before taking any transfer or cancellation steps.</p><div class="status-visual" aria-hidden="true"><div class="status-orbit"><span class="status-orbit__centre"><i class="ph ph-car-profile"></i><b>Vehicle status</b></span><span class="status-orbit__node status-orbit__node--top"><i class="ph ph-identification-card"></i></span><span class="status-orbit__node status-orbit__node--right"><i class="ph ph-bank"></i></span><span class="status-orbit__node status-orbit__node--bottom"><i class="ph ph-file-text"></i></span><span class="status-orbit__node status-orbit__node--left"><i class="ph ph-key"></i></span><i class="ph ph-arrow-clockwise status-orbit__direction"></i></div></div><div class="official-links"><a class="info-link" href="https://www.rta.ae/wps/portal/rta/ae/home/rta-services/service-details?serviceId=525" target="_blank" rel="noopener noreferrer"><i class="ph ph-identification-card" aria-hidden="true"></i>RTA registration cancellation guidance</a><a class="info-link" href="https://u.ae/en/information-and-services/transportation/registering-vehicles" target="_blank" rel="noopener noreferrer"><i class="ph ph-book-open-text" aria-hidden="true"></i>UAE government vehicle registration guide</a></div></header><ul class="status-list">{paperwork.map(([icon, heading, copy]) => <li><i class:list={['ph', icon]} aria-hidden="true"></i><div><h3>{heading}</h3><p>{copy}</p></div></li>)}</ul></div></section>
 
-    <section class="section collection-section" aria-labelledby="collection-title"><div class="smc-container collection-layout"><div><p class="eyebrow">If collection is the next step</p><h2 id="collection-title">An old car, <span>wherever it is parked</span></h2><p>Share the location, keys, whether it rolls and any parking restrictions. Feasibility and arrangements are reviewed with the request.</p><a class="info-link" href="/car-removal/">Car removal and collection checks <span aria-hidden="true">→</span></a></div><div class="collection-locations"><i class="ph ph-truck collection-icon" aria-hidden="true"></i><p>UAE collection discussion</p><ul aria-label="UAE collection locations">{priorityCoverageLocations.map((location) => <li><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</li>)}</ul></div></div></section>
+    <section class="section collection-section" aria-labelledby="collection-title"><div class="smc-container collection-layout"><div><p class="eyebrow">If collection is the next step</p><h2 id="collection-title">An old car, <span>wherever it is parked</span></h2><p>Share the location, keys, whether it rolls and any parking restrictions. Feasibility and arrangements are reviewed with the request.</p><a class="info-link" href="/car-removal/"><i class="ph ph-truck" aria-hidden="true"></i>Car removal and collection checks</a></div><div class="collection-locations"><i class="ph ph-truck collection-icon" aria-hidden="true"></i><p>UAE collection discussion</p><ul aria-label="UAE collection locations">{priorityCoverageLocations.map((location) => <li><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</li>)}</ul></div></div></section>
 
     <section class="section guides-section" aria-labelledby="guides-title"><div class="smc-container"><header class="section-heading"><p class="eyebrow">Read before deciding</p><h2 id="guides-title">Guides for your <span>next decision</span></h2><p>Explore existing advice on repairs, vehicle value and the scrap-car route.</p></header>{helpfulPosts.length > 0 ? <div class="guide-grid">{helpfulPosts.slice(0, 3).map((post) => <BlogArticleCard post={post} />)}</div> : <p class="guides-fallback">Find vehicle selling and scrap-car guides on our blog.</p>}<div class="section-cta"><SectionActionButton href="/blogs" label="View all blogs" intent="blogs" /></div></div></section>
 
     <section class="section faq-section" aria-labelledby="faq-title"><div class="smc-container"><header class="section-heading"><h2 id="faq-title">Old-car valuation <span>FAQs</span></h2><p>Answers before you commit to another repair or decide to move on.</p></header><div class="faq-stack">{faqs.map(([question, answer], index) => <details open={index === 0}><summary><span>{question}</span><i class="ph ph-plus accordion-toggle" aria-hidden="true"></i></summary><p>{answer}</p></details>)}</div></div></section>
 
-    <section class="final-cta" aria-labelledby="final-title"><div class="smc-container final-layout"><div><p class="eyebrow">Start with what it is worth today</p><h2 id="final-title">Before the next repair,<span>know your options.</span></h2><p>Share your older car’s details and current condition to start with a free valuation.</p></div><div class="final-actions"><SectionActionButton href="/free-quote" label="Get my old-car valuation" intent="valuation" /><a href="/scrap-my-car/">Explore the complete scrap-car process <span aria-hidden="true">→</span></a></div></div></section>
+    <section class="final-cta" aria-labelledby="final-title"><div class="smc-container final-layout"><div><p class="eyebrow">Start with what it is worth today</p><h2 id="final-title">Before the next repair,<span>know your options.</span></h2><p>Share your older car’s details and current condition to start with a free valuation.</p></div><div class="final-actions"><SectionActionButton href="/free-quote" label="Get my old-car valuation" intent="valuation" /><a href="/scrap-my-car/"><i class="ph ph-recycle" aria-hidden="true"></i>Explore the complete scrap-car process</a></div></div></section>
   </main>
 </BaseLayout>
 
@@ -138,21 +137,27 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .hero-trust{grid-area:trust;align-self:start;display:grid;gap:11px;margin:0;padding:0;list-style:none}
   .hero-trust li{display:flex;gap:9px;align-items:center;color:#335936;font-size:14px;font-weight:750}
   .hero-trust i{display:grid;flex:0 0 21px;width:21px;height:21px;place-items:center;border-radius:50%;background:#2f7d37;color:#fff;font-size:12px}
-  .section{padding:clamp(62px,7vw,96px) 0}
+  .section{padding:clamp(54px,5.7vw,78px) 0}
   h2{margin:13px 0 0;font-size:clamp(2.2rem,3.7vw,3.5rem);line-height:1.07;letter-spacing:-.05em}
   h2 span{color:#398b41}
   h3{margin:0;font-size:18px;line-height:1.35;letter-spacing:-.025em}
   .editorial-heading{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr);gap:clamp(30px,6vw,85px);align-items:end;margin-bottom:32px}
   .editorial-heading>p,.editorial-heading>div>p:not(.eyebrow){margin:0;color:#5d6b5b;line-height:1.75}
   .editorial-heading .info-link{margin-top:17px}
-  .old-car-photo{position:relative;margin:0;border-radius:22px;overflow:hidden;background:#e8ece3}
-  .old-car-photo img{display:block;width:100%;height:auto;aspect-ratio:2.05;object-fit:cover;object-position:center 58%}
-  .old-car-photo figcaption{position:absolute;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:center;padding:44px 26px 22px;background:linear-gradient(transparent,rgba(15,32,19,.88));color:#fff;font-size:14px;font-weight:750}
+  .life-section{background:radial-gradient(ellipse at 14% 50%,#edf5e5,transparent 42%),#fff}
+  .life-layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:clamp(28px,4.2vw,60px);align-items:center}
+  .old-car-photo{position:relative;margin:0;padding:12px;border:1px solid #d5e5cc;border-radius:28px;background:linear-gradient(145deg,#e8f2df,#f8fbf5);box-shadow:0 18px 42px rgba(34,76,29,.1)}
+  .old-car-photo img{display:block;width:100%;height:auto;aspect-ratio:auto;object-fit:contain;border-radius:19px}
+  .old-car-photo figcaption{display:flex;gap:9px;align-items:center;padding:15px 8px 5px;color:#345d37;font-size:12px;font-weight:750;line-height:1.5}
   .old-car-photo figcaption i{font-size:23px}
-  .life-context{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px;margin-top:29px}
-  .life-context article{padding-top:17px;border-top:2px solid #b4cdaa}
-  .life-context h3{font-size:17px}
-  .life-context p{margin:8px 0 0;color:#61705e;font-size:14px;line-height:1.65}
+  .life-copy h2{font-size:clamp(2rem,3.05vw,2.85rem)}
+  .life-lead{margin:18px 0 0;color:#5c6c56;font-size:15px;line-height:1.7}
+  .life-context{display:grid;gap:16px;margin-top:23px}
+  .life-context article{display:grid;grid-template-columns:39px minmax(0,1fr);gap:12px;align-items:start}
+  .life-context article>i{display:grid;width:38px;height:38px;place-items:center;border-radius:50%;background:#e3f0d8;border:1px solid #c8deb9;color:#3b7c3f;font-size:19px;box-shadow:0 0 0 4px #f5f9f1}
+  .life-context article:nth-child(2)>i{background:#e5f1f8;border-color:#c7dfea;color:#2b709c}
+  .life-context h3{font-size:15px}
+  .life-context p{margin:5px 0 0;color:#61705e;font-size:13px;line-height:1.6}
   .section-heading{max-width:760px;margin:0 auto 34px;text-align:center}
   .section-heading .eyebrow{justify-content:center}
   .section-heading p:not(.eyebrow){margin:16px auto 0;color:#5d6b5b;line-height:1.7}
@@ -171,8 +176,10 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .sign-content .info-link{margin-top:13px}
   .info-link{display:inline-flex;gap:7px;align-items:center;color:#1769aa;font-size:14px;font-weight:750;line-height:1.5;text-decoration:none}
   .info-link:hover{text-decoration:underline;color:#0f4e7b}
+  .info-link>i{flex:0 0 auto;font-size:18px}
   summary:focus-visible,a:focus-visible{outline:3px solid #6c9fc1;outline-offset:4px;border-radius:4px}
-  .decision-note{padding:clamp(25px,3vw,38px);border-radius:19px;background:#1d4727;color:#fff}
+  .decision-note{position:relative;isolation:isolate;overflow:hidden;padding:clamp(25px,3vw,38px);border-radius:19px;background:radial-gradient(circle at 100% 0,rgba(161,207,113,.18),transparent 55%),#1d4727;color:#fff}
+  .decision-note::after{position:absolute;z-index:-1;width:240px;height:240px;right:-130px;bottom:-100px;border:1px solid rgba(190,225,168,.22);border-radius:50%;box-shadow:0 0 0 25px rgba(190,225,168,.04),0 0 0 50px rgba(190,225,168,.03);content:'';pointer-events:none}
   .decision-note>i{font-size:33px;color:#c2e3b1}
   .decision-note .eyebrow{margin-top:19px;color:#bddba9;font-size:10px}
   .decision-note h3{margin-top:12px;font-size:clamp(1.5rem,2.2vw,2rem);line-height:1.15;letter-spacing:-.04em}
@@ -198,32 +205,48 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .section-cta{display:flex;justify-content:center;margin-top:26px}
   .comparison-section :global(.section-action){background:#e1f1d5;border-color:#e1f1d5;color:#173f22}
   .matters-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:44px;margin:0;padding:0;list-style:none}
-  .matters-list li{display:grid;grid-template-columns:37px minmax(0,1fr);gap:14px;padding:23px 0;border-top:1px solid #d9e5d3}
-  .list-number{color:#6b9361;font-size:12px;font-weight:850;padding-top:4px}
+  .matters-list li{display:grid;grid-template-columns:49px minmax(0,1fr);gap:16px;padding:22px 0;border-top:1px solid #d9e5d3}
+  .matter-icon{display:grid;width:44px;height:44px;place-items:center;border:1px solid #ccdfbf;border-radius:50%;background:#e9f3e1;color:#3b7b3e;font-size:22px;box-shadow:0 0 0 5px #f7faf3}
+  .matters-list li:nth-child(3n+2) .matter-icon{background:#e9f3f8;border-color:#c7dfe9;color:#28739e}
   .matters-list p{margin:8px 0 0;color:#5c6d58;font-size:14px;line-height:1.65}
-  .process-section{background:#f4f8f0;border-block:1px solid #e0ead8}
+  .process-section{background:radial-gradient(ellipse at 50% 25%,rgba(182,217,156,.23),transparent 65%),#f4f8f0;border-block:1px solid #e0ead8}
   .process-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:27px;margin:38px 0 0;padding:0;list-style:none}
-  .step-marker{position:relative;display:flex;gap:13px;align-items:center;margin-bottom:20px}
-  .step-marker>i{display:grid;width:48px;height:48px;place-items:center;border-radius:14px;background:#24552d;color:#d2e9be;font-size:24px}
+  .process-list li{position:relative;padding:0 10px;text-align:center}
+  .step-marker{position:relative;display:flex;flex-direction:column;gap:15px;align-items:center;margin-bottom:14px}
+  .step-marker>i{display:grid;width:70px;height:70px;place-items:center;border:1px solid #aac993;border-radius:50%;background:linear-gradient(145deg,#24552d,#397443);color:#e0f1d3;font-size:30px;box-shadow:0 0 0 8px #e4efda,0 10px 22px rgba(41,86,31,.12)}
   .step-marker>span{color:#63875b;font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
-  .process-list li:not(:last-child) .step-marker::after{height:1px;flex:1;background:#b5ceaa;content:''}
+  .step-connector{position:absolute;top:23px;right:-28px;display:grid;width:29px;height:29px;place-items:center;border:1px solid #b6d0a4;border-radius:50%;background:#f8fcf3;color:#4b8240;font-size:15px}
   .process-list h3{font-size:19px}
   .process-list p{margin:10px 0 0;color:#5a6d55;font-size:14px;line-height:1.7}
-  .status-section{background:#f7fafb}
-  .status-layout{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(32px,7vw,95px)}
-  .status-layout header>p:not(.eyebrow){margin:20px 0 0;color:#596c61;line-height:1.7}
-  .official-links{display:grid;gap:13px;margin-top:23px}
+  .status-section{background:radial-gradient(ellipse at 9% 50%,#eaf3e3,transparent 47%),linear-gradient(120deg,#f6faf3,#eef5f8);border-block:1px solid #deeadb}
+  .status-layout{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(30px,5vw,65px);align-items:center}
+  .status-layout h2{font-size:clamp(2rem,3.25vw,3rem)}
+  .status-layout header>p:not(.eyebrow){margin:17px 0 0;color:#596c61;font-size:14px;line-height:1.7}
+  .status-visual{display:grid;place-items:center;margin:18px 0 17px;padding:20px 0}
+  .status-orbit{position:relative;width:178px;height:178px;border:1px dashed #9abf8d;border-radius:50%;box-shadow:0 0 0 15px rgba(142,182,117,.06),0 0 0 30px rgba(142,182,117,.035)}
+  .status-orbit__centre{position:absolute;inset:32px;display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;border:1px solid #bed7ae;border-radius:50%;background:linear-gradient(145deg,#fff,#deedcf);box-shadow:0 8px 22px rgba(48,86,31,.1);color:#2c6435}
+  .status-orbit__centre>i{font-size:32px}
+  .status-orbit__centre>b{font-size:10px}
+  .status-orbit__node{position:absolute;display:grid;width:38px;height:38px;place-items:center;border:1px solid #c5dbc0;border-radius:50%;background:#fff;color:#36763e;font-size:19px;box-shadow:0 5px 12px rgba(48,86,31,.08)}
+  .status-orbit__node--top{top:-19px;left:calc(50% - 19px)}
+  .status-orbit__node--right{right:-19px;top:calc(50% - 19px);background:#e7f2f9;color:#267399;border-color:#bdd8e6}
+  .status-orbit__node--bottom{bottom:-19px;left:calc(50% - 19px)}
+  .status-orbit__node--left{left:-19px;top:calc(50% - 19px);background:#e7f2f9;color:#267399;border-color:#bdd8e6}
+  .status-orbit__direction{position:absolute;right:4px;bottom:5px;background:#eef5e9;border-radius:50%;color:#67945a;font-size:23px}
+  .official-links{display:grid;gap:9px;margin-top:12px}
   .official-links .info-link{font-size:13px}
-  .status-list{margin:0;padding:0;list-style:none;border-top:1px solid #d6e1e2}
-  .status-list li{display:grid;grid-template-columns:38px minmax(0,1fr);gap:14px;padding:18px 0;border-bottom:1px solid #d6e1e2}
-  .status-list li>i{display:grid;width:36px;height:36px;place-items:center;border-radius:10px;background:#e7f0ed;color:#347443;font-size:20px}
+  .status-list{margin:0;padding:6px 26px;list-style:none;border:1px solid #d1e1cc;border-radius:23px;background:rgba(255,255,255,.86);box-shadow:0 18px 40px rgba(39,77,30,.07)}
+  .status-list li{display:grid;grid-template-columns:49px minmax(0,1fr);gap:15px;padding:23px 0;border-bottom:1px solid #d6e1e2}
+  .status-list li:last-child{border-bottom:0}
+  .status-list li>i{display:grid;width:44px;height:44px;place-items:center;border:1px solid #c9dfbc;border-radius:50%;background:#e8f3df;color:#347443;font-size:22px;box-shadow:0 0 0 4px #f4f9ef}
+  .status-list li:nth-child(even)>i{background:#e8f3fa;border-color:#c9e0ec;color:#286f9a}
   .status-list p{margin:7px 0 0;color:#5b6c61;font-size:14px;line-height:1.7}
   .collection-section{padding-block:clamp(48px,6vw,76px)}
   .collection-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:clamp(32px,7vw,90px);align-items:center}
   .collection-layout h2{font-size:clamp(2rem,3.4vw,3rem)}
   .collection-layout>div>p:not(.eyebrow){margin:17px 0 21px;color:#5d6d57;line-height:1.7}
-  .collection-locations{padding:26px 30px;border-left:3px solid #679454;background:#f3f7ed}
-  .collection-icon{font-size:31px;color:#39743e}
+  .collection-locations{position:relative;overflow:hidden;padding:26px 30px;border:1px solid #ccddc1;border-radius:22px;background:radial-gradient(circle at 100% 0,#e0efd2,transparent 60%),#f3f7ed;box-shadow:0 12px 28px rgba(39,77,30,.06)}
+  .collection-icon{display:grid;width:58px;height:58px;place-items:center;margin-bottom:17px;border:1px solid #b9d3a6;border-radius:50%;background:#e2f0d4;font-size:28px;color:#39743e;box-shadow:0 0 0 7px rgba(210,229,194,.3)}
   .collection-locations>p{font-size:14px!important;font-weight:800;color:#315738!important;margin:9px 0 18px!important}
   .collection-locations ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px 17px;margin:0;padding:0;list-style:none}
   .collection-locations li{display:flex;gap:7px;align-items:center;font-size:13px;color:#45633e}
@@ -242,11 +265,15 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   .final-cta p:not(.eyebrow){max-width:610px;margin:18px 0 0;color:#cedfc5;line-height:1.7}
   .final-actions{display:grid;justify-items:start;gap:18px}
   .final-actions :global(.section-action){background:#e1f1d5;border-color:#e1f1d5;color:#173f22}
-  .final-actions>a{color:#c9e6b8;font-size:13px;font-weight:750;line-height:1.6;text-decoration:none}
+  .final-actions>a{display:inline-flex;align-items:center;gap:8px;color:#c9e6b8;font-size:13px;font-weight:750;line-height:1.6;text-decoration:none}
+  .final-actions>a>i{flex:0 0 auto;font-size:18px}
   @media(max-width:980px){
     .old-hero__grid{grid-template-areas:'copy' 'form' 'trust';grid-template-columns:minmax(0,1fr)}
     .old-hero__copy{max-width:700px}
     .old-hero__form{width:min(100%,650px)}
+    .life-layout{grid-template-columns:minmax(0,1fr);gap:30px}
+    .old-car-photo{width:min(100%,680px);justify-self:center}
+    .life-copy{max-width:760px;justify-self:center}
     .editorial-heading{gap:30px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
     .signs-layout{grid-template-columns:minmax(0,1fr)}
     .decision-note{display:block;max-width:none}
@@ -277,13 +304,14 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
     .editorial-heading{grid-template-columns:minmax(0,1fr);gap:17px;text-align:center;margin-bottom:25px}
     .editorial-heading .eyebrow{justify-content:center}
     .editorial-heading>p,.editorial-heading>div>p:not(.eyebrow){font-size:14px;line-height:1.7}
-    .old-car-photo{border-radius:16px}
-    .old-car-photo img{aspect-ratio:1.25;object-position:center;object-fit:cover}
-    .old-car-photo figcaption{padding:30px 17px 17px;font-size:12px;line-height:1.5}
-    .life-context{grid-template-columns:minmax(0,1fr);gap:18px;margin-top:23px}
-    .life-context article{padding-top:14px}
-    .life-context h3{font-size:16px}
-    .life-context p{font-size:13px;margin-top:6px}
+    .life-layout{gap:25px}
+    .old-car-photo{border-radius:20px;padding:8px}
+    .old-car-photo img{border-radius:13px}
+    .old-car-photo figcaption{padding:12px 5px 4px;font-size:11px;line-height:1.5}
+    .life-copy>h2,.life-copy>.eyebrow,.life-lead{text-align:center;justify-content:center}
+    .life-copy h2{font-size:clamp(1.95rem,8.3vw,2.6rem)}
+    .life-lead{font-size:14px}
+    .life-context{gap:18px;margin-top:23px}
     .section-heading{margin-bottom:26px}
     .section-heading p:not(.eyebrow){font-size:14px;line-height:1.65}
     summary{min-height:62px;padding:12px 0}
@@ -310,23 +338,36 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
     .comparison-note{font-size:12px}
     .comparison-section .section-cta :global(.section-action){width:100%;justify-content:center}
     .matters-list{grid-template-columns:minmax(0,1fr)}
-    .matters-list li{grid-template-columns:29px minmax(0,1fr);gap:10px;padding:18px 0}
+    .matters-list li{grid-template-columns:41px minmax(0,1fr);gap:12px;padding:18px 0}
+    .matter-icon{width:36px;height:36px;font-size:19px;box-shadow:0 0 0 3px #f7faf3}
     .matters-list p{font-size:13px;margin-top:6px}
     .process-list{grid-template-columns:minmax(0,1fr);gap:0;margin-top:30px}
-    .process-list li{position:relative;display:grid;grid-template-columns:52px minmax(0,1fr);gap:17px;padding-bottom:28px}
+    .process-list li{position:relative;display:grid;grid-template-columns:52px minmax(0,1fr);gap:17px;padding:0 0 33px;text-align:left}
     .process-list li:last-child{padding-bottom:0}
     .step-marker{display:flex;flex-direction:column;gap:7px;margin:0}
-    .step-marker>i{width:46px;height:46px;border-radius:12px;font-size:22px}
+    .step-marker>i{width:46px;height:46px;border-radius:50%;font-size:22px;box-shadow:0 0 0 4px #e4efda}
     .step-marker>span{font-size:9px;white-space:nowrap}
-    .process-list li:not(:last-child) .step-marker::after{position:absolute;top:77px;bottom:-18px;width:1px;height:auto}
+    .step-connector{top:auto;bottom:5px;left:14px;right:auto;width:24px;height:24px;font-size:12px;transform:rotate(90deg)}
     .process-list h3{font-size:18px;margin-top:3px}
     .process-list p{font-size:13px;margin-top:7px;line-height:1.65}
     .status-layout header,.collection-layout>div:first-child{text-align:center}
     .status-layout header .eyebrow,.collection-layout .eyebrow{justify-content:center}
     .status-layout header>p:not(.eyebrow),.collection-layout>div>p:not(.eyebrow){font-size:14px}
     .official-links{justify-items:center}
-    .status-list li{grid-template-columns:34px minmax(0,1fr);gap:12px;padding:16px 0}
-    .status-list li>i{width:32px;height:32px;font-size:18px}
+    .status-visual{margin:15px 0;padding-block:17px}
+    .status-orbit{width:138px;height:138px;box-shadow:0 0 0 12px rgba(142,182,117,.06)}
+    .status-orbit__centre{inset:24px}
+    .status-orbit__centre>i{font-size:27px}
+    .status-orbit__centre>b{font-size:9px}
+    .status-orbit__node{width:32px;height:32px;font-size:17px}
+    .status-orbit__node--top{top:-16px;left:calc(50% - 16px)}
+    .status-orbit__node--right{right:-16px;top:calc(50% - 16px)}
+    .status-orbit__node--bottom{bottom:-16px;left:calc(50% - 16px)}
+    .status-orbit__node--left{left:-16px;top:calc(50% - 16px)}
+    .status-orbit__direction{font-size:19px;right:1px;bottom:2px}
+    .status-list{padding:3px 18px;border-radius:18px}
+    .status-list li{grid-template-columns:36px minmax(0,1fr);gap:12px;padding:18px 0}
+    .status-list li>i{width:32px;height:32px;font-size:18px;box-shadow:none}
     .status-list p{font-size:13px}
     .collection-locations{padding:23px}
     .collection-locations ul{gap:13px 9px}
