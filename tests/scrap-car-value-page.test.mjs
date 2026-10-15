@@ -14,10 +14,16 @@ test('scrap-car-value page has the requested SEO, form, schemas and interactive 
   assert.match(page, /What shapes your car/);
   assert.match(page, /data-factor/);
   assert.match(page, /aria-pressed/);
+  assert.match(page, /aria-controls={`condition-panel-\${index}`}/);
+  assert.match(page, /event\.key === 'ArrowRight'/);
   assert.match(page, /'@type': 'BreadcrumbList'/);
   assert.match(page, /'@type': 'FAQPage'/);
+  assert.match(page, /getRelevantPosts/);
   assert.match(page, /View all blogs/);
   assert.match(page, /\/scrap-my-car\//);
+  assert.match(page, /priorityCoverageLocations/);
+  assert.doesNotMatch(page, /LocationCoverageList/);
+  assert.doesNotMatch(page, /AED\s*[\d,]+/i);
 });
 
 test('scrap-car-value is in the production static sitemap manifest and its parent links to it', async () => {

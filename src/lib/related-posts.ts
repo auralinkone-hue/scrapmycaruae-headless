@@ -122,3 +122,49 @@ export async function getLatestPosts(currentPost: WixPost): Promise<WixPost[]> {
     return [];
   }
 }
+
+/**
+ * Selects a small set of recent posts whose public Wix fields match the
+ * requested topic terms. When fewer than three match, the caller can render
+ * the smaller set instead of presenting unrelated guides as recommendations.
+ */
+export async function getRelevantPosts(
+  currentPost: WixPost,
+  topicTerms: string[],
+): Promise<WixPost[]> {
+  const normalizedTerms = topicTerms
+    .map((term) => term.trim().toLowerCase())
+    .filter(Boolean);
+
+  if (!normalizedTerms.length) return [];
+
+  try {
+    const result = await wixClient.posts
+      .queryPosts()
+      .descending('firstPublishedDate')
+      .limit(12)
+      .find();
+
+    return (result.items ?? [])
+      .filter((post: WixPost) => isValidPost(post, currentPost))
+      .map((post: WixPost, index: number) => {
+        const title = String(post.title ?? '').toLowerCase();
+        const searchable = [
+          title,
+          String(post.slug ?? ''),
+          String(post.excerpt ?? ''),
+          ...values(post.hashtags),
+        ].join(' ').toLowerCase();
+        const score = normalizedTerms.reduce((total, term) => (
+          total + (title.includes(term) ? 3 : searchable.includes(term) ? 1 : 0)
+        ), 0);
+        return { post, score, index };
+      })
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score || a.index - b.index)
+      .slice(0, MAX_RELATED_POSTS)
+      .map(({ post }) => post);
+  } catch {
+    return [];
+  }
+}
