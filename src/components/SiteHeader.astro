@@ -13,10 +13,17 @@ const sellMyCarServices = [
   { href: null, label: 'Car Removal' },
   { href: null, label: 'Fleet Disposal' }
 ] as const;
+const scrapMyCarServices = [
+  { href: '/scrap-my-car/', label: 'Scrap My Car', icon: 'ph-recycle' },
+  { href: '/scrap-car-value/', label: 'Scrap Car Value', icon: 'ph-calculator' },
+  { href: '/car-removal/', label: 'Car Removal', icon: 'ph-truck' },
+  { href: '/scrap-old-car/', label: 'Scrap Old Car', icon: 'ph-car-profile' },
+  { href: '/fleet-disposal/', label: 'Fleet Disposal', icon: 'ph-buildings' }
+] as const;
 const links = [
   { href: '/', label: 'Home', icon: 'ph-house' },
   { href: '/sell-my-car/', label: 'Sell My Car', icon: 'ph-car-profile', children: sellMyCarServices },
-  { href: '/scrap-my-car/', label: 'Scrap My Car', icon: 'ph-recycle' },
+  { href: '/scrap-my-car/', label: 'Scrap My Car', icon: 'ph-recycle', children: scrapMyCarServices },
   { href: '/contact-us', label: 'Contact Us', icon: 'ph-chat-circle-text' },
   { href: '/faqs', label: 'FAQs', icon: 'ph-question' },
   { href: '/blogs', label: 'Blogs', icon: 'ph-newspaper-clipping' }
@@ -30,6 +37,7 @@ const visibleSellMyCarServices = sellMyCarServices.filter(
   (service): service is { href: string; label: string; icon: string } => Boolean(service.href)
 );
 const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isActive(service.href));
+const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(service.href));
 ---
 
 <header class="smc-header">
@@ -46,13 +54,15 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
 
       <nav class="desktop-nav" aria-label="Primary navigation">
         {links.map((link) => link.children ? (
-          <details class:list={['nav-dropdown', { active: isSellMyCarServiceActive }]}>
-            <summary class="nav-link nav-dropdown__trigger">
-              {link.label}
+          <div class:list={['nav-group', { 'nav-group--split': link.href === '/scrap-my-car/' }]}>
+          {link.href === '/scrap-my-car/' && <a href={link.href} class:list={['nav-link', { active: isScrapMyCarServiceActive }]}>{link.label}</a>}
+          <details name="desktop-services" class:list={['nav-dropdown', { active: link.children.some((service) => service.href && isActive(service.href)) }]}>
+            <summary class="nav-link nav-dropdown__trigger" aria-label={link.href === '/scrap-my-car/' ? 'Show Scrap My Car services' : undefined}>
+              {link.href !== '/scrap-my-car/' && link.label}
               <i class="ph ph-caret-down" aria-hidden="true"></i>
             </summary>
             <div class="nav-dropdown__panel">
-              {visibleSellMyCarServices.map((service) => (
+              {link.children.filter((service) => service.href).map((service) => (
                 <a href={service.href} class:list={{ active: isActive(service.href) }}>
                   <span class="service-link-icon"><i class:list={['ph', service.icon]} aria-hidden="true"></i></span>
                   <span>{service.label}</span>
@@ -61,6 +71,7 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
               ))}
             </div>
           </details>
+          </div>
         ) : (
           <a href={link.href} class:list={['nav-link', { active: isActive(link.href) }]}>{link.label}</a>
         ))}
@@ -94,7 +105,7 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
             Home
             <i class="ph ph-caret-right mobile-link-arrow" aria-hidden="true"></i>
           </a>
-          <details class:list={['mobile-services', { active: isSellMyCarServiceActive }]}>
+          <details name="mobile-service-sections" class:list={['mobile-services', { active: isSellMyCarServiceActive }]}>
             <summary class="mobile-link">
               <i class="ph ph-car-profile" aria-hidden="true"></i>
               Sell My Car
@@ -110,11 +121,15 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
               ))}
             </div>
           </details>
-          <a href="/scrap-my-car/" class:list={['mobile-link', { active: isActive('/scrap-my-car/') }]}>
-            <i class="ph ph-recycle" aria-hidden="true"></i>
-            Scrap My Car
-            <i class="ph ph-caret-right mobile-link-arrow" aria-hidden="true"></i>
-          </a>
+          <div class="mobile-service-group">
+            <a href="/scrap-my-car/" class:list={['mobile-link', { active: isScrapMyCarServiceActive }]}><i class="ph ph-recycle" aria-hidden="true"></i>Scrap My Car</a>
+            <details name="mobile-service-sections" class="mobile-services mobile-services--split">
+              <summary aria-label="Show Scrap My Car services"><i class="ph ph-caret-down mobile-link-arrow" aria-hidden="true"></i></summary>
+              <div class="mobile-services__links">
+                {scrapMyCarServices.map((service) => <a href={service.href} class:list={{ active: isActive(service.href) }}><span class="service-link-icon"><i class:list={['ph', service.icon]} aria-hidden="true"></i></span><span>{service.label}</span><i class="ph ph-arrow-up-right service-link-arrow" aria-hidden="true"></i></a>)}
+              </div>
+            </details>
+          </div>
           <a href="/contact-us" class:list={['mobile-link', { active: isActive('/contact-us') }]}>
             <i class="ph ph-chat-circle-text" aria-hidden="true"></i>
             Contact Us
@@ -189,6 +204,7 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     };
 
     mobileMenu.addEventListener('toggle', () => {
+      mobileMenu.querySelector('summary')?.setAttribute('aria-label', mobileMenu.open ? 'Close navigation' : 'Open navigation');
       if (mobileMenu.open) lockPage();
       else unlockPage();
     });
@@ -290,6 +306,12 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
   .nav-dropdown {
     position: relative;
   }
+
+  .nav-group { position: relative; }
+  .nav-group--split { display: flex; align-items: center; gap: 3px; }
+  .nav-group--split > .nav-dropdown { position: static; }
+  .nav-group--split .nav-dropdown__trigger { width: 20px; min-height: 44px; justify-content: center; }
+  .nav-group--split .nav-dropdown__trigger::after { display: none; }
 
   .nav-dropdown__trigger {
     display: inline-flex;
@@ -506,6 +528,9 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     right: 0;
     top: 54px;
     width: min(310px, calc(100vw - 30px));
+    max-height: calc(100dvh - 100px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 13px;
     border: 1px solid var(--smc-line);
     border-radius: 20px;
@@ -528,6 +553,24 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     margin: 0;
     width: 100%;
   }
+
+  .mobile-service-group { position: relative; min-width: 0; }
+  .mobile-service-group > .mobile-link { padding-right: 50px; }
+  .mobile-services--split > summary {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    min-height: 58px;
+    padding: 0;
+    border-radius: 10px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .mobile-services--split > summary .mobile-link-arrow { margin: 0; transition: transform 160ms ease; }
+  .mobile-services--split > summary:focus-visible { outline: 3px solid #6c9fc1; outline-offset: -3px; }
 
   .mobile-services > summary.mobile-link {
     width: 100%;
@@ -687,6 +730,7 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
       z-index: 39;
       width: auto;
       min-height: calc(100dvh - 66px);
+      max-height: calc(100dvh - 66px);
       padding: 24px 24px max(24px, env(safe-area-inset-bottom));
       border: 0;
       border-top: 1px solid rgba(255,255,255,.12);
@@ -825,5 +869,9 @@ const isSellMyCarServiceActive = visibleSellMyCarServices.some((service) => isAc
     .mobile-call span { display: none; }
     .mobile-menu { width: 44px; flex: 0 0 44px; }
     .mobile-menu > summary { width: 44px; box-sizing: border-box; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-dropdown__panel,.mobile-panel,.mobile-services__links { animation: none !important; }
+    .mobile-services--split > summary .mobile-link-arrow { transition: none; }
   }
 </style>
