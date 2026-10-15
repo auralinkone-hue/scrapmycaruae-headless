@@ -1,0 +1,256 @@
+---
+export const prerender = false;
+import BaseLayout from '../layouts/BaseLayout.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import SectionActionButton from '../components/SectionActionButton.astro';
+import BlogArticleCard from '../components/BlogArticleCard.astro';
+import { getVehicleData } from '../lib/vehicle-data';
+import { getRelevantPosts } from '../lib/related-posts';
+import { priorityCoverageLocations } from '../lib/locations';
+
+const title = 'Fleet Disposal UAE | Business Vehicle Collection & Disposal';
+const description = 'Fleet disposal in the UAE for unwanted, damaged, non-running and end-of-life business vehicles. Share your fleet size, condition and locations to discuss collection and disposal options.';
+const businesses = [
+  ['ph-car-profile', 'Rental fleets', 'Vehicles leaving service, with different ages, mileage and conditions.'],
+  ['ph-truck', 'Logistics / delivery fleets', 'Unwanted or non-running vehicles at depots, workshops or operating sites.'],
+  ['ph-factory', 'Construction / industrial businesses', 'Company vehicles parked at yards or sites with controlled access.'],
+  ['ph-wrench', 'Workshops / bodyshops', 'Vehicles awaiting an owner-authorised next step after damage or mechanical failure.'],
+  ['ph-buildings', 'Company vehicle fleets', 'Multiple business vehicles being reviewed for sale, salvage or end-of-life disposal.']
+];
+const preparation = [
+  ['01', 'Number of vehicles', 'Give the approximate fleet size and identify which vehicles are ready for review.'],
+  ['02', 'Makes, models & years', 'An existing vehicle list is a useful starting point. Add mileage and vehicle identifiers where available.'],
+  ['03', 'Condition & mobility', 'Note damage, known faults, missing parts and whether each vehicle starts, drives, rolls or steers.'],
+  ['04', 'Locations', 'Group vehicles by emirate and site, and identify the person who can coordinate each location.'],
+  ['05', 'Access / parking', 'Include gates, height limits, loading space, parking levels, keys and any site access requirements.'],
+  ['06', 'Ownership / finance / status', 'Flag available registration details, the authorised business contact and any known finance, fines or restrictions.']
+];
+const conditions = [
+  { icon: 'ph-car-profile', label: 'Unwanted but running', status: 'Next-use review', note: 'Mileage, service history, condition and remaining usability.', route: 'An as-is sale may be worth considering; running vehicles are not assumed to be scrap.' },
+  { icon: 'ph-warning-octagon', label: 'Accident / body damage', status: 'Damage review', note: 'Damage photos, missing parts, wheel condition and whether it can move.', route: 'Discuss the individual vehicle and practical next route.', href: '/sell-damaged-car/', link: 'Damaged vehicle options' },
+  { icon: 'ph-engine', label: 'Non-running / mechanical faults', status: 'Mobility review', note: 'Known faults, last use, keys, rolling and steering ability.', route: 'Assess remaining value alongside handling and access.', href: '/sell-non-running-car/', link: 'Non-running vehicle options' },
+  { icon: 'ph-recycle', label: 'End-of-life / multiple faults', status: 'Salvage review', note: 'Overall condition, reusable components, documents and location.', route: 'Consider a scrap or salvage route where appropriate.', href: '/scrap-car-value/', link: 'What affects scrap value' }
+];
+const steps = [
+  ['ph-list-checks', 'Review the fleet', 'Start with the vehicle list, fleet size, site locations and a business contact.'],
+  ['ph-magnifying-glass', 'Assess condition & status', 'Review each vehicle’s condition, mobility, ownership and known restrictions.'],
+  ['ph-signpost', 'Agree a practical route', 'Clarify which vehicles suit an as-is sale, salvage or scrap discussion, and agree the scope.'],
+  ['ph-truck', 'Arrange collection where appropriate', 'Confirm site access, handling needs and collection arrangements for the agreed vehicles.']
+];
+const paperwork = [
+  ['ph-identification-card', 'Vehicle identity & registration', 'Have the available Mulkiya and vehicle identifiers ready. Flag missing, expired or unclear records before agreeing a handover.'],
+  ['ph-buildings', 'Ownership & business authority', 'Identify the registered owner and the person authorised to act for the business. A vehicle being at a workshop or site does not by itself establish permission to dispose of it.'],
+  ['ph-bank', 'Finance & lender requirements', 'Check any outstanding finance or mortgage status with the lender and relevant registration authority. Do not assume collection resolves a finance obligation.'],
+  ['ph-file-text', 'Fines, restrictions & next steps', 'Confirm any outstanding fines or restrictions and the applicable transfer, cancellation and plate-handling steps with the relevant authority. Collection alone does not confirm a change of registration status.']
+];
+const faqs = [
+  ['Can we discuss a mixed fleet with running and non-running vehicles?', 'Yes. Share a vehicle-by-vehicle overview of condition, faults, mobility and location. The practical route is reviewed for each vehicle rather than treating the whole fleet as scrap.'],
+  ['Is there a fixed minimum fleet size?', 'No fixed minimum is published on this page. Share the number of vehicles and the scope of the request so the team can discuss whether it is suitable.'],
+  ['Do all the vehicles need to be at one location?', 'No. Explain which vehicles are at each site, with the emirate, access details and site contact. Multi-location collection feasibility and arrangements need to be reviewed before confirmation.'],
+  ['How do we start with the existing valuation form?', 'Use one representative vehicle in the initial form and your business contact details. In the follow-up conversation, explain that this is a fleet request and share the fleet size, vehicle mix and site information. The form is not a complete fleet inventory.'],
+  ['Can a workshop arrange disposal for vehicles left on its premises?', 'Start by clarifying registered ownership and the authority to act. A vehicle being left at a workshop does not automatically authorise its disposal. Confirm the applicable requirements with the relevant authority before proceeding.'],
+  ['What if some fleet vehicles have finance, fines or restrictions?', 'Flag this at the start and check the status with the lender or relevant registration authority. Any required clearance and documentation must be clarified for the agreed route; no approval is guaranteed.'],
+  ['Will the whole fleet receive one price or one disposal route?', 'Do not assume all vehicles have the same value or route. Condition, make, model, year, reusable components, documents and collection requirements can differ. Discuss the scope and valuation basis before agreeing.'],
+  ['Can collection dates or disposal approvals be guaranteed?', 'No fixed collection time or approval guarantee is offered on this page. Vehicle status, site access, handling requirements and any necessary checks must be reviewed before arrangements are confirmed.']
+];
+let vehicleData = { makes: [], models: [], years: [] };
+let vehicleDataError = '';
+let helpfulPosts: any[] = [];
+await Promise.all([
+  (async () => { try { vehicleData = await getVehicleData(); } catch (error) { vehicleDataError = error instanceof Error ? error.message : String(error); } })(),
+  (async () => { try { helpfulPosts = await getRelevantPosts({ _id: 'fleet-disposal-guide', slug: 'fleet-disposal' }, ['fleet', 'business vehicles', 'collection', 'damaged', 'non-running', 'scrap', 'valuation']); } catch { helpfulPosts = []; } })()
+]);
+const breadcrumbJsonLd = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+  { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.scrapmycaruae.com/' },
+  { '@type': 'ListItem', position: 2, name: 'Scrap My Car', item: 'https://www.scrapmycaruae.com/scrap-my-car/' },
+  { '@type': 'ListItem', position: 3, name: 'Fleet Disposal', item: 'https://www.scrapmycaruae.com/fleet-disposal/' }
+] };
+const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })) };
+---
+
+<BaseLayout title={title} description={description} canonical="/fleet-disposal/" ogImage="/sections/dubai-salvage-yard-inspection.webp">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c')} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')} />
+  </Fragment>
+  <main class="fleet-page">
+    <section class="fleet-hero" aria-labelledby="fleet-title"><div class="smc-container">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/scrap-my-car/">Scrap My Car</a><span aria-hidden="true">/</span><span aria-current="page">Fleet disposal</span></nav>
+      <div class="hero-grid">
+        <div class="hero-copy"><p class="eyebrow"><i class="ph ph-buildings" aria-hidden="true"></i> Business vehicle review</p><h1 id="fleet-title">Fleet vehicle disposal <span>across the UAE</span></h1><p class="hero-lead">Need to remove or dispose of multiple unwanted, damaged or non-running vehicles? Share the fleet size, vehicle mix and locations to discuss the most practical route.</p><p class="hero-context">One business request. A vehicle-by-vehicle review of condition, status and the next step.</p></div>
+        <div class="hero-form"><p class="form-intro"><i class="ph ph-list-checks" aria-hidden="true"></i><span><strong>Start your fleet discussion</strong>Use one representative vehicle below. Share the full fleet size, vehicle mix and sites in the follow-up conversation.</span></p><QuoteForm makes={vehicleData.makes} models={vehicleData.models} years={vehicleData.years} dataError={vehicleDataError} variant="free-quote" /><p class="form-footnote">This initial enquiry is not a fleet inventory or an agreement to collect.</p></div>
+        <ul class="hero-points"><li><i class="ph ph-stack" aria-hidden="true"></i>Mixed vehicle conditions</li><li><i class="ph ph-map-pin" aria-hidden="true"></i>Single or multiple sites</li><li><i class="ph ph-clipboard-text" aria-hidden="true"></i>Scope agreed before arrangements</li></ul>
+      </div>
+    </div></section>
+
+    <section class="section business-section" aria-labelledby="business-title"><div class="smc-container business-layout">
+      <figure class="operations-image"><img src="/sections/dubai-salvage-yard-inspection.webp" alt="Illustration of a damaged vehicle on a collection truck beside a vehicle assessment at a salvage yard" width="1456" height="1088" loading="lazy" decoding="async" /><figcaption><i class="ph ph-clipboard-text" aria-hidden="true"></i>Illustrative collection and assessment scene</figcaption></figure>
+      <div><p class="eyebrow">Who this is for</p><h2 id="business-title">A practical next step <span>for business vehicles</span></h2><p class="section-lead">For businesses reviewing vehicles they no longer need or can no longer use. Tell us the vehicle types involved; suitability depends on the individual request.</p><ul class="business-list">{businesses.map(([icon, heading, copy]) => <li><i class:list={['ph', icon]} aria-hidden="true"></i><div><h3>{heading}</h3><p>{copy}</p></div></li>)}</ul></div>
+    </div></section>
+
+    <section class="section brief-section" aria-labelledby="brief-title"><div class="smc-container">
+      <header class="split-heading"><div><p class="eyebrow">Prepare the fleet brief</p><h2 id="brief-title">What we <span>need to know</span></h2></div><p>An existing spreadsheet or vehicle list can help you prepare for the conversation. Keep each vehicle tied to its condition, site and status. Flag unknowns rather than guessing.</p></header>
+      <dl class="brief-list">{preparation.map(([number, heading, copy]) => <div><dt><span aria-hidden="true">{number}</span>{heading}</dt><dd>{copy}</dd></div>)}</dl>
+      <p class="inline-note"><i class="ph ph-info" aria-hidden="true"></i>Have the list ready for the follow-up discussion; the initial form does not accept fleet-list uploads.</p>
+    </div></section>
+
+    <section class="section matrix-section" aria-labelledby="matrix-title"><div class="smc-container">
+      <header class="split-heading"><div><p class="eyebrow">Fleet condition overview</p><h2 id="matrix-title">Different vehicles.<span>Different considerations.</span></h2></div><p>A mixed fleet does not need one blanket assumption. These review categories help organise the discussion; they are not approvals or confirmed disposal outcomes.</p></header>
+      <div class="condition-matrix"><table><caption class="sr-only">Fleet conditions, information to prepare and practical route considerations</caption><thead><tr><th scope="col">Vehicle condition</th><th scope="col">Information to prepare</th><th scope="col">Route consideration</th></tr></thead><tbody>{conditions.map((condition) => <tr><th scope="row"><div class="condition-name"><i class:list={['ph', condition.icon]} aria-hidden="true"></i><span>{condition.label}</span></div><span class="review-status"><span aria-hidden="true"></span>{condition.status}</span></th><td><span class="mobile-label" aria-hidden="true">Information to prepare</span>{condition.note}</td><td><span class="mobile-label" aria-hidden="true">Route consideration</span>{condition.route}{condition.href && <a class="info-link" href={condition.href}>{condition.link}<i class:list={['ph', condition.icon]} aria-hidden="true"></i></a>}</td></tr>)}</tbody></table></div>
+    </div></section>
+
+    <section class="section process-section" aria-labelledby="process-title"><div class="smc-container"><header class="section-heading"><p class="eyebrow">From fleet list to an agreed plan</p><h2 id="process-title">How fleet disposal works</h2><p>Separate the vehicle review from the practical arrangements.</p></header><ol class="process-band">{steps.map(([icon, heading, copy], index) => <li><div class="step-top"><span>{String(index + 1).padStart(2, '0')}</span><i class:list={['ph', icon]} aria-hidden="true"></i></div><h3>{heading}</h3><p>{copy}</p></li>)}</ol></div></section>
+
+    <section class="section sites-section" aria-labelledby="sites-title"><div class="smc-container sites-layout">
+      <div><p class="eyebrow">Multi-location collection</p><h2 id="sites-title">Plan around the sites,<span>not just the vehicles.</span></h2><p class="section-lead">Your vehicles may be spread across depots, workshops, company parking or industrial yards in different emirates. Site access and each vehicle’s mobility affect what can be arranged.</p><a class="info-link" href="/car-removal/"><i class="ph ph-truck" aria-hidden="true"></i>Vehicle collection and access checks</a></div>
+      <div class="site-plan"><p class="plan-label"><i class="ph ph-map-trifold" aria-hidden="true"></i>For each site, prepare</p><ol><li><i class="ph ph-map-pin" aria-hidden="true"></i><div><h3>Location & vehicle list</h3><p>Exact site location and which vehicles are parked there.</p></div></li><li><i class="ph ph-key" aria-hidden="true"></i><div><h3>Contact & access</h3><p>Site coordinator, available keys, gate access and parking restrictions.</p></div></li><li><i class="ph ph-path" aria-hidden="true"></i><div><h3>Handling considerations</h3><p>Whether each vehicle rolls or steers, loading space and any access limits.</p></div></li></ol><p class="plan-footer">Collection scope and arrangements are confirmed after review—not assumed from the fleet size.</p></div>
+    </div></section>
+
+    <section class="section paperwork-section" aria-labelledby="paperwork-title"><div class="smc-container paperwork-layout"><header><p class="eyebrow">Before any handover</p><h2 id="paperwork-title">Paperwork, ownership <span>& vehicle status</span></h2><p class="section-lead">Requirements depend on the emirate, registered owner and agreed route. Check the current requirements with the relevant authority and lender before acting.</p><a class="info-link" href="https://u.ae/en/information-and-services/transportation/registering-vehicles" target="_blank" rel="noopener noreferrer"><i class="ph ph-book-open-text" aria-hidden="true"></i>UAE government registration guidance</a></header><div class="paperwork-list">{paperwork.map(([icon, heading, copy], index) => <details name="fleet-paperwork" open={index === 0}><summary><span><i class:list={['ph', icon]} aria-hidden="true"></i>{heading}</span><i class="ph ph-plus" aria-hidden="true"></i></summary><p>{copy}</p></details>)}</div></div></section>
+
+    <section class="section coverage-section" aria-labelledby="coverage-title"><div class="smc-container coverage-layout"><header><p class="eyebrow">UAE coverage</p><h2 id="coverage-title">One fleet discussion.<span>Sites across the UAE.</span></h2><p class="section-lead">Share every site location. Collection feasibility is reviewed against the vehicles, access and agreed scope.</p></header><ul class="coverage-list" aria-label="UAE fleet locations">{priorityCoverageLocations.map((location) => <li><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</li>)}</ul></div></section>
+
+    <section class="section guides-section" aria-labelledby="guides-title"><div class="smc-container"><header class="section-heading"><p class="eyebrow">Background for your review</p><h2 id="guides-title">Relevant vehicle <span>disposal guides</span></h2><p>Read about condition, valuation and collection before discussing your fleet.</p></header>{helpfulPosts.length > 0 ? <div class="guide-grid">{helpfulPosts.slice(0, 3).map((post) => <BlogArticleCard post={post} />)}</div> : <p class="guides-fallback">Explore vehicle valuation and disposal guides on our blog.</p>}<div class="section-action-wrap"><SectionActionButton href="/blogs" label="View all blogs" intent="blogs" /></div></div></section>
+
+    <section class="section faq-section" aria-labelledby="faq-title"><div class="smc-container"><header class="section-heading"><p class="eyebrow">Business enquiries</p><h2 id="faq-title">Fleet disposal <span>FAQs</span></h2></header><div class="faq-list">{faqs.map(([question, answer], index) => <details open={index === 0}><summary><span>{question}</span><i class="ph ph-plus" aria-hidden="true"></i></summary><p>{answer}</p></details>)}</div></div></section>
+
+    <section class="final-section" aria-labelledby="final-title"><div class="smc-container final-layout"><div><p class="eyebrow">Start with your fleet brief</p><h2 id="final-title">Discuss fleet disposal</h2><p>Have your fleet size, vehicle mix and site locations ready. Start with one representative vehicle and discuss the wider request with the team.</p></div><div class="final-actions"><SectionActionButton href="/free-quote" label="Discuss fleet disposal" intent="contact" /><a href="/scrap-my-car/"><i class="ph ph-recycle" aria-hidden="true"></i>Explore the scrap-car process</a></div></div></section>
+  </main>
+</BaseLayout>
+
+<style>
+  .fleet-page{color:#18372c;background:#fff}
+  .fleet-page :is(h1,h2,h3,p,li,td,th,dt,dd){overflow-wrap:break-word}
+  .fleet-hero{padding:22px 0 54px;border-bottom:1px solid #d8e4da;background:linear-gradient(115deg,#eef4ed,#f6f9f7 65%,#e9f1ee)}
+  .breadcrumb{display:flex;flex-wrap:wrap;gap:8px;color:#62756b;font-size:12px}
+  .breadcrumb a{color:#315c43;text-decoration:none}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(420px,.92fr);grid-template-areas:'copy form' 'points form';gap:25px 62px;margin-top:32px;align-items:center}
+  .hero-copy{grid-area:copy;align-self:end}
+  .eyebrow{display:flex;align-items:center;gap:8px;margin:0;color:#3b7448;font-size:11px;line-height:1.5;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+  .eyebrow i{font-size:18px}
+  h1{margin:18px 0 0;font-size:clamp(3rem,4.9vw,4.7rem);line-height:1.02;letter-spacing:-.06em}
+  h1 span,h2 span{color:#3c854b}
+  h1 span{display:block}
+  .hero-lead{margin:23px 0 0;color:#52685d;font-size:18px;line-height:1.7;max-width:570px}
+  .hero-context{margin:20px 0 0;padding-left:15px;border-left:3px solid #8daf83;color:#335e45;font-size:14px;line-height:1.65}
+  .hero-form{grid-area:form;min-width:0}
+  .form-intro{display:flex;align-items:flex-start;gap:12px;margin:0 0 15px;color:#52685d;font-size:12px;line-height:1.6}
+  .form-intro>i{flex:0 0 auto;padding:10px;background:#dfeadb;color:#315c3a;border-radius:10px;font-size:23px}
+  .form-intro strong{display:block;margin-bottom:3px;color:#214932;font-size:14px}
+  .form-footnote{margin:12px 8px 0;color:#61766a;font-size:11px;line-height:1.5}
+  .hero-points{grid-area:points;align-self:start;display:grid;gap:11px;margin:0;padding:0;list-style:none}
+  .hero-points li{display:flex;gap:10px;align-items:center;color:#315b40;font-size:13px;font-weight:700}
+  .hero-points i{font-size:20px;color:#4a8051}
+  .section{padding:clamp(52px,6vw,80px) 0}
+  h2{margin:12px 0 0;font-size:clamp(2rem,3.4vw,3.05rem);line-height:1.1;letter-spacing:-.045em}
+  h3{margin:0;font-size:16px;line-height:1.4;letter-spacing:-.015em}
+  .section-lead{margin:18px 0 22px;color:#5a6d63;font-size:15px;line-height:1.75}
+  .business-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(28px,5vw,68px);align-items:center}
+  .operations-image{margin:0;border:1px solid #d4e0d1;border-radius:22px;padding:10px;background:#f2f6ef;min-width:0}
+  .operations-image img{display:block;width:100%;height:auto;object-fit:contain;border-radius:14px}
+  .operations-image figcaption{display:flex;align-items:center;gap:8px;padding:13px 5px 4px;color:#53705b;font-size:11px;line-height:1.5}
+  .operations-image figcaption i{font-size:18px}
+  .business-list{margin:0;padding:0;list-style:none}
+  .business-list li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;padding:14px 0;border-top:1px solid #dee7dc}
+  .business-list li>i{display:grid;width:32px;height:32px;place-items:center;background:#e9f1e5;color:#3b7346;border-radius:8px;font-size:19px}
+  .business-list p{margin:4px 0 0;color:#5f7166;font-size:13px;line-height:1.6}
+  .brief-section{background:#f1f5f3;border-block:1px solid #dbe5df}
+  .split-heading{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr);gap:50px;align-items:end;margin-bottom:30px}
+  .split-heading h2 span{display:block}
+  .split-heading>p{margin:0;color:#5b6e64;line-height:1.75;font-size:15px}
+  .brief-list{margin:0;border-top:1px solid #cbdad0}
+  .brief-list>div{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:28px;border-bottom:1px solid #cbdad0;padding:20px 0}
+  .brief-list dt{display:flex;gap:18px;align-items:baseline;font-size:16px;font-weight:750}
+  .brief-list dt span{font-size:11px;font-weight:800;color:#578064;letter-spacing:.07em}
+  .brief-list dd{margin:0;color:#5a6d62;font-size:14px;line-height:1.7}
+  .inline-note{display:flex;gap:9px;margin:21px 0 0;color:#5a6f64;font-size:12px;line-height:1.65}
+  .inline-note i{flex:0 0 auto;font-size:18px;color:#3e7850}
+  .condition-matrix{border:1px solid #d1dfd5;border-radius:15px;overflow:hidden}
+  table{width:100%;border-collapse:collapse;table-layout:fixed;text-align:left}
+  th,td{padding:24px;border-bottom:1px solid #dae5dd;vertical-align:top;font-size:14px;line-height:1.65}
+  thead th{background:#e8f0e9;color:#41624b;font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;padding-block:15px}
+  th:first-child{width:31%}
+  tbody th{background:#f7faf6}
+  tbody tr:last-child>*{border-bottom:0}
+  td{color:#5a6f61}
+  .condition-name{display:flex;gap:11px;align-items:flex-start;line-height:1.5;font-size:15px}
+  .condition-name i{flex:0 0 auto;font-size:23px;color:#477c50}
+  .review-status{display:inline-flex;align-items:center;gap:6px;margin:12px 0 0 34px;padding:3px 7px;border-radius:4px;border:1px solid #ceded5;background:#edf4f0;color:#456959;font-size:10px;font-weight:650}
+  .review-status>span{width:5px;height:5px;background:#629477;border-radius:50%}
+  tr:nth-child(2n) .review-status{color:#3a6b80;background:#eaf2f5;border-color:#cadfe8}
+  tr:nth-child(2n) .review-status>span{background:#588aa1}
+  .info-link{display:inline-flex;align-items:center;gap:8px;color:#216b98;font-size:13px;font-weight:750;line-height:1.6;text-decoration:none}
+  .info-link:hover{text-decoration:underline;color:#124e76}
+  .info-link i{font-size:18px;flex:0 0 auto}
+  td .info-link{display:flex;margin-top:12px}
+  .mobile-label{display:none}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .process-section{background:#183e30;color:#fff}
+  .section-heading{max-width:730px;margin:0 auto 32px;text-align:center}
+  .section-heading .eyebrow{justify-content:center}
+  .section-heading>p:not(.eyebrow){margin:16px 0 0;color:#5e7165;font-size:15px;line-height:1.7}
+  .process-section .eyebrow{color:#b2d0a5}
+  .process-section .section-heading>p:not(.eyebrow){color:#bfd2c6}
+  .process-band{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:36px 0 0;padding:0;list-style:none;border-block:1px solid #456354}
+  .process-band li{padding:25px 23px 29px;border-right:1px solid #456354}
+  .process-band li:first-child{padding-left:0}
+  .process-band li:last-child{border-right:0;padding-right:0}
+  .step-top{display:flex;align-items:center;gap:18px;margin-bottom:21px;color:#bed9b3}
+  .step-top span{font-size:12px;letter-spacing:.1em;font-weight:800}
+  .step-top i{font-size:28px}
+  .process-band h3{font-size:18px}
+  .process-band p{margin:11px 0 0;color:#c2d2c9;font-size:13px;line-height:1.75}
+  .sites-layout,.paperwork-layout,.coverage-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(30px,6vw,80px);align-items:center}
+  .sites-layout h2 span{display:block}
+  .site-plan{padding:26px;border:1px solid #ceded8;border-radius:17px;background:linear-gradient(130deg,#f0f6ed,#eef4f8)}
+  .plan-label{display:flex;align-items:center;gap:10px;margin:0;padding-bottom:17px;border-bottom:1px solid #ccdad5;color:#345a48;font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+  .plan-label i{font-size:23px;color:#397a48}
+  .site-plan ol{margin:0;padding:0;list-style:none}
+  .site-plan li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:14px;padding:20px 0;border-bottom:1px solid #d2dfd9}
+  .site-plan li>i{color:#4d8067;font-size:22px}
+  .site-plan li p{margin:6px 0 0;font-size:13px;line-height:1.65;color:#5b7063}
+  .plan-footer{margin:17px 0 0;font-size:12px;line-height:1.65;color:#527060}
+  .paperwork-section{background:#f5f7f4;border-block:1px solid #dce6de}
+  .paperwork-layout{align-items:start}
+  .paperwork-list,.faq-list{border-top:1px solid #cddcd1}
+  details{border-bottom:1px solid #cddcd1}
+  summary{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:65px;padding:17px 0;cursor:pointer;list-style:none;font-size:15px;font-weight:750;line-height:1.5}
+  summary::-webkit-details-marker{display:none}
+  summary>span{display:flex;align-items:center;gap:11px}
+  summary>span>i{color:#487e50;font-size:22px;flex:0 0 auto}
+  summary>.ph-plus{display:grid;width:26px;height:26px;flex:0 0 26px;place-items:center;border:1px solid #c9d9cb;border-radius:50%;font-size:15px;color:#3a7647;transition:transform 180ms ease}
+  details[open]>summary>.ph-plus{transform:rotate(45deg)}
+  details>p{margin:0 0 21px;font-size:14px;color:#5b6f62;line-height:1.8}
+  .paperwork-list details>p{padding-left:33px}
+  .coverage-section{padding-block:48px}
+  .coverage-layout h2{font-size:clamp(1.9rem,3vw,2.6rem)}
+  .coverage-layout h2 span{display:block}
+  .coverage-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px 25px;margin:0;padding:24px 0 24px 30px;border-left:2px solid #d4e2d2;list-style:none}
+  .coverage-list li{display:flex;gap:9px;align-items:center;color:#41634e;font-weight:700;font-size:13px}
+  .coverage-list i{font-size:19px;color:#4d8454}
+  .guides-section{background:#f1f5f0}
+  .guide-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+  .guides-fallback{text-align:center;color:#5d7164}
+  .section-action-wrap{display:flex;justify-content:center;margin-top:28px}
+  .faq-list{max-width:950px;margin:auto}
+  .final-section{padding:56px 0;background:#183e30;color:#fff}
+  .final-layout{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:50px;align-items:center}
+  .final-section .eyebrow{color:#b2d0a5}
+  .final-section p:not(.eyebrow){max-width:680px;margin:19px 0 0;color:#c5d5cc;font-size:15px;line-height:1.75}
+  .final-actions{display:grid;gap:18px;justify-items:start}
+  .final-actions :global(.section-action){background:#e1f1d5;color:#1b462b;border-color:#e1f1d5}
+  .final-actions>a{display:flex;align-items:center;gap:8px;color:#c9dfbb;font-size:12px;font-weight:700;text-decoration:none}
+  a:focus-visible,summary:focus-visible{outline:3px solid #6898b6;outline-offset:4px;border-radius:4px}
+  @media(hover:hover) and (pointer:fine){summary:hover{color:#2e743e;background:#eaf1e6}.condition-matrix tbody tr:hover>*{background:#eff6ec}.final-actions>a:hover{text-decoration:underline;color:#fff}}
+  @media(max-width:1100px){.hero-grid{grid-template-columns:minmax(0,1fr) minmax(380px,.95fr);gap:25px 30px}.hero-lead{font-size:16px}.process-band li{padding-inline:17px}.process-band h3{font-size:16px}th,td{padding:20px}}
+  @media(max-width:980px){.hero-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:'copy' 'form' 'points';gap:24px}.hero-copy{max-width:720px}.hero-form{width:min(100%,650px)}.hero-points{grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.hero-points li{align-items:flex-start}.hero-points i{flex:0 0 auto}.business-layout{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:28px}.split-heading{gap:30px}.sites-layout,.paperwork-layout,.coverage-layout{grid-template-columns:minmax(0,1fr);gap:30px}.guide-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.final-layout{grid-template-columns:minmax(0,1fr);gap:25px}}
+  @media(max-width:700px){
+    .fleet-hero{padding:16px 0 42px}.breadcrumb{font-size:11px;gap:7px}.hero-grid{margin-top:26px;gap:22px}.hero-copy{text-align:center}.hero-copy .eyebrow{justify-content:center;font-size:10px}h1{font-size:clamp(2.45rem,10.6vw,3.6rem);margin-top:15px;line-height:1.03;letter-spacing:-.055em}.hero-lead{font-size:15px;line-height:1.65;margin-top:19px}.hero-context{border:0;padding:0;font-size:12px;margin-top:14px}.hero-form{width:100%}.form-intro{font-size:11px;gap:10px}.form-intro strong{font-size:13px}.form-intro>i{padding:8px;font-size:21px}.form-footnote{font-size:10px}.hero-points{grid-template-columns:minmax(0,1fr);gap:12px}.hero-points li{font-size:12px;align-items:center}
+    .section{padding:49px 0}h2{font-size:clamp(1.9rem,8vw,2.6rem)}.eyebrow{font-size:10px}.section-lead{font-size:14px;line-height:1.7}.business-layout{grid-template-columns:minmax(0,1fr);gap:26px}.business-layout>div>.eyebrow,.business-layout>div>h2,.business-layout>div>.section-lead{text-align:center;justify-content:center}.operations-image{padding:8px;border-radius:18px}.operations-image img{border-radius:11px}.operations-image figcaption{font-size:10px}.business-list li{padding:14px 0}.business-list h3{font-size:15px}.business-list p{font-size:12px}
+    .split-heading{grid-template-columns:minmax(0,1fr);gap:16px;margin-bottom:26px;text-align:center}.split-heading .eyebrow{justify-content:center}.split-heading>p{font-size:14px;line-height:1.7}.brief-list>div{grid-template-columns:minmax(0,1fr);gap:8px;padding:17px 0}.brief-list dt{font-size:15px;gap:13px}.brief-list dd{font-size:13px;padding-left:29px}.inline-note{font-size:11px}
+    .condition-matrix{border-radius:12px}.condition-matrix table,.condition-matrix tbody,.condition-matrix tr,.condition-matrix th,.condition-matrix td{display:block;width:100%}.condition-matrix thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.condition-matrix tbody tr{padding:20px;border-bottom:1px solid #d5e1d6}.condition-matrix tbody tr:last-child{border-bottom:0}.condition-matrix th,.condition-matrix td{padding:0;border:0;background:transparent;font-size:13px;line-height:1.65}.condition-matrix td{margin-top:14px}.condition-name{font-size:16px}.review-status{margin-top:9px;font-size:10px}.mobile-label{display:block;margin-bottom:4px;color:#456d52;font-size:10px;letter-spacing:.07em;text-transform:uppercase;font-weight:800}.info-link{font-size:12px}
+    .section-heading{margin-bottom:26px}.section-heading>p:not(.eyebrow){font-size:14px}.process-band{grid-template-columns:minmax(0,1fr);margin-top:26px}.process-band li,.process-band li:first-child,.process-band li:last-child{display:grid;grid-template-columns:46px minmax(0,1fr);gap:0 17px;border-right:0;border-bottom:1px solid #456354;padding:22px 0}.process-band li:last-child{border-bottom:0}.step-top{grid-row:1/3;flex-direction:column;gap:11px;margin:0}.step-top i{font-size:25px}.step-top span{font-size:10px}.process-band h3{font-size:17px}.process-band p{font-size:13px;margin-top:8px}
+    .sites-layout>div:first-child,.paperwork-layout>header,.coverage-layout>header{text-align:center}.sites-layout .eyebrow,.paperwork-layout .eyebrow,.coverage-layout .eyebrow{justify-content:center}.site-plan{padding:21px;border-radius:14px}.plan-label{font-size:10px}.site-plan li{gap:10px;padding:17px 0}.site-plan h3{font-size:15px}.site-plan li p{font-size:12px}.plan-footer{font-size:11px}summary{font-size:14px;min-height:62px;padding:14px 0;gap:12px}summary>span{gap:10px}summary>span>i{font-size:20px}details>p{font-size:13px;line-height:1.75}.paperwork-list details>p{padding-left:30px}.coverage-section{padding-block:41px}.coverage-list{padding:0;border:0;gap:15px 12px}.coverage-list li{font-size:12px;gap:7px}.coverage-list i{font-size:17px}.guide-grid{grid-template-columns:minmax(0,1fr)}.final-section{padding:46px 0}.final-layout{text-align:center;gap:25px}.final-section .eyebrow{justify-content:center}.final-section p:not(.eyebrow){font-size:14px}.final-actions{justify-items:center}.final-actions :global(.section-action){width:100%;justify-content:center}
+  }
+  @media(prefers-reduced-motion:reduce){summary>.ph-plus{transition:none}}
+</style>
