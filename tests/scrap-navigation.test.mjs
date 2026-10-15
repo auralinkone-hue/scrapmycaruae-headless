@@ -10,14 +10,20 @@ test('scrap navigation exposes exactly the five requested services from one shar
   ]);
   assert.doesNotMatch(services, /expired-registration/);
   assert.match(header, /children: scrapMyCarServices/);
-  assert.match(header, /class="mobile-services mobile-services--split"/);
-  assert.match(header, /aria-label="Show Scrap My Car services"/);
+  assert.match(header, /data-mobile-forward=/);
+  assert.match(header, /items: scrapMyCarServices/);
 });
 
-test('scrap parent links remain separate from native dropdown controls', async () => {
+test('desktop keeps its clickable parent while mobile uses dedicated drill-in panels', async () => {
   const header = await readFile(new URL('../src/components/SiteHeader.astro', import.meta.url), 'utf8');
-  assert.match(header, /<a href="\/scrap-my-car\/" class:list=\{\['mobile-link'/);
   assert.match(header, /link.href === '\/scrap-my-car\/' && <a href=\{link.href\}/);
   assert.match(header, /name="desktop-services"/);
-  assert.match(header, /name="mobile-service-sections"/);
+  assert.doesNotMatch(header, /name="mobile-service-sections"|class="mobile-services/);
+  assert.match(header, /View all /);
+  assert.match(header, /\/sell-car-with-expired-registration\//);
+  assert.match(header, /data-mobile-back/);
+  assert.match(header, /view\.inert = !active/);
+  assert.match(header, /prefers-reduced-motion/);
+  assert.match(header, /event.key === 'Escape'/);
+  assert.match(header, /event.key !== 'Tab'/);
 });

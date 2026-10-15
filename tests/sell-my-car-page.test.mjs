@@ -102,11 +102,12 @@ test('sell my car route is registered once for the production sitemap and header
   assert.match(header, /label: 'Sell Accident-Damaged Car'/);
   assert.match(header, /children: sellMyCarServices/);
   assert.match(header, /class:list=\{\['nav-dropdown'/);
-  assert.match(header, /class:list=\{\['mobile-services'/);
+  assert.match(header, /class="mobile-view mobile-view--main is-active"/);
   assert.match(header, /label: 'Engine Problems'/);
   for (const href of ['/sell-my-car/', '/sell-damaged-car/', '/sell-accident-damaged-car/', '/sell-non-running-car/', '/sell-car-with-engine-problems/']) {
     assert.match(header, new RegExp(`href: '${href.replaceAll('/', '\\/')}'`));
   }
   assert.match(header, /nav-dropdown__panel/);
-  assert.match(header, /mobile-services__links/);
+  assert.match(header, /data-mobile-forward/);
+  assert.match(header, /label: 'Expired Registration'/);
 });
