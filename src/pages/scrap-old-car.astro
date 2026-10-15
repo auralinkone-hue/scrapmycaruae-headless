@@ -120,6 +120,51 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   </main>
 </BaseLayout>
 
+<script>
+  const initialiseOldCarMotion = () => {
+    const page = document.querySelector<HTMLElement>('.old-car-page');
+    if (!page || page.dataset.motionReady) return;
+    page.dataset.motionReady = 'true';
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (preference.matches || !('IntersectionObserver' in window)) return;
+
+    // Animate only on arrival: content stays visible without JavaScript or motion support.
+    const targets = page.querySelectorAll<HTMLElement>(
+      '.old-hero__copy, .old-hero__form, .hero-trust, .old-car-photo, .life-copy, .section-heading, .signs-accordion, .decision-note, .comparison-wrap, .editorial-heading, .matters-list > li, .process-list > li, .status-layout > header, .status-list, .collection-layout > div, .guide-grid, .faq-stack, .final-layout'
+    );
+    const animations = new Set<Animation>();
+    const observer = new IntersectionObserver((entries) => {
+      let arrival = 0;
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        observer.unobserve(entry.target);
+        if (preference.matches) continue;
+        const animation = entry.target.animate(
+          [{ opacity: 0.35, transform: 'translateY(16px)' }, { opacity: 1, transform: 'translateY(0)' }],
+          { duration: 520, delay: Math.min(arrival++ * 65, 195), easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'backwards' }
+        );
+        animations.add(animation);
+        animation.finished.then(() => animations.delete(animation), () => animations.delete(animation));
+      }
+    }, { threshold: 0.08 });
+    targets.forEach((target) => observer.observe(target));
+    const stopMotion = () => {
+      if (!preference.matches) return;
+      observer.disconnect();
+      animations.forEach((animation) => animation.cancel());
+      animations.clear();
+    };
+    preference.addEventListener('change', stopMotion);
+    document.addEventListener('astro:before-swap', () => {
+      observer.disconnect();
+      animations.forEach((animation) => animation.cancel());
+      preference.removeEventListener('change', stopMotion);
+    }, { once: true });
+  };
+  initialiseOldCarMotion();
+  document.addEventListener('astro:page-load', initialiseOldCarMotion);
+</script>
+
 <style>
   .old-car-page{color:#17331d;background:#fff}
   .old-car-page :is(h1,h2,h3,p,li,td,th){overflow-wrap:break-word}
@@ -381,5 +426,29 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
     .final-actions{justify-items:center}
     .final-actions :global(.section-action){width:100%;justify-content:center}
   }
-  @media(prefers-reduced-motion:reduce){.accordion-toggle{transition:none}}
+  .old-car-photo,.decision-note,.collection-locations{transition:transform 220ms ease,box-shadow 220ms ease}
+  .life-context article>i,.matter-icon,.step-marker>i,.status-list li>i,.status-orbit__node,.collection-icon{transition:transform 220ms ease,box-shadow 220ms ease}
+  summary{transition:background-color 180ms ease,color 180ms ease}
+  summary:focus-visible{background-color:#eaf3e3;color:#225d2e}
+  .decision-table tbody tr>*{transition:background-color 200ms ease}
+  .info-link,.final-actions>a{transition:color 180ms ease}
+  .info-link>i,.final-actions>a>i{transition:transform 180ms ease}
+  .old-car-page :global(.section-action i){transition:transform 180ms ease,background-color 180ms ease}
+  @media(hover:hover) and (pointer:fine){
+    .old-car-photo:hover{transform:translateY(-4px);box-shadow:0 24px 46px rgba(34,76,29,.16)}
+    .decision-note:hover,.collection-locations:hover{transform:translateY(-3px);box-shadow:0 20px 36px rgba(34,76,29,.14)}
+    .life-context article:hover>i,.matters-list li:hover>.matter-icon,.status-list li:hover>i{transform:translateY(-2px) rotate(-5deg)}
+    .process-list li:hover .step-marker>i{transform:translateY(-4px);box-shadow:0 0 0 10px #dcebd0,0 14px 26px rgba(41,86,31,.18)}
+    .status-visual:hover .status-orbit__node{transform:scale(1.1)}
+    .collection-locations:hover .collection-icon{transform:translateX(4px)}
+    summary:hover{background-color:#edf5e6;color:#225d2e}
+    .decision-table tbody tr:hover>*{background-color:#edf5e6}
+    .info-link:hover>i,.final-actions>a:hover>i{transform:translateY(-2px)}
+    .final-actions>a:hover{color:#fff;text-decoration:underline}
+    .old-car-page :global(.section-action:hover i){transform:rotate(-8deg)}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .old-car-page :global(*),.old-car-page :global(*::before),.old-car-page :global(*::after){animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    .old-car-photo:hover,.decision-note:hover,.collection-locations:hover,.life-context article:hover>i,.matters-list li:hover>.matter-icon,.status-list li:hover>i,.process-list li:hover .step-marker>i,.status-visual:hover .status-orbit__node,.collection-locations:hover .collection-icon,.info-link:hover>i,.final-actions>a:hover>i,.old-car-page :global(.section-action:hover),.old-car-page :global(.section-action:hover i){transform:none}
+  }
 </style>
