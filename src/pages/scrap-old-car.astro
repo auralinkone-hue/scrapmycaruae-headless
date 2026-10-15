@@ -1,0 +1,344 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import SectionActionButton from '../components/SectionActionButton.astro';
+import BlogArticleCard from '../components/BlogArticleCard.astro';
+import { getVehicleData } from '../lib/vehicle-data';
+import { getRelevantPosts } from '../lib/related-posts';
+import { priorityCoverageLocations } from '../lib/locations';
+
+const title = 'Scrap Old Car UAE | Free Valuation for Older Vehicles';
+const description = 'Scrap an old or end-of-life car in the UAE. Compare repair, sell-as-is and scrap options for older, damaged or non-running vehicles and request a free valuation.';
+const signs = [
+  { icon: 'ph-wrench', title: 'Repeated repair bills', copy: 'One repair leads to another, or the car keeps returning to the workshop. Look at the recurring problems, the likely next work and how useful the car remains before committing to more spending.' },
+  { icon: 'ph-engine', title: 'Engine or gearbox problems', copy: 'Major mechanical faults can change the decision, especially when other issues are present. Share symptoms and any diagnosis you already have; a fault alone does not automatically make the car scrap.', href: '/sell-car-with-engine-problems/', link: 'Explore engine-problem options' },
+  { icon: 'ph-clock-counter-clockwise', title: 'Long-term non-running', copy: 'A car that has been parked for a long time needs a review of its current state. Explain the last time it ran, known faults, tyre condition and whether it can roll.', href: '/sell-non-running-car/', link: 'Options for a non-running car' },
+  { icon: 'ph-warning-circle', title: 'Severe accident or body damage', copy: 'Significant damage, corrosion or missing parts may affect repair practicality and remaining usability. Describe the damage honestly and share photos if available.' },
+  { icon: 'ph-lightning', title: 'Multiple electrical or mechanical faults', copy: 'A combination of warning lights, electrical issues and mechanical wear can be more difficult to resolve than an isolated problem. List the known faults so the whole vehicle can be considered.' },
+  { icon: 'ph-car-profile', title: 'Declining practical usability', copy: 'If the car can no longer meet your everyday needs reliably, compare its remaining usefulness with the time and work needed. High mileage is context, not a fixed scrapping threshold.' }
+];
+const routes = [
+  { icon: 'ph-wrench', label: 'Repair', fit: 'A clear, manageable fault in an otherwise usable car.', weigh: 'The diagnosis, likely further work and how long you intend to keep it.' },
+  { icon: 'ph-car-profile', label: 'Sell as-is', fit: 'Remaining next-use value, without arranging repairs yourself.', weigh: 'A valuation of the car in its current condition and a clear description of its faults.' },
+  { icon: 'ph-recycle', label: 'Scrap', fit: 'Severe wear, major damage or multiple issues that make further use impractical.', weigh: 'Potential reuse or salvage, vehicle status and the practical collection route.' }
+];
+const factors = [
+  ['Make, model & year', 'Vehicle identity gives age, parts relevance and demand some context. Include the mileage if known.'],
+  ['Current condition', 'Explain body damage, wear, missing parts and known mechanical or electrical issues.'],
+  ['Whether it runs', 'Tell us whether it starts, moves and rolls, and how long it has been parked.'],
+  ['Reusable components', 'Some serviceable parts may still be relevant. Not every component has practical resale value.'],
+  ['Documents & status', 'Available registration details and any known finance or restrictions help clarify the next step.'],
+  ['Collection access', 'Share the exact location, parking level, keys and whether a recovery vehicle can reach the car.']
+];
+const steps = [
+  ['ph-car-profile', 'Details', 'Share the make, model and year, then explain the condition and known faults.'],
+  ['ph-calculator', 'Valuation', 'Discuss the vehicle as it is, including usability, parts relevance and access.'],
+  ['ph-signpost', 'Choose a route', 'Compare repair, an as-is sale and a possible scrap route before deciding.'],
+  ['ph-truck', 'Collection if appropriate', 'If collection is part of the agreed route, review the location and arrangements.']
+];
+const paperwork = [
+  ['ph-identification-card', 'Mulkiya', 'Have the available registration and vehicle identity details ready. Flag missing or expired documents at the start.'],
+  ['ph-bank', 'Finance', 'Check the current finance or mortgage status with the lender and registration authority before agreeing the transaction steps.'],
+  ['ph-file-text', 'Fines / restrictions', 'Check for outstanding fines or restrictions and confirm what must be resolved for your chosen route.'],
+  ['ph-key', 'Plates / registration', 'Confirm the relevant authority’s requirements for plate handling, transfer or cancellation. Collection alone should not be treated as confirmation that registration has been cancelled.']
+];
+const faqs = [
+  ['How old does a car have to be before it should be scrapped?', 'There is no age threshold used on this page. Condition, faults, remaining usability, repair practicality and the vehicle’s next-use options matter more than age alone.'],
+  ['Does high mileage mean my car is only worth scrap?', 'No. Mileage provides useful context, but it does not determine the route by itself. A high-mileage car may still be usable or suitable for an as-is sale, depending on its actual condition.'],
+  ['Should I repair an old car before asking for a valuation?', 'You can request a valuation in the car’s current condition. Share any known diagnosis or estimate, then compare further repair work with the practical as-is and scrap options before spending more.'],
+  ['Can an old car with engine or gearbox failure still be valued?', 'Yes. Explain the known fault, whether it starts or moves, and any other issues. The review considers the individual vehicle rather than assuming a major fault automatically means scrap.'],
+  ['Can I request a valuation for a long-term parked or non-running car?', 'Yes. Share the vehicle details, how long it has been parked, known faults and exact location. Whether it rolls, has keys and can be reached matters if collection is discussed.'],
+  ['What can affect the value of an older car?', 'Make, model, year, current condition, whether it runs, potentially reusable components, demand, documents and collection access all provide context. There are no fixed prices or age-based price bands on this page.'],
+  ['What paperwork should I check in the UAE?', 'Have the Mulkiya or available registration details ready, check finance and any fines or restrictions, and confirm plate and registration requirements with the relevant authority. Requirements depend on the emirate and agreed route.'],
+  ['Can my old car be collected?', 'Collection can be discussed if it is appropriate for the chosen route. Share the emirate, exact location, access restrictions, keys and whether the car moves; arrangements are confirmed after those details are reviewed.']
+];
+
+let vehicleData = { makes: [], models: [], years: [] };
+let vehicleDataError = '';
+let helpfulPosts: any[] = [];
+await Promise.all([
+  (async () => { try { vehicleData = await getVehicleData(); } catch (error) { vehicleDataError = error instanceof Error ? error.message : String(error); } })(),
+  (async () => { try { helpfulPosts = await getRelevantPosts({ _id: 'scrap-old-car-guide', slug: 'scrap-old-car' }, ['old car', 'older car', 'end-of-life', 'high mileage', 'repair', 'non-running', 'scrap', 'engine']); } catch { helpfulPosts = []; } })()
+]);
+const breadcrumbJsonLd = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+  { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.scrapmycaruae.com/' },
+  { '@type': 'ListItem', position: 2, name: 'Scrap My Car', item: 'https://www.scrapmycaruae.com/scrap-my-car/' },
+  { '@type': 'ListItem', position: 3, name: 'Scrap Old Car', item: 'https://www.scrapmycaruae.com/scrap-old-car/' }
+] };
+const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })) };
+---
+
+<BaseLayout title={title} description={description} canonical="/scrap-old-car/" ogImage="/sections/older-worn-car-uae.webp">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c')} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')} />
+  </Fragment>
+  <main class="old-car-page">
+    <section class="old-hero" aria-labelledby="old-car-title"><div class="smc-container">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">›</span><a href="/scrap-my-car/">Scrap My Car</a><span aria-hidden="true">›</span><span aria-current="page">Scrap old car</span></nav>
+      <div class="old-hero__grid">
+        <div class="old-hero__copy"><p class="eyebrow"><i class="ph ph-signpost" aria-hidden="true"></i> Before the next repair</p><h1 id="old-car-title">Scrap your old car <span>in the UAE</span></h1><p class="hero-lead">If an older car is becoming difficult or expensive to keep on the road, start with its current condition before deciding whether to repair, sell or scrap it.</p></div>
+        <div class="old-hero__form"><QuoteForm makes={vehicleData.makes} models={vehicleData.models} years={vehicleData.years} dataError={vehicleDataError} variant="free-quote" /></div>
+        <ul class="hero-trust"><li><i class="ph ph-check" aria-hidden="true"></i>Free valuation</li><li><i class="ph ph-check" aria-hidden="true"></i>No repair required first</li><li><i class="ph ph-check" aria-hidden="true"></i>Compare your practical options</li></ul>
+      </div>
+    </div></section>
+
+    <section class="section life-section" aria-labelledby="life-title"><div class="smc-container">
+      <div class="editorial-heading"><div><p class="eyebrow">Age is only part of the story</p><h2 id="life-title">When does an old car become an <span>end-of-life car?</span></h2></div><p>An older vehicle is not automatically an end-of-life vehicle. What matters is whether it remains practical to use, what work it needs and whether further repairs make sense for your circumstances.</p></div>
+      <figure class="old-car-photo"><img src="/sections/older-worn-car-uae.webp" alt="Older silver sedan with faded paint, worn headlights and everyday body wear outside a workshop" width="1536" height="1024" loading="lazy" decoding="async" /><figcaption><i class="ph ph-car-profile" aria-hidden="true"></i>Look at the whole vehicle, not just its age.</figcaption></figure>
+      <div class="life-context"><article><h3>Age gives context</h3><p>A model year does not tell you how the car has been maintained or what still works.</p></article><article><h3>Mileage needs a closer look</h3><p>Use and service history matter alongside the current condition and known faults.</p></article><article><h3>Practicality guides the decision</h3><p>Consider the work ahead, remaining usability and alternatives before choosing a route.</p></article></div>
+    </div></section>
+
+    <section class="section signs-section" aria-labelledby="signs-title"><div class="smc-container">
+      <header class="section-heading"><p class="eyebrow">A useful point to pause</p><h2 id="signs-title">Signs it may be time <span>to move on</span></h2><p>These are reasons to review the options, not automatic reasons to scrap the car.</p></header>
+      <div class="signs-layout"><div class="signs-accordion">{signs.map((sign, index) => <details name="old-car-signs" open={index === 0}><summary><span><i class:list={['ph', sign.icon]} aria-hidden="true"></i>{sign.title}</span><i class="ph ph-plus accordion-toggle" aria-hidden="true"></i></summary><div class="sign-content"><p>{sign.copy}</p>{sign.href && <a class="info-link" href={sign.href}>{sign.link} <span aria-hidden="true">→</span></a>}</div></details>)}</div><aside class="decision-note"><i class="ph ph-scales" aria-hidden="true"></i><p class="eyebrow">Before committing to more work</p><h3>Look beyond the next repair bill.</h3><p>What is known about the fault? What else needs attention? Will the car still meet your needs?</p><p>A current-condition valuation gives you another option to weigh up.</p><SectionActionButton href="/free-quote" label="Value my old car" intent="valuation" /></aside></div>
+    </div></section>
+
+    <section class="section comparison-section" aria-labelledby="comparison-title"><div class="smc-container">
+      <header class="section-heading"><p class="eyebrow">Three routes. One considered decision.</p><h2 id="comparison-title">Repair, sell as-is <span>or scrap?</span></h2><p>Choose around the car you have today and the work still ahead of it.</p></header>
+      <div class="comparison-wrap"><table class="decision-table"><caption class="sr-only">Compare repair, sell-as-is and scrap routes for an older vehicle</caption><thead><tr><th scope="col">Route</th><th scope="col">When to consider it</th><th scope="col">What to weigh up</th></tr></thead><tbody>{routes.map((route) => <tr><th scope="row"><span><i class:list={['ph', route.icon]} aria-hidden="true"></i>{route.label}</span></th><td><span class="mobile-label" aria-hidden="true">When to consider it</span>{route.fit}</td><td><span class="mobile-label" aria-hidden="true">What to weigh up</span>{route.weigh}</td></tr>)}</tbody></table></div>
+      <p class="comparison-note">A scrap route is one option, not an assumption based on age or mileage.</p><div class="section-cta"><SectionActionButton href="/free-quote" label="Compare my old-car options" intent="valuation" /></div>
+    </div></section>
+
+    <section class="section matters-section" aria-labelledby="matters-title"><div class="smc-container">
+      <div class="editorial-heading"><div><p class="eyebrow">The car still has a story to tell</p><h2 id="matters-title">What still matters <span>in an old car?</span></h2></div><div><p>Share an honest picture of the vehicle. Age is only one detail in a review of its condition, usability and practical next route.</p><a class="info-link" href="/scrap-car-value/">Understand scrap-car value <span aria-hidden="true">→</span></a></div></div>
+      <ol class="matters-list">{factors.map(([heading, copy], index) => <li><span class="list-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span><div><h3>{heading}</h3><p>{copy}</p></div></li>)}</ol>
+    </div></section>
+
+    <section class="section process-section" aria-labelledby="process-title"><div class="smc-container"><header class="section-heading"><p class="eyebrow">From uncertainty to a next step</p><h2 id="process-title">How the <span>process works</span></h2><p>Start with the details. Choose the route after the discussion.</p></header><ol class="process-list">{steps.map(([icon, heading, copy], index) => <li><div class="step-marker"><i class:list={['ph', icon]} aria-hidden="true"></i><span>Step {index + 1}</span></div><div><h3>{heading}</h3><p>{copy}</p></div></li>)}</ol></div></section>
+
+    <section class="section status-section" aria-labelledby="status-title"><div class="smc-container status-layout"><header><p class="eyebrow">Check the status before the handover</p><h2 id="status-title">UAE paperwork <span>& vehicle status</span></h2><p>Requirements depend on the emirate, registration authority and agreed route. Confirm the current requirements before taking any transfer or cancellation steps.</p><div class="official-links"><a class="info-link" href="https://www.rta.ae/wps/portal/rta/ae/home/rta-services/service-details?serviceId=525" target="_blank" rel="noopener noreferrer">RTA registration cancellation guidance <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a><a class="info-link" href="https://u.ae/en/information-and-services/transportation/registering-vehicles" target="_blank" rel="noopener noreferrer">UAE government vehicle registration guide <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></div></header><ul class="status-list">{paperwork.map(([icon, heading, copy]) => <li><i class:list={['ph', icon]} aria-hidden="true"></i><div><h3>{heading}</h3><p>{copy}</p></div></li>)}</ul></div></section>
+
+    <section class="section collection-section" aria-labelledby="collection-title"><div class="smc-container collection-layout"><div><p class="eyebrow">If collection is the next step</p><h2 id="collection-title">An old car, <span>wherever it is parked</span></h2><p>Share the location, keys, whether it rolls and any parking restrictions. Feasibility and arrangements are reviewed with the request.</p><a class="info-link" href="/car-removal/">Car removal and collection checks <span aria-hidden="true">→</span></a></div><div class="collection-locations"><i class="ph ph-truck collection-icon" aria-hidden="true"></i><p>UAE collection discussion</p><ul aria-label="UAE collection locations">{priorityCoverageLocations.map((location) => <li><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</li>)}</ul></div></div></section>
+
+    <section class="section guides-section" aria-labelledby="guides-title"><div class="smc-container"><header class="section-heading"><p class="eyebrow">Read before deciding</p><h2 id="guides-title">Guides for your <span>next decision</span></h2><p>Explore existing advice on repairs, vehicle value and the scrap-car route.</p></header>{helpfulPosts.length > 0 ? <div class="guide-grid">{helpfulPosts.slice(0, 3).map((post) => <BlogArticleCard post={post} />)}</div> : <p class="guides-fallback">Find vehicle selling and scrap-car guides on our blog.</p>}<div class="section-cta"><SectionActionButton href="/blogs" label="View all blogs" intent="blogs" /></div></div></section>
+
+    <section class="section faq-section" aria-labelledby="faq-title"><div class="smc-container"><header class="section-heading"><h2 id="faq-title">Old-car valuation <span>FAQs</span></h2><p>Answers before you commit to another repair or decide to move on.</p></header><div class="faq-stack">{faqs.map(([question, answer], index) => <details open={index === 0}><summary><span>{question}</span><i class="ph ph-plus accordion-toggle" aria-hidden="true"></i></summary><p>{answer}</p></details>)}</div></div></section>
+
+    <section class="final-cta" aria-labelledby="final-title"><div class="smc-container final-layout"><div><p class="eyebrow">Start with what it is worth today</p><h2 id="final-title">Before the next repair,<span>know your options.</span></h2><p>Share your older car’s details and current condition to start with a free valuation.</p></div><div class="final-actions"><SectionActionButton href="/free-quote" label="Get my old-car valuation" intent="valuation" /><a href="/scrap-my-car/">Explore the complete scrap-car process <span aria-hidden="true">→</span></a></div></div></section>
+  </main>
+</BaseLayout>
+
+<style>
+  .old-car-page{color:#17331d;background:#fff}
+  .old-car-page :is(h1,h2,h3,p,li,td,th){overflow-wrap:break-word}
+  .old-hero{padding:22px 0 clamp(55px,6vw,86px);border-bottom:1px solid #dce7d8;background:radial-gradient(ellipse at 10% 35%,rgba(99,159,78,.13),transparent 45%),linear-gradient(130deg,#fafcf8,#edf5e8 70%,#f7faf9)}
+  .breadcrumb{display:flex;gap:8px;flex-wrap:wrap;align-items:center;color:#647163;font-size:13px}
+  .breadcrumb a{color:#315d37;text-decoration:none}
+  .old-hero__grid{display:grid;grid-template-areas:'copy form' 'trust form';grid-template-columns:minmax(0,1.05fr) minmax(450px,.82fr);gap:24px clamp(32px,5vw,75px);margin-top:33px}
+  .old-hero__copy{grid-area:copy;align-self:end}
+  .eyebrow{display:flex;align-items:center;gap:7px;margin:0;color:#38763d;font-size:11px;font-weight:850;letter-spacing:.1em;text-transform:uppercase;line-height:1.5}
+  .eyebrow i{font-size:18px}
+  h1{margin:17px 0 0;font-size:clamp(3.1rem,5vw,4.8rem);line-height:.98;letter-spacing:-.06em}
+  h1 span{display:block;color:#398b41}
+  .hero-lead{max-width:580px;margin:22px 0 0;color:#566454;font-size:18px;line-height:1.65}
+  .old-hero__form{grid-area:form;min-width:0}
+  .hero-trust{grid-area:trust;align-self:start;display:grid;gap:11px;margin:0;padding:0;list-style:none}
+  .hero-trust li{display:flex;gap:9px;align-items:center;color:#335936;font-size:14px;font-weight:750}
+  .hero-trust i{display:grid;flex:0 0 21px;width:21px;height:21px;place-items:center;border-radius:50%;background:#2f7d37;color:#fff;font-size:12px}
+  .section{padding:clamp(62px,7vw,96px) 0}
+  h2{margin:13px 0 0;font-size:clamp(2.2rem,3.7vw,3.5rem);line-height:1.07;letter-spacing:-.05em}
+  h2 span{color:#398b41}
+  h3{margin:0;font-size:18px;line-height:1.35;letter-spacing:-.025em}
+  .editorial-heading{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr);gap:clamp(30px,6vw,85px);align-items:end;margin-bottom:32px}
+  .editorial-heading>p,.editorial-heading>div>p:not(.eyebrow){margin:0;color:#5d6b5b;line-height:1.75}
+  .editorial-heading .info-link{margin-top:17px}
+  .old-car-photo{position:relative;margin:0;border-radius:22px;overflow:hidden;background:#e8ece3}
+  .old-car-photo img{display:block;width:100%;height:auto;aspect-ratio:2.05;object-fit:cover;object-position:center 58%}
+  .old-car-photo figcaption{position:absolute;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:center;padding:44px 26px 22px;background:linear-gradient(transparent,rgba(15,32,19,.88));color:#fff;font-size:14px;font-weight:750}
+  .old-car-photo figcaption i{font-size:23px}
+  .life-context{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px;margin-top:29px}
+  .life-context article{padding-top:17px;border-top:2px solid #b4cdaa}
+  .life-context h3{font-size:17px}
+  .life-context p{margin:8px 0 0;color:#61705e;font-size:14px;line-height:1.65}
+  .section-heading{max-width:760px;margin:0 auto 34px;text-align:center}
+  .section-heading .eyebrow{justify-content:center}
+  .section-heading p:not(.eyebrow){margin:16px auto 0;color:#5d6b5b;line-height:1.7}
+  .signs-section{background:#f6f8f2;border-block:1px solid #e2e9dc}
+  .signs-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:clamp(30px,5vw,66px);align-items:start}
+  .signs-accordion{border-top:1px solid #cddbc7}
+  .signs-accordion details{border-bottom:1px solid #cddbc7}
+  summary{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:65px;padding:15px 0;list-style:none;cursor:pointer;font-weight:750;line-height:1.4}
+  summary::-webkit-details-marker{display:none}
+  .signs-accordion summary>span{display:flex;gap:12px;align-items:center;font-size:16px}
+  .signs-accordion summary>span>i{display:grid;flex:0 0 34px;width:34px;height:34px;place-items:center;border-radius:10px;background:#e3eddc;color:#32743a;font-size:19px}
+  .accordion-toggle{display:grid;flex:0 0 27px;width:27px;height:27px;place-items:center;border:1px solid #ccddc4;border-radius:50%;color:#377a3e;transition:transform .18s ease}
+  details[open]>summary .accordion-toggle{transform:rotate(45deg)}
+  .sign-content{padding:0 8px 23px 46px}
+  .sign-content p{margin:0;color:#5d6b5b;font-size:14px;line-height:1.75}
+  .sign-content .info-link{margin-top:13px}
+  .info-link{display:inline-flex;gap:7px;align-items:center;color:#1769aa;font-size:14px;font-weight:750;line-height:1.5;text-decoration:none}
+  .info-link:hover{text-decoration:underline;color:#0f4e7b}
+  summary:focus-visible,a:focus-visible{outline:3px solid #6c9fc1;outline-offset:4px;border-radius:4px}
+  .decision-note{padding:clamp(25px,3vw,38px);border-radius:19px;background:#1d4727;color:#fff}
+  .decision-note>i{font-size:33px;color:#c2e3b1}
+  .decision-note .eyebrow{margin-top:19px;color:#bddba9;font-size:10px}
+  .decision-note h3{margin-top:12px;font-size:clamp(1.5rem,2.2vw,2rem);line-height:1.15;letter-spacing:-.04em}
+  .decision-note>p:not(.eyebrow){margin:15px 0 0;color:#d0dfc9;font-size:14px;line-height:1.7}
+  .decision-note :global(.section-action){margin-top:22px;background:#e1f1d5;color:#173f22;border-color:#e1f1d5;box-shadow:none}
+  .comparison-section{background:#173f22;color:#fff}
+  .comparison-section .eyebrow{color:#b9dda8}
+  .comparison-section h2 span{color:#c0e4ad}
+  .comparison-section .section-heading p:not(.eyebrow){color:#cbdcc3}
+  .comparison-wrap{overflow:hidden;border:1px solid #5b7a53;border-radius:18px;background:#fff;color:#21472a}
+  .decision-table{width:100%;border-collapse:collapse;text-align:left;table-layout:fixed}
+  .decision-table th,.decision-table td{padding:24px 27px;border-bottom:1px solid #dce6d8;vertical-align:top;font-size:14px;line-height:1.65}
+  .decision-table thead th{padding-block:15px;background:#eaf2e4;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:#3e6440}
+  .decision-table th:first-child{width:22%}
+  .decision-table tbody th>span{display:flex;align-items:center;gap:11px;font-size:18px}
+  .decision-table tbody th i{display:grid;flex:0 0 38px;width:38px;height:38px;place-items:center;border-radius:10px;background:#e6f0de;color:#36743a;font-size:20px}
+  .decision-table tbody tr:last-child>*{border-bottom:0}
+  .decision-table td{color:#586b55}
+  .decision-table td:last-child{background:#f7faf4}
+  .mobile-label{display:none}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .comparison-note{margin:22px 0 0;color:#c8ddbe;font-size:13px;text-align:center;line-height:1.6}
+  .section-cta{display:flex;justify-content:center;margin-top:26px}
+  .comparison-section :global(.section-action){background:#e1f1d5;border-color:#e1f1d5;color:#173f22}
+  .matters-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:44px;margin:0;padding:0;list-style:none}
+  .matters-list li{display:grid;grid-template-columns:37px minmax(0,1fr);gap:14px;padding:23px 0;border-top:1px solid #d9e5d3}
+  .list-number{color:#6b9361;font-size:12px;font-weight:850;padding-top:4px}
+  .matters-list p{margin:8px 0 0;color:#5c6d58;font-size:14px;line-height:1.65}
+  .process-section{background:#f4f8f0;border-block:1px solid #e0ead8}
+  .process-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:27px;margin:38px 0 0;padding:0;list-style:none}
+  .step-marker{position:relative;display:flex;gap:13px;align-items:center;margin-bottom:20px}
+  .step-marker>i{display:grid;width:48px;height:48px;place-items:center;border-radius:14px;background:#24552d;color:#d2e9be;font-size:24px}
+  .step-marker>span{color:#63875b;font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+  .process-list li:not(:last-child) .step-marker::after{height:1px;flex:1;background:#b5ceaa;content:''}
+  .process-list h3{font-size:19px}
+  .process-list p{margin:10px 0 0;color:#5a6d55;font-size:14px;line-height:1.7}
+  .status-section{background:#f7fafb}
+  .status-layout{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(32px,7vw,95px)}
+  .status-layout header>p:not(.eyebrow){margin:20px 0 0;color:#596c61;line-height:1.7}
+  .official-links{display:grid;gap:13px;margin-top:23px}
+  .official-links .info-link{font-size:13px}
+  .status-list{margin:0;padding:0;list-style:none;border-top:1px solid #d6e1e2}
+  .status-list li{display:grid;grid-template-columns:38px minmax(0,1fr);gap:14px;padding:18px 0;border-bottom:1px solid #d6e1e2}
+  .status-list li>i{display:grid;width:36px;height:36px;place-items:center;border-radius:10px;background:#e7f0ed;color:#347443;font-size:20px}
+  .status-list p{margin:7px 0 0;color:#5b6c61;font-size:14px;line-height:1.7}
+  .collection-section{padding-block:clamp(48px,6vw,76px)}
+  .collection-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:clamp(32px,7vw,90px);align-items:center}
+  .collection-layout h2{font-size:clamp(2rem,3.4vw,3rem)}
+  .collection-layout>div>p:not(.eyebrow){margin:17px 0 21px;color:#5d6d57;line-height:1.7}
+  .collection-locations{padding:26px 30px;border-left:3px solid #679454;background:#f3f7ed}
+  .collection-icon{font-size:31px;color:#39743e}
+  .collection-locations>p{font-size:14px!important;font-weight:800;color:#315738!important;margin:9px 0 18px!important}
+  .collection-locations ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px 17px;margin:0;padding:0;list-style:none}
+  .collection-locations li{display:flex;gap:7px;align-items:center;font-size:13px;color:#45633e}
+  .collection-locations li i{color:#4c8546}
+  .guides-section{background:#f5f8f1}
+  .guide-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+  .guides-fallback{color:#5d6d57;text-align:center}
+  .faq-stack{max-width:940px;margin:auto;border-top:1px solid #d9e5d3}
+  .faq-stack details{border-bottom:1px solid #d9e5d3}
+  .faq-stack summary{font-size:16px}
+  .faq-stack details>p{margin:0 0 23px;color:#5d6d57;font-size:15px;line-height:1.75}
+  .final-cta{padding:clamp(50px,6vw,80px) 0;background:#1b4425;color:#fff}
+  .final-layout{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:40px;align-items:center}
+  .final-cta .eyebrow{color:#bbdca9}
+  .final-cta h2 span{display:block;color:#c5e7b3}
+  .final-cta p:not(.eyebrow){max-width:610px;margin:18px 0 0;color:#cedfc5;line-height:1.7}
+  .final-actions{display:grid;justify-items:start;gap:18px}
+  .final-actions :global(.section-action){background:#e1f1d5;border-color:#e1f1d5;color:#173f22}
+  .final-actions>a{color:#c9e6b8;font-size:13px;font-weight:750;line-height:1.6;text-decoration:none}
+  @media(max-width:980px){
+    .old-hero__grid{grid-template-areas:'copy' 'form' 'trust';grid-template-columns:minmax(0,1fr)}
+    .old-hero__copy{max-width:700px}
+    .old-hero__form{width:min(100%,650px)}
+    .editorial-heading{gap:30px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+    .signs-layout{grid-template-columns:minmax(0,1fr)}
+    .decision-note{display:block;max-width:none}
+    .decision-table th,.decision-table td{padding:19px}
+    .decision-table th:first-child{width:25%}
+    .decision-table tbody th>span{flex-direction:column;align-items:flex-start;gap:9px}
+    .status-layout,.collection-layout{grid-template-columns:minmax(0,1fr);gap:30px}
+    .process-list{gap:20px}
+    .process-list h3{font-size:17px}
+    .guide-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .final-layout{grid-template-columns:minmax(0,1fr);gap:27px}
+  }
+  @media(max-width:700px){
+    .old-hero{padding:16px 0 46px}
+    .breadcrumb{font-size:11px;gap:7px}
+    .old-hero__grid{justify-items:center;gap:20px;margin-top:26px}
+    .old-hero__copy{max-width:420px;text-align:center}
+    .old-hero__copy .eyebrow{justify-content:center;font-size:10px}
+    h1{font-size:clamp(2.5rem,11vw,3.6rem);line-height:.98;margin-top:13px;letter-spacing:-.055em}
+    .hero-lead{max-width:34ch;margin:16px auto 0;font-size:15px;line-height:1.6}
+    .old-hero__form{width:100%}
+    .hero-trust{justify-self:stretch;gap:10px}
+    .hero-trust li{font-size:13px}
+    .section{padding:54px 0}
+    h2{font-size:clamp(1.95rem,8.3vw,2.6rem)}
+    h3{font-size:16px}
+    .eyebrow{font-size:10px}
+    .editorial-heading{grid-template-columns:minmax(0,1fr);gap:17px;text-align:center;margin-bottom:25px}
+    .editorial-heading .eyebrow{justify-content:center}
+    .editorial-heading>p,.editorial-heading>div>p:not(.eyebrow){font-size:14px;line-height:1.7}
+    .old-car-photo{border-radius:16px}
+    .old-car-photo img{aspect-ratio:1.25;object-position:center;object-fit:cover}
+    .old-car-photo figcaption{padding:30px 17px 17px;font-size:12px;line-height:1.5}
+    .life-context{grid-template-columns:minmax(0,1fr);gap:18px;margin-top:23px}
+    .life-context article{padding-top:14px}
+    .life-context h3{font-size:16px}
+    .life-context p{font-size:13px;margin-top:6px}
+    .section-heading{margin-bottom:26px}
+    .section-heading p:not(.eyebrow){font-size:14px;line-height:1.65}
+    summary{min-height:62px;padding:12px 0}
+    .signs-accordion summary>span{font-size:14px;gap:10px}
+    .signs-accordion summary>span>i{flex-basis:31px;width:31px;height:31px;font-size:17px}
+    .sign-content{padding:0 3px 20px 41px}
+    .sign-content p{font-size:13px;line-height:1.7}
+    .info-link{font-size:13px}
+    .decision-note{padding:25px}
+    .decision-note h3{font-size:25px}
+    .decision-note>p:not(.eyebrow){font-size:13px}
+    .decision-note :global(.section-action){width:100%;justify-content:center}
+    .decision-table,.decision-table tbody,.decision-table tr,.decision-table th,.decision-table td{display:block;width:100%}
+    .decision-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+    .decision-table tbody tr{padding:20px;border-bottom:1px solid #d7e3d0}
+    .decision-table tbody tr:last-child{border-bottom:0}
+    .decision-table th:first-child{width:100%}
+    .decision-table th,.decision-table td{padding:0;border:0;font-size:13px;line-height:1.65}
+    .decision-table tbody th>span{flex-direction:row;align-items:center;font-size:19px;gap:11px;margin-bottom:15px}
+    .decision-table tbody th i{width:34px;height:34px;flex-basis:34px;font-size:19px}
+    .decision-table td{margin-top:13px}
+    .decision-table td:last-child{background:transparent}
+    .mobile-label{display:block;margin-bottom:3px;color:#315e35;font-size:10px;font-weight:850;letter-spacing:.06em;text-transform:uppercase}
+    .comparison-note{font-size:12px}
+    .comparison-section .section-cta :global(.section-action){width:100%;justify-content:center}
+    .matters-list{grid-template-columns:minmax(0,1fr)}
+    .matters-list li{grid-template-columns:29px minmax(0,1fr);gap:10px;padding:18px 0}
+    .matters-list p{font-size:13px;margin-top:6px}
+    .process-list{grid-template-columns:minmax(0,1fr);gap:0;margin-top:30px}
+    .process-list li{position:relative;display:grid;grid-template-columns:52px minmax(0,1fr);gap:17px;padding-bottom:28px}
+    .process-list li:last-child{padding-bottom:0}
+    .step-marker{display:flex;flex-direction:column;gap:7px;margin:0}
+    .step-marker>i{width:46px;height:46px;border-radius:12px;font-size:22px}
+    .step-marker>span{font-size:9px;white-space:nowrap}
+    .process-list li:not(:last-child) .step-marker::after{position:absolute;top:77px;bottom:-18px;width:1px;height:auto}
+    .process-list h3{font-size:18px;margin-top:3px}
+    .process-list p{font-size:13px;margin-top:7px;line-height:1.65}
+    .status-layout header,.collection-layout>div:first-child{text-align:center}
+    .status-layout header .eyebrow,.collection-layout .eyebrow{justify-content:center}
+    .status-layout header>p:not(.eyebrow),.collection-layout>div>p:not(.eyebrow){font-size:14px}
+    .official-links{justify-items:center}
+    .status-list li{grid-template-columns:34px minmax(0,1fr);gap:12px;padding:16px 0}
+    .status-list li>i{width:32px;height:32px;font-size:18px}
+    .status-list p{font-size:13px}
+    .collection-locations{padding:23px}
+    .collection-locations ul{gap:13px 9px}
+    .collection-locations li{font-size:12px}
+    .guide-grid{grid-template-columns:minmax(0,1fr)}
+    .faq-stack summary{font-size:14px}
+    .faq-stack details>p{font-size:13px;line-height:1.7}
+    .final-layout{text-align:center}
+    .final-cta .eyebrow{justify-content:center}
+    .final-cta p:not(.eyebrow){font-size:14px}
+    .final-actions{justify-items:center}
+    .final-actions :global(.section-action){width:100%;justify-content:center}
+  }
+  @media(prefers-reduced-motion:reduce){.accordion-toggle{transition:none}}
+</style>
