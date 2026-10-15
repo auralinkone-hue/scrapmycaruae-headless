@@ -13,7 +13,9 @@ test('scrap-car-value page has the requested SEO, form, schemas and interactive 
   assert.match(page, /<QuoteForm[\s\S]*?variant="free-quote"/);
   assert.match(page, /What shapes your car/);
   assert.match(page, /data-factor/);
-  assert.match(page, /aria-pressed/);
+  assert.match(page, /aria-controls={`factor-panel-\${factor.key}`}/);
+  assert.match(page, /\.condition-detail\[hidden\],\[data-factor-panel\]\[hidden\]\{display:none!important\}/);
+  assert.doesNotMatch(page, /class="value-map"/);
   assert.match(page, /aria-controls={`condition-panel-\${index}`}/);
   assert.match(page, /event\.key === 'ArrowRight'/);
   assert.match(page, /'@type': 'BreadcrumbList'/);
