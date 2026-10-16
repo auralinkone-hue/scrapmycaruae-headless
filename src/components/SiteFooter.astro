@@ -89,7 +89,7 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
   <div class="cookie-consent-banner__actions">
     <button class="cookie-consent-banner__manage" type="button" data-cookie-settings>Manage choices</button>
     <button type="button" data-cookie-reject>Reject optional</button>
-    <button class="is-primary" type="button" data-cookie-accept>Accept analytics</button>
+    <button class="is-primary" type="button" data-cookie-accept>Accept cookies</button>
   </div>
 </div>
 
@@ -292,26 +292,25 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
     z-index: 1990;
     right: 24px;
     bottom: 24px;
-    width: min(560px, calc(100vw - 48px));
-    padding: 18px;
+    width: min(660px, calc(100vw - 48px));
+    padding: 20px;
     border: 1px solid rgba(167, 211, 154, .28);
     border-radius: 18px;
     background: rgba(15, 39, 20, .97);
     box-shadow: 0 22px 70px rgba(3, 16, 7, .34);
     color: #edf7eb;
-    display: flex;
-    align-items: center;
-    gap: 22px;
+    display: grid;
+    gap: 16px;
     animation: cookie-banner-in .28s ease both;
   }
 
   .cookie-consent-banner[hidden],
   .cookie-modal[hidden] { display: none !important; }
 
-  .cookie-consent-banner__copy { display: grid; gap: 4px; flex: 1; }
-  .cookie-consent-banner__copy strong { font-size: 15px; }
-  .cookie-consent-banner__copy span { color: #bdcdbb; font-size: 12px; line-height: 1.5; }
-  .cookie-consent-banner__actions { display: flex; gap: 8px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+  .cookie-consent-banner__copy { display: grid; gap: 5px; }
+  .cookie-consent-banner__copy strong { font-size: 16px; }
+  .cookie-consent-banner__copy span { max-width: 560px; color: #bdcdbb; font-size: 13px; line-height: 1.55; }
+  .cookie-consent-banner__actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
   .cookie-consent-banner button,
   .cookie-modal__actions button {
     min-height: 46px;
@@ -509,11 +508,10 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
       width: calc(100vw - 24px);
       padding: 16px;
       align-items: stretch;
-      flex-direction: column;
       gap: 14px;
     }
 
-    .cookie-consent-banner__actions { display: grid; grid-template-columns: 1fr 1fr; }
+    .cookie-consent-banner__actions { grid-template-columns: 1fr 1fr; }
     .cookie-consent-banner__manage { grid-column: 1 / -1; }
     .cookie-consent-banner button { padding: 0 10px; }
     .cookie-modal { padding: 12px; align-items: end; }
