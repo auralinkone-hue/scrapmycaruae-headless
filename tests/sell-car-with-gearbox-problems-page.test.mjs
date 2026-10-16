@@ -18,6 +18,10 @@ test('gearbox-problems page has the requested SEO, form, content and schema', as
   assert.match(page, /gearbox problems/);
   assert.match(page, /<LocationCoverageList \/>/);
   assert.match(page, /data-service-motion/);
+  assert.match(page, /\/sections\/gearbox-inspection-workshop\.webp/);
+  assert.match(page, /\/sections\/gearbox-car-collection\.webp/);
+  assert.doesNotMatch(page, /class="transmission-visual"/);
+  assert.doesNotMatch(page, /class="collection-graphic"/);
 
   for (const symptom of ['Slipping gears', 'Delayed engagement', 'Jerking', 'Unusual gearbox noise', 'Warning lights', 'Stuck gears', 'Transmission failure']) {
     assert.match(page, new RegExp(symptom, 'i'));

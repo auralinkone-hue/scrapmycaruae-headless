@@ -60,7 +60,7 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   <main class="gearbox-page" data-service-motion>
     <section class="gearbox-hero" aria-labelledby="gearbox-title"><div class="smc-container"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">›</span><a href="/sell-my-car/">Sell My Car</a><span aria-hidden="true">›</span><span aria-current="page">Gearbox problems</span></nav><div class="hero-grid"><div class="hero-copy"><p class="eyebrow"><i class="ph ph-gear-six" aria-hidden="true"></i> Gearbox and transmission valuation</p><h1 id="gearbox-title">Sell a car with <span>gearbox problems</span> in the UAE</h1><p class="hero-lead">Gearbox faults can make a car expensive or difficult to keep on the road. Share the vehicle details and symptoms to request a free valuation.</p><ul class="hero-points"><li><i class="ph ph-check-circle" aria-hidden="true"></i>No repair required first</li><li><i class="ph ph-check-circle" aria-hidden="true"></i>Automatic and manual cars considered</li><li><i class="ph ph-check-circle" aria-hidden="true"></i>Collection access can be discussed</li></ul></div><div class="hero-form"><QuoteForm makes={vehicleData.makes} models={vehicleData.models} years={vehicleData.years} dataError={vehicleDataError} variant="free-quote" /></div></div></div></section>
 
-    <section class="section symptoms-section" aria-labelledby="symptoms-title"><div class="smc-container symptoms-layout"><div class="transmission-visual" aria-hidden="true"><div class="visual-grid"></div><div class="gear-orbit gear-orbit--outer"><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="gear-orbit gear-orbit--inner"><i class="ph ph-gear-six"></i></div><div class="signal signal--top"><i class="ph ph-warning"></i><span>Warning</span></div><div class="signal signal--bottom"><i class="ph ph-wave-sine"></i><span>Shift feel</span></div><p>Describe the symptom.<br />Do not guess the diagnosis.</p></div><div><p class="eyebrow">Common gearbox symptoms</p><h2 id="symptoms-title">What have you <span>noticed?</span></h2><p class="section-lead">A symptom does not confirm a particular fault. Share what the car does, when it happens and any information a workshop has already provided.</p><div class="symptom-list">{symptoms.map(([icon, heading, copy]) => <article><i class:list={['ph', icon]} aria-hidden="true"></i><div><h3>{heading}</h3><p>{copy}</p></div></article>)}</div></div></div></section>
+    <section class="section symptoms-section" aria-labelledby="symptoms-title"><div class="smc-container symptoms-layout"><figure class="photo-visual photo-visual--gearbox"><span class="photo-visual__graphic" aria-hidden="true"></span><img src="/sections/gearbox-inspection-workshop.webp" alt="Mechanic inspecting the internal components of an automotive gearbox in a professional workshop" width="1200" height="900" loading="lazy" decoding="async" /><figcaption><i class="ph ph-magnifying-glass" aria-hidden="true"></i>Describe the symptoms and share any diagnosis already available.</figcaption></figure><div><p class="eyebrow">Common gearbox symptoms</p><h2 id="symptoms-title">What have you <span>noticed?</span></h2><p class="section-lead">A symptom does not confirm a particular fault. Share what the car does, when it happens and any information a workshop has already provided.</p><div class="symptom-list">{symptoms.map(([icon, heading, copy]) => <article><i class:list={['ph', icon]} aria-hidden="true"></i><div><h3>{heading}</h3><p>{copy}</p></div></article>)}</div></div></div></section>
 
     <section class="section decision-section" aria-labelledby="decision-title"><div class="smc-container"><div class="section-heading"><p class="eyebrow">Choose with the full picture</p><h2 id="decision-title">Repair, sell as-is or <span>consider scrap?</span></h2><p>A valuation gives you another reference point before you commit to diagnosis, parts or gearbox work.</p></div><div class="decision-track"><article><span class="route-icon"><i class="ph ph-wrench" aria-hidden="true"></i></span><div><p class="route-label">Repair</p><h3>When the fault and cost are clear</h3><p>May suit a vehicle in otherwise good condition where the likely work is understood and proportionate.</p></div></article><span class="track-link" aria-hidden="true"><i class="ph ph-caret-right"></i></span><article class="route-primary"><span class="route-icon"><i class="ph ph-car-profile" aria-hidden="true"></i></span><div><p class="route-label">Sell as-is</p><h3>When you want to avoid further work</h3><p>Request a valuation using the car’s current gearbox condition and decide after the review.</p></div></article><span class="track-link" aria-hidden="true"><i class="ph ph-caret-right"></i></span><article><span class="route-icon"><i class="ph ph-recycle" aria-hidden="true"></i></span><div><p class="route-label">Potential scrap route</p><h3>When major faults overlap</h3><p>May be discussed for an end-of-life car with transmission failure and other serious issues.</p></div></article></div><div class="decision-action"><span><i class="ph ph-scales" aria-hidden="true"></i>Compare the car’s condition before deciding.</span><SectionActionButton href="/free-quote" label="Request my free valuation" intent="valuation" /></div></div></section>
 
@@ -68,7 +68,7 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
 
     <section class="section gearbox-types" aria-labelledby="types-title"><div class="smc-container"><div class="section-heading"><p class="eyebrow">Useful details to share</p><h2 id="types-title">Automatic and manual <span>gearbox issues</span></h2><p>The symptoms can present differently. Describe what you experience rather than treating it as a confirmed technical diagnosis.</p></div><div class="type-comparison"><article><header><i class="ph ph-circles-three-plus" aria-hidden="true"></i><div><span>Automatic</span><h3>Transmission behaviour</h3></div></header><ul><li>Delay when selecting Drive or Reverse</li><li>Slipping, harsh or irregular shifts</li><li>Warning messages or loss of drive</li></ul></article><div class="type-divider"><span>OR</span></div><article><header><i class="ph ph-gear-six" aria-hidden="true"></i><div><span>Manual</span><h3>Gear and clutch behaviour</h3></div></header><ul><li>Difficulty selecting or staying in gear</li><li>Grinding, noise or unusual resistance</li><li>Loss of drive or suspected clutch issues</li></ul></article></div><p class="diagnosis-note"><i class="ph ph-info" aria-hidden="true"></i>Clutch, electronics and other components can produce similar symptoms. A workshop diagnosis is helpful when available, but it is not required to request a valuation.</p></div></section>
 
-    <section class="section mobility-section" aria-labelledby="mobility-title"><div class="smc-container mobility-layout"><div><p class="eyebrow">Non-running and limited mobility</p><h2 id="mobility-title">Tell us what the car can <span>still do.</span></h2><p>Gearbox trouble can leave a vehicle moving normally, moving only a short distance or unable to drive. The practical details help shape any collection discussion.</p><ul class="mobility-checks"><li><i class="ph ph-power" aria-hidden="true"></i><span><b>Does the engine start?</b>Starting and driving are separate details.</span></li><li><i class="ph ph-tire" aria-hidden="true"></i><span><b>Can it roll and steer?</b>Include wheel or parking-brake concerns.</span></li><li><i class="ph ph-key" aria-hidden="true"></i><span><b>Are the keys available?</b>Share any access or security issue.</span></li><li><i class="ph ph-buildings" aria-hidden="true"></i><span><b>Where is it parked?</b>Basements, tight spaces and height limits matter.</span></li></ul><a class="text-link" href="/sell-non-running-car/">Read the non-running car guide <i class="ph ph-engine" aria-hidden="true"></i></a></div><div class="collection-graphic" aria-hidden="true"><div class="parking-bay"><span>P</span><i class="ph ph-car-profile"></i></div><div class="route-line"><span></span><span></span><span></span></div><div class="recovery"><i class="ph ph-truck"></i><b>Access review</b></div><div class="access-tags"><span><i class="ph ph-ruler"></i>Clearance</span><span><i class="ph ph-map-pin"></i>Location</span><span><i class="ph ph-arrows-clockwise"></i>Mobility</span></div></div></div></section>
+    <section class="section mobility-section" aria-labelledby="mobility-title"><div class="smc-container mobility-layout"><div><p class="eyebrow">Non-running and limited mobility</p><h2 id="mobility-title">Tell us what the car can <span>still do.</span></h2><p>Gearbox trouble can leave a vehicle moving normally, moving only a short distance or unable to drive. The practical details help shape any collection discussion.</p><ul class="mobility-checks"><li><i class="ph ph-power" aria-hidden="true"></i><span><b>Does the engine start?</b>Starting and driving are separate details.</span></li><li><i class="ph ph-tire" aria-hidden="true"></i><span><b>Can it roll and steer?</b>Include wheel or parking-brake concerns.</span></li><li><i class="ph ph-key" aria-hidden="true"></i><span><b>Are the keys available?</b>Share any access or security issue.</span></li><li><i class="ph ph-buildings" aria-hidden="true"></i><span><b>Where is it parked?</b>Basements, tight spaces and height limits matter.</span></li></ul><a class="text-link" href="/sell-non-running-car/">Read the non-running car guide <i class="ph ph-engine" aria-hidden="true"></i></a></div><figure class="photo-visual photo-visual--collection"><span class="photo-visual__graphic" aria-hidden="true"></span><img src="/sections/gearbox-car-collection.webp" alt="Recovery operator preparing a non-running saloon car for collection in covered parking" width="1200" height="900" loading="lazy" decoding="async" /><figcaption><i class="ph ph-truck" aria-hidden="true"></i>Parking position, clearance and mobility help shape the collection plan.</figcaption></figure></div></section>
 
     <section class="section process-section" aria-labelledby="process-title"><div class="smc-container"><div class="section-heading"><p class="eyebrow">How valuation works</p><h2 id="process-title">From gearbox symptoms to a <span>practical next step</span></h2></div><ol class="process-band"><li><i class="ph ph-car-profile" aria-hidden="true"></i><div><h3>Vehicle details</h3><p>Choose the make, model and year.</p></div></li><li><i class="ph ph-chat-circle-text" aria-hidden="true"></i><div><h3>Explain symptoms</h3><p>Share what happens and any known history.</p></div></li><li><i class="ph ph-calculator" aria-hidden="true"></i><div><h3>Valuation review</h3><p>Condition and practical details are considered.</p></div></li><li><i class="ph ph-signpost" aria-hidden="true"></i><div><h3>Choose the route</h3><p>Discuss sale and collection if appropriate.</p></div></li></ol></div></section>
 
@@ -88,4 +88,91 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
   @media(max-width:1000px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero-copy{max-width:760px}.hero-form{width:min(100%,650px)}.symptoms-layout{grid-template-columns:minmax(290px,.72fr) minmax(0,1.28fr);gap:38px}.decision-track{grid-template-columns:1fr}.track-link{margin:9px auto;transform:rotate(90deg)}.decision-track article{min-height:0}.value-layout,.mobility-layout{grid-template-columns:minmax(0,1fr);gap:36px}.collection-graphic{width:min(100%,620px);justify-self:center}.process-band{grid-template-columns:1fr 1fr}.process-band li:nth-child(3){border-left:0;border-top:1px solid #d6e3d3}.process-band li:nth-child(4){border-top:1px solid #d6e3d3}.guide-grid{grid-template-columns:1fr 1fr}}
   @media(max-width:700px){.gearbox-hero{padding:15px 0 48px}.breadcrumb{gap:6px;font-size:10px}.hero-grid{gap:22px;margin-top:25px}.hero-copy{text-align:center}.hero-copy .eyebrow{justify-content:center;font-size:9px}.hero-copy h1{font-size:clamp(2.3rem,10vw,3.15rem)}.hero-lead{margin-top:17px;font-size:15px;line-height:1.62}.hero-points{grid-template-columns:1fr;gap:8px;margin:20px auto 0;width:max-content;max-width:100%;text-align:left}.hero-points li{font-size:12px}.section{padding:52px 0}.section-heading{margin-bottom:27px}.section-heading h2,.value-layout h2,.mobility-layout h2{font-size:clamp(1.95rem,8.2vw,2.65rem)}.section-heading>p:last-child,.section-lead,.value-layout header>p:not(.eyebrow),.mobility-layout>div>p:not(.eyebrow){font-size:14px;line-height:1.65}.symptoms-layout{grid-template-columns:1fr;gap:30px}.transmission-visual{min-height:330px;border-radius:22px;order:2}.gear-orbit--outer{top:48px;width:190px;height:190px}.gear-orbit--outer span:nth-child(3),.gear-orbit--outer span:nth-child(6){top:88px}.gear-orbit--inner{top:93px;width:100px;height:100px}.gear-orbit--inner i{font-size:53px}.signal--top{top:24px;right:15px}.signal--bottom{bottom:65px;left:15px}.transmission-visual>p{right:15px;bottom:14px;font-size:11px}.symptom-list{grid-template-columns:1fr}.symptom-list article,.symptom-list article:nth-child(odd){margin:0;padding:16px 0;border-right:0}.decision-track article{grid-template-columns:42px 1fr;padding:22px 18px;border-radius:18px}.route-icon{width:41px;height:41px;font-size:21px}.decision-track h3{font-size:18px}.decision-action{align-items:stretch;flex-direction:column;padding:16px}.decision-action :global(.section-action){justify-content:center;width:100%}.value-layout header,.mobility-layout>div{text-align:center}.value-layout header .eyebrow,.mobility-layout .eyebrow{justify-content:center}.value-layout header :global(.section-action){justify-content:center;width:100%;margin-top:22px}.type-comparison{grid-template-columns:1fr}.type-divider{height:58px}.type-comparison article{padding:23px 18px}.diagnosis-note{text-align:left}.mobility-checks{grid-template-columns:1fr;text-align:left}.text-link{justify-content:center}.collection-graphic{min-height:310px;border-radius:20px}.parking-bay{top:43px;left:18px;width:100px;height:118px}.parking-bay i{font-size:48px}.route-line{top:101px;right:103px;left:118px}.recovery{top:58px;right:16px}.recovery i{font-size:54px}.access-tags{right:12px;bottom:20px;left:12px;gap:6px}.access-tags span{min-height:45px;font-size:9px}.access-tags i{font-size:15px}.process-band{grid-template-columns:1fr}.process-band li+li,.process-band li:nth-child(4){border-top:1px solid #d6e3d3;border-left:0}.process-band li{padding:20px 3px}.guide-grid{grid-template-columns:1fr}.faq-stack summary{font-size:14px}.faq-stack details p{font-size:13px}.final-layout{grid-template-columns:1fr;gap:25px;text-align:center}.final-cta .eyebrow{justify-content:center}.final-cta :global(.section-action){justify-content:center;width:100%}}
   @media(prefers-reduced-motion:reduce){.faq-stack summary i{transition:none}}
+</style>
+
+<style>
+  .photo-visual {
+    position: relative;
+    isolation: isolate;
+    margin: 0;
+    padding: 11px;
+    border: 1px solid #d2e2ce;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, .94);
+    box-shadow: 0 22px 48px rgba(29, 70, 35, .12);
+  }
+
+  .photo-visual::after {
+    content: '';
+    position: absolute;
+    z-index: -2;
+    width: 132px;
+    height: 132px;
+    border-radius: 24px;
+    background-image: radial-gradient(circle, rgba(57, 131, 65, .28) 1.5px, transparent 1.5px);
+    background-size: 13px 13px;
+  }
+
+  .photo-visual--gearbox::after { top: -30px; left: -34px; }
+  .photo-visual--collection::after { right: -34px; bottom: -30px; }
+
+  .photo-visual__graphic {
+    position: absolute;
+    z-index: -1;
+    width: 58%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 38%, rgba(159, 213, 142, .55), rgba(72, 145, 75, .16) 58%, transparent 70%);
+    filter: blur(1px);
+  }
+
+  .photo-visual--gearbox .photo-visual__graphic { top: -54px; right: -58px; }
+  .photo-visual--collection .photo-visual__graphic { bottom: -62px; left: -64px; }
+
+  .photo-visual img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 19px;
+    object-fit: contain;
+  }
+
+  .photo-visual figcaption {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    padding: 14px 7px 4px;
+    color: #466a4c;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.55;
+  }
+
+  .photo-visual figcaption i {
+    flex: 0 0 auto;
+    color: #358041;
+    font-size: 21px;
+  }
+
+  @media (max-width: 1000px) {
+    .photo-visual--collection {
+      width: min(100%, 650px);
+      justify-self: center;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .photo-visual {
+      width: 100%;
+      padding: 7px;
+      border-radius: 21px;
+    }
+
+    .photo-visual--gearbox { order: 2; }
+    .photo-visual img { border-radius: 15px; }
+    .photo-visual figcaption { padding: 11px 6px 4px; font-size: 11px; }
+    .photo-visual::after { width: 92px; height: 92px; background-size: 10px 10px; }
+    .photo-visual--gearbox::after { top: -20px; left: -17px; }
+    .photo-visual--collection::after { right: -17px; bottom: -20px; }
+  }
 </style>
