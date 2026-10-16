@@ -535,14 +535,38 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
       right: 0;
       bottom: 0;
       width: 100%;
-      padding: 16px;
+      padding: 13px 14px calc(13px + env(safe-area-inset-bottom));
       align-items: stretch;
-      gap: 14px;
+      gap: 10px;
+      border-radius: 0;
+      box-shadow: 0 -8px 28px rgba(12, 38, 17, .1);
     }
 
-    .cookie-consent-banner__actions { grid-template-columns: 1fr 1fr; }
-    .cookie-consent-banner__manage { grid-column: 1 / -1; }
-    .cookie-consent-banner button { padding: 0 10px; }
+    .cookie-consent-banner__copy { gap: 2px; }
+    .cookie-consent-banner__copy strong { font-size: 15px; line-height: 1.25; }
+    .cookie-consent-banner__copy span {
+      max-width: none;
+      font-size: 11.5px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+
+    .cookie-consent-banner__actions {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .cookie-consent-banner__manage { grid-column: auto; }
+    .cookie-consent-banner button {
+      min-height: 44px;
+      padding: 0 7px;
+      border-radius: 10px;
+      font-size: 11px;
+      line-height: 1.15;
+    }
     .cookie-modal { padding: 12px; align-items: end; }
     .cookie-modal__panel { max-height: calc(100dvh - 24px); padding: 26px 18px 18px; border-radius: 20px; }
     .cookie-modal__close { top: 14px; right: 14px; }
