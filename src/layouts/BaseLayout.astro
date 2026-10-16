@@ -68,42 +68,73 @@ const analyticsEnabled = import.meta.env.PUBLIC_ANALYTICS_ENABLED === 'true' && 
     {description && <meta name="twitter:description" content={description} />}
     {resolvedOgImage && <meta name="twitter:image" content={resolvedOgImage} />}
 
-    {analyticsEnabled && (
-      <>
-        <script define:vars={{ gtmId }}>
+    {analyticsEnabled && <meta name="smc-analytics-config" content={gtmId} />}
+    <script>
+      import { initializeAnalytics } from '../scripts/analytics';
+
+      const analyticsConfig = document.querySelector<HTMLMetaElement>('meta[name="smc-analytics-config"]');
+      const configuredGtmId = analyticsConfig?.content.trim() || '';
+
+      if (configuredGtmId) {
+        const preferenceKey = 'smc_cookie_preferences_v1';
+        const readAnalyticsPreference = () => {
+          try {
+            const stored = window.localStorage.getItem(preferenceKey);
+            if (stored) return JSON.parse(stored)?.analytics === true;
+          } catch {}
+
+          const cookie = document.cookie
+            .split('; ')
+            .find((entry) => entry.startsWith(`${preferenceKey}=`));
+          return cookie?.split('=')[1] === 'analytics-yes';
+        };
+
+        let analyticsLoaded = false;
+        window.dataLayer = window.dataLayer || [];
+        window.smcAnalyticsConsentGranted = readAnalyticsPreference();
+
+        const setConsentMode = (mode, granted) => {
           window.dataLayer = window.dataLayer || [];
+          function gtag() { window.dataLayer?.push(arguments); }
+          gtag('consent', mode, {
+            analytics_storage: granted ? 'granted' : 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied'
+          });
+        };
+
+        setConsentMode('default', false);
+
+        const loadAnalytics = async () => {
+          if (analyticsLoaded || !window.smcAnalyticsConsentGranted) return;
+          analyticsLoaded = true;
+          setConsentMode('update', true);
           window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-          (function(w,d,s,l,i){
-            const f=d.getElementsByTagName(s)[0];
-            const j=d.createElement(s);
-            const dl=l !== 'dataLayer' ? '&l=' + l : '';
-            j.async=true;
-            j.src='https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-            f.parentNode?.insertBefore(j,f);
-          })(window,document,'script','dataLayer',gtmId);
-        </script>
-        <script>
-          import { initializeAnalytics } from '../scripts/analytics';
+
+          const firstScript = document.getElementsByTagName('script')[0];
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(configuredGtmId)}`;
+          firstScript?.parentNode?.insertBefore(script, firstScript);
           initializeAnalytics();
-        </script>
-      </>
-    )}
+        };
+
+        window.addEventListener('smc:analytics-consent', (event) => {
+          const granted = event instanceof CustomEvent && event.detail?.granted === true;
+          window.smcAnalyticsConsentGranted = granted;
+          setConsentMode('update', granted);
+          if (granted) loadAnalytics();
+        });
+
+        if (window.smcAnalyticsConsentGranted) loadAnalytics();
+      }
+    </script>
 
     <slot name="head" />
   </head>
 
   <body>
-    {analyticsEnabled && (
-      <noscript>
-        <iframe
-          src={`https://www.googletagmanager.com/ns.html?id=${encodeURIComponent(gtmId)}`}
-          height="0"
-          width="0"
-          style="display:none;visibility:hidden"
-          title="Google Tag Manager"
-        />
-      </noscript>
-    )}
     <SiteHeader />
     <slot />
     <SiteFooter />

@@ -13,8 +13,9 @@ type EventParams = {
 
 declare global {
   interface Window {
-    dataLayer?: Array<Record<string, unknown>>;
+    dataLayer?: unknown[];
     smcAnalytics?: { track: (event: AnalyticsEvent, params?: EventParams) => void };
+    smcAnalyticsConsentGranted?: boolean;
   }
 }
 
@@ -33,7 +34,7 @@ function safeParams(params: EventParams = {}) {
 
 export function trackAnalyticsEvent(event: AnalyticsEvent, params: EventParams = {}) {
   try {
-    if (!Array.isArray(window.dataLayer)) return;
+    if (!window.smcAnalyticsConsentGranted || !Array.isArray(window.dataLayer)) return;
     window.dataLayer.push({ event, ...safeParams(params) });
   } catch {
     // Analytics is deliberately best-effort and must never affect the customer flow.
@@ -45,6 +46,7 @@ function whatsappHref(href: string) {
 }
 
 export function initializeAnalytics() {
+  if (window.smcAnalytics) return;
   window.smcAnalytics = { track: trackAnalyticsEvent };
 
   document.addEventListener('click', (event) => {

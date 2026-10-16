@@ -9,8 +9,23 @@ test('GTM is the conditional-only analytics loader', async () => {
 
   assert.match(layout, /PUBLIC_ANALYTICS_ENABLED === 'true'/);
   assert.match(layout, /www\.googletagmanager\.com\/gtm\.js\?id=/);
-  assert.match(layout, /googletagmanager\.com\/ns\.html\?id=/);
+  assert.match(layout, /smcAnalyticsConsentGranted/);
+  assert.match(layout, /smc:analytics-consent/);
+  assert.doesNotMatch(layout, /googletagmanager\.com\/ns\.html/);
   assert.doesNotMatch(layout, /gtag\/js/);
+});
+
+test('footer exposes persistent accessible cookie controls', async () => {
+  const footer = await readProjectFile('src/components/SiteFooter.astro');
+
+  assert.match(footer, /data-cookie-settings/);
+  assert.match(footer, /Your cookie preferences/);
+  assert.match(footer, /Necessary cookies/);
+  assert.match(footer, /Always active/);
+  assert.match(footer, /data-analytics-toggle/);
+  assert.match(footer, /localStorage\.setItem\(COOKIE_PREFERENCE_KEY/);
+  assert.match(footer, /aria-modal="true"/);
+  assert.match(footer, /prefers-reduced-motion: reduce/);
 });
 
 test('development deployment keeps analytics disabled while retaining the GTM container', async () => {
