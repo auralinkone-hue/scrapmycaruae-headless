@@ -20,3 +20,12 @@ Consult these guides before working on related tasks:
 - [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
 - [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
 - [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+
+
+## Service-page design requirements
+
+Apply these defaults when creating or updating service pages:
+- Design the phone layout intentionally. Keep the hero heading to two readable lines, then the description, then QuoteForm, then the feature/trust points. Do not put the points ahead of the form on phones.
+- Reuse SectionActionButton for action links, preserving the existing site pill shape, green styling and circular icon treatment. Every CTA must have an appropriate icon. Do not invent a separate button style for a new page.
+- Automotive photos need a premium responsive frame, with subtle decorative graphics confined behind the photo. Captions must be on a clean white background with strong contrast, at least 14px text and comfortable line height on phones. Never let patterns overlap caption text.
+- Verify the hero line count, element order, photo captions, CTA icons and overflow at 390, 430, 768, 1024 and 1440px before finishing.
