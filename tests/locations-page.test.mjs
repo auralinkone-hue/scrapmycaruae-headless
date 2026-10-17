@@ -29,19 +29,18 @@ test('locations hub is discoverable and has coverage destinations for all eight 
   }
   assert.match(page, /href=\{`#\$\{area.id\}`\}/);
   assert.match(page, /id=\{group.id\}/);
-  assert.match(page, /<article id=\{id\}>/);
+  assert.match(page, /<details id=\{id\} class="wider-location"/);
   assert.doesNotMatch(page, /href="\/locations\/(dubai|abu-dhabi|sharjah)\//);
 });
 
 test('locations images are compressed WebP files with descriptive accessible markup', async () => {
   const page = await read('src/pages/locations.astro');
-  for (const name of ['uae-vehicle-collection', 'uae-car-recovery-access']) {
+  for (const name of ['uae-vehicle-collection', 'uae-car-recovery-access', 'uae-collection-landscape']) {
     const data = await readFile(new URL(`../public/sections/${name}.webp`, import.meta.url));
     assert.equal(data.toString('ascii', 0, 4), 'RIFF');
     assert.equal(data.toString('ascii', 8, 12), 'WEBP');
     assert.ok(data.length < 250_000);
     assert.match(page, new RegExp(`src="/sections/${name}\\.webp" alt="[^"]{50,}" width="1200" height="900" loading="lazy"`));
   }
-  assert.match(page, /aria-labelledby="uae-map-title uae-map-description"/);
-  assert.match(page, /\.photo-frame figcaption\{[^}]*background:#fff;[^}]*font-size:14px/);
+  assert.match(page, /\.photo-scene figcaption\{[^}]*background:#fff;[^}]*font-size:14px/);
 });

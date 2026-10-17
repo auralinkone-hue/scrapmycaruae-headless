@@ -1,0 +1,25 @@
+---
+interface Props { kind?: string; }
+const { kind = 'coverage' } = Astro.props;
+const paths: Record<string, string[]> = {
+  dubai: ['M5 29V18h7v11M15 29V11h7v18M18.5 11V4M25 29V15h7v14M3 30h31', 'M8 21h1m-1 4h1m9-10h1m-1 5h1m-1 5h1m9-6h1m-1 5h1'],
+  sharjah: ['M4 16 18 7l14 9v14H4ZM3 16h30M11 30V19h14v11', 'M14 23h8m-8 4h8M18 3v4'],
+  'abu-dhabi': ['M4 29h28M7 26V15h22v11M5 15h26M10 11a8 8 0 0 1 16 0M18 3v2', 'M12 20v6m6-6v6m6-6v6M3 32h30'],
+  ajman: ['M5 29V17h12v12M21 29V11h9v18M3 30h30', 'M8 21h6m-6 4h6m11-9h2m-2 5h2M8 17v-5h6v5'],
+  'al-ain': ['M19 31V15M19 15Q12 6 6 13M19 15Q26 6 32 13M19 15Q10 13 7 21M19 15Q28 13 31 21M19 15Q16 4 21 3M6 31h26', 'M10 27h4m10 0h4'],
+  'ras-al-khaimah': ['M3 29 13 11l7 10 5-7 10 15ZM9 29h19', 'M10 16l3 4 3-4m6 2 3 4 3-4M27 6h1'],
+  fujairah: ['M3 23 13 7l9 16M15 23l10-12 9 12M3 28q4-3 8 0t8 0 8 0 7 0', 'M3 33q4-3 8 0t8 0 8 0 7 0M10 12l3 4 3-4'],
+  'umm-al-quwain': ['M3 28q4-3 8 0t8 0 8 0 7 0M8 23h22l-4-6H12ZM18 17V5l10 9H18', 'M3 33q4-3 8 0t8 0 8 0 7 0'],
+  coverage: ['M4 9 13 5l10 4 9-4v23l-9 4-10-4-9 4ZM13 5v23M23 9v23', 'M18 13v6m-3-3h6'],
+  access: ['M4 30V9l14-5 14 5v21M9 30V13h18v17M4 9h28', 'M12 26h12l-2-5h-8ZM14 30v-4m8 4v-4M12 17h12'],
+  collection: ['M3 11h19v17H3ZM22 18h7l5 6v4H22', 'M7 29a3 3 0 1 0 6 0 3 3 0 1 0-6 0m18 0a3 3 0 1 0 6 0 3 3 0 1 0-6 0M7 17h11M7 22h7'],
+  keys: ['M23 4a9 9 0 1 1-7 15L5 30H1v-5l12-12a9 9 0 0 1 10-9Z', 'M24 10h.1M7 22l4 4'],
+  vehicle: ['M5 25V15l5-7h16l5 7v10ZM5 15h26M9 25v5m18-5v5', 'M10 20h3m10 0h3M12 8l-3 7m15-7 3 7'],
+  review: ['M22 22 32 32M26 15a11 11 0 1 1-22 0 11 11 0 1 1 22 0', 'm10 15 4 4 7-8']
+};
+const selected = paths[kind] ?? paths.coverage;
+---
+<svg class="location-glyph" width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true" focusable="false">
+  <rect x="5" y="10" width="25" height="20" rx="8" fill="currentColor" opacity=".09" />
+  {selected.map((d) => <path d={d} stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />)}
+</svg>

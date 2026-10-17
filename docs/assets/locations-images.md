@@ -7,4 +7,10 @@ Two website photographs were created with built-in image generation, inspected, 
 
 Both prompts used the `photorealistic-natural` use case and landscape 4:3 composition. Rounded frames and decorative graphics are CSS; caption text is HTML on a separate white surface.
 
-The SVG coverage overview uses generalised geographic coordinates from [ARE.geo.json](https://github.com/johan/world.geo.json/blob/master/countries/ARE.geo.json). It shows no branches, internal administrative boundaries or recovery routes. Coverage-directory links currently lead to named sections of `/locations/`; separate emirate pages do not exist in this application yet.
+## UAE artwork redesign
+
+`public/sections/uae-collection-landscape.webp` replaces the flat SVG outline with built-in image generation. Prompt: use the attached page screenshot for UAE silhouette reference only; create a premium satellite-inspired regional artwork with sandy desert texture, emerald Gulf water, eastern mountain texture and warm ivory land tones. Landscape 4:3. No website UI, labels, pins, routes, arrows, branch locations, logos or watermarks; no raised toy-like extrusion. Editorial imagery rather than a navigation map. Exported at 1200 × 900 WebP, quality 83.
+
+The new image is illustrative, not a geographic source or a collection-route diagram. Actual area choices remain accessible HTML buttons. Links lead to the hub’s named coverage sections because separate emirate pages do not yet exist.
+
+Design references reviewed: [Porsche Experience Centers](https://experience.porsche.com/en/more/explore/porsche-experience-center) for photographic location storytelling and [DHL Supply Chain](https://www.dhl.com/us-en/home/supply-chain.html) for service navigation. The page retains the existing site typography, green palette and pill CTAs.
