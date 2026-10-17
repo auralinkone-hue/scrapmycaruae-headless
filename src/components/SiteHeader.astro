@@ -8,7 +8,9 @@ const sellMyCarServices = [
   { href: '/sell-accident-damaged-car/', label: 'Sell Accident-Damaged Car', icon: 'ph-warning-octagon' },
   { href: '/sell-non-running-car/', label: 'Sell Non-Running Car', icon: 'ph-engine' },
   { href: '/sell-car-with-engine-problems/', label: 'Engine Problems', icon: 'ph-wrench' },
-  { href: null, label: 'Gearbox Problems' },
+  { href: '/sell-car-with-gearbox-problems/', label: 'Gearbox Problems', icon: 'ph-gear-six' },
+  { href: '/sell-flood-damaged-car/', label: 'Flood-Damaged Car', icon: 'ph-drop' },
+  { href: '/sell-car-with-expired-registration/', label: 'Expired Registration', icon: 'ph-identification-card' },
   { href: null, label: 'Old / Unwanted Cars' },
   { href: null, label: 'Car Removal' },
   { href: null, label: 'Fleet Disposal' }
@@ -37,7 +39,7 @@ const visibleSellMyCarServices = sellMyCarServices.filter(
   (service): service is { href: string; label: string; icon: string } => Boolean(service.href)
 );
 const mobileServiceGroups = [
-  { id: 'sell', href: '/sell-my-car/', label: 'Sell My Car', description: 'Find the right route for your vehicle.', items: [...visibleSellMyCarServices, { href: '/sell-car-with-expired-registration/', label: 'Expired Registration', icon: 'ph-identification-card' }] },
+  { id: 'sell', href: '/sell-my-car/', label: 'Sell My Car', description: 'Find the right route for your vehicle.', items: visibleSellMyCarServices },
   { id: 'scrap', href: '/scrap-my-car/', label: 'Scrap My Car', description: 'Value, collection and disposal options.', items: scrapMyCarServices }
 ];
 const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(service.href));
