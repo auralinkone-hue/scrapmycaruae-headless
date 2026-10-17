@@ -106,7 +106,7 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
           <figcaption>Illustrative regional artwork. Area names below indicate collection enquiries, not branches or fixed routes.</figcaption>
         </figure>
         <nav class="coverage-actions" aria-label="UAE coverage areas" data-reveal>
-          {coverage.map(area => <SectionActionButton href={`#${area.id}`} label={area.name} intent="process" icon="ph-map-pin" />)}
+          {coverage.map(area => <SectionActionButton href={area.id === 'dubai' ? '/locations/dubai/' : `#${area.id}`}  label={area.name} intent="process" icon="ph-map-pin" />)}
         </nav>
       </div>
     </section>
@@ -139,7 +139,7 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
             {priorityGroups.map((group, index) => <button type="button" id={`tab-${group.id}`} role="tab" aria-selected={index === 0 ? 'true' : 'false'} aria-controls={group.id} tabindex={index === 0 ? 0 : -1} data-region-tab={group.id}><LocationGlyph kind={group.id} /><span>{group.name}</span><span class="tab-status" aria-hidden="true"></span></button>)}
           </div>
           {priorityGroups.map(group => <section class="region-panel" id={group.id} role="tabpanel" aria-labelledby={`tab-${group.id}`} tabindex="0" data-region-panel>
-            <div class="region-intro"><span class="region-glyph"><LocationGlyph kind={group.id} /></span><p class="eyebrow">Collection coverage</p><h3>{group.name}</h3><p>{group.note}</p><SectionActionButton href="/free-quote" label={`Value my car in ${group.name}`} intent="valuation" /></div>
+            <div class="region-intro"><span class="region-glyph"><LocationGlyph kind={group.id} /></span><p class="eyebrow">Collection coverage</p><h3>{group.name}</h3><p>{group.note}</p><SectionActionButton href={group.id === 'dubai' ? '/locations/dubai/' : '/free-quote'} label={group.id === 'dubai' ? 'Explore Dubai collection' : `Value my car in ${group.name}`} intent="valuation" icon={group.id === 'dubai' ? 'ph-buildings' : 'ph-calculator'} /></div>
             <div class="region-areas"><p class="area-label">Areas you can ask about</p><ul class="area-tags">{group.areas.map(area => <li><i class="ph ph-check-circle" aria-hidden="true"></i>{area}</li>)}</ul>{group.more.filter(area => !group.areas.includes(area)).length > 0 && <details class="more-areas"><summary>View more {group.name} areas<i class="ph ph-plus" aria-hidden="true"></i></summary><ul class="area-tags">{group.more.filter(area => !group.areas.includes(area)).map(area => <li>{area}</li>)}</ul></details>}<p class="area-help"><i class="ph ph-info" aria-hidden="true"></i>Not listed? Share the exact area and we’ll review the access.</p></div>
           </section>)}
         </div>

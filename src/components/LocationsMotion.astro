@@ -20,7 +20,7 @@
 
     // Without JavaScript all three regional guides remain readable.
     root.classList.add('tabs-ready');
-    selectRegion('dubai');
+    if (panels[0]) selectRegion(panels[0].id);
     tabs.forEach((tab, index) => {
       tab.addEventListener('click', () => selectRegion(tab.dataset.regionTab!));
       tab.addEventListener('keydown', event => {
@@ -36,8 +36,9 @@
     });
     const revealDestination = (hash: string) => {
       const id = hash.replace(/^#/, '');
-      if (panels.some(panel => panel.id === id)) selectRegion(id);
       const destination = document.getElementById(id);
+      const panel = destination?.closest<HTMLElement>('[data-region-panel]');
+      if (panel && root.contains(panel)) selectRegion(panel.id);
       if (destination instanceof HTMLDetailsElement && root.contains(destination)) destination.open = true;
     };
     root.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach(link => {
