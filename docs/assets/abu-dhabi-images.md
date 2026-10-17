@@ -1,0 +1,8 @@
+# Abu Dhabi automotive imagery
+
+Built-in image-generation tool, photorealistic-natural use case; original 1536 × 1024 landscape images reviewed, resized to 1440 × 960 and encoded with Pillow as WebP quality 82, method 6.
+
+- `public/sections/abu-dhabi-vehicle-collection.webp` — 238,206 bytes. Prompt: Abu Dhabi residential vehicle collection preparation, older dusty champagne-silver sedan with modest front bumper damage outside a cream-walled compound, unbranded flatbed and professional operator reviewing access, mature date palms and wide paved service road. Wide documentary composition, natural hazy light, grounded tyres and plausible equipment, usable darker foreground for a bottom overlay. No skyline-only image, showroom-new car, text, business signs, readable plates, watermarks or badges.
+- `public/sections/abu-dhabi-musaffah-fleet.webp` — 178,222 bytes. Prompt: realistic Musaffah-style Abu Dhabi industrial yard, worn white commercial panel van and older grey fleet sedan with an unbranded flatbed nearby, recovery coordinator in plain workwear reviewing a clipboard. Corrugated workshops, dusty concrete, practical loading entrance, sun-warmed neutrals and olive doors. Chest-level documentary composition with usable working space, stationary vehicles; no business names, text, readable plates, watermark, fake badges, skyline-only image, showroom-new car or cartoon/3D graphics.
+
+Scenes are illustrative; they do not document a real branch, specific address or collection. Captions identify this context. Coverage groups derive all 13 area names from `src/lib/locations.ts` without inventing local addresses or routes.
