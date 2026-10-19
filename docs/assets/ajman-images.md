@@ -1,0 +1,8 @@
+# Ajman automotive imagery
+
+Generated with the built-in image-generation tool, photorealistic-natural, then reviewed and resized from 1536 × 1024 to 1440 × 960 with Pillow. WebP encoding: quality 81, method 6.
+
+- `public/sections/ajman-vehicle-collection.webp` — 154,394 bytes. Prompt: documentary Ajman residential collection preparation, dusty older champagne-beige sedan with modest bumper scuffs beside an unbranded flatbed and operator in plain navy workwear; low cream/sand apartment buildings, paved street, palms and practical recovery access. Wide three-quarter view, complete car prominent centre-left, natural morning light, realistic wheels and shadows, darker foreground for lower text overlay. No skyline-only composition, logos, badges, readable plates, business signs, watermark, fake pins, showroom-new vehicles, cartoons or 3D graphics.
+- `public/sections/ajman-workshop-recovery.webp` — 163,328 bytes. Prompt: realistic Ajman industrial/workshop scene, older worn green-grey sedan with minor front damage prepared near a lowered unbranded flatbed ramp, operator checking space at an open workshop gate, older white service van in the yard, corrugated workshops, concrete and dust. Wide frontal three-quarter view, safe stationary preparation, believable wheels and equipment, natural late-afternoon light. No business signs, logos, readable plates, watermark, fake pins, luxury new cars or cartoon/3D render.
+
+These are illustrative scenes, not photographs documenting a real branch, address or collection. Captions identify this context. Ajman location coverage is derived from the existing shared city entry; collection settings are not presented as named neighbourhoods or branches.

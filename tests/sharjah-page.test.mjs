@@ -16,7 +16,7 @@ test('Sharjah coverage retains Sajaa and the two requested areas with unique tab
 test('Sharjah page has shared valuation, discoverable SEO and existing internal service routes', async () => {
   const [page,hub]=await Promise.all([read('src/pages/locations/sharjah.astro'),read('src/pages/locations.astro')]);
   assert.equal(indexableStaticRoutes.filter(route=>route==='/locations/sharjah/').length,1);
-  assert.ok(hub.includes("['dubai', 'abu-dhabi', 'sharjah'].includes(area.id)"));
+  assert.ok(hub.includes("['dubai', 'abu-dhabi', 'sharjah', 'ajman'].includes(area.id)"));
   assert.match(page,/title="Sell or Scrap My Car Sharjah \| Free Valuation"/);
   assert.match(page,/canonical="\/locations\/sharjah\/"/);
   assert.match(page,/await getVehicleData\(\)/);
