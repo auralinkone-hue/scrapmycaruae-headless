@@ -24,7 +24,8 @@ test('Dubai has sitemap discovery, shared valuation and real internal destinatio
   assert.match(page, /'@type': 'BreadcrumbList'/);
   assert.match(page, /'@type': 'FAQPage'/);
   assert.doesNotMatch(page, /'@type': '(LocalBusiness|AutoRepair)'/);
-  assert.doesNotMatch(page, /href="\/locations\/dubai\/[^"#]+/);
+  assert.ok(page.includes("'/locations/dubai/al-quoz/'"));
+  await access(new URL('../src/pages/locations/dubai/al-quoz.astro', import.meta.url));
   for (const route of ['/locations/', '/sell-my-car/', '/sell-damaged-car/', '/sell-non-running-car/', '/sell-car-with-engine-problems/', '/sell-car-with-gearbox-problems/', '/sell-flood-damaged-car/', '/scrap-my-car/', '/car-removal/', '/fleet-disposal/', '/free-quote']) {
     assert.ok(page.includes(`'${route}'`) || page.includes(`href="${route}"`), route);
     const file = route === '/free-quote' ? 'src/pages/free-quote.astro' : `src/pages${route.slice(0, -1)}.astro`;

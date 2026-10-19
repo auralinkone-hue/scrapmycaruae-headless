@@ -1,6 +1,6 @@
 import { dubaiLocations } from './locations.ts';
 
-/** Local guide destinations stay on this page until child pages are published. */
+/** Published child guides are linked by the Dubai page; other guides retain local notes. */
 export const dubaiAreaGuides = [
   { id: 'al-quoz', name: 'Al Quoz', icon: 'sharjah', group: 'industrial', copy: 'For a car at a workshop or industrial yard, share the entrance, available space around the vehicle and who can authorise its release.' },
   { id: 'ras-al-khor', name: 'Ras Al Khor', icon: 'sharjah', group: 'industrial', copy: 'Include the exact yard or workshop position, gate restrictions and whether the vehicle can roll and steer. A site contact can help clarify access.' },

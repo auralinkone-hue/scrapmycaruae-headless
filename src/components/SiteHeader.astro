@@ -48,6 +48,10 @@ const isActive = (href: string) =>
   href === '/'
     ? pathname === '/'
     : pathname === href || pathname.startsWith(href + '/');
+// Keep Dubai highlighted for published child guides; the UAE overview stays exact.
+const isNavigationItemActive = (href: string) => href.startsWith('/locations/') && href !== '/locations/'
+  ? pathname === href.slice(0, -1) || pathname.startsWith(href)
+  : isActive(href);
 const visibleSellMyCarServices = sellMyCarServices.filter(
   (service): service is { href: string; label: string; icon: string } => Boolean(service.href)
 );
@@ -83,7 +87,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
             </summary>
             <div class="nav-dropdown__panel">
               {link.children.filter((service) => service.href).map((service) => (
-                <a href={service.href} class:list={{ active: isActive(service.href) }} aria-current={isActive(service.href) ? 'page' : undefined}>
+                <a href={service.href} class:list={{ active: isNavigationItemActive(service.href) }} aria-current={isActive(service.href) ? 'page' : undefined}>
                   <span class="service-link-icon"><i class:list={['ph', service.icon]} aria-hidden="true"></i></span>
                   <span>{service.label}</span>
                   <i class="ph ph-arrow-up-right service-link-arrow" aria-hidden="true"></i>
@@ -132,7 +136,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
                 <div class="mobile-subheading"><button type="button" class="mobile-back" data-mobile-back aria-label="Back to main navigation"><i class="ph ph-arrow-left" aria-hidden="true"></i>Back</button><h2 id={'mobile-heading-' + group.id}>{group.label}</h2></div>
                 <p class="mobile-view__description">{group.description}</p>
                 <nav aria-label={group.label + (group.id === 'locations' ? ' navigation' : ' services')}>
-                  {group.items.map((item, index) => <a class:list={['mobile-row', { 'mobile-row--overview': index === 0, active: isActive(item.href) }]} href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}><span class="mobile-row__icon"><i class:list={['ph', item.icon]} aria-hidden="true"></i></span><span>{index === 0 ? ('overviewLabel' in group ? group.overviewLabel : 'View all ' + group.label) : item.label}</span><i class="ph ph-caret-right mobile-row__arrow" aria-hidden="true"></i></a>)}
+                  {group.items.map((item, index) => <a class:list={['mobile-row', { 'mobile-row--overview': index === 0, active: isNavigationItemActive(item.href) }]} href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}><span class="mobile-row__icon"><i class:list={['ph', item.icon]} aria-hidden="true"></i></span><span>{index === 0 ? ('overviewLabel' in group ? group.overviewLabel : 'View all ' + group.label) : item.label}</span><i class="ph ph-caret-right mobile-row__arrow" aria-hidden="true"></i></a>)}
                 </nav>
               </section>
             ))}
