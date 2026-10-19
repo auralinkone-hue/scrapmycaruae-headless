@@ -19,6 +19,7 @@ export const indexableStaticRoutes = [
   '/locations/abu-dhabi/',
   '/locations/sharjah/',
   '/locations/ajman/',
+  '/locations/ras-al-khaimah/',
   '/free-quote',
   '/contact-us',
   '/faqs',
