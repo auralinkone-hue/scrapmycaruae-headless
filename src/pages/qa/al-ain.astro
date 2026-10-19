@@ -1,8 +1,0 @@
----
-export const prerender=false;
-const widths=[390,430,768,1024,1440];
-const requested=Number(Astro.url.searchParams.get('width'));
-const width=widths.includes(requested)?requested:390;
-Astro.response.headers.set('X-Robots-Tag','noindex, nofollow');
----
-<!doctype html><html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width" /><meta name="robots" content="noindex,nofollow" /><title>Al Ain responsive QA</title><style>body{margin:0;background:#dfe8d8;font:14px system-ui}nav{display:flex;gap:20px;padding:15px;background:white}p{margin:15px}iframe{display:block;border:0}</style></head><body><nav aria-label="QA viewport">{widths.map(value=><a href={`?width=${value}`}>Viewport {value}</a>)}</nav><p>Staging layout review — {width}px</p><iframe title="Al Ain page preview" src="/locations/al-ain/" width={width} height="1100"></iframe></body></html>
