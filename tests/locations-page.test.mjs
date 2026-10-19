@@ -27,7 +27,7 @@ test('locations hub is discoverable and has coverage destinations for all eight 
   for (const id of ['dubai', 'abu-dhabi', 'sharjah', 'ajman', 'al-ain', 'ras-al-khaimah', 'fujairah', 'umm-al-quwain']) {
     assert.ok(page.includes(`'${id}'`));
   }
-  assert.ok(page.includes("['dubai', 'abu-dhabi', 'sharjah', 'ajman', 'ras-al-khaimah', 'al-ain', 'fujairah'].includes(area.id) ? `/locations/${area.id}/` : `#${area.id}`"));
+  assert.ok(page.includes("['dubai', 'abu-dhabi', 'sharjah', 'ajman', 'ras-al-khaimah', 'al-ain', 'fujairah', 'umm-al-quwain'].includes(area.id) ? `/locations/${area.id}/` : `#${area.id}`"));
   assert.match(page, /id=\{group.id\}/);
   assert.match(page, /<details id=\{id\} class="wider-location"/);
 

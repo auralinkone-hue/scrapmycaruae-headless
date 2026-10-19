@@ -7,10 +7,9 @@ test('Locations header exposes only the completed routes in the requested order'
   const header=await read();
   const list=header.match(/const locationPages = \[([\s\S]*?)\] as const/)[1];
   const routes=[...list.matchAll(/href: '([^']+)'/g)].map(match=>match[1]);
-  assert.deepEqual(routes,['/locations/','/locations/dubai/','/locations/abu-dhabi/','/locations/sharjah/','/locations/ajman/','/locations/ras-al-khaimah/','/locations/fujairah/','/locations/al-ain/']);
+  assert.deepEqual(routes,['/locations/','/locations/dubai/','/locations/abu-dhabi/','/locations/sharjah/','/locations/ajman/','/locations/ras-al-khaimah/','/locations/fujairah/','/locations/al-ain/','/locations/umm-al-quwain/']);
   for(const route of routes)await access(new URL(`../src/pages${route.slice(0,-1)}.astro`,import.meta.url));
-  assert.equal([...list.matchAll(/icon: 'ph-/g)].length,8);
-  assert.doesNotMatch(list,/umm-al-quwain/);
+  assert.equal([...list.matchAll(/icon: 'ph-/g)].length,9);
   assert.match(header,/children: scrapMyCarServices[^\n]+\n\s+\{ href: '\/locations\/'/);
 });
 

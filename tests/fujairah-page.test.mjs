@@ -15,7 +15,7 @@ test('Fujairah uses supported city coverage and collection settings, not invente
 test('Fujairah is discoverable with shared form, SEO and existing service destinations',async()=>{
   const [page,hub]=await Promise.all([read('src/pages/locations/fujairah.astro'),read('src/pages/locations.astro')]);
   assert.equal(indexableStaticRoutes.filter(route=>route==='/locations/fujairah/').length,1);
-  assert.ok(hub.includes("['dubai', 'abu-dhabi', 'sharjah', 'ajman', 'ras-al-khaimah', 'al-ain', 'fujairah'].includes(area.id)"));
+  assert.ok(hub.includes("['dubai', 'abu-dhabi', 'sharjah', 'ajman', 'ras-al-khaimah', 'al-ain', 'fujairah', 'umm-al-quwain'].includes(area.id)"));
   assert.match(hub,/class="wider-summary" href="\/locations\/fujairah\/"/);
   assert.match(hub,/class="region-link" href="\/locations\/sharjah\/"/);
   assert.match(page,/title="Sell or Scrap My Car Fujairah \| Free Valuation"/);
