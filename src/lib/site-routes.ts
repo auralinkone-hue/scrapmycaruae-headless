@@ -19,6 +19,7 @@ export const indexableStaticRoutes = [
   '/locations/dubai/al-quoz/',
   '/locations/dubai/ras-al-khor/',
   '/locations/dubai/jebel-ali/',
+  '/locations/dubai/dubai-investments-park/',
   '/locations/abu-dhabi/',
   '/locations/sharjah/',
   '/locations/ajman/',
