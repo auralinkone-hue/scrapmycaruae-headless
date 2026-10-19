@@ -17,4 +17,16 @@ Files: new DIP page, two WebP assets, DIP route/asset tests and image prompt rec
 
 Desktop evidence: `dip-desktop.jpg`. Built-in imagegen prompts and final asset paths: `docs/assets/dip-images.md`.
 
+## Compact layout revision
+
+User screenshot review: reduce oversized photos and improve the mobile guide buttons and commercial layout. Page-specific markup/CSS only; existing assets, shared buttons, form, navigation and analytics remain unchanged.
+
+- At 1440px the recovery feature is 460px tall (previously 780px), with a compact text panel beside its photo. The fleet image is 420px tall (previously 625px) with the brief alongside; the complete fleet section is about 692px tall.
+- At 390px the guide links use two columns, 12.5px labels, 46px touch targets and smaller icon circles; the complete guide group is 212px tall rather than seven full-width rows. Nearby location links also use compact two-column navigation.
+- Mobile fleet information is tighter, with concise copy and the action after the details. The recovery entrance note is an integrated compact row. Tablet recovery uses a full-width photo above two compact information areas, preserving the front of the vehicle.
+- Actual rendered checks repeated at 390, 430, 768, 1024 and 1440px: no horizontal overflow, clipped text or out-of-viewport actions; two-line hero preserved. Both images load, no captions. Coverage pointer/keyboard selection and FAQ expander rechecked. Reduced-motion guards retained. Viewport override reset.
+- 135 tests and staging build passed after the final adjustment. Application staging workflow 39307518122 succeeded for 4d0eafd9d78618015e5efdfd997ff795a23a655d.
+
+Updated evidence: `dip-compact-desktop.jpg` and `dip-compact-mobile.jpg`. Earlier screenshot retained as the original implementation record.
+
 Outstanding issues: none identified.
