@@ -27,7 +27,8 @@ test('Al Quoz has nested discovery and schema without entering the global dropdo
     assert.ok(page.includes(`'${route}'`)||page.includes(`href="${route}"`),route);
     await access(new URL(`../src/pages${route==='/free-quote'?route:route.slice(0,-1)}.astro`,import.meta.url));
   }
-  for(const id of ['ras-al-khor','al-qusais']){
+  assert.ok(page.includes('/locations/dubai/ras-al-khor/'));
+  for(const id of ['al-qusais']){
     assert.ok(page.includes(`/locations/dubai/#${id}`));
     const data=await read('src/lib/dubai-coverage.ts');assert.ok(data.includes(`id: '${id}'`));
   }
