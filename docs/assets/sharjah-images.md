@@ -1,0 +1,8 @@
+# Sharjah imagery
+
+Generated using the built-in image-generation tool (photorealistic-natural), inspected, then resized from 1536 × 1024 to 1440 × 960 and encoded with Pillow as WebP, quality 81, method 6.
+
+- `public/sections/sharjah-vehicle-collection.webp` — 188,918 bytes. Prompt: documentary Sharjah residential/workshop-edge collection preparation; older dusty silver sedan with modest front body damage in an open forecourt beside an unbranded flatbed and recovery operator reviewing available space. Low beige mixed-use buildings and workshop shutters; full vehicle/recovery context, natural morning light, real worn surfaces and plausible equipment. No luxury skyline, showroom-new vehicles, cartoon/3D graphics, readable plates, signage, writing, watermark, fake badges or identifiable branch.
+- `public/sections/sharjah-industrial-car-recovery.webp` — 140,762 bytes. Prompt: realistic Al Sajaa-style industrial yard, worn dark grey non-running sedan prepared on a flatbed ramp at an open metal gate, technician checking wheel alignment and clearance, distant older work vehicle, corrugated workshops and dusty concrete. Natural warm afternoon light, stationary practical recovery preparation and wide environmental composition with darker foreground for a lower overlay. No business signage, readable plates, writing, watermarks, fake badges, showroom-new cars or cartoon/3D graphics.
+
+Both are illustrative scenes, not photographs documenting a branch or collection. Captions make that context clear. Shared Sharjah coverage retains Al Sajaa Industrial Area and adds the user-requested Sharjah Industrial Area and Al Nahda; no extra named areas, addresses or recovery routes are invented.

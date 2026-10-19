@@ -16,7 +16,7 @@ const coverage = [
 ];
 const priorityGroups = [
   { id: 'dubai', name: 'Dubai', icon: 'ph-buildings', note: 'From residential parking to workshops and industrial locations, share the exact area and entrance details.', areas: ['Al Quoz', 'Al Qusais', 'Dubai Marina', 'Business Bay', 'Mirdif', 'Dubai Investments Park (DIP)'], more: dubaiLocations },
-  { id: 'sharjah', name: 'Sharjah', icon: 'ph-warehouse', note: 'Al Sajaa Industrial Area and other Sharjah locations can be discussed. Tell us the exact yard, building or parking position.', areas: ['Al Sajaa Industrial Area', 'Other Sharjah locations'], more: [] },
+  { id: 'sharjah', name: 'Sharjah', icon: 'ph-warehouse', note: 'Al Sajaa Industrial Area and other Sharjah locations can be discussed. Tell us the exact yard, building or parking position.', areas: ['Al Sajaa Industrial Area', 'Sharjah Industrial Area', 'Al Nahda'], more: [] },
   { id: 'abu-dhabi', name: 'Abu Dhabi', icon: 'ph-bank', note: 'City parking, residential communities and industrial locations need different access information.', areas: ['Musaffah', 'Khalifa City', 'Reem Island', 'Al Raha Beach', 'Mohammed Bin Zayed City', 'Shakhbout City'], more: abuDhabiLocations }
 ];
 const widerCoverage = [
@@ -106,7 +106,7 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
           <figcaption>Illustrative regional artwork. Area names below indicate collection enquiries, not branches or fixed routes.</figcaption>
         </figure>
         <nav class="coverage-actions" aria-label="UAE coverage areas" data-reveal>
-          {coverage.map(area => <SectionActionButton href={['dubai', 'abu-dhabi'].includes(area.id) ? `/locations/${area.id}/` : `#${area.id}`}  label={area.name} intent="process" icon="ph-map-pin" />)}
+          {coverage.map(area => <SectionActionButton href={['dubai', 'abu-dhabi', 'sharjah'].includes(area.id) ? `/locations/${area.id}/` : `#${area.id}`}  label={area.name} intent="process" icon="ph-map-pin" />)}
         </nav>
       </div>
     </section>
@@ -139,7 +139,7 @@ const faqJsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEn
             {priorityGroups.map((group, index) => <button type="button" id={`tab-${group.id}`} role="tab" aria-selected={index === 0 ? 'true' : 'false'} aria-controls={group.id} tabindex={index === 0 ? 0 : -1} data-region-tab={group.id}><LocationGlyph kind={group.id} /><span>{group.name}</span><span class="tab-status" aria-hidden="true"></span></button>)}
           </div>
           {priorityGroups.map(group => <section class="region-panel" id={group.id} role="tabpanel" aria-labelledby={`tab-${group.id}`} tabindex="0" data-region-panel>
-            <div class="region-intro"><span class="region-glyph"><LocationGlyph kind={group.id} /></span><p class="eyebrow">Collection coverage</p><h3>{group.name}</h3><p>{group.note}</p><SectionActionButton href={['dubai', 'abu-dhabi'].includes(group.id) ? `/locations/${group.id}/` : '/free-quote'} label={['dubai', 'abu-dhabi'].includes(group.id) ? `Explore ${group.name} collection` : `Value my car in ${group.name}`} intent="valuation" icon={group.id === 'dubai' ? 'ph-buildings' : 'ph-calculator'} /></div>
+            <div class="region-intro"><span class="region-glyph"><LocationGlyph kind={group.id} /></span><p class="eyebrow">Collection coverage</p><h3>{group.name}</h3><p>{group.note}</p><SectionActionButton href={['dubai', 'abu-dhabi', 'sharjah'].includes(group.id) ? `/locations/${group.id}/` : '/free-quote'} label={['dubai', 'abu-dhabi', 'sharjah'].includes(group.id) ? `Explore ${group.name} collection` : `Value my car in ${group.name}`} intent="valuation" icon={group.id === 'dubai' ? 'ph-buildings' : 'ph-calculator'} /></div>
             <div class="region-areas"><p class="area-label">Areas you can ask about</p><ul class="area-tags">{group.areas.map(area => <li><i class="ph ph-check-circle" aria-hidden="true"></i>{area}</li>)}</ul>{group.more.filter(area => !group.areas.includes(area)).length > 0 && <details class="more-areas"><summary>View more {group.name} areas<i class="ph ph-plus" aria-hidden="true"></i></summary><ul class="area-tags">{group.more.filter(area => !group.areas.includes(area)).map(area => <li>{area}</li>)}</ul></details>}<p class="area-help"><i class="ph ph-info" aria-hidden="true"></i>Not listed? Share the exact area and we’ll review the access.</p></div>
           </section>)}
         </div>

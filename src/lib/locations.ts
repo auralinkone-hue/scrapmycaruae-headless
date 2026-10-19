@@ -63,6 +63,12 @@ export const abuDhabiLocations = [
   'Al Ghadeer'
 ] as const;
 
+export const sharjahLocations = [
+  'Al Sajaa Industrial Area',
+  'Sharjah Industrial Area',
+  'Al Nahda'
+] as const;
+
 export const otherEmirateLocations = [
   'Ajman',
   'Sharjah',
