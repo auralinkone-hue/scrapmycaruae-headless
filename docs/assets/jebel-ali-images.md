@@ -1,0 +1,13 @@
+# Jebel Ali automotive imagery
+
+Built-in imagegen. Illustrative regional photography, not evidence of an actual branch or collection. Optimized to RGB WebP, 1440×960, quality 79, method 6. No visible captions are rendered on the page.
+
+## public/sections/jebel-ali-warehouse-recovery.webp
+
+Use case: photorealistic-natural. Landscape 1536x1024 premium automotive editorial photograph for a Jebel Ali Dubai vehicle collection guide. Believable UAE industrial logistics road outside large plain warehouse loading bays, low corrugated warehouse buildings, broad concrete loading apron, practical loading areas and metal security gate in the distance. Main scene an older worn white passenger sedan with minor bumper scuffs beside an unbranded professional flatbed recovery truck, operator in plain dark green workwear reviewing its position. Whole car and recovery truck visible, car central in lower-middle frame, natural bright UAE daylight, realistic asphalt and concrete surfaces, documentary camera perspective. Do not include skyscrapers or skyline. No logos, text, signage, readable number plates, exaggerated accident damage, CGI or showroom-new vehicles. Illustrative regional environment not a real branch.
+
+## public/sections/jebel-ali-commercial-fleet.webp
+
+Use case: photorealistic-natural. Landscape 1536x1024 premium automotive editorial photograph for a Jebel Ali Dubai commercial vehicle enquiry guide. A distinctly different scene from recovery: open warehouse forecourt with an older faded silver sedan and two older unbranded light commercial vans in realistically spaced fleet parking bays. Wide logistics warehouse facade with closed loading doors and a clear central access aisle, practical industrial UAE yard, worn concrete surfaces and wheel marks in natural soft daylight. No tow truck, no flatbed and no ramps. Main sedan fully visible centrally, professional site coordinator in plain navy workwear at the far side of a van holding a blank clipboard; vehicle wear modest and believable. No city skyline, text, logos, signs, readable number plates, fake badges, exaggerated destruction or CGI. Illustrative regional setting not an actual branch.
+
+Final targeted edit prompt: Precise object edit: remove the circular manufacturer badge and every other manufacturer emblem/logo from the van grille at the far right and any other vehicle. Replace them with plain unbranded grille texture. Preserve the entire photograph exactly otherwise: same warehouse facade, vehicles, coordinator, lighting, framing, parking lines, wear, colours, no new objects. No logos or readable text anywhere.

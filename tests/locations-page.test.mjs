@@ -42,5 +42,5 @@ test('locations images are compressed WebP files with descriptive accessible mar
     assert.ok(data.length < 250_000);
     assert.match(page, new RegExp(`src="/sections/${name}\\.webp" alt="[^"]{50,}" width="1200" height="900" loading="lazy"`));
   }
-  assert.match(page, /\.photo-scene figcaption\{[^}]*background:#fff;[^}]*font-size:14px/);
+  assert.doesNotMatch(page, /figcaption/);
 });
