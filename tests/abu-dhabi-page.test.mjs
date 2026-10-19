@@ -17,7 +17,7 @@ test('Abu Dhabi coverage retains each existing location exactly once with workin
 test('Abu Dhabi is discoverable and preserves shared form, SEO and real service destinations', async () => {
   const [page, hub] = await Promise.all([read('src/pages/locations/abu-dhabi.astro'), read('src/pages/locations.astro')]);
   assert.equal(indexableStaticRoutes.filter(route => route === '/locations/abu-dhabi/').length, 1);
-  assert.ok(hub.includes("['dubai', 'abu-dhabi', 'sharjah', 'ajman', 'ras-al-khaimah'].includes(area.id)"));
+  assert.ok(hub.includes("['dubai', 'abu-dhabi', 'sharjah', 'ajman', 'ras-al-khaimah', 'al-ain'].includes(area.id)"));
   assert.match(page, /title="Sell or Scrap My Car Abu Dhabi \| Free Valuation"/);
   assert.match(page, /canonical="\/locations\/abu-dhabi\/"/);
   assert.match(page, /await getVehicleData\(\)/);

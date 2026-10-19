@@ -15,7 +15,7 @@ test('Ras Al Khaimah uses supported city coverage and collection settings, not i
 test('Ras Al Khaimah is discoverable with shared form, SEO and existing service destinations',async()=>{
   const [page,hub]=await Promise.all([read('src/pages/locations/ras-al-khaimah.astro'),read('src/pages/locations.astro')]);
   assert.equal(indexableStaticRoutes.filter(route=>route==='/locations/ras-al-khaimah/').length,1);
-  assert.ok(hub.includes("['dubai', 'abu-dhabi', 'sharjah', 'ajman', 'ras-al-khaimah'].includes(area.id)"));
+  assert.ok(hub.includes("['dubai', 'abu-dhabi', 'sharjah', 'ajman', 'ras-al-khaimah', 'al-ain'].includes(area.id)"));
   assert.match(hub,/class="wider-summary" href="\/locations\/ras-al-khaimah\/"/);
   assert.match(hub,/class="region-link" href="\/locations\/sharjah\/"/);
   assert.match(page,/title="Sell or Scrap My Car Ras Al Khaimah \| Free Valuation"/);
