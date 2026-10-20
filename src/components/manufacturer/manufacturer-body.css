@@ -16,7 +16,7 @@
 [data-manufacturer-page] :is(.ledger-factors,.value-factors,.valuation-factors,.recovery-notes) details[open]{background:#eaf4e6;border-color:#b6d5ad;color:#214d28;margin-block:5px}
 [data-manufacturer-page] :is(.ledger-factors,.value-factors,.valuation-factors,.recovery-notes) details[open] summary{padding-inline:14px}
 [data-manufacturer-page] :is(.ledger-factors,.value-factors,.valuation-factors,.recovery-notes) details[open] :is(h3,summary>span,summary>i){color:#2f6f2d}
-[data-manufacturer-page] :is(.ledger-factors,.value-factors,.valuation-factors,.recovery-notes) details[open]>p{color:#455e47;padding-inline:20px}
+[data-manufacturer-page] :is(.ledger-factors,.value-factors,.valuation-factors,.recovery-notes) details[open]>p{color:#455e47!important;padding-inline:20px}
 [data-manufacturer-faq] details{margin-bottom:8px;border:1px solid #d3e0cc!important;border-radius:12px;background:#fff;overflow:hidden;transition:background .18s}
 [data-manufacturer-faq] details summary{padding:16px 18px!important;min-height:66px!important}
 [data-manufacturer-faq] details summary i{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#edf5e8;color:#2f6f2d}
