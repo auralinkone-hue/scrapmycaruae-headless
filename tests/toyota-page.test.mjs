@@ -49,7 +49,7 @@ test('Toyota route uses shared SEO, matching visible FAQ data, real breadcrumbs 
 test('manufacturer interaction sync uses existing form events without bypassing validation or writing condition data',async()=>{
  const source=await read('src/components/manufacturer/ManufacturerInteractions.astro');
  const page=await read('src/pages/cars/toyota.astro');
- assert.match(page,/getVehicleData\(\)/);assert.match(page,/<QuoteForm makes=\{makes\} models=\{models\}/);
+ assert.match(page,/getVehicleData\(\)/);assert.match(page,/<QuoteForm makes=\{vehicleData.makes\} models=\{vehicleData.models\}/);
  assert.match(source,/model.disabled\|\|!Array.from\(model.options\).some/);
  assert.match(source,/dispatchEvent\(new Event\('change',\{bubbles:true\}\)\)/);
  assert.doesNotMatch(source,/fetch\(|requestSubmit\(|\.submit\(|\/api\/quote|localStorage|innerHTML\s*=/);

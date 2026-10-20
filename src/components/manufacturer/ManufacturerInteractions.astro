@@ -50,6 +50,7 @@
       });
       all?.addEventListener('change',()=>selectModel(all.value));
       model?.addEventListener('change',()=>{if(!syncing&&make?.value===config.make&&model.value)selectModel(model.value,false);});
+      make?.addEventListener('change',()=>{if(!syncing)setText(explorer!,'[data-model-status]',make.value&&make.value!==config.make?modelLabel(config.make)+' guidance only. Your form is set to '+modelLabel(make.value)+'.':modelLabel(config.make)+' guidance. Choose a model here to add it to your form.');});
       if(make&&!make.value&&!make.disabled&&Array.from(make.options).some(o=>o.value===config.make)){make.value=config.make;make.dispatchEvent(new Event('change',{bubbles:true}));}
     }
     const conditions=root.querySelector<HTMLElement>('[data-condition-explorer]');

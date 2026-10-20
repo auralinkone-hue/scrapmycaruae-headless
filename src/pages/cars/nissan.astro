@@ -10,9 +10,7 @@ import {manufacturerModels} from '../../lib/manufacturer-models';
 import {nissanFactors,nissanFaqs} from '../../lib/nissan-content';
 let vehicleData:VehicleData={makes:[],models:[],years:[]};let dataError='';
 try{vehicleData=await getVehicleData();}catch(error){dataError=error instanceof Error?error.message:String(error);}
-const makes=vehicleData.makes.filter(make=>make.make==='NISSAN');
 const models=manufacturerModels(vehicleData.models,'NISSAN');
-if(!makes.length&&!dataError)dataError='Nissan options are currently unavailable.';
 const crumbs=[['Home','/'],['Scrap my car','/scrap-my-car/'],['Nissan','/cars/nissan/']];
 const breadcrumb={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:crumbs.map(([name,path],i)=>({'@type':'ListItem',position:i+1,name,item:'https://www.scrapmycaruae.com'+path}))};
 const faqSchema={'@context':'https://schema.org','@type':'FAQPage',mainEntity:nissanFaqs.map(([name,text])=>({'@type':'Question',name,acceptedAnswer:{'@type':'Answer',text}}))};
@@ -23,7 +21,7 @@ const faqSchema={'@context':'https://schema.org','@type':'FAQPage',mainEntity:ni
  <section class="nissan-hero" aria-labelledby="nissan-title"><div class="nissan-shell">
   <nav class="breadcrumbs" aria-label="Breadcrumb">{crumbs.map(([name,path],i)=><>{i>0&&<span aria-hidden="true">/</span>}{i<crumbs.length-1?<a href={path}>{name}</a>:<span aria-current="page">{name}</span>}</>)}</nav>
   <div class="hero-composition"><header class="hero-heading"><p class="eyebrow"><i class="ph ph-car-profile" aria-hidden="true"></i>Nissan / Individual scrap assessment</p><h1 id="nissan-title"><span>Scrap Your Nissan</span> <span>Car in the UAE</span></h1><p class="hero-intro">Request a free scrap valuation for your damaged, non-running, old or unwanted Nissan.</p></header>
-  <div class="nissan-form" id="nissan-quote" data-manufacturer-quote><QuoteForm makes={makes} models={models} years={vehicleData.years} dataError={dataError} variant="free-quote" /></div>
+  <div class="nissan-form" id="nissan-quote" data-manufacturer-quote><QuoteForm makes={vehicleData.makes} models={vehicleData.models} years={vehicleData.years} dataError={dataError} variant="free-quote" /></div>
   <figure class="hero-photo"><img src="/sections/nissan-patrol-assessment.webp" srcset="/sections/nissan-patrol-assessment-640.webp 640w, /sections/nissan-patrol-assessment-960.webp 960w, /sections/nissan-patrol-assessment.webp 1440w" sizes="(max-width:900px) calc(100vw - 36px), (max-width:1250px) 52vw, 640px" width="1440" height="960" fetchpriority="high" alt="Graphite Patrol-style Nissan SUV with modest bumper scuffs at a UAE automotive assessment forecourt in warm daylight" /></figure>
   <ul class="hero-assurances"><li><i class="ph ph-calculator" aria-hidden="true"></i>Free valuation request</li><li><i class="ph ph-engine" aria-hidden="true"></i>Damaged &amp; non-running</li><li><i class="ph ph-key" aria-hidden="true"></i>Recovery access reviewed</li></ul></div>
   <div class="hero-footnote"><span>Condition first. A considered next step.</span><a href="#nissan-condition">Explore your vehicle’s condition <i class="ph ph-sliders-horizontal" aria-hidden="true"></i></a></div>
