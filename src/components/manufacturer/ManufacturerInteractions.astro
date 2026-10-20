@@ -1,0 +1,64 @@
+<script>
+  import { modelLabel, resolveModelGuidance, type ModelGuidance } from '../../lib/manufacturer-models';
+  function initialiseManufacturer() {
+    const root=document.querySelector<HTMLElement>('[data-manufacturer-page]');
+    if(!root||root.dataset.ready)return;
+    root.dataset.ready='true';
+    const quote=root.querySelector<HTMLElement>('#toyota-quote');
+    const make=quote?.querySelector<HTMLSelectElement>('[data-make]');
+    const model=quote?.querySelector<HTMLSelectElement>('[data-model]');
+    const explorer=root.querySelector<HTMLElement>('[data-model-explorer]');
+    const modelConfig=explorer?.querySelector('[data-model-config]');
+    const config=modelConfig?JSON.parse(modelConfig.textContent||'{}') as {make:string;models:string[];profiles:Record<string,ModelGuidance>;initial:string}:null;
+    let selectedModel=config?.initial||'';
+    let syncing=false;
+    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+    const animate=(panel:HTMLElement|null)=>{if(!panel||reduced.matches)return;panel.classList.remove('panel-changed');void panel.offsetWidth;panel.classList.add('panel-changed');};
+    const setText=(container:Element,selector:string,value:string)=>{const el=container.querySelector(selector);if(el)el.textContent=value;};
+    const setChecks=(container:Element,selector:string,checks:string[],icons=false)=>{const list=container.querySelector(selector);if(!list)return;list.replaceChildren(...checks.map(text=>{const li=document.createElement('li');if(icons){const icon=document.createElement('i');icon.className='ph ph-check';icon.setAttribute('aria-hidden','true');li.append(icon);}const span=document.createElement('span');span.textContent=text;li.append(span);return li;}));};
+    const syncQuote=(value:string)=>{
+      if(!config||!make||!model||make.disabled||!config.models.includes(value))return false;
+      syncing=true;
+      if(make.value!==config.make){if(!Array.from(make.options).some(o=>o.value===config.make)){syncing=false;return false;}make.value=config.make;make.dispatchEvent(new Event('change',{bubbles:true}));}
+      if(model.disabled||!Array.from(model.options).some(o=>o.value===value)){syncing=false;return false;}
+      model.value=value;model.dispatchEvent(new Event('change',{bubbles:true}));syncing=false;return true;
+    };
+    if(config&&explorer){
+      const tabs=Array.from(explorer.querySelectorAll<HTMLButtonElement>('[data-model-choice]'));
+      const all=explorer.querySelector<HTMLSelectElement>('[data-all-models]');
+      const panel=explorer.querySelector<HTMLElement>('#model-guidance');
+      const selectModel=(value:string,updateForm=true)=>{
+        if(!config.models.includes(value))return;
+        selectedModel=value;
+        const guidance=resolveModelGuidance(value,config.profiles);
+        let active=tabs.find(tab=>tab.dataset.modelChoice===value);
+        tabs.forEach((tab,index)=>{const selected=tab===active;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected||(!active&&index===0)?0:-1;});
+        if(panel)panel.setAttribute('aria-labelledby',active?.id||'all-toyota-models');
+        if(all)all.value=value;
+        setText(explorer!,'[data-model-name]',modelLabel(value));setText(explorer!,'[data-model-category]',guidance.category);setText(explorer!,'[data-model-heading]',guidance.title);setText(explorer!,'[data-model-copy]',guidance.copy);setChecks(explorer!,'[data-model-checks]',guidance.checks,true);
+        const action=explorer!.querySelector('.section-action');if(action?.firstChild)action.firstChild.textContent='Value my '+modelLabel(value)+' ';
+        const synced=updateForm&&syncQuote(value);
+        setText(explorer!,'[data-model-status]',modelLabel(value)+' guidance selected.'+(synced?' Added to your valuation form.':''));animate(panel);
+      };
+      tabs.forEach((tab,index)=>{
+        tab.addEventListener('click',()=>selectModel(tab.dataset.modelChoice!));
+        tab.addEventListener('keydown',event=>{let next=index;if(event.key==='ArrowRight'||event.key==='ArrowDown')next=(index+1)%tabs.length;else if(event.key==='ArrowLeft'||event.key==='ArrowUp')next=(index-1+tabs.length)%tabs.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=tabs.length-1;else return;event.preventDefault();selectModel(tabs[next].dataset.modelChoice!);tabs[next].focus({preventScroll:true});});
+      });
+      all?.addEventListener('change',()=>selectModel(all.value));
+      model?.addEventListener('change',()=>{if(!syncing&&make?.value===config.make&&model.value)selectModel(model.value,false);});
+      if(make&&!make.value&&!make.disabled&&Array.from(make.options).some(o=>o.value===config.make)){make.value=config.make;make.dispatchEvent(new Event('change',{bubbles:true}));}
+    }
+    const conditions=root.querySelector<HTMLElement>('[data-condition-explorer]');
+    if(conditions){
+      const items=JSON.parse(conditions.querySelector('[data-condition-config]')?.textContent||'[]') as Array<{label:string;category:string;title:string;copy:string;checks:string[];href:string;linkLabel:string}>;
+      const tabs=Array.from(conditions.querySelectorAll<HTMLButtonElement>('[data-condition-choice]'));
+      const panel=conditions.querySelector<HTMLElement>('#condition-guidance');
+      const select=(index:number,focus=false)=>{const item=items[index];if(!item)return;tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;});panel?.setAttribute('aria-labelledby',tabs[index].id);setText(conditions,'[data-condition-category]',item.category);setText(conditions,'[data-condition-heading]',item.title);setText(conditions,'[data-condition-copy]',item.copy);setChecks(conditions,'[data-condition-checks]',item.checks);const link=conditions.querySelector<HTMLAnchorElement>('[data-condition-guide]');if(link){link.href=item.href;const text=link.querySelector('span');if(text)text.textContent=item.linkLabel;}setText(conditions,'[data-condition-status]',item.label+' guidance selected.');animate(panel);if(focus)tabs[index].focus({preventScroll:true});};
+      tabs.forEach((tab,index)=>{tab.addEventListener('click',()=>select(index));tab.addEventListener('keydown',event=>{let next=index;if(event.key==='ArrowRight'||event.key==='ArrowDown')next=(index+1)%tabs.length;else if(event.key==='ArrowLeft'||event.key==='ArrowUp')next=(index-1+tabs.length)%tabs.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=tabs.length-1;else return;event.preventDefault();select(next,true);});});
+    }
+    root.querySelectorAll<HTMLAnchorElement>('a[href="#toyota-quote"]').forEach(link=>link.addEventListener('click',event=>{if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();if(link.closest('[data-model-explorer]'))syncQuote(selectedModel);quote?.scrollIntoView({behavior:reduced.matches?'instant':'smooth',block:'start'});const year=quote?.querySelector<HTMLSelectElement>('select[name="year"]');const target=model&&!model.value?model:year;target?.focus({preventScroll:true});}));
+    if(!reduced.matches&&'IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-revealed');observer.unobserve(entry.target);}}),{threshold:.08});root.querySelectorAll('[data-manufacturer-reveal]').forEach(el=>{el.classList.add('reveal-ready');observer.observe(el);});}
+  }
+  initialiseManufacturer();
+  document.addEventListener('astro:page-load',initialiseManufacturer);
+</script>

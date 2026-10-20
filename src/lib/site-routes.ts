@@ -14,6 +14,7 @@ export const indexableStaticRoutes = [
   '/car-removal/',
   '/scrap-old-car/',
   '/fleet-disposal/',
+  '/cars/toyota/',
   '/locations/',
   '/locations/dubai/',
   '/locations/dubai/al-quoz/',
