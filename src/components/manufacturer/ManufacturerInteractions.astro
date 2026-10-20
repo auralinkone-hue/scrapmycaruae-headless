@@ -7,6 +7,8 @@
     const quote=root.querySelector<HTMLElement>('[data-manufacturer-quote]');
     const nameInput=quote?.querySelector<HTMLInputElement>('input[name="name"]');
     if(nameInput)nameInput.placeholder='Your name';
+    const yearSelect=quote?.querySelector<HTMLSelectElement>('select[name="year"]');
+    if(yearSelect?.options[0])yearSelect.options[0].textContent='Select';
     const make=quote?.querySelector<HTMLSelectElement>('[data-make]');
     const model=quote?.querySelector<HTMLSelectElement>('[data-model]');
     const explorer=root.querySelector<HTMLElement>('[data-model-explorer]');
