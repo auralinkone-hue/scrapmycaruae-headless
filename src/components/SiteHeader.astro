@@ -1,4 +1,5 @@
 ---
+import { locationOverview, locationGroups, isLocationPageActive, isLocationGroupActive } from '../lib/location-navigation';
 const pathname = Astro.url.pathname;
 const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
 // Future service routes remain prepared here, but only live routes are exposed in the menu.
@@ -22,17 +23,7 @@ const scrapMyCarServices = [
   { href: '/scrap-old-car/', label: 'Scrap Old Car', icon: 'ph-car-profile' },
   { href: '/fleet-disposal/', label: 'Fleet Disposal', icon: 'ph-buildings' }
 ] as const;
-const locationPages = [
-  { href: '/locations/', label: 'All UAE Locations', icon: 'ph-map-trifold' },
-  { href: '/locations/dubai/', label: 'Dubai', icon: 'ph-buildings' },
-  { href: '/locations/abu-dhabi/', label: 'Abu Dhabi', icon: 'ph-map-pin' },
-  { href: '/locations/sharjah/', label: 'Sharjah', icon: 'ph-warehouse' },
-  { href: '/locations/ajman/', label: 'Ajman', icon: 'ph-map-pin' },
-  { href: '/locations/ras-al-khaimah/', label: 'Ras Al Khaimah', icon: 'ph-mountains' },
-  { href: '/locations/fujairah/', label: 'Fujairah', icon: 'ph-waves' },
-  { href: '/locations/al-ain/', label: 'Al Ain', icon: 'ph-tree-palm' },
-  { href: '/locations/umm-al-quwain/', label: 'Umm Al Quwain', icon: 'ph-waves' }
-] as const;
+const locationPages = [locationOverview, ...locationGroups.flatMap(group => group.items.map(item => ({ ...item, icon: group.icon })))];
 const isLocationNavigationActive = pathname === '/locations' || pathname.startsWith('/locations/');
 const links = [
   { href: '/', label: 'Home', icon: 'ph-house' },
@@ -77,15 +68,30 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
 
       <nav class="desktop-nav" aria-label="Primary navigation">
         {links.map((link) => link.children ? (
-          <div class:list={['nav-group', { 'nav-group--split': link.href === '/scrap-my-car/' || link.href === '/locations/' }]}>
+          <div class:list={['nav-group', { 'nav-group--locations': link.href === '/locations/', 'nav-group--split': link.href === '/scrap-my-car/' || link.href === '/locations/' }]}>
           {link.href === '/scrap-my-car/' && <a href={link.href} class:list={['nav-link', { active: isScrapMyCarServiceActive }]}>{link.label}</a>}
-          {link.href === '/locations/' && <a href={link.href} class:list={['nav-link', { active: isLocationNavigationActive }]} aria-current={isActive(link.href) ? 'page' : undefined}>{link.label}</a>}
+          {link.href === '/locations/' && <a href={link.href} class:list={['nav-link', { active: isLocationNavigationActive }]} aria-current={isLocationPageActive(pathname, link.href) ? 'page' : undefined}>{link.label}</a>}
           <details name="desktop-services" class:list={['nav-dropdown', { active: link.href === '/locations/' ? isLocationNavigationActive : link.children.some((service) => service.href && isActive(service.href)) }]}>
             <summary class="nav-link nav-dropdown__trigger" aria-label={link.href === '/scrap-my-car/' ? 'Show Scrap My Car services' : link.href === '/locations/' ? 'Show Locations' : undefined}>
               {link.href !== '/scrap-my-car/' && link.href !== '/locations/' && link.label}
               <i class="ph ph-caret-down" aria-hidden="true"></i>
             </summary>
-            <div class="nav-dropdown__panel">
+            {link.href === '/locations/' ? (
+              <div class="nav-dropdown__panel locations-mega" aria-label="UAE location guides" tabindex="0">
+                <div class="locations-mega__intro">
+                  <a href={locationOverview.href} class:list={{ active: isLocationPageActive(pathname, locationOverview.href) }} aria-current={isLocationPageActive(pathname, locationOverview.href) ? 'page' : undefined}>
+                    <span class="service-link-icon"><i class:list={['ph', locationOverview.icon]} aria-hidden="true"></i></span><span>{locationOverview.label}</span>
+                  </a>
+                  <span class="locations-mega__note">Choose your area</span>
+                </div>
+                <div class="locations-mega__columns">
+                  {locationGroups.map(group => <section class:list={['locations-mega__group', { 'is-current-group': isLocationGroupActive(pathname, group) }]} aria-labelledby={'desktop-location-' + group.id}>
+                    <h2 id={'desktop-location-' + group.id}><i class:list={['ph', group.icon]} aria-hidden="true"></i>{group.label}</h2>
+                    {group.items.map(item => <a href={item.href} class:list={{ active: isLocationPageActive(pathname, item.href) }} aria-current={isLocationPageActive(pathname, item.href) ? 'page' : undefined}>{item.label}</a>)}
+                  </section>)}
+                </div>
+              </div>
+            ) : <div class="nav-dropdown__panel">
               {link.children.filter((service) => service.href).map((service) => (
                 <a href={service.href} class:list={{ active: isNavigationItemActive(service.href) }} aria-current={isActive(service.href) ? 'page' : undefined}>
                   <span class="service-link-icon"><i class:list={['ph', service.icon]} aria-hidden="true"></i></span>
@@ -93,7 +99,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
                   <i class="ph ph-arrow-up-right service-link-arrow" aria-hidden="true"></i>
                 </a>
               ))}
-            </div>
+            </div>}
           </details>
           </div>
         ) : (
@@ -136,10 +142,20 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
                 <div class="mobile-subheading"><button type="button" class="mobile-back" data-mobile-back aria-label="Back to main navigation"><i class="ph ph-arrow-left" aria-hidden="true"></i>Back</button><h2 id={'mobile-heading-' + group.id}>{group.label}</h2></div>
                 <p class="mobile-view__description">{group.description}</p>
                 <nav aria-label={group.label + (group.id === 'locations' ? ' navigation' : ' services')}>
-                  {group.items.map((item, index) => <a class:list={['mobile-row', { 'mobile-row--overview': index === 0, active: isNavigationItemActive(item.href) }]} href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}><span class="mobile-row__icon"><i class:list={['ph', item.icon]} aria-hidden="true"></i></span><span>{index === 0 ? ('overviewLabel' in group ? group.overviewLabel : 'View all ' + group.label) : item.label}</span><i class="ph ph-caret-right mobile-row__arrow" aria-hidden="true"></i></a>)}
+                  {group.id === 'locations' ? <>
+                    <a class:list={['mobile-row', 'mobile-row--overview', { active: isLocationPageActive(pathname, locationOverview.href) }]} href={locationOverview.href} aria-current={isLocationPageActive(pathname, locationOverview.href) ? 'page' : undefined}><span class="mobile-row__icon"><i class:list={['ph', locationOverview.icon]} aria-hidden="true"></i></span><span>View All UAE Locations</span><i class="ph ph-caret-right mobile-row__arrow" aria-hidden="true"></i></a>
+                    {locationGroups.map(location => <button type="button" class:list={['mobile-row', { active: isLocationGroupActive(pathname, location) }]} data-mobile-forward={'location-' + location.id} aria-controls={'mobile-view-location-' + location.id} aria-expanded="false"><span class="mobile-row__icon"><i class:list={['ph', location.icon]} aria-hidden="true"></i></span><span>{location.label}</span><i class="ph ph-arrow-right mobile-row__arrow" aria-hidden="true"></i></button>)}
+                  </> : group.items.map((item, index) => <a class:list={['mobile-row', { 'mobile-row--overview': index === 0, active: isNavigationItemActive(item.href) }]} href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}><span class="mobile-row__icon"><i class:list={['ph', item.icon]} aria-hidden="true"></i></span><span>{index === 0 ? ('overviewLabel' in group ? group.overviewLabel : 'View all ' + group.label) : item.label}</span><i class="ph ph-caret-right mobile-row__arrow" aria-hidden="true"></i></a>)}
                 </nav>
               </section>
             ))}
+            {locationGroups.map(group => <section class="mobile-view mobile-view--location" data-mobile-view={'location-' + group.id} id={'mobile-view-location-' + group.id} aria-labelledby={'mobile-heading-location-' + group.id} aria-hidden="true" inert>
+              <div class="mobile-subheading"><button type="button" class="mobile-back" data-mobile-back="locations" aria-label="Back to Locations"><i class="ph ph-arrow-left" aria-hidden="true"></i>Back</button><h2 id={'mobile-heading-location-' + group.id}>{group.label}</h2></div>
+              <p class="mobile-view__description">Choose a location guide.</p>
+              <nav aria-label={group.label + ' location pages'}>
+                {group.items.map(item => <a class:list={['mobile-row', { active: isLocationPageActive(pathname, item.href) }]} href={item.href} aria-current={isLocationPageActive(pathname, item.href) ? 'page' : undefined}><span class="mobile-row__icon"><i class:list={['ph', group.icon]} aria-hidden="true"></i></span><span>{item.label}</span><i class="ph ph-caret-right mobile-row__arrow" aria-hidden="true"></i></a>)}
+              </nav>
+            </section>)}
           </div>
           <div class="mobile-menu-actions">
             <a class="mobile-quote" href="/free-quote" data-analytics-quote-cta="header_mobile"><span class="mobile-action-icon"><i class="ph ph-calculator" aria-hidden="true"></i></span>Value My Car</a>
@@ -186,18 +202,18 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     let bodyStyles = { position: '', top: '', width: '', overflow: '' };
     const background = new Map<HTMLElement, boolean>();
 
-    const showPanel = (name: string, moveFocus = true) => {
+    const showPanel = (name: string, moveFocus = true, returning = false) => {
       views.forEach((view) => {
         const active = view.dataset.mobileView === name;
         view.classList.toggle('is-active', active);
-        view.classList.toggle('is-behind', name !== 'main' && view.dataset.mobileView === 'main');
+        view.classList.toggle('is-behind', name !== 'main' && (view.dataset.mobileView === 'main' || (name.startsWith('location-') && view.dataset.mobileView === 'locations')));
         view.inert = !active;
         view.setAttribute('aria-hidden', String(!active));
         if (active) view.scrollTop = 0;
       });
-      forwards.forEach((button) => button.setAttribute('aria-expanded', String(button.dataset.mobileForward === name)));
+      forwards.forEach((button) => button.setAttribute('aria-expanded', String(button.dataset.mobileForward === name || (button.dataset.mobileForward === 'locations' && name.startsWith('location-')))));
       if (moveFocus) {
-        const target = name === 'main'
+        const target = returning || name === 'main'
           ? forwards.find((button) => button.dataset.mobileForward === drawer.dataset.panel)
           : drawer.querySelector<HTMLButtonElement>('#mobile-view-' + name + ' [data-mobile-back]');
         target?.focus({ preventScroll: true });
@@ -249,7 +265,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     opener.addEventListener('click', openMenu);
     closeButton.addEventListener('click', () => closeMenu());
     forwards.forEach((button) => button.addEventListener('click', () => showPanel(button.dataset.mobileForward!)));
-    drawer.querySelectorAll<HTMLButtonElement>('[data-mobile-back]').forEach((button) => button.addEventListener('click', () => showPanel('main')));
+    drawer.querySelectorAll<HTMLButtonElement>('[data-mobile-back]').forEach((button) => button.addEventListener('click', () => showPanel(button.dataset.mobileBack || 'main', true, true)));
     drawer.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => link.addEventListener('click', () => closeMenu(false)));
     document.addEventListener('keydown', (event) => {
       if (!isOpen) return;
@@ -286,6 +302,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     display: flex;
     align-items: center;
     gap: 18px;
+    position: relative;
   }
 
   .brand {
@@ -628,6 +645,24 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     .mobile-drawer__header,.mobile-menu-actions { padding-inline: 18px; }
     .mobile-view { padding-inline: 18px; }
   }
+
+  /* Locations only: compact four-column menu, anchored to the header container. */
+  .nav-group--locations { position: static; }
+  .locations-mega { top: calc(100% - 1px); width: min(880px,calc(100vw - 48px)); padding: 14px; max-height: min(620px,calc(100dvh - 100px)); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #9aba94 transparent; }
+  .locations-mega:focus-visible { outline: 3px solid #3d7d45; outline-offset: 2px; }
+  .locations-mega__intro { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 4px 12px; margin-bottom: 10px; border-bottom: 1px solid #e0ebdc; }
+  .locations-mega__intro>a { min-height: 44px; font-size: 14px; }
+  .locations-mega__note { color: #60765d; font-size: 12px; padding-right: 10px; }
+  .locations-mega__columns { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; align-items: start; }
+  .locations-mega__group { padding: 9px 6px; border: 1px solid transparent; border-radius: 13px; min-width: 0; }
+  .locations-mega__group.is-current-group { background: #f0f6ed; border-color: #d8e8d2; }
+  .locations-mega__group h2 { display: flex; align-items: center; gap: 7px; min-height: 30px; margin: 0 8px 7px; color: #3d693d; font-size: 11px; line-height: 1.5; font-weight: 800; letter-spacing: .025em; }
+  .locations-mega__group h2 i { font-size: 17px; flex-shrink: 0; }
+  .locations-mega__group a { min-height: 44px; padding: 7px 8px; font-size: 12.5px; font-weight: 650; border-radius: 9px; overflow-wrap: anywhere; }
+  .locations-mega__group a[aria-current=page] { color: #174b25; background: #dcecd5; border-color: #c6debd; font-weight: 800; box-shadow: inset 3px 0 #4e8341; }
+  .mobile-view--location .mobile-row { min-height: 56px; }
+  .mobile-view--location .mobile-row__icon { width: 32px; height: 32px; flex-basis: 32px; font-size: 17px; }
+  .mobile-view.is-behind { transform: translateX(-12%); }
   @media(prefers-reduced-motion:reduce) {
     .nav-dropdown__panel { animation: none !important; }
     .nav-link::after,.nav-dropdown__trigger .ph,.nav-dropdown__panel a,.service-link-icon,.service-link-arrow { transition: none !important; }
