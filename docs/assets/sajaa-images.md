@@ -1,7 +1,7 @@
 # Sajaa automotive images
 
 Generated using the built-in imagegen tool. Final optimized project assets:
-- `public/sections/sajaa-yard-recovery.webp` — 1440 × 814, 120,692 bytes; original aspect ratio preserved.
+- `public/sections/sajaa-yard-recovery.webp` — 1440 × 810, 120,692 bytes; original aspect ratio preserved.
 - `public/sections/sajaa-trade-assessment.webp` — 1440 × 960, 130,128 bytes.
 
 ## Recovery scene prompt

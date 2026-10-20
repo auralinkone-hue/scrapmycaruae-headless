@@ -34,7 +34,7 @@ for (const pathname of auditRoutes) {
   const description = textFrom(html, /<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["'][^>]*>/i);
   const canonicalCount = count(html, /<link\b[^>]*\brel=["']canonical["']/gi);
   const h1Count = count(html, /<h1(?:\s|>)/gi);
-  const expectedCanonical = expectedUrl(pathname);
+  const expectedCanonical = new URL(pathname, process.env.PUBLIC_SITE_URL || 'https://www.scrapmycaruae.com').toString();
   const expectedRobots = expectedIndexable ? 'index,follow' : 'noindex,nofollow';
   const checks = [
     [response.status === 200, `HTTP ${response.status}`],
@@ -66,7 +66,7 @@ for (const [from, to] of Object.entries(permanentRedirects)) {
 const sitemap = await fetch(new URL('/sitemap.xml', baseUrl), { redirect: 'manual' });
 const sitemapBody = await sitemap.text();
 if (expectedIndexable) {
-  const missing = indexableStaticRoutes.filter((path) => !sitemapBody.includes(expectedUrl(path)));
+  const missing = indexableStaticRoutes.filter((path) => !sitemapBody.includes(new URL(path, process.env.PUBLIC_SITE_URL || 'https://www.scrapmycaruae.com').toString()));
   const ok = sitemap.status === 200 && sitemapBody.includes('<urlset') && missing.length === 0;
   console.log(`${ok ? 'PASS' : 'FAIL'} sitemap.xml${missing.length ? ` missing ${missing.join(', ')}` : ''}`);
   if (!ok) failed = true;

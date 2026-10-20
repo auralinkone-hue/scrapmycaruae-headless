@@ -31,7 +31,7 @@ test('Sajaa has distinct optimized WebP assets with descriptive alternatives', a
     assert.equal(bytes.toString('ascii', 0, 4), 'RIFF');
     assert.equal(bytes.toString('ascii', 8, 12), 'WEBP');
     assert.ok(bytes.length < 250000);
-    assert.match(page, new RegExp(`src="/sections/${name}\\.webp" alt="[^"]{60,}" width="1440" height="(?:814|960)" loading="lazy"`));
+    assert.match(page, new RegExp(`src="/sections/${name}\\.webp" alt="[^"]{60,}" width="1440" height="(?:810|960)" loading="lazy"`));
     return bytes;
   }));
   assert.notDeepEqual(assets[0], assets[1]);
