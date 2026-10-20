@@ -22,6 +22,7 @@ export const indexableStaticRoutes = [
   '/locations/dubai/dubai-investments-park/',
   '/locations/dubai/al-qusais/',
   '/locations/abu-dhabi/',
+  '/locations/abu-dhabi/musaffah/',
   '/locations/sharjah/',
   '/locations/sharjah/sajaa/',
   '/locations/sharjah/industrial-area/',
