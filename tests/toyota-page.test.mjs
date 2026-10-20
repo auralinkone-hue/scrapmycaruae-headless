@@ -68,3 +68,13 @@ test('Toyota photography has six small responsive WebP assets and explicit eager
  assert.equal([...page.matchAll(/srcset=/g)].length,2);
  assert.equal([...page.matchAll(/width="1440" height="960"/g)].length,2);
 });
+
+test('production sitemap handler includes Toyota exactly once and staging remains blocked',async()=>{
+ const dataModule=source=>'data:text/javascript;base64,'+Buffer.from(source).toString('base64');
+ const seoUrl=dataModule(stripTypeScriptTypes((await read('src/lib/seo.ts')).replaceAll('import.meta.env',JSON.stringify({PUBLIC_SEO_ENV:'production',PUBLIC_SITE_URL:'https://www.scrapmycaruae.com'}))));
+ const source=stripTypeScriptTypes(await read('src/pages/sitemap.xml.ts')).replace(/^import[^\n]+\n/gm,'');
+ const module=await import(dataModule(`import {canonicalUrl,isIndexableRequest} from ${JSON.stringify(seoUrl)};const indexableStaticRoutes=${JSON.stringify(indexableStaticRoutes)};const wixClient={auth:{generateVisitorTokens:async()=>({accessToken:{value:'isolated-test-token'}})}};const getWixPostSeo=()=>({});const fetch=async()=>Response.json({posts:[],pagingMetadata:{cursors:{}}});${source}`));
+ const production=await module.GET({url:new URL('https://www.scrapmycaruae.com/sitemap.xml')});
+ assert.equal(production.status,200);assert.equal((await production.text()).split('<loc>https://www.scrapmycaruae.com/cars/toyota/</loc>').length-1,1);
+ const staging=await module.GET({url:new URL('https://smc-headless-worker.hussain-gscx.workers.dev/sitemap.xml')});assert.equal(staging.status,404);
+});

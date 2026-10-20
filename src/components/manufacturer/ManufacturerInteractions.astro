@@ -4,7 +4,7 @@
     const root=document.querySelector<HTMLElement>('[data-manufacturer-page]');
     if(!root||root.dataset.ready)return;
     root.dataset.ready='true';
-    const quote=root.querySelector<HTMLElement>('#toyota-quote');
+    const quote=root.querySelector<HTMLElement>('[data-manufacturer-quote]');
     const make=quote?.querySelector<HTMLSelectElement>('[data-make]');
     const model=quote?.querySelector<HTMLSelectElement>('[data-model]');
     const explorer=root.querySelector<HTMLElement>('[data-model-explorer]');
@@ -33,7 +33,7 @@
         const guidance=resolveModelGuidance(value,config.profiles);
         let active=tabs.find(tab=>tab.dataset.modelChoice===value);
         tabs.forEach((tab,index)=>{const selected=tab===active;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected||(!active&&index===0)?0:-1;});
-        if(panel)panel.setAttribute('aria-labelledby',active?.id||'all-toyota-models');
+        if(panel)panel.setAttribute('aria-labelledby',active?.id||'manufacturer-all-models');
         if(all)all.value=value;
         setText(explorer!,'[data-model-name]',modelLabel(value));setText(explorer!,'[data-model-category]',guidance.category);setText(explorer!,'[data-model-heading]',guidance.title);setText(explorer!,'[data-model-copy]',guidance.copy);setChecks(explorer!,'[data-model-checks]',guidance.checks,true);
         const action=explorer!.querySelector('.section-action');if(action?.firstChild)action.firstChild.textContent='Value my '+modelLabel(value)+' ';
@@ -56,7 +56,9 @@
       const select=(index:number,focus=false)=>{const item=items[index];if(!item)return;tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;});panel?.setAttribute('aria-labelledby',tabs[index].id);setText(conditions,'[data-condition-category]',item.category);setText(conditions,'[data-condition-heading]',item.title);setText(conditions,'[data-condition-copy]',item.copy);setChecks(conditions,'[data-condition-checks]',item.checks);const link=conditions.querySelector<HTMLAnchorElement>('[data-condition-guide]');if(link){link.href=item.href;const text=link.querySelector('span');if(text)text.textContent=item.linkLabel;}setText(conditions,'[data-condition-status]',item.label+' guidance selected.');animate(panel);if(focus)tabs[index].focus({preventScroll:true});};
       tabs.forEach((tab,index)=>{tab.addEventListener('click',()=>select(index));tab.addEventListener('keydown',event=>{let next=index;if(event.key==='ArrowRight'||event.key==='ArrowDown')next=(index+1)%tabs.length;else if(event.key==='ArrowLeft'||event.key==='ArrowUp')next=(index-1+tabs.length)%tabs.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=tabs.length-1;else return;event.preventDefault();select(next,true);});});
     }
-    root.querySelectorAll<HTMLAnchorElement>('a[href="#toyota-quote"]').forEach(link=>link.addEventListener('click',event=>{if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();if(link.closest('[data-model-explorer]'))syncQuote(selectedModel);quote?.scrollIntoView({behavior:reduced.matches?'instant':'smooth',block:'start'});const year=quote?.querySelector<HTMLSelectElement>('select[name="year"]');const target=model&&!model.value?model:year;target?.focus({preventScroll:true});}));
+    root.querySelectorAll<HTMLAnchorElement>('a[href="#'+(quote?.id||'manufacturer-quote')+'"]').forEach(link=>link.addEventListener('click',event=>{if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();if(link.closest('[data-model-explorer]'))syncQuote(selectedModel);quote?.scrollIntoView({behavior:reduced.matches?'instant':'smooth',block:'start'});const year=quote?.querySelector<HTMLSelectElement>('select[name="year"]');const target=model&&!model.value?model:year;target?.focus({preventScroll:true});}));
+    const faq=root.querySelector<HTMLElement>('[data-manufacturer-faq]');
+    if(faq){const search=faq.querySelector<HTMLInputElement>('[data-faq-input]');const clear=faq.querySelector<HTMLButtonElement>('[data-faq-clear]');const controls=faq.querySelector<HTMLElement>('[data-faq-search]');const questions=Array.from(faq.querySelectorAll<HTMLDetailsElement>('details'));const empty=faq.querySelector<HTMLElement>('[data-faq-empty]');const count=faq.querySelector<HTMLElement>('[data-faq-count]');if(search&&controls){controls.hidden=false;const filter=()=>{const query=search.value.trim().toLowerCase();let visible=0;questions.forEach(question=>{const matches=!query||question.textContent?.toLowerCase().includes(query);question.hidden=!matches;if(matches)visible++;});if(clear)clear.hidden=!query;if(empty)empty.hidden=visible>0;if(count)count.textContent=visible+' of '+questions.length+' questions';};search.addEventListener('input',filter);clear?.addEventListener('click',()=>{search.value='';filter();search.focus();});}}
     if(!reduced.matches&&'IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-revealed');observer.unobserve(entry.target);}}),{threshold:.08});root.querySelectorAll('[data-manufacturer-reveal]').forEach(el=>{el.classList.add('reveal-ready');observer.observe(el);});}
   }
   initialiseManufacturer();
