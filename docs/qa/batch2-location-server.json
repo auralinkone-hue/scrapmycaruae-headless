@@ -1,0 +1,160 @@
+{
+  "routes": {
+    "/locations/": {
+      "status": 200,
+      "issues": [],
+      "title": "Car Collection Locations UAE | Scrap My Car UAE",
+      "faqCount": 8
+    },
+    "/locations/dubai/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Dubai | Free Valuation",
+      "faqCount": 9
+    },
+    "/locations/dubai/al-quoz/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Al Quoz Dubai | Free Valuation",
+      "faqCount": 8
+    },
+    "/locations/dubai/ras-al-khor/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Ras Al Khor Dubai | Free Valuation",
+      "faqCount": 8
+    },
+    "/locations/dubai/jebel-ali/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Jebel Ali Dubai | Free Valuation",
+      "faqCount": 8
+    },
+    "/locations/dubai/dubai-investments-park/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Dubai Investments Park | Free Valuation",
+      "faqCount": 8
+    },
+    "/locations/dubai/al-qusais/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Al Qusais Dubai | Free Valuation",
+      "faqCount": 8
+    },
+    "/locations/abu-dhabi/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Abu Dhabi | Free Valuation",
+      "faqCount": 9
+    },
+    "/locations/abu-dhabi/musaffah/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Musaffah Abu Dhabi | Free Valuation",
+      "faqCount": 8
+    },
+    "/locations/abu-dhabi/mohammed-bin-zayed-city/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Mohammed Bin Zayed City | Free Valuation",
+      "faqCount": 8
+    },
+    "/locations/abu-dhabi/khalifa-city/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Khalifa City Abu Dhabi | Free Valuation",
+      "faqCount": 8
+    },
+    "/locations/sharjah/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Sharjah | Free Valuation",
+      "faqCount": 9
+    },
+    "/locations/sharjah/sajaa/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Sajaa Sharjah | Free Valuation",
+      "faqCount": 8
+    },
+    "/locations/sharjah/industrial-area/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Sharjah Industrial Area | Free Valuation",
+      "faqCount": 8
+    },
+    "/locations/ajman/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Ajman | Free Valuation",
+      "faqCount": 9
+    },
+    "/locations/ras-al-khaimah/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Ras Al Khaimah | Free Valuation",
+      "faqCount": 8
+    },
+    "/locations/al-ain/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Al Ain | Free Valuation",
+      "faqCount": 8
+    },
+    "/locations/fujairah/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Fujairah | Free Valuation",
+      "faqCount": 8
+    },
+    "/locations/umm-al-quwain/": {
+      "status": 200,
+      "issues": [],
+      "title": "Sell or Scrap My Car Umm Al Quwain | Free Valuation",
+      "faqCount": 8
+    }
+  },
+  "uniqueMetadata": true,
+  "internalDestinations": {
+    "/": 200,
+    "/blogs": 200,
+    "/car-removal/": 200,
+    "/contact-us/": 200,
+    "/faqs/": 200,
+    "/fleet-disposal/": 200,
+    "/free-quote": 200,
+    "/locations/": 200,
+    "/locations/abu-dhabi/": 200,
+    "/locations/abu-dhabi/khalifa-city/": 200,
+    "/locations/abu-dhabi/mohammed-bin-zayed-city/": 200,
+    "/locations/abu-dhabi/musaffah/": 200,
+    "/locations/ajman/": 200,
+    "/locations/al-ain/": 200,
+    "/locations/dubai/": 200,
+    "/locations/dubai/al-quoz/": 200,
+    "/locations/dubai/al-qusais/": 200,
+    "/locations/dubai/dubai-investments-park/": 200,
+    "/locations/dubai/jebel-ali/": 200,
+    "/locations/dubai/ras-al-khor/": 200,
+    "/locations/fujairah/": 200,
+    "/locations/ras-al-khaimah/": 200,
+    "/locations/sharjah/": 200,
+    "/locations/sharjah/industrial-area/": 200,
+    "/locations/sharjah/sajaa/": 200,
+    "/locations/umm-al-quwain/": 200,
+    "/privacy-policy": 200,
+    "/scrap-car-value/": 200,
+    "/scrap-my-car/": 200,
+    "/scrap-old-car/": 200,
+    "/sell-accident-damaged-car/": 200,
+    "/sell-car-with-engine-problems/": 200,
+    "/sell-car-with-expired-registration/": 200,
+    "/sell-car-with-gearbox-problems/": 200,
+    "/sell-damaged-car/": 200,
+    "/sell-flood-damaged-car/": 200,
+    "/sell-my-car/": 200,
+    "/sell-non-running-car/": 200,
+    "/terms-conditions/": 200
+  }
+}
