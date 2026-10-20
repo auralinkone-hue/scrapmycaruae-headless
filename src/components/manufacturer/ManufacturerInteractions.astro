@@ -5,6 +5,8 @@
     if(!root||root.dataset.ready)return;
     root.dataset.ready='true';
     const quote=root.querySelector<HTMLElement>('[data-manufacturer-quote]');
+    const nameInput=quote?.querySelector<HTMLInputElement>('input[name="name"]');
+    if(nameInput)nameInput.placeholder='Your name';
     const make=quote?.querySelector<HTMLSelectElement>('[data-make]');
     const model=quote?.querySelector<HTMLSelectElement>('[data-model]');
     const explorer=root.querySelector<HTMLElement>('[data-model-explorer]');
