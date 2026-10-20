@@ -1,0 +1,33 @@
+/* Body-only treatments. The approved hero and shared QuoteForm are excluded. */
+[data-manufacturer-page] :is([data-model-choice],[data-condition-choice])[aria-selected="true"]{
+ background:var(--smc-green,#2f6f2d)!important;border-color:var(--smc-green,#2f6f2d)!important;color:#fff!important;box-shadow:0 4px 12px #214f2420;
+}
+[data-manufacturer-page] :is([data-model-choice],[data-condition-choice])[aria-selected="true"] :is(i,span){color:inherit!important}
+[data-manufacturer-page] [data-condition-choice][aria-selected="true"] .choice-dot{background:#fff;border-color:#fff}
+[data-manufacturer-page] :is([data-model-choice],[data-condition-choice]){position:relative;transition:background .18s,color .18s,border-color .18s,box-shadow .18s}
+[data-manufacturer-page] :is([data-model-choice],[data-condition-choice]):not([aria-selected="true"]):hover{background:#e7f3e1;border-color:#2f6f2d}
+[data-manufacturer-page] :is(.bmw-explorer,.bmw-faq,.bmw-next,.mb-factors,.mb-faq,.mb-handover,.value-editorial) h2 em,
+[data-manufacturer-page] :is(.assessment-editorial,.manufacturer-final,.bmw-final,.nissan-final,.nissan-models,.recovery-studio) h2 span,
+[data-manufacturer-page] :is(.bmw-faq,.manufacturer-faq,.nissan-faq,.mb-faq) h2 span{color:var(--smc-green,#2f6f2d)!important;font-style:normal}
+[data-manufacturer-page] .bmw-ledger h2 span{color:#b7e7a1}
+[data-manufacturer-page] .mb-model-studio h2 em{color:#b7e7a1}
+[data-manufacturer-page] :is(.model-result,.model-detail){border-radius:16px}
+[data-manufacturer-page] :is(.ledger-factors,.value-factors,.valuation-factors,.recovery-notes) details{border-radius:10px;transition:background .18s}
+[data-manufacturer-page] :is(.ledger-factors,.value-factors,.valuation-factors,.recovery-notes) details[open]{background:#eaf4e6;border-color:#b6d5ad;color:#214d28;margin-block:5px}
+[data-manufacturer-page] :is(.ledger-factors,.value-factors,.valuation-factors,.recovery-notes) details[open] summary{padding-inline:14px}
+[data-manufacturer-page] :is(.ledger-factors,.value-factors,.valuation-factors,.recovery-notes) details[open] :is(h3,summary>span,summary>i){color:#2f6f2d}
+[data-manufacturer-page] :is(.ledger-factors,.value-factors,.valuation-factors,.recovery-notes) details[open]>p{color:#455e47;padding-inline:20px}
+[data-manufacturer-faq] details{margin-bottom:8px;border:1px solid #d3e0cc!important;border-radius:12px;background:#fff;overflow:hidden;transition:background .18s}
+[data-manufacturer-faq] details summary{padding:16px 18px!important;min-height:66px!important}
+[data-manufacturer-faq] details summary i{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#edf5e8;color:#2f6f2d}
+[data-manufacturer-faq] details[open]{background:#f1f7ee}
+[data-manufacturer-faq] details[open] summary{background:var(--smc-green,#2f6f2d);color:#fff}
+[data-manufacturer-faq] details[open] summary h3{color:#fff}
+[data-manufacturer-faq] details[open] summary i{background:#ffffff20;color:#fff}
+[data-manufacturer-faq] details>p{padding:18px 20px 22px!important;color:#455e47!important}
+[data-manufacturer-page] .factor-list article{padding:22px;border:1px solid #d2e2cb;border-radius:14px;background:#fff}
+[data-manufacturer-page] .factor-list .factor-index{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#2f6f2d;color:#fff;flex-shrink:0}
+[data-manufacturer-page] .factor-list .factor-category{color:#2f6f2d}
+[data-manufacturer-page] .recovery-strip>div>i{color:#b7e7a1}
+@media(max-width:620px){[data-manufacturer-faq] details summary{padding:14px!important;gap:12px!important}[data-manufacturer-faq] details>p{padding:16px!important}[data-manufacturer-faq] details summary i{width:26px;height:26px;flex-shrink:0}}
+@media(prefers-reduced-motion:reduce){[data-manufacturer-page] :is([data-model-choice],[data-condition-choice],details){transition:none}}

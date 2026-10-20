@@ -1,4 +1,5 @@
 ---
+import ConditionGraphic from './ConditionGraphic.astro';
 import SectionActionButton from '../SectionActionButton.astro';
 import {modelLabel,resolveModelGuidance} from '../../lib/manufacturer-models';
 import {nissanPreferredModels,nissanModelGuidance as profiles,nissanConditions as conditions} from '../../lib/nissan-content';
@@ -13,7 +14,7 @@ const condition=conditions[0];
  <header><p class="eyebrow">01 / The condition conversation</p><h2 id="condition-title">What's the condition<br />of your Nissan?</h2><p>Choose the closest description. Start with what you know, without testing the vehicle.</p></header>
  <script type="application/json" data-condition-config set:html={JSON.stringify(conditions).replace(/</g,'\u003c')} />
  <div class="condition-tabs" role="tablist" aria-label="Nissan condition guidance">{conditions.map((item,i)=><button type="button" role="tab" id={'condition-tab-'+i} data-condition-choice={i} aria-selected={i===0?'true':'false'} aria-controls="condition-guidance" tabindex={i===0?0:-1}><i class:list={['ph',item.icon]} aria-hidden="true"></i><span>{item.label}</span></button>)}</div>
- <div class="condition-result" id="condition-guidance" role="tabpanel" aria-labelledby="condition-tab-0" tabindex="0"><div><p class="eyebrow" data-condition-category>{condition.category}</p><h3 data-condition-heading>{condition.title}</h3><p data-condition-copy>{condition.copy}</p><a data-condition-guide href={condition.href}><span>{condition.linkLabel}</span><i class="ph ph-book-open" aria-hidden="true"></i></a></div><div class="information-note"><span>Useful to share</span><ul data-condition-checks>{condition.checks.map(check=><li>{check}</li>)}</ul><SectionActionButton href="#nissan-quote" label="Request a Nissan valuation" intent="valuation" /></div></div>
+ <ConditionGraphic /><div class="condition-result" id="condition-guidance" role="tabpanel" aria-labelledby="condition-tab-0" tabindex="0"><div><p class="eyebrow" data-condition-category>{condition.category}</p><h3 data-condition-heading>{condition.title}</h3><p data-condition-copy>{condition.copy}</p><a data-condition-guide href={condition.href}><span>{condition.linkLabel}</span><i class="ph ph-book-open" aria-hidden="true"></i></a></div><div class="information-note"><span>Useful to share</span><ul data-condition-checks>{condition.checks.map(check=><li>{check}</li>)}</ul><SectionActionButton href="#nissan-quote" label="Request a Nissan valuation" intent="valuation" /></div></div>
  <p class="selection-status" data-condition-status role="status" aria-live="polite"></p>
 </section>
 <section class="nissan-models" id="nissan-models" data-model-explorer aria-labelledby="model-title">
