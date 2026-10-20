@@ -77,7 +77,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
               <i class="ph ph-caret-down" aria-hidden="true"></i>
             </summary>
             {link.href === '/locations/' ? (
-              <div class="nav-dropdown__panel locations-mega" aria-label="UAE location guides" tabindex="0">
+              <div class="nav-dropdown__panel locations-mega" role="region" aria-label="UAE location guides" tabindex="0">
                 <div class="locations-mega__intro">
                   <a href={locationOverview.href} class:list={{ active: isLocationPageActive(pathname, locationOverview.href) }} aria-current={isLocationPageActive(pathname, locationOverview.href) ? 'page' : undefined}>
                     <span class="service-link-icon"><i class:list={['ph', locationOverview.icon]} aria-hidden="true"></i></span><span>{locationOverview.label}</span>
