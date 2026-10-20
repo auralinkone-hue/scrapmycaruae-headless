@@ -1,0 +1,12 @@
+# MBZ City residential image assets
+
+Generated with the built-in imagegen tool, optimized to WebP with original proportions retained.
+
+- `public/sections/mbz-city-villa-recovery.webp` — 1440 × 960; metallic-blue hatchback, villa driveway and professional recovery equipment.
+- `public/sections/mbz-city-community-mpv.webp` — 1440 × 960; pearl-white family MPV in landscaped community outdoor parking, no recovery truck.
+
+## Prompts
+
+Use case: photorealistic-natural. Premium landscape 3:2 automotive editorial photo in a believable Mohammed Bin Zayed City Abu Dhabi residential villa street. Main vehicle metallic blue mid-2010s compact hatchback, familiar UAE-market proportions, unbranded, minor bumper scuffs and flat front tyre, parked near a cream stucco villa driveway and compound gate. Professional unbranded recovery equipment, a compact wheel dolly and recovery operator checking access, partial flatbed in distant background secondary if needed. Natural residential palms, paved driveway, quiet UAE community street, no industrial yards. Full hatchback entirely visible including roof, bumpers and wheels, generous margins all around for responsive crops; car occupies about 70 percent of image width. Natural daylight, photorealistic materials, modest wear, approximately 2014–2018, no dramatic destruction or abandoned-looking vehicle. No logos, manufacturer badges, branding, readable number plates, signs, lettering, text or watermark. Not an SUV or Camry/Corolla sedan, not illustration or 3D.
+
+Use case: photorealistic-natural. Premium landscape 3:2 natural-daylight automotive photo of a pearl-white unbranded mid-2010s family MPV, seven-seat people carrier with sliding rear door proportions, approximately 2015–2019, parked in an Abu Dhabi residential apartment/community outdoor parking bay. Different composition and category from blue hatchback recovery: rear/side three-quarter view of the MPV, complete vehicle visible including roof and both bumpers and wheels with generous margins, about 65–70 percent image width. Realistic modest wear, slightly dusty lower body, small scuff. Modern but ordinary UAE apartment frontage, paved parking, shade trees and landscaped community edges. No recovery truck or recovery equipment. Realistic familiar UAE-market MPV geometry, premium documentary photography, natural daylight. No manufacturer branding, badges, logos, readable number plates, signs, lettering, text or watermark. No industrial yard, exaggerated damage, abandoned-looking car, illustration or 3D rendering.
