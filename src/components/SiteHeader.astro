@@ -133,9 +133,18 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
       <div class="mobile-menu">
         <button class="mobile-toggle" type="button" aria-label="Open navigation" aria-controls="mobile-drawer" aria-expanded="false"><i class="ph ph-list" aria-hidden="true"></i></button>
         <div class="mobile-drawer" id="mobile-drawer" role="dialog" aria-modal="true" aria-label="Site navigation" hidden>
-          <div class="mobile-drawer__header"><span>Scrap My Car UAE</span><button class="mobile-close" type="button" data-mobile-close aria-label="Close navigation"><i class="ph ph-x" aria-hidden="true"></i></button></div>
+          <div class="mobile-drawer__header">
+            <a class="mobile-drawer__brand" href="/" aria-label="Scrap My Car UAE home">
+              <img src="https://static.wixstatic.com/media/ff8df3_ee2506a8a7ed4752b5b7832449c71105~mv2.png" alt="Scrap My Car UAE" width="155" height="60" />
+            </a>
+            <div class="mobile-drawer__header-actions">
+              <span class="mobile-drawer__label">Menu</span>
+              <button class="mobile-close" type="button" data-mobile-close aria-label="Close navigation"><i class="ph ph-x" aria-hidden="true"></i></button>
+            </div>
+          </div>
           <div class="mobile-stage">
             <nav class="mobile-view mobile-view--main is-active" data-mobile-view="main" aria-label="Main mobile navigation">
+              <p class="mobile-view__eyebrow">Explore our services</p>
               {links.map((link) => link.children ? (
                 <button type="button" class:list={['mobile-row', 'mobile-row--category', { active: link.href === '/locations/' ? isLocationNavigationActive : mobileServiceGroups.find((group) => group.href === link.href)?.items.some((item) => isActive(item.href)) }]} data-mobile-forward={mobileServiceGroups.find((group) => group.href === link.href)?.id} aria-controls={'mobile-view-' + mobileServiceGroups.find((group) => group.href === link.href)?.id} aria-expanded="false">
                   <span class="mobile-row__icon"><i class:list={['ph', link.icon]} aria-hidden="true"></i></span><span>{link.label}</span><i class="ph ph-arrow-right mobile-row__arrow" aria-hidden="true"></i>
@@ -171,7 +180,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
           </div>
           <div class="mobile-menu-actions">
             <a class="mobile-quote" href="/free-quote" data-analytics-quote-cta="header_mobile"><span class="mobile-action-icon"><i class="ph ph-calculator" aria-hidden="true"></i></span>Value My Car</a>
-            <a class="mobile-whatsapp" href={whatsappUrl} target="_blank" rel="noopener noreferrer" data-analytics-whatsapp="header_mobile"><img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />Chat on WhatsApp</a>
+            <a class="mobile-whatsapp" href={whatsappUrl} target="_blank" rel="noopener noreferrer" data-analytics-whatsapp="header_mobile"><img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />WhatsApp</a>
           </div>
         </div>
       </div>
@@ -606,80 +615,124 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
   }
   .mobile-toggle .ph { font-size: 22px; }
   .mobile-toggle:focus-visible { outline: 3px solid #6c9fc1; outline-offset: 3px; }
+  /* Mobile-only: restrained, white navigation with black text and a clear visual hierarchy. */
   .mobile-drawer[hidden] { display: none !important; }
   .mobile-drawer {
-    position: fixed; inset: 0; z-index: 1000; display: grid; grid-template-rows: auto minmax(0,1fr) auto;
-    width: 100%; height: 100dvh; padding-top: env(safe-area-inset-top); overflow: hidden; isolation: isolate;
-    background: radial-gradient(ellipse at 100% 0,rgba(113,169,102,.14),transparent 55%),linear-gradient(155deg,#173e25,#102e1b);
-    color: #fff; opacity: 0; transform: translateY(9px); pointer-events: none;
-    transition: opacity 260ms ease,transform 260ms cubic-bezier(.2,.7,.2,1);
+    position: fixed; inset: 0; z-index: 1000;
+    display: grid; grid-template-rows: auto minmax(0,1fr) auto;
+    width: 100%; height: 100dvh; padding-top: env(safe-area-inset-top);
+    overflow: hidden; isolation: isolate;
+    background: #fff; color: #202923;
+    opacity: 0; transform: translateY(12px); pointer-events: none;
+    transition: opacity 240ms ease, transform 240ms cubic-bezier(.22,1,.36,1);
   }
   .mobile-drawer.is-open { opacity: 1; transform: none; pointer-events: auto; }
   .mobile-drawer__header {
-    display: flex; align-items: center; justify-content: space-between; gap: 16px; width: min(100%,640px);
-    min-height: 72px; padding: 12px 22px; justify-self: center;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    width: min(100%,640px); min-height: 72px; padding: 10px 22px;
+    justify-self: center; border-bottom: 1px solid #e9eeea;
   }
-  .mobile-drawer__header>span { font-size: 16px; font-weight: 800; letter-spacing: -.025em; color: #e7f1e2; }
+  .mobile-drawer__brand { display: inline-flex; align-items: center; min-height: 48px; }
+  .mobile-drawer__brand img { display: block; width: 130px; height: auto; max-height: 52px; object-fit: contain; }
+  .mobile-drawer__header-actions { display: inline-flex; align-items: center; gap: 13px; }
+  .mobile-drawer__label {
+    color: #66716a; font-size: 12px; font-weight: 750; line-height: 1;
+    letter-spacing: .045em; text-transform: uppercase;
+  }
   .mobile-close {
     display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 44px; padding: 0;
-    border: 1px solid rgba(192,220,182,.22); border-radius: 13px; background: rgba(225,242,217,.07);
-    color: #e8f4e3; font-size: 21px; cursor: pointer;
+    border: 1px solid #e3e9e5; border-radius: 13px; background: #f8faf8;
+    color: #222b25; font-size: 21px; cursor: pointer;
+    transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
   }
   .mobile-stage { position: relative; min-height: 0; width: min(100%,640px); justify-self: center; overflow: hidden; }
   .mobile-view {
-    position: absolute; inset: 0; padding: 6px 22px 16px; overflow-y: auto; overscroll-behavior: contain;
-    scrollbar-width: thin; scrollbar-color: #5e8166 transparent; opacity: 0; visibility: hidden; transform: translateX(100%);
-    transition: transform 260ms cubic-bezier(.2,.7,.2,1),opacity 260ms ease,visibility 0ms 260ms;
+    position: absolute; inset: 0; padding: 13px 22px 18px; overflow-y: auto; overscroll-behavior: contain;
+    scrollbar-width: thin; scrollbar-color: #d4ded6 transparent;
+    opacity: 0; visibility: hidden; transform: translateX(100%);
+    transition: transform 250ms cubic-bezier(.22,1,.36,1),opacity 200ms ease,visibility 0ms 250ms;
   }
   .mobile-view.is-active { opacity: 1; visibility: visible; transform: none; transition-delay: 0ms; }
-  .mobile-view--main.is-behind { opacity: 0; transform: translateX(-12%); }
+  .mobile-view.is-behind { opacity: 0; transform: translateX(-8%); }
+  .mobile-view__eyebrow {
+    margin: 10px 8px 9px; color: #77837a; font-size: 11px; font-weight: 800;
+    letter-spacing: .085em; line-height: 1.4; text-transform: uppercase;
+  }
   .mobile-row {
-    display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 10px 9px;
-    border: 0; border-bottom: 1px solid rgba(211,233,202,.085); border-radius: 0;
-    background: transparent; color: #e6eee2; font: inherit; font-size: 16px; font-weight: 650;
+    display: flex; align-items: center; gap: 13px; width: 100%; min-height: 60px;
+    padding: 10px 9px; border: 0; border-bottom: 1px solid #edf0ed; border-radius: 0;
+    background: transparent; color: #202823; font: inherit; font-size: 15px; font-weight: 650;
     line-height: 1.4; text-decoration: none; text-align: left; cursor: pointer;
-    transition: background-color 160ms ease,box-shadow 160ms ease;
+    transition: background-color 160ms ease,color 160ms ease,transform 160ms ease;
   }
   .mobile-row>span:not(.mobile-row__icon):not(.manufacturer-logo) { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-  .mobile-row--category { color: #fff; font-weight: 800; font-size: 18px; background: linear-gradient(90deg,rgba(185,218,168,.05),transparent); }
+  .mobile-row--category { color: #151d18; font-weight: 750; font-size: 16px; }
   .mobile-row__icon {
-    display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px; border: 1px solid rgba(194,221,181,.12);
-    border-radius: 11px; background: rgba(180,212,163,.065); color: #acd49b; font-size: 19px;
+    display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px;
+    border: 1px solid #e9eeeb; border-radius: 11px;
+    background: #f5f7f5; color: #48584d; font-size: 19px;
   }
-  .mobile-row--category .mobile-row__icon { background: rgba(182,218,161,.13); border-color: rgba(191,222,173,.2); color: #c0e6ad; }
-  .mobile-row__arrow { width: 19px; flex: 0 0 19px; text-align: center; font-size: 17px; color: #9fbea0; }
-  .mobile-row.active { background: rgba(175,215,155,.1); color: #fff; box-shadow: inset 3px 0 #a9d88d; border-radius: 10px; }
-  .mobile-row.active .mobile-row__icon { background: #b5dca0; border-color: #b5dca0; color: #1b4225; }
-  .mobile-subheading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 6px; }
+  .mobile-row--category .mobile-row__icon { background: #f2f7f2; border-color: #e4eee5; color: #397344; }
+  .mobile-row__arrow {
+    width: 19px; flex: 0 0 19px; text-align: center; font-size: 16px;
+    color: #89958b; transition: transform 160ms ease, color 160ms ease;
+  }
+  .mobile-row.active {
+    background: #f0f6f0; color: #19572e;
+    box-shadow: inset 3px 0 #4a8955; border-radius: 10px;
+  }
+  .mobile-row.active .mobile-row__icon { background: #e0eee1; border-color: #d2e7d4; color: #2c6838; }
+  .mobile-row.active .mobile-row__arrow { color: #2d6b39; }
+  .mobile-subheading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 3px 0 5px; }
   .mobile-back {
-    display: inline-flex; gap: 8px; align-items: center; min-width: 80px; min-height: 44px; padding: 0 10px 0 4px;
-    border: 0; border-radius: 9px; background: transparent; color: #d5e7ce; font: inherit; font-size: 14px; font-weight: 750; cursor: pointer;
+    display: inline-flex; gap: 7px; align-items: center; min-height: 44px; padding: 0 10px 0 4px;
+    border: 0; border-radius: 9px; background: transparent; color: #415b46;
+    font: inherit; font-size: 13px; font-weight: 750; cursor: pointer;
   }
-  .mobile-back i { font-size: 19px; }
-  .mobile-subheading h2 { margin: 0; color: #c0d9b5; font-size: 11px; line-height: 1.4; font-weight: 850; letter-spacing: .09em; text-transform: uppercase; }
-  .mobile-view__description { margin: 3px 0 17px; color: #a9c2a5; font-size: 12px; line-height: 1.6; }
-  .mobile-view:not(.mobile-view--main) .mobile-row { font-size: 15px; }
-  .mobile-row--overview { color: #fff; font-weight: 800; }
+  .mobile-back i { font-size: 19px; transition: transform 160ms ease; }
+  .mobile-subheading h2 {
+    margin: 0; color: #5c6b60; font-size: 11px; line-height: 1.4;
+    font-weight: 800; letter-spacing: .075em; text-transform: uppercase;
+  }
+  .mobile-view__description { margin: 2px 0 16px; color: #6b796f; font-size: 12.5px; line-height: 1.6; }
+  .mobile-view:not(.mobile-view--main) .mobile-row { font-size: 14.5px; min-height: 56px; }
+  .mobile-row--overview { color: #19572e; font-weight: 800; }
   .mobile-menu-actions {
-    display: grid; gap: 10px; width: min(100%,640px); justify-self: center;
-    padding: 15px 22px max(18px,env(safe-area-inset-bottom)); border-top: 1px solid rgba(196,222,184,.1);
-    background: rgba(11,35,20,.35); box-shadow: 0 -14px 25px rgba(13,40,22,.12);
+    display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 9px;
+    width: min(100%,640px); justify-self: center;
+    padding: 12px 22px max(15px,env(safe-area-inset-bottom));
+    border-top: 1px solid #e8eee9; background: #fff;
+    box-shadow: 0 -8px 22px rgba(22,47,27,.035);
   }
   .mobile-quote,.mobile-whatsapp {
-    display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 50px;
-    padding: 8px 14px; border: 1px solid transparent; border-radius: 13px; font-size: 14px; font-weight: 800; line-height: 1.4; text-decoration: none;
-    transition: background-color 160ms ease,box-shadow 160ms ease;
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    width: 100%; min-height: 50px; padding: 8px 9px;
+    border: 1px solid transparent; border-radius: 12px;
+    font-size: 13px; font-weight: 760; line-height: 1.25; text-decoration: none;
+    text-align: center; white-space: nowrap;
+    transition: background-color 160ms ease,box-shadow 160ms ease,border-color 160ms ease,transform 160ms ease;
   }
-  .mobile-quote { background: #f4faef; border-color: #e1efda; color: #1c4a27; box-shadow: 0 6px 15px rgba(7,25,13,.13); }
-  .mobile-action-icon { display: grid; place-items: center; width: 29px; height: 29px; border-radius: 50%; background: #c4e4af; color: #2a6033; font-size: 17px; }
-  .mobile-whatsapp { color: #d7e8ce; background: rgba(190,219,176,.035); border-color: rgba(192,220,182,.2); font-size: 13px; font-weight: 700; }
-  .mobile-whatsapp .wa-icon { width: 19px; height: 19px; }
-  .mobile-drawer :is(a,button):focus-visible { outline: 2px solid #c5e8ac; outline-offset: -2px; border-radius: 11px; }
-  .mobile-drawer :is(a,button):active { background-color: rgba(184,220,163,.18); box-shadow: inset 0 0 0 1px rgba(197,229,176,.18); }
-  .mobile-quote:active { background: #dbeecf !important; color: #1c4a27; }
+  .mobile-quote { background: #235e34; border-color: #235e34; color: #fff; }
+  .mobile-action-icon {
+    display: grid; place-items: center; width: 26px; height: 26px; flex: 0 0 26px;
+    border-radius: 8px; background: rgba(255,255,255,.14); color: #fff; font-size: 16px;
+  }
+  .mobile-whatsapp { color: #1d5930; background: #fff; border-color: #cadfce; }
+  .mobile-whatsapp .wa-icon { width: 20px; height: 20px; flex: 0 0 20px; }
+  .mobile-drawer :is(a,button):focus-visible {
+    outline: 2px solid #337b47; outline-offset: -2px; border-radius: 10px;
+  }
+  .mobile-drawer :is(.mobile-row,.mobile-back,.mobile-close):active { background-color: #e8f1e9; }
+  .mobile-quote:active { background: #174a26; }
+  .mobile-whatsapp:active { background: #eef7ef; }
   @media(hover:hover) and (pointer:fine) {
-    .mobile-drawer :is(.mobile-row,.mobile-back,.mobile-close,.mobile-whatsapp):hover { background-color: rgba(184,220,163,.1); }
-    .mobile-quote:hover { background: #deefcf; }
+    .mobile-drawer .mobile-row:hover { background: #f6f9f6; color: #1c5e30; }
+    .mobile-drawer .mobile-row:hover .mobile-row__arrow { transform: translateX(3px); color: #427c4e; }
+    .mobile-drawer .mobile-back:hover { background: #f1f6f1; }
+    .mobile-drawer .mobile-back:hover i { transform: translateX(-3px); }
+    .mobile-drawer .mobile-close:hover { background: #eef4ef; border-color: #cdded0; }
+    .mobile-quote:hover { background: #174a26; box-shadow: 0 6px 16px rgba(30,88,42,.16); }
+    .mobile-whatsapp:hover { background: #f0f7f1; border-color: #9bc2a4; }
   }
   .nav-link { white-space: nowrap; }
   .nav-dropdown__panel a:focus-visible { outline: 2px solid #3d7d45; outline-offset: -2px; background: #edf6ea; }
