@@ -328,19 +328,22 @@ const footerLocationRoutes: Record<string, string> = {
   .contact-strip a:hover { color: #206334; }
 
   .smc-footer-bottom {
-    min-height: 75px;
-    border-top: 1px solid #163d18;
+    min-height: 62px;
+    border-top: 0;
     background: #163d18;
     color: #fff;
     font-size: 13px;
+    font-weight: 500;
   }
   .bottom-inner {
     display: flex;
-    min-height: 75px;
+    min-height: 62px;
     align-items: center;
     justify-content: space-between;
     gap: 26px;
   }
+  /* Reserve the floating WhatsApp action's right-hand lane where it exists. */
+  :global(body:has(.floating-whatsapp)) .bottom-inner { padding-right: 74px; }
   .bottom-links {
     display: flex;
     justify-content: space-between;
@@ -601,7 +604,7 @@ const footerLocationRoutes: Record<string, string> = {
     .footer-automotive-art { max-width: 300px; }
     .contact-strip { grid-template-columns: 1fr 1fr; gap: 20px; }
     .bottom-inner { gap: 18px; }
-    .bottom-links { gap: 20px; }
+    .bottom-links { flex-wrap: wrap; gap: 0 16px; }
     .footer-copyright { white-space: normal; max-width: 240px; }
 
     .cookie-consent-banner {
@@ -622,10 +625,10 @@ const footerLocationRoutes: Record<string, string> = {
     .footer-links a, .location-list span, .location-list a { font-size: 14px; }
     .contact-strip { grid-template-columns: 1fr 1fr; margin-top: 32px; gap: 24px 12px; }
     .contact-strip > div { font-size: 13px; gap: 10px; }
-    .bottom-inner { min-height: 0; flex-direction: column; align-items: stretch; gap: 14px; padding-block: 16px 20px; }
-    .bottom-links { width: 100%; max-width: none; justify-content: flex-start; flex-wrap: wrap; gap: 2px 20px; }
-    .bottom-links a, .cookie-settings-trigger { min-height: 38px; display: inline-flex; align-items: center; font-size: 12px; }
-    .footer-copyright { margin: 0; max-width: none; text-align: left; font-size: 12px; }
+    .bottom-inner { min-height: 0; flex-direction: column; align-items: stretch; gap: 10px; padding-block: 14px; }
+    .bottom-links { width: 100%; max-width: none; justify-content: flex-start; flex-wrap: wrap; gap: 2px 12px; }
+    .bottom-links a, .cookie-settings-trigger { min-height: 38px; display: inline-flex; align-items: center; font-size: 13px; }
+    .footer-copyright { margin: 0; max-width: none; text-align: left; font-size: 13px; }
     .cookie-consent-banner {
       right: 0;
       bottom: 0;
