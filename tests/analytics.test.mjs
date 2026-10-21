@@ -26,6 +26,16 @@ test('footer exposes persistent accessible cookie controls', async () => {
   assert.match(footer, /localStorage\.setItem\(COOKIE_PREFERENCE_KEY/);
   assert.match(footer, /aria-modal="true"/);
   assert.match(footer, /prefers-reduced-motion: reduce/);
+  assert.match(footer, /class="footer-automotive-art" aria-hidden="true"/);
+  assert.match(footer, /background: #f7faf5/);
+  assert.match(footer, /min-height: 455px/);
+  assert.match(footer, /class="bottom-links"/);
+  assert.match(footer, /Cookie Settings/);
+  assert.match(footer, /Privacy Policy/);
+  assert.match(footer, /Terms of Service/);
+  assert.match(footer, /class="footer-copyright"/);
+  assert.match(footer, /href="\/privacy-policy"/);
+  assert.match(footer, /href="\/terms-conditions\/"/);
 });
 
 test('development deployment keeps analytics disabled while retaining the GTM container', async () => {

@@ -9,15 +9,30 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
     <div class="smc-container footer-grid">
       <div class="footer-brand">
         <img
-          src="https://static.wixstatic.com/media/ff8df3_7abbb70e8dbf4941a2f88fb3caee9de1~mv2.png"
+          src="https://static.wixstatic.com/media/ff8df3_ee2506a8a7ed4752b5b7832449c71105~mv2.png"
           alt="Scrap My Car UAE"
           width="166"
           height="64"
         />
         <p>
-          Sell your scrap car hassle-free with Scrap My Car UAE. Car buyers
-          serving Dubai, Sharjah and customers across the UAE.
+          A simpler way to sell your unwanted, damaged or scrap car.
+          Get guidance, a free valuation and collection support across the UAE.
         </p>
+        <div class="footer-automotive-art" aria-hidden="true">
+          <svg viewBox="0 0 356 142" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+            <circle cx="291" cy="69" r="59" fill="#E8F2E9" />
+            <path d="M19 117h318" stroke="#D5E6D8" stroke-width="2" stroke-linecap="round" />
+            <path d="M27 96v-9c0-7 4-12 12-14l27-7 19-29c6-8 14-12 26-12h93c15 0 25 5 35 17l24 27 41 9c9 2 15 8 17 18l2 15h-28m-216 0H37c-7 0-10-4-10-11Z" fill="#F2F8F1" stroke="#548663" stroke-width="2.7" stroke-linejoin="round" />
+            <path d="M83 67 99 43c3-4 8-6 14-6h42v34H78Zm85 4V37h33c12 0 18 4 26 14l17 20Z" stroke="#719F7D" stroke-width="2.2" stroke-linejoin="round" />
+            <path d="M45 75h22m184 0h37m-238 9h16m216 0h20m-138-47v34" stroke="#9ABC9E" stroke-width="2.2" stroke-linecap="round" />
+            <path d="M27 103h32m39 0h131m39 0h48" stroke="#548663" stroke-width="2.7" stroke-linecap="round" />
+            <circle cx="79" cy="103" r="20" fill="#F8FAF7" stroke="#3C744B" stroke-width="2.8" />
+            <circle cx="79" cy="103" r="10" fill="#E3EEE5" stroke="#A4C2A9" stroke-width="2" />
+            <circle cx="249" cy="103" r="20" fill="#F8FAF7" stroke="#3C744B" stroke-width="2.8" />
+            <circle cx="249" cy="103" r="10" fill="#E3EEE5" stroke="#A4C2A9" stroke-width="2" />
+            <path d="M17 127h93m19 0h139m15 0h55" stroke="#BDD5C0" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </div>
       </div>
 
       <div>
@@ -69,15 +84,12 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
 
   <div class="smc-footer-bottom">
     <div class="smc-container bottom-inner">
-      <span>© {year} Scrap My Car UAE</span>
-      <div>
-        <a href="/terms-conditions/">Terms</a>
-        <a href="/privacy-policy">Privacy</a>
-        <button class="cookie-settings-trigger" type="button" data-cookie-settings>
-          <i class="ph ph-sliders-horizontal" aria-hidden="true"></i>
-          Cookie Settings
-        </button>
+      <div class="bottom-links">
+        <button class="cookie-settings-trigger" type="button" data-cookie-settings>Cookie Settings</button>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-conditions/">Terms of Service</a>
       </div>
+      <span class="footer-copyright">© {year} Scrap My Car UAE. All rights reserved.</span>
     </div>
   </div>
 </footer>
@@ -135,70 +147,98 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
 </div>
 
 <style>
+  /* White footer contrasts with the dark-green valuation CTA above it. */
   .smc-footer {
     margin-top: 0;
-    background: #102912;
-    color: #eef5ed;
+    background: #f7faf5;
+    color: #243429;
+    border-top: 1px solid #e1eae0;
   }
 
   .smc-footer-main {
-    padding: 58px 0 24px;
+    min-height: 455px;
+    padding: clamp(58px, 5.2vw, 78px) 0 34px;
   }
 
   .footer-grid {
     display: grid;
-    grid-template-columns: 1.4fr .8fr .8fr .8fr;
-    gap: 44px;
+    grid-template-columns: minmax(240px,1.4fr) repeat(3,minmax(0,.82fr));
+    gap: clamp(28px, 3.4vw, 52px);
+    align-items: start;
   }
 
   .footer-brand img {
     display: block;
-    width: 165px;
+    width: 164px;
     height: auto;
-    max-height: 64px;
+    max-height: 65px;
     object-fit: contain;
-    filter: brightness(1.08);
   }
 
   .footer-brand p {
-    max-width: 380px;
-    margin: 18px 0 0;
-    color: #c8d5c7;
-    line-height: 1.65;
+    max-width: 330px;
+    margin: 21px 0 0;
+    color: #5e6e62;
+    font-size: 14px;
+    line-height: 1.8;
   }
+
+  .footer-automotive-art {
+    width: min(100%, 340px);
+    margin-top: 16px;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .footer-automotive-art svg { display: block; width: 100%; height: auto; }
 
   .smc-footer h2 {
-    margin: 4px 0 17px;
-    color: #fff;
-    font-size: 14px;
-    letter-spacing: .06em;
+    margin: 7px 0 23px;
+    color: #1b3825;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .055em;
+    line-height: 1.4;
     text-transform: uppercase;
   }
-
-  .footer-links,
-  .location-list {
-    display: grid;
-    gap: 10px;
+  .smc-footer h2::after {
+    content: '';
+    display: block;
+    width: 29px;
+    height: 2px;
+    margin-top: 12px;
+    border-radius: 3px;
+    background: #448653;
   }
 
-  .footer-links a,
-  .location-list span {
-    color: #c8d5c7;
+  .footer-links, .location-list { display: grid; gap: 13px; }
+
+  .footer-links a, .location-list span {
+    color: #4f6154;
     text-decoration: none;
     font-size: 14px;
+    font-weight: 500;
+    line-height: 1.45;
   }
 
-  .location-list span { display: flex; align-items: center; gap: 7px; }
-  .location-list i { color: #8fc682; font-size: 14px; }
+  .location-list span { display: flex; align-items: flex-start; gap: 8px; }
+  .location-list i { color: #467e53; font-size: 15px; margin-top: 2px; flex: 0 0 auto; }
 
-  .footer-links a:hover {
-    color: #fff;
+  .footer-links a {
+    width: fit-content;
+    transition: color 160ms ease, transform 160ms ease;
+  }
+  .footer-links a:hover { color: #205b30; transform: translateX(3px); }
+  .footer-links a:focus-visible, .contact-strip a:focus-visible, .bottom-links a:focus-visible {
+    outline: 2px solid #367d48;
+    outline-offset: 4px;
+    border-radius: 2px;
   }
 
   .contact-strip {
-    margin-top: 40px;
-    padding-top: 22px;
-    border-top: 1px solid rgba(255,255,255,.11);
+    margin-top: clamp(35px, 4vw, 50px);
+    padding-top: 23px;
+    border-top: 1px solid #dfe8df;
     display: grid;
     grid-template-columns: 1.25fr .65fr 1fr .75fr;
     gap: 24px;
@@ -206,85 +246,83 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
 
   .contact-strip > div {
     display: grid;
-    gap: 5px;
-    color: #e1eae0;
-    font-size: 14px;
+    align-content: start;
+    gap: 7px;
+    color: #293f30;
+    font-size: 13px;
+    line-height: 1.5;
   }
 
   .contact-strip .label {
-    color: #88a687;
-    font-size: 11px;
+    color: #66806b;
+    font-size: 10.5px;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: .08em;
+    letter-spacing: .085em;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
   }
-
-  .contact-strip .label .ph {
-    font-size: 14px;
-  }
-
-  .contact-strip .label .wa-icon {
-    width: 14px;
-    height: 14px;
-  }
-
+  .contact-strip .label .ph { font-size: 15px; }
+  .contact-strip .label .wa-icon { width: 15px; height: 15px; }
   .contact-strip a {
-    color: #e1eae0;
+    width: fit-content;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    color: #263e2e;
     text-decoration: none;
+    transition: color 160ms ease;
   }
+  .contact-strip a:hover { color: #206334; }
 
   .smc-footer-bottom {
-    border-top: 1px solid rgba(255,255,255,.1);
-    padding: 18px 0;
-    color: #aebdad;
-    font-size: 12px;
+    min-height: 75px;
+    border-top: 1px solid #dfe8df;
+    color: #546559;
+    font-size: 12.5px;
   }
-
   .bottom-inner {
     display: flex;
+    min-height: 75px;
+    align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: 26px;
   }
-
-  .bottom-inner div {
+  .bottom-links {
     display: flex;
-    gap: 18px;
+    justify-content: space-between;
+    align-items: center;
+    gap: clamp(16px, 2.8vw, 44px);
+    flex: 1 1 auto;
+    max-width: 710px;
   }
-
-  .bottom-inner a,
-  .cookie-settings-trigger {
-    color: #aebdad;
+  .bottom-links a, .cookie-settings-trigger {
+    color: #26392b;
     text-decoration: none;
+    font: inherit;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: color 160ms ease;
   }
-
   .cookie-settings-trigger {
-    min-height: 24px;
-    margin: -5px 0;
-    padding: 5px 0;
+    min-height: 44px;
+    margin: 0;
+    padding: 0;
     border: 0;
     background: transparent;
-    font: inherit;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
     cursor: pointer;
+    text-align: left;
   }
-
-  .bottom-inner a:hover,
-  .cookie-settings-trigger:hover {
-    color: #fff;
-  }
-
-  .cookie-settings-trigger i { color: #8fc682; font-size: 14px; }
+  .bottom-links a:hover, .cookie-settings-trigger:hover { color: #26723b; }
+  .footer-copyright { margin-left: auto; color: #5e6a60; text-align: right; white-space: nowrap; }
 
   .cookie-settings-trigger:focus-visible,
   .cookie-consent-banner button:focus-visible,
   .cookie-modal button:focus-visible,
   .cookie-toggle input:focus-visible + span {
-    outline: 3px solid rgba(160, 223, 142, .62);
+    outline: 3px solid rgba(56, 128, 70, .6);
     outline-offset: 3px;
   }
 
@@ -494,17 +532,14 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
   @keyframes cookie-banner-in { from { opacity: 0; transform: translateY(9px); } }
 
   @media (max-width: 900px) {
-    .footer-grid {
-      grid-template-columns: 1.5fr 1fr 1fr;
-    }
-
-    .footer-brand {
-      grid-column: 1 / -1;
-    }
-
-    .contact-strip {
-      grid-template-columns: 1fr 1fr;
-    }
+    .smc-footer-main { min-height: 0; padding-top: 54px; }
+    .footer-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 30px 24px; }
+    .footer-brand { grid-column: 1 / -1; }
+    .footer-automotive-art { max-width: 280px; }
+    .contact-strip { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .bottom-inner { gap: 18px; }
+    .bottom-links { gap: 20px; }
+    .footer-copyright { white-space: normal; max-width: 240px; }
 
     .cookie-consent-banner {
       grid-template-columns: 1fr;
@@ -513,25 +548,21 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
   }
 
   @media (max-width: 620px) {
-    .footer-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 34px 26px;
-    }
-
-    .footer-brand,
-    .footer-grid > div:nth-child(2) {
-      grid-column: 1 / -1;
-    }
-
-    .contact-strip {
-      grid-template-columns: 1fr;
-    }
-
-    .bottom-inner {
-      flex-direction: column;
-    }
-
-    .bottom-inner div { flex-wrap: wrap; gap: 12px 18px; }
+    .smc-footer-main { padding: 42px 0 28px; }
+    .footer-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 30px 18px; }
+    .footer-brand { grid-column: 1 / -1; }
+    .footer-grid > div:nth-child(2) { grid-column: auto; }
+    .footer-brand p { margin-top: 15px; font-size: 13.5px; }
+    .footer-automotive-art { max-width: 295px; margin-top: 11px; }
+    .smc-footer h2 { font-size: 12px; margin-bottom: 18px; }
+    .footer-links, .location-list { gap: 12px; }
+    .footer-links a, .location-list span { font-size: 13px; }
+    .contact-strip { grid-template-columns: 1fr 1fr; margin-top: 32px; gap: 24px 12px; }
+    .contact-strip > div { font-size: 12px; min-width: 0; }
+    .bottom-inner { min-height: 0; flex-direction: column; align-items: stretch; gap: 14px; padding-block: 16px 20px; }
+    .bottom-links { width: 100%; max-width: none; justify-content: flex-start; flex-wrap: wrap; gap: 2px 20px; }
+    .bottom-links a, .cookie-settings-trigger { min-height: 38px; display: inline-flex; align-items: center; font-size: 12px; }
+    .footer-copyright { margin: 0; max-width: none; text-align: left; font-size: 11.5px; }
     .cookie-consent-banner {
       right: 0;
       bottom: 0;
@@ -581,6 +612,8 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .footer-links a, .contact-strip a, .bottom-links a, .cookie-settings-trigger { transition: none; }
+    .footer-links a:hover { transform: none; }
     .cookie-consent-banner,
     .cookie-modal__backdrop,
     .cookie-modal__panel { animation: none; }
