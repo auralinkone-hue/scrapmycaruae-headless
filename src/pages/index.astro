@@ -307,8 +307,16 @@ const faqJsonLd = {
       </div>
     </section>}
 
-    {home.conditionsVisible && <section class="condition-section">
+    {home.conditionsVisible && <section class="condition-section" aria-labelledby="homepage-conditions-heading">
       <div class="smc-container condition-grid">
+        <div class="condition-copy" data-reveal>
+          <div class="smc-kicker">{home.conditionsKicker}</div>
+          <h2 id="homepage-conditions-heading">{home.conditionsHeading}</h2>
+          <p>
+            {home.conditionsDescription}
+          </p>
+        </div>
+
         <div class="condition-visual" data-reveal>
           <div class="condition-image-wrap">
             <picture>
@@ -316,13 +324,13 @@ const faqJsonLd = {
                 <source
                   type="image/avif"
                   srcset={conditionsResponsiveImage.avifSrcset}
-                  sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
+                  sizes="(max-width: 620px) calc(100vw - 36px), (max-width: 1024px) 540px, 480px"
                 />
               )}
               <img
                 src={conditionsResponsiveImage.src}
                 srcset={conditionsResponsiveImage.srcset || undefined}
-                sizes="(max-width: 900px) calc(100vw - 36px), 50vw"
+                sizes="(max-width: 620px) calc(100vw - 36px), (max-width: 1024px) 540px, 480px"
                 alt={home.conditionsImageDecorative ? '' : home.conditionsImageAlt}
                 aria-hidden={home.conditionsImageDecorative ? 'true' : undefined}
                 width={conditionsResponsiveImage.width || 1456}
@@ -334,13 +342,7 @@ const faqJsonLd = {
           </div>
         </div>
 
-        <div class="condition-copy" data-reveal>
-          <div class="smc-kicker">{home.conditionsKicker}</div>
-          <h2>{home.conditionsHeading}</h2>
-          <p>
-            {home.conditionsDescription}
-          </p>
-
+        <div class="condition-content" data-reveal>
           <div class="condition-tags">
             {conditions.map((condition) => (
               <details class="condition-detail" open={['non-running cars', 'engine or gearbox faults'].includes(condition.title.trim().toLowerCase())}>
@@ -762,88 +764,83 @@ const faqJsonLd = {
   .process-number { display: block; width: 44px; text-align: center; margin-top: 8px; color: #6d8362; font-size: 11px; font-weight: 650; }
   .process-list h3 { margin: 0 0 7px; font-size: 22px; letter-spacing: -.025em; }
   .process-list p { margin: 0; color: var(--smc-muted); font-size: 15px; line-height: 1.65; }
-  .condition-section { padding-block: 70px; background: #142c19; color: #fff; }
-  .condition-grid { display: grid; grid-template-columns: .95fr 1.05fr; gap: 56px; align-items: center; }
-  .condition-visual {
-    position: relative;
-    isolation: isolate;
-    min-width: 0;
-    padding: 0 12px 20px 0;
+  .condition-section { padding-block: 58px; background: #142c19; color: #fff; }
+  .condition-grid {
+    display: grid;
+    grid-template-columns: minmax(0,43fr) minmax(0,57fr);
+    grid-template-areas: "visual heading" "visual content";
+    column-gap: clamp(48px,4vw,60px);
+    row-gap: 22px;
+    align-items: start;
   }
-  .condition-visual::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    inset: 20px 2px 4px 18px;
-    border-radius: 28px;
-    background: linear-gradient(145deg, #4d864d, #376a3d);
-    transform: rotate(2.5deg);
-    pointer-events: none;
-  }
-  .condition-visual::after {
-    content: '';
-    position: absolute;
-    z-index: -2;
-    width: 78%;
-    aspect-ratio: 1;
-    right: -6px;
-    bottom: 0;
-    border: 1px solid #b6d39d42;
-    border-radius: 50%;
-    box-shadow: 0 0 0 18px #8fb8791a, 0 0 0 38px #8fb8790c;
-    pointer-events: none;
-  }
+  .condition-copy { grid-area: heading; min-width: 0; }
+  .condition-copy h2 { margin: 10px 0 16px; font-size: clamp(29px,3vw,40px); line-height: 1.14; letter-spacing: -.035em; }
+  .condition-copy > p { color: #cbd9c7; font-size: 15px; line-height: 1.7; }
+  .condition-section .smc-kicker { color: #a8c79a; }
+  .condition-visual { grid-area: visual; position: sticky; top: 24px; align-self: start; min-width: 0; }
   .condition-image-wrap {
     position: relative;
     isolation: isolate;
-    display: grid;
-    align-items: center;
-    aspect-ratio: 5 / 4;
-    padding: 18px 8px;
+    padding: 10px 6px;
     overflow: hidden;
-    border: 1px solid #a9c29552;
-    border-radius: 26px;
-    background: linear-gradient(150deg, #617b54, #3d5b3e 48%, #27462e);
-    box-shadow: 0 20px 38px #07170c38;
+    border: 1px solid #dae5d5;
+    border-radius: 28px;
+    background: #eff5ed;
   }
   .condition-image-wrap::before {
     content: '';
     position: absolute;
     z-index: -1;
-    inset: 0 0 18%;
-    border-radius: inherit;
-    background: radial-gradient(ellipse at 46% 42%, #c8d6ad33, transparent 67%);
-    pointer-events: none;
-  }
-  .condition-image-wrap::after {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    left: -20%;
-    right: -20%;
-    bottom: -10%;
-    height: 44%;
-    border-top: 1px solid #bdd2ad40;
-    border-radius: 50% 50% 0 0;
-    background: linear-gradient(155deg, #9cb48e4d, #4f705426 75%);
-    transform: rotate(-8deg);
+    width: 80%;
+    aspect-ratio: 1;
+    right: -30%;
+    top: -36%;
+    border: 1px solid #87a17933;
+    border-radius: 50%;
     pointer-events: none;
   }
   .condition-image-wrap picture { position: relative; z-index: 1; display: block; width: 100%; }
   .condition-image-wrap img { display: block; width: 100%; height: auto; object-fit: contain; }
-  .condition-section .smc-kicker { color: #a8c79a; }
-  .condition-copy > p { color: #c7d5c2; }
-  .condition-tags { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; margin-top: 22px; }
+  .condition-content { grid-area: content; min-width: 0; }
+  .condition-tags { display: block; border-top: 1px solid #39513a; }
   .condition-detail { border-bottom: 1px solid #39513a; }
-  .condition-detail summary { display: flex; align-items: center; gap: 9px; min-height: 54px; padding-block: 12px; cursor: pointer; list-style: none; font-size: 13px; line-height: 1.4; font-weight: 550; }
+  .condition-detail summary {
+    display: grid;
+    grid-template-columns: 22px minmax(0,1fr) 16px;
+    align-items: center;
+    gap: 12px;
+    min-height: 54px;
+    padding-block: 13px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 15.5px;
+    line-height: 1.5;
+    font-weight: 550;
+  }
   .condition-detail summary::-webkit-details-marker, .faq-list summary::-webkit-details-marker { display: none; }
-  .condition-detail summary > .ph:first-child { flex: 0 0 auto; color: #a6ce93; font-size: 19px; }
-  .condition-toggle { margin-left: auto; color: #b3d8a3; transition: transform 180ms ease; }
-  .condition-detail[open] .condition-toggle { transform: rotate(45deg); }
-  .condition-detail p { margin: 0 0 8px; color: #c9d8c5; font-size: 13px; line-height: 1.6; }
-  .condition-guide { display: inline-flex; align-items: center; gap: 7px; padding-block: 8px 16px; color: #c4e6b4; text-decoration: none; font-size: 12px; font-weight: 600; }
+  .condition-detail summary > .ph:first-child { color: #a6ce93; font-size: 21px; }
+  .condition-toggle { position: relative; width: 16px; height: 16px; color: #b3d8a3; }
+  .condition-detail .condition-toggle::before, .condition-detail .condition-toggle::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    left: 2px;
+    width: 12px;
+    height: 1.5px;
+    border-radius: 1px;
+    background: currentColor;
+  }
+  .condition-detail .condition-toggle::after { transform: rotate(90deg); transition: transform 180ms ease, opacity 180ms ease; }
+  .condition-detail[open] .condition-toggle::after { transform: rotate(0); opacity: 0; }
+  .condition-detail p { margin: 0 16px 2px 34px; color: #c9d8c5; font-size: 14px; line-height: 1.65; }
+  .condition-guide { display: inline-flex; align-items: center; gap: 7px; min-height: 42px; margin-left: 34px; padding-block: 6px 13px; color: #c4e6b4; text-decoration: none; font-size: 13px; font-weight: 550; line-height: 1.5; }
   .condition-guide:hover { color: #fff; }
   .condition-button { margin-top: 24px; color: #18371b; background: #fff; }
+  @media (max-width: 1024px) {
+    .condition-grid { grid-template-columns: minmax(0,1fr); grid-template-areas: "heading" "visual" "content"; gap: 24px; }
+    .condition-copy { max-width: 720px; }
+    .condition-visual { position: static; width: min(100%,560px); justify-self: center; }
+  }
   .value-section { padding-block: 68px; }
   .value-intro { max-width: 760px; }
   .value-promises { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 30px; margin: 30px 0 38px; padding-block: 24px; border-block: 1px solid #dce5d7; }
@@ -952,7 +949,6 @@ const faqJsonLd = {
     .hero-lead { font-size: 16px; }
     .service-discovery { gap: 36px; }
     .process-grid { gap: 40px; }
-    .condition-grid { gap: 30px; }
     .value-content-grid { grid-template-columns: 1fr; gap: 26px; }
     .value-image { max-width: 620px; }
     .value-image img { aspect-ratio: 2/1; }
@@ -982,13 +978,7 @@ const faqJsonLd = {
     .section-heading { display: block; }
     .section-heading h2 { margin-bottom: 15px; }
     .benefit-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
-    .process-grid,.condition-grid,.coverage-overview,.faq-section { grid-template-columns: 1fr; gap: 30px; }
-    .condition-visual { max-width: 540px; margin-inline: auto; width: 100%; }
-    .condition-visual { padding: 0 12px 24px 0; }
-    .condition-visual::before { inset: 14px 2px 10px 12px; border-radius: 23px; transform: rotate(2deg); }
-    .condition-visual::after { width: 72%; right: 16px; bottom: 18px; box-shadow: 0 0 0 14px #8fb8791a, 0 0 0 28px #8fb8790c; }
-    .condition-image-wrap { aspect-ratio: 4 / 3; padding: 10px 6px; border-radius: 20px; }
-    .condition-image-wrap img { max-height: 340px; }
+    .process-grid,.coverage-overview,.faq-section { grid-template-columns: 1fr; gap: 30px; }
     .coverage-copy { max-width: 650px; }
     .coverage-destinations nav { grid-template-columns: repeat(4,minmax(0,1fr)); }
     .testimonial-layout { grid-template-columns: 1fr; gap: 24px; }
@@ -1028,9 +1018,10 @@ const faqJsonLd = {
     .benefit-card h3 { font-size: 17px; }
     .benefit-card p { font-size: 13px; }
     .process-section,.condition-section,.value-section,.coverage-section,.testimonial-section,.faq-section { padding-block: 44px; }
-    .condition-tags { grid-template-columns: 1fr; }
-    .condition-detail summary { font-size: 14px; }
-    .condition-image-wrap img { max-height: 260px; }
+    .condition-grid { gap: 22px; }
+    .condition-image-wrap { border-radius: 26px; padding: 6px; }
+    .condition-detail summary { font-size: 15px; }
+    .condition-guide { font-size: 12.5px; }
     .value-promises { grid-template-columns: 1fr; gap: 18px; padding-block: 20px; margin-block: 22px 28px; }
     .value-promises h3 { font-size: 18px; }
     .value-promises p { font-size: 14px; }
