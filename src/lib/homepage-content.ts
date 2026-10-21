@@ -7,7 +7,7 @@ const FRESH_CACHE_TTL_MS = 5 * 60 * 1000;
 const EDGE_RETENTION_SECONDS = 24 * 60 * 60;
 // Bump the key whenever cache semantics change so an older edge entry cannot
 // override current CMS content after deployment.
-const EDGE_CACHE_KEY = new Request('https://homepage-content-cache.invalid/v2/content');
+const EDGE_CACHE_KEY = new Request('https://homepage-content-cache.invalid/v3/content');
 
 type CmsData = Record<string, unknown>;
 

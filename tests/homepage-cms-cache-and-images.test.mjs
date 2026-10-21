@@ -46,7 +46,7 @@ test('homepage CMS loader uses an edge cache with a stale fallback', async () =>
   assert.match(loader, /caches\.default\.match\(EDGE_CACHE_KEY\)/);
   assert.match(loader, /caches\.default\.put/);
   assert.match(loader, /const FRESH_CACHE_TTL_MS = 5 \* 60 \* 1000/);
-  assert.match(loader, /homepage-content-cache\.invalid\/v2\/content/);
+  assert.match(loader, /homepage-content-cache\.invalid\/v3\/content/);
   assert.match(loader, /Number\.isFinite\(age\) && age >= 0 && age < FRESH_CACHE_TTL_MS/);
   assert.match(loader, /serving stale edge content/);
   assert.match(loader, /serving the verified fallback content/);
