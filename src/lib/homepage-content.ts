@@ -41,6 +41,7 @@ export type HomepageContent = {
   badges: HomeItem[];
   faqs: HomeItem[];
   reviews: HomeItem[];
+  reviewsSource?: 'cms' | 'fallback';
   popularMakes: HomeItem[];
   stats: HomeItem[];
   steps: HomeItem[];
@@ -189,6 +190,7 @@ const fallback: HomepageContent = {
   badges: badgeDefaults,
   faqs: faqDefaults,
   reviews: reviewDefaults,
+  reviewsSource: 'fallback',
   popularMakes: makeDefaults,
   stats: statDefaults,
   steps: stepDefaults
@@ -301,6 +303,7 @@ async function fetchHomepageContent(): Promise<HomepageContent> {
     badges: badgeRows.length ? ordered(badgeRows.map(coerceItem)) : badgeDefaults,
     faqs: faqRows.length ? ordered(faqRows.map(coerceItem)) : faqDefaults,
     reviews: reviewRows.length ? ordered(reviewRows.map(coerceItem)) : reviewDefaults,
+    reviewsSource: reviewRows.length ? 'cms' : 'fallback',
     popularMakes: makeRows.length ? ordered(makeRows.map(coerceItem)) : makeDefaults,
     stats: statRows.length ? ordered(statRows.map(coerceItem)) : statDefaults,
     steps: stepRows.length ? ordered(stepRows.map(coerceItem)) : stepDefaults

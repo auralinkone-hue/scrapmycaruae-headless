@@ -109,7 +109,7 @@ const benefits = homepage.badges.filter((item) => item.group === 'benefits');
 const conditions = homepage.badges.filter((item) => item.group === 'conditions');
 const heroProof = homepage.badges.filter((item) => item.group === 'heroProof');
 const testimonialProof = homepage.badges.filter((item) => item.group === 'testimonialProof');
-const reviews = homepage.reviews;
+const reviews = homepage.reviewsSource === 'cms' ? homepage.reviews.filter(review => review.quote.trim()) : [];
 const faqs = homepage.faqs;
 
 const faqJsonLd = {
@@ -432,41 +432,42 @@ const faqJsonLd = {
       </div>
     </section>}
 
-    {home.testimonialsVisible && <section class="testimonial-section smc-container">
-      <div class="testimonial-side" data-reveal>
-        <div class="smc-kicker">{home.testimonialsKicker}</div>
-        <h2>{home.testimonialsHeading}</h2>
-        <p>
-          {home.testimonialsDescription}
-        </p>
-        <div class="mini-proof">
-          {testimonialProof.map((item) => (
-            <span><i class:list={['ph', item.icon]} aria-hidden="true"></i>{item.title}</span>
-          ))}
-        </div>
-      </div>
-
-      <div class="review-window" data-reveal>
-        <button type="button" class="review-pause inline-link" data-review-pause aria-pressed="false" hidden>Pause reviews <i class="ph ph-pause" aria-hidden="true"></i></button>
-        <div class="review-marquee" tabindex="0" aria-label="Customer feedback; focus to pause scrolling">
-        <div class="review-track">
-          {reviews.map((review) => (
-            <article class="review-card">
-              {review.rating > 0 && <div class="review-stars" aria-label={`${Math.min(5, Math.max(1, Math.round(review.rating)))} out of 5 stars`}>{'★'.repeat(Math.min(5, Math.max(1, Math.round(review.rating))))}</div>}
-              <p>“{review.quote}”</p>
-              <span><i class="ph ph-user-circle" aria-hidden="true"></i>{review.author}</span>
-            </article>
-          ))}
-          <div class="review-track-duplicate" aria-hidden="true">
-            {reviews.map((review) => (
-              <article class="review-card">
-                {review.rating > 0 && <div class="review-stars">{'★'.repeat(Math.min(5, Math.max(1, Math.round(review.rating))))}</div>}
-                <p>“{review.quote}”</p>
-                <span><i class="ph ph-user-circle"></i>{review.author}</span>
-              </article>
+    {home.testimonialsVisible && <section class="testimonial-section">
+      <div class="smc-container testimonial-layout">
+        <div class="testimonial-side" data-reveal>
+          <div class="smc-kicker">{home.testimonialsKicker}</div>
+          <h2 id="homepage-reviews-heading">{home.testimonialsHeading}</h2>
+          <p>{home.testimonialsDescription}</p>
+          <div class="mini-proof">
+            {testimonialProof.map((item) => (
+              <span><i class:list={['ph', item.icon]} aria-hidden="true"></i>{item.title}</span>
             ))}
           </div>
         </div>
+
+        <div class="review-window" data-reveal role="region" aria-roledescription="carousel" aria-labelledby="homepage-reviews-heading" tabindex="0">
+          <div class="review-toolbar" data-review-controls hidden>
+            <span class="review-status" data-review-status role="status" aria-live="polite" aria-atomic="true"></span>
+            <div class="review-arrows">
+              <button type="button" data-review-prev aria-label="Previous reviews" aria-controls="homepage-review-track"><i class="ph ph-arrow-left" aria-hidden="true"></i></button>
+              <button type="button" data-review-next aria-label="Next reviews" aria-controls="homepage-review-track"><i class="ph ph-arrow-right" aria-hidden="true"></i></button>
+            </div>
+          </div>
+          <div class="review-track" id="homepage-review-track">
+            {reviews.map((review) => (
+              <article class="review-card">
+                {Number.isFinite(review.rating) && review.rating > 0 && review.rating <= 5 && (
+                  <div class="review-rating" aria-label={`${review.rating} out of 5 stars`}>
+                    <span class="review-stars" style={`--rating-fill: ${review.rating / 5 * 100}%`} aria-hidden="true">★★★★★</span>
+                    <span aria-hidden="true">{review.rating}/5</span>
+                  </div>
+                )}
+                <blockquote><p>“{review.quote}”</p></blockquote>
+                {review.author && <div class="review-attribution"><i class="ph ph-user-circle" aria-hidden="true"></i><span>{review.author}</span></div>}
+              </article>
+            ))}
+          </div>
+          {reviews.length === 0 && <p class="review-empty">Customer feedback will appear here when it is available.</p>}
         </div>
       </div>
     </section>}
@@ -478,27 +479,27 @@ const faqJsonLd = {
             <div class="smc-kicker">{home.blogKicker}</div>
             <h2>{home.blogHeading.includes('UAE car owners') ? <>{home.blogHeading.split('UAE car owners')[0]}<span class="heading-accent">UAE car owners</span>{home.blogHeading.split('UAE car owners')[1]}</> : home.blogHeading}</h2>
           </div>
-          <SectionActionButton href={home.blogButtonLink || '/blogs'} label={home.blogButtonLabel || 'View all blogs'} intent="blogs" />
+          <a class="blog-overview-link" href={home.blogButtonLink || '/blogs'}>{home.blogButtonLabel || 'View all blogs'}<i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
         </div>
 
         <div class="blog-grid">
-          {latestPosts.map((post: any) => {
+          {latestPosts.map((post: any, index: number) => {
             const image = getPostImage(post);
             const responsiveImage = wixResponsiveImage(image, {
-              widths: [320, 480, 640, 800],
+              widths: [320, 480, 640, 800, 1100],
               aspectRatio: 900 / 506
             });
             return (
-              <article class="blog-card" data-reveal>
+              <article class:list={['blog-card', { 'blog-card--featured': index === 0 }]} data-reveal>
                 <a href={`/post/${post.slug}`}>
                   <div class="blog-image" data-image-loading>
                     {responsiveImage.src && (
                       <picture>
-                        <source type="image/avif" srcset={responsiveImage.avifSrcset} sizes="(max-width: 700px) calc(100vw - 36px), (max-width: 1100px) calc(50vw - 42px), 360px" />
+                        <source type="image/avif" srcset={responsiveImage.avifSrcset} sizes={index === 0 ? '(max-width: 760px) calc(100vw - 36px), (max-width: 1200px) 52vw, 610px' : '(max-width: 760px) calc(100vw - 36px), (max-width: 1200px) 20vw, 215px'} />
                         <img
                           src={responsiveImage.src}
                           srcset={responsiveImage.srcset}
-                          sizes="(max-width: 700px) calc(100vw - 36px), (max-width: 1100px) calc(50vw - 42px), 360px"
+                          sizes={index === 0 ? '(max-width: 760px) calc(100vw - 36px), (max-width: 1200px) 52vw, 610px' : '(max-width: 760px) calc(100vw - 36px), (max-width: 1200px) 20vw, 215px'}
                           alt={post?.media?.altText || post.title || ''}
                           width={responsiveImage.width}
                           height={responsiveImage.height}
@@ -508,9 +509,11 @@ const faqJsonLd = {
                       </picture>
                     )}
                   </div>
-                  <div class="blog-meta">{formatDate(post.firstPublishedDate)}</div>
-                  <h3>{post.title}</h3>
-                  <span class="read-more">Read article <i class="ph ph-book-open-text" aria-hidden="true"></i></span>
+                  <div class="blog-copy">
+                    {post.firstPublishedDate && <time class="blog-meta" datetime={new Date(post.firstPublishedDate).toISOString()}>{formatDate(post.firstPublishedDate)}</time>}
+                    <h3>{post.title}</h3>
+                    <span class="read-more">Read article <i class="ph ph-book-open-text" aria-hidden="true"></i></span>
+                  </div>
                 </a>
               </article>
             );
@@ -630,15 +633,43 @@ const faqJsonLd = {
     makes?.addEventListener('focusout', event => {
       if (!makes.contains(event.relatedTarget as Node | null)) makes.scrollLeft = 0;
     }, { signal });
-    const pause = root.querySelector<HTMLButtonElement>('[data-review-pause]');
-    if (pause && !reducedMotion.matches) {
-      pause.hidden = false;
-      pause.addEventListener('click', () => {
-        const paused = pause.getAttribute('aria-pressed') !== 'true';
-        pause.setAttribute('aria-pressed', String(paused));
-        pause.innerHTML = `${paused ? 'Resume' : 'Pause'} reviews <i class="ph ph-${paused ? 'play' : 'pause'}" aria-hidden="true"></i>`;
-        root.querySelector('.review-window')?.classList.toggle('is-paused', paused);
+    const carousel = root.querySelector<HTMLElement>('.review-window');
+    const track = carousel?.querySelector<HTMLElement>('.review-track');
+    const cards = Array.from(carousel?.querySelectorAll<HTMLElement>('.review-card') || []);
+    const previous = carousel?.querySelector<HTMLButtonElement>('[data-review-prev]');
+    const next = carousel?.querySelector<HTMLButtonElement>('[data-review-next]');
+    const status = carousel?.querySelector<HTMLElement>('[data-review-status]');
+    const mobileReviews = window.matchMedia('(max-width: 620px)');
+    let reviewStart = 0;
+    let reviewAnimation: Animation | undefined;
+    const showReviews = (start: number, animate = false) => {
+      const count = mobileReviews.matches ? 1 : 2;
+      const destination = Math.max(0, Math.min(start, Math.max(0, cards.length - count)));
+      const direction = destination >= reviewStart ? 1 : -1;
+      reviewStart = destination;
+      cards.forEach((card, index) => { card.hidden = index < reviewStart || index >= reviewStart + count; });
+      if (previous) previous.disabled = reviewStart === 0;
+      if (next) next.disabled = reviewStart + count >= cards.length;
+      if (status) status.textContent = `Reviews ${reviewStart + 1}–${Math.min(cards.length, reviewStart + count)} of ${cards.length}`;
+      reviewAnimation?.cancel();
+      if (animate && !reducedMotion.matches) {
+        reviewAnimation = track?.animate([{ opacity: .35, transform: `translateX(${direction * 8}px)` }, { opacity: 1, transform: 'none' }], { duration: 280, easing: 'ease-out' });
+      }
+    };
+    if (cards.length) {
+      carousel?.querySelector<HTMLElement>('[data-review-controls]')?.removeAttribute('hidden');
+      showReviews(0);
+      previous?.addEventListener('click', () => showReviews(reviewStart - (mobileReviews.matches ? 1 : 2), true), { signal });
+      next?.addEventListener('click', () => showReviews(reviewStart + (mobileReviews.matches ? 1 : 2), true), { signal });
+      carousel?.addEventListener('keydown', event => {
+        const count = mobileReviews.matches ? 1 : 2;
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        showReviews(event.key === 'Home' ? 0 : event.key === 'End' ? cards.length : reviewStart + (event.key === 'ArrowRight' ? count : -count), true);
       }, { signal });
+      mobileReviews.addEventListener('change', () => showReviews(reviewStart), { signal });
+      reducedMotion.addEventListener('change', () => reviewAnimation?.cancel(), { signal });
+      signal.addEventListener('abort', () => reviewAnimation?.cancel(), { once: true });
     }
     document.addEventListener('astro:before-swap', () => { controller.abort(); observer?.disconnect(); }, { once: true, signal });
   };
@@ -777,33 +808,58 @@ const faqJsonLd = {
   .coverage-destinations > p { margin: 20px 0 12px; font-size: 14px; line-height: 1.65; color: var(--smc-muted); }
   .coverage-areas { margin-bottom: 22px; color: #626e5b; font-size: 12px; line-height: 1.8; }
   .coverage-areas a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
-  .testimonial-section { padding-block: 68px; display: grid; grid-template-columns: .75fr 1.25fr; gap: 50px; align-items: center; }
-  .mini-proof { display: grid; gap: 10px; margin-top: 22px; }
-  .mini-proof span { display: flex; gap: 9px; align-items: center; color: #53634e; font-size: 13px; }
-  .mini-proof i { color: var(--smc-green); font-size: 19px; }
+  .testimonial-section { padding-block: 56px; background: #f7f8f3; border-bottom: 1px solid #e6eade; }
+  .testimonial-layout { display: grid; grid-template-columns: minmax(0,.7fr) minmax(0,1.6fr); gap: 48px; align-items: center; }
+  .testimonial-side h2 { font-size: clamp(28px,3vw,38px); }
+  .testimonial-side > p { font-size: 15px; max-width: 310px; }
+  .mini-proof { display: grid; gap: 9px; margin-top: 22px; }
+  .mini-proof span { display: flex; gap: 9px; align-items: center; color: #53634e; font-size: 12px; }
+  .mini-proof i { color: var(--smc-green); font-size: 18px; }
   .review-window { min-width: 0; }
-  .review-pause { border: 0; padding: 0 8px; background: transparent; cursor: pointer; margin-bottom: 8px; }
-  .review-marquee { overflow: hidden; mask-image: linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent); }
-  .review-track,.review-track-duplicate { display: flex; gap: 14px; }
-  .review-track { width: max-content; animation: review-marquee 40s linear infinite; }
-  .review-window:is(:hover,:focus-within,.is-paused) .review-track { animation-play-state: paused; }
-  .review-card { flex: 0 0 284px; width: 284px; padding: 22px; border: 1px solid #dfe6db; border-radius: 14px; background: #fff; display: flex; flex-direction: column; }
-  .review-stars { color: #bd8915; font-size: 16px; }
-  .review-card p { margin: 16px 0 auto; color: #2b3428; font-size: 16px; line-height: 1.65; }
-  .review-card > span { display: flex; align-items: center; gap: 7px; margin-top: 20px; color: #6a7464; font-size: 12px; }
-  @keyframes review-marquee { to { transform: translateX(calc(-50% - 7px)); } }
-  .blog-section { padding-block: 0 68px; }
-  .blog-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 28px; }
-  .blog-heading h2 { max-width: 690px; margin-bottom: 0; }
+  .review-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+  .review-toolbar[hidden] { display: none; }
+  .review-status { color: #677261; font-size: 12px; font-variant-numeric: tabular-nums; }
+  .review-arrows { display: flex; gap: 7px; }
+  .review-arrows button { display: grid; place-items: center; width: 38px; height: 38px; padding: 0; background: transparent; border: 1px solid #cdd9c6; border-radius: 50%; color: #27532c; cursor: pointer; transition: background-color 180ms ease, border-color 180ms ease; }
+  .review-arrows button:disabled { opacity: .35; cursor: default; }
+  .review-arrows .ph { font-size: 17px; }
+  .review-track { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+  .review-card { min-width: 0; min-height: 270px; padding: 25px; border: 1px solid #dfe5d9; border-radius: 12px; background: #fff; display: flex; flex-direction: column; }
+  .review-card[hidden] { display: none; }
+  .review-rating { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 11px; color: #677261; }
+  .review-stars { font-size: 16px; letter-spacing: 1px; background: linear-gradient(90deg,#b88414 var(--rating-fill),#dce1d5 var(--rating-fill)); color: transparent; background-clip: text; }
+  .review-card blockquote { margin: 20px 0 auto; }
+  .review-card blockquote p { margin: 0; color: #2b382b; font-size: 17px; line-height: 1.65; }
+  .review-attribution { display: flex; align-items: center; gap: 8px; border-top: 1px solid #edf0e8; padding-top: 16px; margin-top: 23px; color: #62705b; font-size: 12px; line-height: 1.5; }
+  .review-attribution .ph { font-size: 20px; color: #68815e; flex-shrink: 0; }
+  .review-empty { padding: 28px; border: 1px solid #dfe5d9; border-radius: 12px; color: #62705b; line-height: 1.7; }
+  .blog-section { padding-block: 54px 60px; background: #fff; }
+  .blog-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 26px; }
+  .blog-heading h2 { max-width: 690px; margin-bottom: 0; font-size: clamp(28px,3vw,38px); }
   .heading-accent { color: var(--smc-green); }
-  .blog-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 24px; }
-  .blog-card a { display: block; text-decoration: none; }
-  .blog-image { aspect-ratio: 16/10; border-radius: 14px; overflow: hidden; background: #f1f4ed; }
-  .blog-image img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 300ms ease; }
-  .blog-card a:hover img { transform: scale(1.025); }
-  .blog-meta { margin-top: 15px; font-size: 12px; color: #6b7565; }
-  .blog-card h3 { margin: 8px 0; font-size: 20px; font-weight: 600; line-height: 1.4; letter-spacing: -.02em; }
-  .read-more { display: inline-flex; align-items: center; gap: 7px; min-height: 34px; color: var(--smc-green); font-size: 13px; font-weight: 600; }
+  .blog-overview-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; flex-shrink: 0; color: #2e5f2e; font-size: 13px; font-weight: 600; text-decoration: none; }
+  .blog-overview-link .ph, .read-more .ph { transition: transform 200ms ease; }
+  .blog-grid { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); gap: 0 32px; }
+  .blog-card { min-width: 0; }
+  .blog-card--featured { grid-row: span 2; }
+  .blog-card a { display: grid; grid-template-columns: minmax(0,.85fr) minmax(0,1.15fr); align-items: center; gap: 20px; height: 100%; padding-block: 18px; text-decoration: none; }
+  .blog-card:not(.blog-card--featured) + .blog-card { border-top: 1px solid #e0e7da; }
+  .blog-card--featured a { display: flex; flex-direction: column; align-items: stretch; gap: 0; padding-block: 0; }
+  .blog-image { aspect-ratio: 16/10; border-radius: 10px; overflow: hidden; background: #f1f4ed; }
+  .blog-card--featured .blog-image { aspect-ratio: 16/9; }
+  .blog-image picture { display: block; width: 100%; height: 100%; }
+  .blog-image img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 280ms ease; }
+  .blog-copy { min-width: 0; }
+  .blog-card--featured .blog-copy { padding-top: 16px; }
+  .blog-meta { display: block; font-size: 11px; line-height: 1.5; color: #687561; }
+  .blog-card h3 { margin: 8px 0; color: #233325; font-size: 19px; font-weight: 600; line-height: 1.4; letter-spacing: -.025em; }
+  .blog-card--featured h3 { font-size: clamp(22px,2.1vw,28px); line-height: 1.25; max-width: 530px; }
+  .read-more { display: inline-flex; align-items: center; gap: 7px; min-height: 30px; color: var(--smc-green); font-size: 12px; font-weight: 600; }
+  @media (hover: hover) and (pointer: fine) {
+    .review-arrows button:not(:disabled):hover { background: #e7efdf; border-color: #a9c49a; }
+    .blog-card a:hover img { transform: scale(1.035); }
+    .blog-card a:hover .read-more .ph, .blog-overview-link:hover .ph { transform: translate(2px,-2px); }
+  }
   .faq-section { display: grid; grid-template-columns: .8fr 1.2fr; gap: 70px; padding-block: 64px; background: #fff; border-bottom: 1px solid var(--smc-line); }
   .faq-heading .smc-button { margin-top: 22px; }
   .faq-valuation-link { display: flex; width: fit-content; margin-top: 10px; font-size: 13px; }
@@ -833,7 +889,11 @@ const faqJsonLd = {
     .value-image { max-width: 620px; }
     .value-image img { aspect-ratio: 2/1; }
     .coverage-overview { gap: 28px; }
-    .testimonial-section { grid-template-columns: .85fr 1.15fr; gap: 32px; }
+    .testimonial-layout { grid-template-columns: minmax(0,.7fr) minmax(0,1.6fr); gap: 28px; }
+    .review-card { padding: 20px; }
+    .blog-grid { gap: 0 24px; }
+    .blog-card a { gap: 14px; }
+    .blog-card h3 { font-size: 17px; }
     .final-cta-inner { align-items: flex-start; }
     .final-actions { flex-direction: column; }
   }
@@ -854,14 +914,22 @@ const faqJsonLd = {
     .section-heading { display: block; }
     .section-heading h2 { margin-bottom: 15px; }
     .benefit-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
-    .process-grid,.condition-grid,.coverage-overview,.testimonial-section,.faq-section { grid-template-columns: 1fr; gap: 30px; }
+    .process-grid,.condition-grid,.coverage-overview,.faq-section { grid-template-columns: 1fr; gap: 30px; }
     .condition-visual { max-width: 540px; margin-inline: auto; width: 100%; }
     .condition-image-wrap img { max-height: 340px; }
     .coverage-copy { max-width: 650px; }
     .coverage-destinations nav { grid-template-columns: repeat(4,minmax(0,1fr)); }
-    .blog-grid { gap: 16px; }
-    .blog-card h3 { font-size: 17px; }
-    .blog-heading { align-items: flex-start; flex-direction: column; }
+    .testimonial-layout { grid-template-columns: 1fr; gap: 24px; }
+    .testimonial-side > p { max-width: 600px; }
+    .mini-proof { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 16px; }
+    .blog-grid { grid-template-columns: 1fr; gap: 24px; }
+    .blog-card--featured { grid-row: auto; }
+    .blog-card a, .blog-card--featured a { display: block; padding: 0; }
+    .blog-card:not(.blog-card--featured) + .blog-card { border-top: 0; }
+    .blog-image, .blog-card--featured .blog-image { aspect-ratio: 16/9; }
+    .blog-copy, .blog-card--featured .blog-copy { padding-top: 14px; }
+    .blog-card h3, .blog-card--featured h3 { font-size: 22px; line-height: 1.35; }
+    .blog-heading { align-items: flex-start; flex-direction: column; gap: 12px; }
   }
   @media (max-width: 620px) {
     .make-strip { padding-block: 13px; }
@@ -898,10 +966,13 @@ const faqJsonLd = {
     .value-list-heading { font-size: 22px; }
     .coverage-destinations nav { grid-template-columns: 1fr 1fr; }
     .coverage-destinations nav a { min-height: 44px; font-size: 13px; }
-    .blog-section { padding-bottom: 44px; }
-    .blog-grid { grid-template-columns: 1fr; gap: 28px; }
-    .blog-card h3 { font-size: 20px; }
-    .blog-image { aspect-ratio: 2/1; }
+    .testimonial-section, .blog-section { padding-block: 40px; }
+    .review-track { grid-template-columns: 1fr; }
+    .review-card { min-height: 240px; padding: 23px; }
+    .review-card blockquote p { font-size: 18px; }
+    .review-arrows button { width: 42px; height: 42px; }
+    .blog-grid { gap: 28px; }
+    .blog-card h3, .blog-card--featured h3 { font-size: 21px; }
     .final-cta { padding-block: 44px; }
     .final-cta-inner { flex-direction: column; gap: 24px; }
     .final-actions { width: 100%; }
@@ -911,8 +982,7 @@ const faqJsonLd = {
   @media (prefers-reduced-motion: reduce) {
     .home-page *, .home-page *::before, .home-page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
     [data-reveal].will-reveal { opacity: 1; transform: none; }
-    .review-marquee { overflow-x: auto; mask-image: none; }
-    .review-track-duplicate, .review-pause, .make-list-duplicate, .make-pause { display: none; }
+    .make-list-duplicate, .make-pause { display: none; }
     .make-browser { overflow: visible; mask-image: none; }
     .make-track { width: 100%; }
     .make-list { width: 100%; flex: 1; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 8px; }
