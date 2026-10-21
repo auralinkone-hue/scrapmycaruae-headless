@@ -650,7 +650,9 @@ const faqJsonLd = {
       cards.forEach((card, index) => { card.hidden = index < reviewStart || index >= reviewStart + count; });
       if (previous) previous.disabled = reviewStart === 0;
       if (next) next.disabled = reviewStart + count >= cards.length;
-      if (status) status.textContent = `Reviews ${reviewStart + 1}–${Math.min(cards.length, reviewStart + count)} of ${cards.length}`;
+      if (status) status.textContent = count === 1 || cards.length === 1
+        ? `Review ${reviewStart + 1} of ${cards.length}`
+        : `Reviews ${reviewStart + 1}–${Math.min(cards.length, reviewStart + count)} of ${cards.length}`;
       reviewAnimation?.cancel();
       if (animate && !reducedMotion.matches) {
         reviewAnimation = track?.animate([{ opacity: .35, transform: `translateX(${direction * 8}px)` }, { opacity: 1, transform: 'none' }], { duration: 280, easing: 'ease-out' });
@@ -680,7 +682,7 @@ const faqJsonLd = {
 <style>
   /* Homepage-only editorial rhythm; shared forms and site chrome keep their styles. */
   .home-page { overflow: clip; }
-  .home-page :is(a,button,summary):focus-visible { outline: 2px solid #5d9d4c; outline-offset: 4px; border-radius: 5px; }
+  .home-page :is(a,button,summary,.review-window):focus-visible { outline: 2px solid #5d9d4c; outline-offset: 4px; border-radius: 5px; }
   [data-reveal].will-reveal { opacity: 0; transform: translateY(12px); transition: opacity 420ms ease, transform 420ms ease; }
   [data-reveal].is-visible { opacity: 1; transform: none; }
   .hero { position: relative; isolation: isolate; overflow: hidden; border-bottom: 1px solid var(--smc-line); background: #f7faf5; }

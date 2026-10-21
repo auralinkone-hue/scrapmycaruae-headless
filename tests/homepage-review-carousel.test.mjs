@@ -37,6 +37,7 @@ test('review carousel shows two complete desktop cards and clamps both boundarie
 test('mobile, keyboard, resize and reduced motion preserve a usable review carousel', () => {
   const c = setup({ mobile: true, reduced: true });
   assert.deepEqual(c.visible(), [0]); c.handlers.next(); assert.deepEqual(c.visible(), [1]);
+  assert.equal(c.status.textContent, 'Review 2 of 5');
   let prevented = false;
   c.handlers.keyboard({ key: 'End', preventDefault() { prevented = true; } });
   assert.deepEqual(c.visible(), [4]); assert.equal(prevented, true);
