@@ -81,20 +81,32 @@ const footerLocationRoutes: Record<string, string> = {
 
     <div class="smc-container contact-strip">
       <div>
-        <span class="label"><i class="ph ph-map-pin" aria-hidden="true"></i>Address</span>
-        <span>Al Sajaa Industrial Area, Sajaa, Sharjah</span>
+        <span class="contact-icon" aria-hidden="true"><i class="ph ph-map-pin"></i></span>
+        <div class="contact-copy">
+          <span class="label">Address</span>
+          <span>Al Sajaa Industrial Area, Sajaa, Sharjah</span>
+        </div>
       </div>
       <div>
-        <span class="label"><i class="ph ph-phone-call" aria-hidden="true"></i>Phone</span>
-        <a href="tel:+971557458322">055 745 83 22</a>
+        <span class="contact-icon" aria-hidden="true"><i class="ph ph-phone-call"></i></span>
+        <div class="contact-copy">
+          <span class="label">Phone</span>
+          <a href="tel:+971557458322">055 745 83 22</a>
+        </div>
       </div>
       <div>
-        <span class="label"><i class="ph ph-envelope-simple" aria-hidden="true"></i>Email</span>
-        <a href="mailto:info@scrapmycaruae.com">info@scrapmycaruae.com</a>
+        <span class="contact-icon" aria-hidden="true"><i class="ph ph-envelope-simple"></i></span>
+        <div class="contact-copy">
+          <span class="label">Email</span>
+          <a href="mailto:info@scrapmycaruae.com">info@scrapmycaruae.com</a>
+        </div>
       </div>
       <div>
-        <span class="label"><img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />WhatsApp</span>
-        <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">+971 55 745 8322</a>
+        <span class="contact-icon" aria-hidden="true"><i class="ph ph-whatsapp-logo"></i></span>
+        <div class="contact-copy">
+          <span class="label">WhatsApp</span>
+          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">+971 55 745 8322</a>
+        </div>
       </div>
     </div>
   </div>
@@ -102,9 +114,9 @@ const footerLocationRoutes: Record<string, string> = {
   <div class="smc-footer-bottom">
     <div class="smc-container bottom-inner">
       <div class="bottom-links">
-        <button class="cookie-settings-trigger" type="button" data-cookie-settings>Cookie Settings</button>
-        <a href="/privacy-policy">Privacy Policy</a>
-        <a href="/terms-conditions/">Terms of Service</a>
+        <button class="cookie-settings-trigger" type="button" data-cookie-settings><i class="ph ph-sliders-horizontal" aria-hidden="true"></i>Cookie Settings</button>
+        <a href="/privacy-policy"><i class="ph ph-shield-check" aria-hidden="true"></i>Privacy Policy</a>
+        <a href="/terms-conditions/"><i class="ph ph-file-text" aria-hidden="true"></i>Terms of Service</a>
       </div>
       <span class="footer-copyright">© {year} Scrap My Car UAE. All rights reserved.</span>
     </div>
@@ -274,24 +286,37 @@ const footerLocationRoutes: Record<string, string> = {
 
   .contact-strip > div {
     display: grid;
-    align-content: start;
-    gap: 7px;
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: start;
+    gap: 12px;
+    min-width: 0;
     color: #293f30;
     font-size: 14px;
     line-height: 1.6;
   }
 
+  .contact-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #163d18;
+    color: #fff;
+    transition: background-color 180ms ease, transform 180ms ease;
+  }
+  .contact-icon .ph { font-size: 21px; line-height: 1; }
+  .contact-copy { display: grid; align-content: start; gap: 4px; min-width: 0; }
+  .contact-strip > div:focus-within .contact-icon { background: #24592c; }
+  @media (hover: hover) and (pointer: fine) {
+    .contact-strip > div:hover .contact-icon { background: #24592c; transform: translateY(-2px); }
+  }
   .contact-strip .label {
     color: #526d58;
     font-size: 12px;
     font-weight: 600;
     letter-spacing: .01em;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
   }
-  .contact-strip .label .ph { font-size: 15px; }
-  .contact-strip .label .wa-icon { width: 15px; height: 15px; }
   .contact-strip a {
     width: fit-content;
     max-width: 100%;
@@ -304,8 +329,9 @@ const footerLocationRoutes: Record<string, string> = {
 
   .smc-footer-bottom {
     min-height: 75px;
-    border-top: 1px solid #dfe8df;
-    color: #546559;
+    border-top: 1px solid #163d18;
+    background: #163d18;
+    color: #fff;
     font-size: 13px;
   }
   .bottom-inner {
@@ -324,7 +350,11 @@ const footerLocationRoutes: Record<string, string> = {
     max-width: 710px;
   }
   .bottom-links a, .cookie-settings-trigger {
-    color: #26392b;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 44px;
+    color: #fff;
     text-decoration: none;
     font: inherit;
     font-weight: 500;
@@ -342,10 +372,16 @@ const footerLocationRoutes: Record<string, string> = {
     cursor: pointer;
     text-align: left;
   }
-  .bottom-links a:hover, .cookie-settings-trigger:hover { color: #26723b; }
-  .footer-copyright { margin-left: auto; color: #5e6a60; text-align: right; white-space: nowrap; }
+  .bottom-links .ph { font-size: 17px; line-height: 1; color: #c5dbbc; transition: color 160ms ease; }
+  .bottom-links a:hover, .cookie-settings-trigger:hover,
+  .bottom-links a:hover .ph, .cookie-settings-trigger:hover .ph { color: #c5e8b8; text-decoration: none; }
+  .bottom-links a:focus-visible, .cookie-settings-trigger:focus-visible {
+    outline: 2px solid #c5e8b8;
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+  .footer-copyright { margin-left: auto; color: #fff; text-align: right; white-space: nowrap; }
 
-  .cookie-settings-trigger:focus-visible,
   .cookie-consent-banner button:focus-visible,
   .cookie-modal button:focus-visible,
   .cookie-toggle input:focus-visible + span {
@@ -585,7 +621,7 @@ const footerLocationRoutes: Record<string, string> = {
     .footer-links, .location-list { gap: 12px; }
     .footer-links a, .location-list span, .location-list a { font-size: 14px; }
     .contact-strip { grid-template-columns: 1fr 1fr; margin-top: 32px; gap: 24px 12px; }
-    .contact-strip > div { font-size: 13px; min-width: 0; }
+    .contact-strip > div { font-size: 13px; gap: 10px; }
     .bottom-inner { min-height: 0; flex-direction: column; align-items: stretch; gap: 14px; padding-block: 16px 20px; }
     .bottom-links { width: 100%; max-width: none; justify-content: flex-start; flex-wrap: wrap; gap: 2px 20px; }
     .bottom-links a, .cookie-settings-trigger { min-height: 38px; display: inline-flex; align-items: center; font-size: 12px; }
@@ -639,7 +675,8 @@ const footerLocationRoutes: Record<string, string> = {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .footer-automotive-art { transition: none; }
+    .footer-automotive-art, .contact-icon, .bottom-links .ph { transition: none; }
+    .contact-strip > div:hover .contact-icon { transform: none; }
     .footer-automotive-art.is-pending { opacity: 1; transform: none; }
     .footer-links a, .location-list a, .location-list a i, .contact-strip a, .bottom-links a, .cookie-settings-trigger { transition: none; }
     .footer-links a:hover { transform: none; }
