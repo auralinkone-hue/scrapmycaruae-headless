@@ -18,7 +18,9 @@ export interface SavedQuote {
   sourcePath: string;
   savedAt: string;
 }
-const RECIPIENT = 'info@scrapmycaruae.com';
+const PRODUCTION_RECIPIENT = 'info@scrapmycaruae.com';
+// Staging test mailbox only; production notifications keep the established business inbox.
+const STAGING_TEST_RECIPIENT = 'hussain.gscx@gmail.com';
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const escapeHtml = (value: string) => value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]!);
 const singleLine = (value: string) => value.replace(/[\r\n\u0000-\u001f\u007f]/g, ' ').trim();
@@ -50,7 +52,7 @@ export function buildQuoteEmail(quote: SavedQuote, sender: { email: string; name
   // Brevo accepts a UUID idempotency key. D1 supplies permanent protection beyond its TTL.
   const providerKey = `${key.slice(0, 8)}-${key.slice(8, 12)}-4${key.slice(13, 16)}-8${key.slice(17, 20)}-${key.slice(20, 32)}`;
   return {
-    sender, to: [{ email: RECIPIENT, name: 'Scrap My Car UAE' }],
+    sender, to: [{ email: staging ? STAGING_TEST_RECIPIENT : PRODUCTION_RECIPIENT, name: 'Scrap My Car UAE' }],
     subject: `${heading} — ${singleLine(quote.make)} ${singleLine(quote.model)}`,
     headers: { idempotencyKey: providerKey }, tags: [staging ? 'quote-staging-test' : 'quote-enquiry'],
     textContent: `${heading}\n\n${intro}\n\n${rows.map(([label, value]) => `${label}: ${value}`).join('\n')}\n\nThis is an internal enquiry notification. Email acceptance does not confirm customer contact or vehicle collection.`,

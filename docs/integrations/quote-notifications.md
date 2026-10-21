@@ -6,7 +6,7 @@ Only `/api/quote` schedules email, after Wix confirms insertion into the configu
 
 Development preview only. Email is **off unless explicitly configured**. No real email was sent during implementation or tests. All Brevo and Wix test requests were mocked; tests execute the actual route and SQL ledger against an in-memory SQLite database.
 
-Recipient is fixed server-side to `info@scrapmycaruae.com`. There is no customer email subscription or marketing-list integration. The email includes name, phone, make, model, year, saved Wix enquiry ID, UTC save time, source page path and collection. URL query strings are discarded. Credentials, phone numbers and provider response bodies are not logged by the notification code.
+Recipients are fixed server-side by environment: **staging tests** go to `hussain.gscx@gmail.com`; **production** remains `info@scrapmycaruae.com`. This staging-only change does not enable delivery or affect production. No extra recipient secret is required. There is no customer email subscription or marketing-list integration. The email includes name, phone, make, model, year, saved Wix enquiry ID, UTC save time, source page path and collection. URL query strings are discarded. Credentials, phone numbers and provider response bodies are not logged by the notification code.
 
 ## Manual setup — development preview only
 

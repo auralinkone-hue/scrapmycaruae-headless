@@ -25,7 +25,7 @@ function setup() {
 }
 const accepted = () => Promise.resolve(Response.json({ messageId: 'mock-message-id' }, { status: 201 }));
 
-test('successful saved enquiry produces escaped, complete staging email to the fixed business recipient', async () => {
+test('successful saved enquiry produces escaped, complete staging email to the authorised test inbox', async () => {
   const { env, sql } = setup();
   let outbound;
   const result = await notifySavedQuote(env, quote, 'staging', async (url, init) => { outbound = { url, ...init }; return accepted(); });
@@ -33,12 +33,13 @@ test('successful saved enquiry produces escaped, complete staging email to the f
   assert.equal(outbound.url, 'https://api.brevo.com/v3/smtp/email');
   assert.equal(outbound.headers['api-key'], 'mock-only-key');
   const email = JSON.parse(outbound.body);
-  assert.deepEqual(email.to.map(to => to.email), ['info@scrapmycaruae.com']);
+  assert.deepEqual(email.to.map(to => to.email), ['hussain.gscx@gmail.com']);
   assert.equal(email.subject, '[STAGING TEST] New Car Valuation Enquiry — TOYOTA CAMRY');
   for (const value of [quote.customerName, quote.whatsapp, quote.make, quote.model, quote.year, quote.requestId, quote.sourcePath, quote.collectionId]) assert.ok(email.textContent.includes(value));
   assert.match(email.headers.idempotencyKey, /^[\da-f-]{36}$/);
   assert.equal(sql.prepare('SELECT state FROM quote_email_deliveries').get().state, 'accepted');
   const escaped = buildQuoteEmail({ ...quote, customerName: '<img src=x onerror=alert(1)>', model: 'X\r\nInjected' }, { email: 'verified@example.test', name: 'SMC' }, false, await notificationKey(quote));
+  assert.deepEqual(escaped.to.map(to => to.email), ['info@scrapmycaruae.com']);
   assert.doesNotMatch(escaped.htmlContent, /<img/);
   assert.match(escaped.htmlContent, /&lt;img/);
   assert.doesNotMatch(escaped.subject, /[\r\n]/);
