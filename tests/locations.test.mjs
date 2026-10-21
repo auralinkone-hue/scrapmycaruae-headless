@@ -43,7 +43,7 @@ test('location source keeps normalized Dubai and UAE names in clear groups', () 
   assert.ok(!abuDhabiLocations.includes('Khalifa City B'));
 });
 
-test('all rendered coverage sections use the shared icon-led grouped design', async () => {
+test('service coverage keeps its grouped design while the homepage uses a compact map', async () => {
   const [home, sellMyCar, damagedCar, footer, list] = await Promise.all([
     readProjectFile('src/pages/index.astro'),
     readProjectFile('src/pages/sell-my-car.astro'),
@@ -52,7 +52,9 @@ test('all rendered coverage sections use the shared icon-led grouped design', as
     readProjectFile('src/components/LocationCoverageList.astro')
   ]);
 
-  for (const page of [home, sellMyCar, damagedCar]) {
+  assert.match(home, /<UaeCoverageMap/);
+  assert.match(home, /href="\/locations\/"/);
+  for (const page of [sellMyCar, damagedCar]) {
     assert.match(page, /<LocationCoverageList/);
     assert.doesNotMatch(page, /UaeCollectionIllustration/);
   }
