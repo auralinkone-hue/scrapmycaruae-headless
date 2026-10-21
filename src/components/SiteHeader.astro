@@ -115,11 +115,15 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
       </nav>
 
       <div class="desktop-actions">
+        <a class="header-phone" href="tel:+971557458322" aria-label="Call Scrap My Car UAE on 055 745 83 22">
+          <i class="ph ph-phone-call" aria-hidden="true"></i>
+          <span class="header-phone-copy"><span>Speak to our team</span><strong>055 745 83 22</strong></span>
+        </a>
         <a class="smc-button smc-button-primary" href="/free-quote" data-analytics-quote-cta="header_desktop">
-          <span>Value My Car</span>
+          <span>Free Valuation</span>
           <i class="ph ph-calculator" aria-hidden="true"></i>
         </a>
-        <a class="header-whatsapp" href={whatsappUrl} target="_blank" rel="noopener noreferrer" data-analytics-whatsapp="header_desktop">
+        <a class="header-whatsapp" href={whatsappUrl} aria-label="Chat on WhatsApp" target="_blank" rel="noopener noreferrer" data-analytics-whatsapp="header_desktop">
           <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
           <span>WhatsApp</span>
         </a>
@@ -814,4 +818,46 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     .nav-link::after,.nav-dropdown__trigger .ph,.nav-dropdown__panel a,.service-link-icon,.service-link-arrow,.scrap-makes a>i { transition: none !important; }
     .mobile-drawer,.mobile-view,.mobile-row,.mobile-quote,.mobile-whatsapp { transition: none; }
   }
+  /* Desktop split layout. The existing tablet/mobile menu and its breakpoint stay intact. */
+  @media (min-width: 1101px) {
+    .smc-nav-wrap { background: #fff; backdrop-filter: none; border-bottom-color: #e8ece7; }
+    .nav-inner { width: min(1440px,calc(100% - 64px)); height: 80px; min-height: 80px; display: grid; grid-template-columns: auto minmax(0,1fr) auto; gap: 26px; }
+    .brand img { width: 168px; max-height: 64px; }
+    .desktop-nav { min-width: 0; margin: 0; justify-content: center; gap: clamp(12px,1.2vw,20px); }
+    .desktop-nav > .nav-link { display: inline-flex; align-items: center; min-height: 44px; }
+    .nav-link { color: #252b27; font-size: 14px; font-weight: 500; letter-spacing: -.015em; }
+    .nav-link::after { height: 1.5px; bottom: 2px; width: 20px; }
+    .nav-link:hover, .nav-link.active { color: #235c32; }
+    .nav-group--split { gap: 1px; }
+    .nav-group--split .nav-dropdown__trigger { width: 17px; color: #68756a; }
+    .nav-dropdown__trigger .ph { font-size: 11px; }
+    .desktop-actions { margin: 0; padding: 0; gap: 10px; }
+    .header-phone { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding-right: 14px; border-right: 1px solid #e5ebe4; color: #28372b; text-decoration: none; white-space: nowrap; transition: color 160ms ease; }
+    .header-phone > .ph { font-size: 19px; color: #487650; }
+    .header-phone-copy { display: grid; gap: 3px; }
+    .header-phone-copy > span { color: #747e73; font-size: 10px; line-height: 1.2; }
+    .header-phone-copy strong { font-size: 12px; line-height: 1.3; font-weight: 600; letter-spacing: .01em; }
+    .header-phone:hover { color: #2f6f2d; }
+    .desktop-actions .smc-button { min-height: 42px; padding: 0 15px; gap: 9px; background: #235c32; border-color: #235c32; box-shadow: none; font-size: 13px; font-weight: 600; letter-spacing: 0; }
+    .desktop-actions .smc-button .ph { width: auto; height: auto; border-radius: 0; background: transparent; color: currentColor; font-size: 17px; }
+    .desktop-actions .smc-button:hover { background: #184b25; box-shadow: none; }
+    .header-whatsapp { min-height: 42px; padding: 0 13px; gap: 7px; border-color: #dbe4d8; color: #344d37; box-shadow: none; font-size: 12px; font-weight: 500; letter-spacing: 0; }
+    .header-whatsapp:hover { background: #f5f9f2; border-color: #a4bea1; box-shadow: none; }
+    .header-whatsapp .wa-icon { width: 17px; height: 17px; }
+    .header-phone:focus-visible, .header-whatsapp:focus-visible { outline: 2px solid #4b8b56; outline-offset: 4px; border-radius: 6px; }
+  }
+  @media (min-width: 1101px) and (max-width: 1399px) {
+    .nav-inner { width: calc(100% - 48px); gap: 20px; }
+    .brand img { width: 154px; }
+    .desktop-nav { gap: 13px; }
+  }
+  @media (min-width: 1101px) and (max-width: 1279px) {
+    .nav-inner { gap: 18px; }
+    .brand img { width: 148px; }
+    .header-phone { width: 36px; justify-content: center; padding-right: 10px; }
+    .header-phone-copy, .header-whatsapp span { display: none; }
+    .header-whatsapp { width: 42px; padding: 0; }
+    .desktop-actions { gap: 8px; }
+  }
+
 </style>
