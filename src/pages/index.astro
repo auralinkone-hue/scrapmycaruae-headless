@@ -62,9 +62,10 @@ const conditionGuide = (title: string) => {
   return { href: '/sell-damaged-car/', label: 'Vehicle condition guidance' };
 };
 const conditionsResponsiveImage = wixResponsiveImage(
-  home.conditionsImage || '/sections/vehicle-conditions.webp',
-  { widths: [480, 720, 960, 1280], aspectRatio: 1456 / 1092 }
+  { url: '/sections/vehicle-conditions-four-cars-960.webp', width: 960, height: 640 },
+  { widths: [640, 960], aspectRatio: 3 / 2, fit: 'fit' }
 );
+conditionsResponsiveImage.srcset = '/sections/vehicle-conditions-four-cars-640.webp 640w, /sections/vehicle-conditions-four-cars-960.webp 960w';
 const valueResponsiveImage = wixResponsiveImage(
   home.valueImage,
   { widths: [480, 720, 960, 1200], aspectRatio: 4 / 3, fit: 'fit' }
@@ -342,7 +343,7 @@ const faqJsonLd = {
 
           <div class="condition-tags">
             {conditions.map((condition) => (
-              <details class="condition-detail" open={condition.isOpenByDefault}>
+              <details class="condition-detail" open={['non-running cars', 'engine or gearbox faults'].includes(condition.title.trim().toLowerCase())}>
                 <summary>
                   <i class:list={['ph', condition.icon]} aria-hidden="true"></i>
                   <span>{condition.title}</span>
@@ -763,7 +764,7 @@ const faqJsonLd = {
   .process-list p { margin: 0; color: var(--smc-muted); font-size: 15px; line-height: 1.65; }
   .condition-section { padding-block: 70px; background: #142c19; color: #fff; }
   .condition-grid { display: grid; grid-template-columns: .95fr 1.05fr; gap: 56px; align-items: center; }
-  .condition-image-wrap { border-radius: 20px; background: #203b24; }
+  .condition-image-wrap { border-radius: 20px; background: transparent; }
   .condition-image-wrap img { display: block; width: 100%; height: auto; object-fit: contain; }
   .condition-section .smc-kicker { color: #a8c79a; }
   .condition-copy > p { color: #c7d5c2; }
