@@ -231,7 +231,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
         cancel(menu);
         timers.set(menu, setTimeout(() => close(menu), 140));
       }, { signal });
-      group.addEventListener('focusin', () => cancel(menu), { signal });
+      group.addEventListener('focusin', () => { if (menu.classList.contains('is-expanded')) cancel(menu); }, { signal });
       group.addEventListener('focusout', event => {
         if (event.relatedTarget instanceof Node && group.contains(event.relatedTarget)) return;
         if (!(hover.matches && group.matches(':hover'))) close(menu);
@@ -735,6 +735,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
   .desktop-nav[data-enhanced] .nav-dropdown.is-expanded .nav-dropdown__panel { opacity: 1; transform: translate(-50%,0) scale(1); pointer-events: auto; }
   /* Fill the pointer route between each trigger and its panel. */
   .nav-dropdown__panel::before { content: ''; position: absolute; bottom: 100%; left: 0; right: 0; height: 20px; }
+  .nav-group:has(.is-expanded)>.nav-link::before { content: ''; position: absolute; top: 100%; left: 0; right: -23px; height: 20px; }
   .nav-group--split>.nav-link { display: inline-flex; align-items: center; min-height: 44px; }
   /* Locations only: compact four-column menu, anchored to the header container. */
   .nav-group--locations { position: static; }
