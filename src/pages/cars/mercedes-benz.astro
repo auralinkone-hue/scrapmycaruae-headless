@@ -17,7 +17,7 @@ const choices=mercedesPreferred.filter(model=>models.includes(model));
 const initial=choices[0]??models[0]??'';
 const guidance=resolveModelGuidance(initial,mercedesProfiles);
 const condition=mercedesConditions[0];
-const crumbs=[['Home','/'],['Scrap my car','/scrap-my-car/'],['Mercedes-Benz','/cars/mercedes-benz/']];
+const crumbs=[['Home','/'],['Scrap my car','/scrap-my-car/'],['Car makes','/cars/'],['Mercedes-Benz','/cars/mercedes-benz/']];
 const breadcrumb={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:crumbs.map(([name,path],i)=>({'@type':'ListItem',position:i+1,name,item:'https://www.scrapmycaruae.com'+path}))};
 const faqSchema={'@context':'https://schema.org','@type':'FAQPage',mainEntity:mercedesFaqs.map(([name,text])=>({'@type':'Question',name,acceptedAnswer:{'@type':'Answer',text}}))};
 const json=(value:unknown)=>JSON.stringify(value).replace(/</g,'\\u003c');

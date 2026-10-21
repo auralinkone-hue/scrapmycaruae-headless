@@ -2,11 +2,11 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-test('scrap navigation exposes exactly the five requested services from one shared list', async () => {
+test('scrap navigation exposes existing services and the cars hub from one shared list', async () => {
   const header = await readFile(new URL('../src/components/SiteHeader.astro', import.meta.url), 'utf8');
   const services = header.match(/const scrapMyCarServices = \[([\s\S]*?)\] as const/)[1];
   assert.deepEqual([...services.matchAll(/href: '([^']+)'/g)].map(match => match[1]), [
-    '/scrap-my-car/', '/scrap-car-value/', '/car-removal/', '/scrap-old-car/', '/fleet-disposal/'
+    '/scrap-my-car/', '/scrap-car-value/', '/car-removal/', '/scrap-old-car/', '/fleet-disposal/', '/cars/'
   ]);
   assert.doesNotMatch(services, /expired-registration/);
   assert.match(header, /children: scrapMyCarServices/);

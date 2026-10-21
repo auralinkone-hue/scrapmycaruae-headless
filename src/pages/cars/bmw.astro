@@ -15,7 +15,7 @@ try{vehicleData=await getVehicleData();}catch(error){dataError=error instanceof 
 const models=manufacturerModels(vehicleData.models,'BMW').map(item=>item.model);
 const choices=bmwPreferred.filter(model=>models.includes(model));const initial=choices[0]??models[0]??'';
 const guidance=resolveModelGuidance(initial,bmwProfiles);const condition=bmwConditions[0];
-const crumbs=[['Home','/'],['Scrap my car','/scrap-my-car/'],['BMW','/cars/bmw/']];
+const crumbs=[['Home','/'],['Scrap my car','/scrap-my-car/'],['Car makes','/cars/'],['BMW','/cars/bmw/']];
 const breadcrumb={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:crumbs.map(([name,path],i)=>({'@type':'ListItem',position:i+1,name,item:'https://www.scrapmycaruae.com'+path}))};
 const faqSchema={'@context':'https://schema.org','@type':'FAQPage',mainEntity:bmwFaqs.map(([name,text])=>({'@type':'Question',name,acceptedAnswer:{'@type':'Answer',text}}))};
 const json=(value:unknown)=>JSON.stringify(value).replace(/</g,'\\u003c');

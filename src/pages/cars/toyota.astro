@@ -20,7 +20,7 @@ const factors=[
  ['Completeness & components','Mention missing engine parts, wheels, interior items or other removed components. The presence and condition of potentially recoverable components can affect the review.'],
  ['Access & collection','The exact parking position, keys, rolling and steering condition, space for recovery equipment and permissions may affect practical arrangements.']
 ];
-const crumbs=[['Home','/'],['Scrap my car','/scrap-my-car/'],['Toyota','/cars/toyota/']];
+const crumbs=[['Home','/'],['Scrap my car','/scrap-my-car/'],['Car makes','/cars/'],['Toyota','/cars/toyota/']];
 const breadcrumb={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:crumbs.map(([name,path],i)=>({'@type':'ListItem',position:i+1,name,item:'https://www.scrapmycaruae.com'+path}))};
 const faqSchema={'@context':'https://schema.org','@type':'FAQPage',mainEntity:toyotaFaqs.map(([name,text])=>({'@type':'Question',name,acceptedAnswer:{'@type':'Answer',text}}))};
 ---

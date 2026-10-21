@@ -1,5 +1,6 @@
 ---
 import { locationOverview, locationGroups, isLocationPageActive, isLocationGroupActive } from '../lib/location-navigation';
+import { carManufacturers, manufacturerHref } from '../lib/car-manufacturers';
 const pathname = Astro.url.pathname;
 const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
 // Future service routes remain prepared here, but only live routes are exposed in the menu.
@@ -21,7 +22,8 @@ const scrapMyCarServices = [
   { href: '/scrap-car-value/', label: 'Scrap Car Value', icon: 'ph-calculator' },
   { href: '/car-removal/', label: 'Car Removal', icon: 'ph-truck' },
   { href: '/scrap-old-car/', label: 'Scrap Old Car', icon: 'ph-car-profile' },
-  { href: '/fleet-disposal/', label: 'Fleet Disposal', icon: 'ph-buildings' }
+  { href: '/fleet-disposal/', label: 'Fleet Disposal', icon: 'ph-buildings' },
+  { href: '/cars/', label: 'Cars by Make', icon: 'ph-car-profile' }
 ] as const;
 const locationPages = [locationOverview, ...locationGroups.flatMap(group => group.items.map(item => ({ ...item, icon: group.icon })))];
 const isLocationNavigationActive = pathname === '/locations' || pathname.startsWith('/locations/');
@@ -51,7 +53,7 @@ const mobileServiceGroups = [
   { id: 'scrap', href: '/scrap-my-car/', label: 'Scrap My Car', description: 'Value, collection and disposal options.', items: scrapMyCarServices },
   { id: 'locations', href: '/locations/', label: 'Locations', description: 'Explore UAE collection coverage and local access guides.', overviewLabel: 'View all UAE locations', items: locationPages }
 ];
-const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(service.href));
+const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(service.href)) || pathname.startsWith('/cars/');
 ---
 
 <header class="smc-header">
@@ -68,10 +70,10 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
 
       <nav class="desktop-nav" aria-label="Primary navigation">
         {links.map((link) => link.children ? (
-          <div class:list={['nav-group', { 'nav-group--locations': link.href === '/locations/', 'nav-group--split': link.href === '/scrap-my-car/' || link.href === '/locations/' }]}>
+          <div class:list={['nav-group', { 'nav-group--locations': link.href === '/locations/', 'nav-group--scrap': link.href === '/scrap-my-car/', 'nav-group--split': link.href === '/scrap-my-car/' || link.href === '/locations/' }]}>
           {link.href === '/scrap-my-car/' && <a href={link.href} class:list={['nav-link', { active: isScrapMyCarServiceActive }]}>{link.label}</a>}
           {link.href === '/locations/' && <a href={link.href} class:list={['nav-link', { active: isLocationNavigationActive }]} aria-current={isLocationPageActive(pathname, link.href) ? 'page' : undefined}>{link.label}</a>}
-          <details name="desktop-services" class:list={['nav-dropdown', { active: link.href === '/locations/' ? isLocationNavigationActive : link.children.some((service) => service.href && isActive(service.href)) }]}>
+          <details name="desktop-services" class:list={['nav-dropdown', { active: link.href === '/locations/' ? isLocationNavigationActive : link.children.some((service) => service.href && (isActive(service.href) || (service.href === '/cars/' && pathname.startsWith('/cars/')))) }]}>
             <summary class="nav-link nav-dropdown__trigger" aria-label={link.href === '/scrap-my-car/' ? 'Show Scrap My Car services' : link.href === '/locations/' ? 'Show Locations' : undefined}>
               {link.href !== '/scrap-my-car/' && link.href !== '/locations/' && link.label}
               <i class="ph ph-caret-down" aria-hidden="true"></i>
@@ -91,7 +93,10 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
                   </section>)}
                 </div>
               </div>
-            ) : <div class="nav-dropdown__panel">
+            ) : link.href === '/scrap-my-car/' ? <div class="nav-dropdown__panel scrap-mega" role="region" aria-label="Scrap services and manufacturers">
+              <section><h2>Scrap services</h2>{scrapMyCarServices.map(service=><a href={service.href} class:list={{active:isActive(service.href)}}><span class="service-link-icon"><i class:list={['ph',service.icon]} aria-hidden="true"></i></span>{service.label}</a>)}</section>
+              <section class="scrap-makes"><h2>Explore by manufacturer</h2><div>{carManufacturers.map(make=><a href={manufacturerHref(make.slug)} aria-current={pathname===manufacturerHref(make.slug)?'page':undefined}>{make.name}<i class="ph ph-caret-right" aria-hidden="true"></i></a>)}</div></section>
+            </div> : <div class="nav-dropdown__panel">
               {link.children.filter((service) => service.href).map((service) => (
                 <a href={service.href} class:list={{ active: isNavigationItemActive(service.href) }} aria-current={isActive(service.href) ? 'page' : undefined}>
                   <span class="service-link-icon"><i class:list={['ph', service.icon]} aria-hidden="true"></i></span>
@@ -146,9 +151,14 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
                     <a class:list={['mobile-row', 'mobile-row--overview', { active: isLocationPageActive(pathname, locationOverview.href) }]} href={locationOverview.href} aria-current={isLocationPageActive(pathname, locationOverview.href) ? 'page' : undefined}><span class="mobile-row__icon"><i class:list={['ph', locationOverview.icon]} aria-hidden="true"></i></span><span>View All UAE Locations</span><i class="ph ph-caret-right mobile-row__arrow" aria-hidden="true"></i></a>
                     {locationGroups.map(location => <button type="button" class:list={['mobile-row', { active: isLocationGroupActive(pathname, location) }]} data-mobile-forward={'location-' + location.id} aria-controls={'mobile-view-location-' + location.id} aria-expanded="false"><span class="mobile-row__icon"><i class:list={['ph', location.icon]} aria-hidden="true"></i></span><span>{location.label}</span><i class="ph ph-arrow-right mobile-row__arrow" aria-hidden="true"></i></button>)}
                   </> : group.items.map((item, index) => <a class:list={['mobile-row', { 'mobile-row--overview': index === 0, active: isNavigationItemActive(item.href) }]} href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}><span class="mobile-row__icon"><i class:list={['ph', item.icon]} aria-hidden="true"></i></span><span>{index === 0 ? ('overviewLabel' in group ? group.overviewLabel : 'View all ' + group.label) : item.label}</span><i class="ph ph-caret-right mobile-row__arrow" aria-hidden="true"></i></a>)}
+                  {group.id === 'scrap' && <button type="button" class="mobile-row" data-mobile-forward="manufacturers" aria-controls="mobile-view-manufacturers" aria-expanded="false"><span class="mobile-row__icon"><i class="ph ph-car-profile" aria-hidden="true"></i></span><span>Choose a manufacturer</span><i class="ph ph-arrow-right mobile-row__arrow" aria-hidden="true"></i></button>}
                 </nav>
               </section>
             ))}
+            <section class="mobile-view" data-mobile-view="manufacturers" id="mobile-view-manufacturers" aria-labelledby="mobile-heading-manufacturers" aria-hidden="true" inert>
+              <div class="mobile-subheading"><button type="button" class="mobile-back" data-mobile-back="scrap" aria-label="Back to Scrap My Car"><i class="ph ph-arrow-left" aria-hidden="true"></i>Back</button><h2 id="mobile-heading-manufacturers">Manufacturers</h2></div>
+              <p class="mobile-view__description">Find guidance for your make.</p><nav aria-label="Manufacturer pages"><a class="mobile-row mobile-row--overview" href="/cars/"><span class="mobile-row__icon"><i class="ph ph-car-profile" aria-hidden="true"></i></span><span>All car makes</span></a>{carManufacturers.map(make=><a class="mobile-row" href={manufacturerHref(make.slug)} aria-current={pathname===manufacturerHref(make.slug)?'page':undefined}><span class="mobile-row__icon"><i class="ph ph-car-profile" aria-hidden="true"></i></span><span>{make.name}</span><i class="ph ph-caret-right mobile-row__arrow" aria-hidden="true"></i></a>)}</nav>
+            </section>
             {locationGroups.map(group => <section class="mobile-view mobile-view--location" data-mobile-view={'location-' + group.id} id={'mobile-view-location-' + group.id} aria-labelledby={'mobile-heading-location-' + group.id} aria-hidden="true" inert>
               <div class="mobile-subheading"><button type="button" class="mobile-back" data-mobile-back="locations" aria-label="Back to Locations"><i class="ph ph-arrow-left" aria-hidden="true"></i>Back</button><h2 id={'mobile-heading-location-' + group.id}>{group.label}</h2></div>
               <p class="mobile-view__description">Choose a location guide.</p>
@@ -206,12 +216,12 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
       views.forEach((view) => {
         const active = view.dataset.mobileView === name;
         view.classList.toggle('is-active', active);
-        view.classList.toggle('is-behind', name !== 'main' && (view.dataset.mobileView === 'main' || (name.startsWith('location-') && view.dataset.mobileView === 'locations')));
+        view.classList.toggle('is-behind', name !== 'main' && (view.dataset.mobileView === 'main' || (name.startsWith('location-') && view.dataset.mobileView === 'locations') || (name === 'manufacturers' && view.dataset.mobileView === 'scrap')));
         view.inert = !active;
         view.setAttribute('aria-hidden', String(!active));
         if (active) view.scrollTop = 0;
       });
-      forwards.forEach((button) => button.setAttribute('aria-expanded', String(button.dataset.mobileForward === name || (button.dataset.mobileForward === 'locations' && name.startsWith('location-')))));
+      forwards.forEach((button) => button.setAttribute('aria-expanded', String(button.dataset.mobileForward === name || (button.dataset.mobileForward === 'locations' && name.startsWith('location-')) || (button.dataset.mobileForward === 'scrap' && name === 'manufacturers'))));
       if (moveFocus) {
         const target = returning || name === 'main'
           ? forwards.find((button) => button.dataset.mobileForward === drawer.dataset.panel)
@@ -646,6 +656,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     .mobile-view { padding-inline: 18px; }
   }
 
+  .nav-group--scrap{position:static}.scrap-mega{top:calc(100% - 1px);width:min(680px,calc(100vw - 48px));display:grid;grid-template-columns:1fr 1.25fr;gap:18px;padding:20px;max-height:min(620px,calc(100dvh - 100px));overflow-y:auto;overscroll-behavior:contain}.scrap-mega h2{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#55764d;margin:0 9px 12px}.scrap-makes{border-left:1px solid #dbe7d5;padding-left:18px}.scrap-makes>div{display:grid;grid-template-columns:1fr 1fr;gap:3px}.scrap-makes a{font-size:12px;min-height:48px;padding:9px;justify-content:space-between}.scrap-makes a i{font-size:13px;color:#6f9865}.scrap-makes a[aria-current=page]{background:#e1efda;color:#214d28}
   /* Locations only: compact four-column menu, anchored to the header container. */
   .nav-group--locations { position: static; }
   .locations-mega { top: calc(100% - 1px); width: min(880px,calc(100vw - 48px)); padding: 14px; max-height: min(620px,calc(100dvh - 100px)); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #9aba94 transparent; background: #fcfefb; }

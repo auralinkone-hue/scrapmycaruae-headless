@@ -13,7 +13,7 @@ import {nissanFactors,nissanFaqs} from '../../lib/nissan-content';
 let vehicleData:VehicleData={makes:[],models:[],years:[]};let dataError='';
 try{vehicleData=await getVehicleData();}catch(error){dataError=error instanceof Error?error.message:String(error);}
 const models=manufacturerModels(vehicleData.models,'NISSAN');
-const crumbs=[['Home','/'],['Scrap my car','/scrap-my-car/'],['Nissan','/cars/nissan/']];
+const crumbs=[['Home','/'],['Scrap my car','/scrap-my-car/'],['Car makes','/cars/'],['Nissan','/cars/nissan/']];
 const breadcrumb={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:crumbs.map(([name,path],i)=>({'@type':'ListItem',position:i+1,name,item:'https://www.scrapmycaruae.com'+path}))};
 const faqSchema={'@context':'https://schema.org','@type':'FAQPage',mainEntity:nissanFaqs.map(([name,text])=>({'@type':'Question',name,acceptedAnswer:{'@type':'Answer',text}}))};
 ---
