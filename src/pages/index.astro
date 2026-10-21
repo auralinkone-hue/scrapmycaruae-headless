@@ -519,37 +519,6 @@ const faqJsonLd = {
       </section>
     )}
 
-    {home.faqVisible && <section class="faq-section smc-container">
-      <div class="faq-heading" data-reveal>
-        <div class="smc-kicker">{home.faqKicker}</div>
-        <h2>{home.faqHeading}</h2>
-        <p>
-          {home.faqDescription}
-        </p>
-        <a
-          class="smc-button smc-button-secondary"
-          href={home.faqButtonLink || whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
-          {home.faqButtonLabel}
-        </a>
-      </div>
-
-      <div class="faq-list">
-        {faqs.map((faq) => (
-          <details data-reveal open={faq.isOpenByDefault}>
-            <summary>
-              <span>{faq.question}</span>
-              <i class="ph ph-plus" aria-hidden="true"></i>
-            </summary>
-            <p>{faq.answer}</p>
-          </details>
-        ))}
-      </div>
-    </section>}
-
     {home.finalVisible && <section class="final-cta">
       <div class="smc-container final-cta-inner" data-reveal>
         <div>
@@ -572,6 +541,40 @@ const faqJsonLd = {
             {home.finalSecondaryButtonLabel}
           </a>
         </div>
+      </div>
+    </section>}
+
+    {home.faqVisible && <section class="faq-section smc-container">
+      <div class="faq-heading" data-reveal>
+        <div class="smc-kicker">{home.faqKicker}</div>
+        <h2>{home.faqHeading}</h2>
+        <p>
+          {home.faqDescription}
+        </p>
+        <a
+          class="smc-button smc-button-secondary"
+          href={home.faqButtonLink || whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img class="wa-icon" src="/whatsapp.svg" alt="" aria-hidden="true" />
+          {home.faqButtonLabel}
+        </a>
+        <a class="text-link faq-valuation-link" href="/free-quote" data-analytics-quote-cta="homepage_faq">
+          Get a free car valuation <i class="ph ph-calculator" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <div class="faq-list">
+        {faqs.map((faq) => (
+          <details data-reveal open={faq.isOpenByDefault}>
+            <summary>
+              <span>{faq.question}</span>
+              <i class="ph ph-plus" aria-hidden="true"></i>
+            </summary>
+            <p>{faq.answer}</p>
+          </details>
+        ))}
       </div>
     </section>}
 
@@ -801,8 +804,9 @@ const faqJsonLd = {
   .blog-meta { margin-top: 15px; font-size: 12px; color: #6b7565; }
   .blog-card h3 { margin: 8px 0; font-size: 20px; font-weight: 600; line-height: 1.4; letter-spacing: -.02em; }
   .read-more { display: inline-flex; align-items: center; gap: 7px; min-height: 34px; color: var(--smc-green); font-size: 13px; font-weight: 600; }
-  .faq-section { display: grid; grid-template-columns: .8fr 1.2fr; gap: 70px; padding-block: 64px; border-top: 1px solid var(--smc-line); }
+  .faq-section { display: grid; grid-template-columns: .8fr 1.2fr; gap: 70px; padding-block: 64px; background: #fff; border-bottom: 1px solid var(--smc-line); }
   .faq-heading .smc-button { margin-top: 22px; }
+  .faq-valuation-link { display: flex; width: fit-content; margin-top: 10px; font-size: 13px; }
   .faq-list details { border-bottom: 1px solid #dce5d7; }
   .faq-list summary { display: flex; justify-content: space-between; align-items: center; gap: 18px; min-height: 68px; padding-block: 18px; cursor: pointer; list-style: none; font-size: 17px; font-weight: 600; line-height: 1.45; }
   .faq-list summary i { color: var(--smc-green); transition: transform 180ms ease; flex-shrink: 0; }
