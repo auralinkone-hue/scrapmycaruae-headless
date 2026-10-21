@@ -23,6 +23,7 @@ export const indexableStaticRoutes = [
   '/cars/mitsubishi/',
   '/cars/hyundai/',
   '/cars/kia/',
+  '/cars/ford/',
   '/locations/',
   '/locations/dubai/',
   '/locations/dubai/al-quoz/',
