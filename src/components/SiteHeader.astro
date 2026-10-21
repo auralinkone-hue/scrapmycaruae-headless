@@ -253,7 +253,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     document.addEventListener('pointerdown', event => {
       menus.forEach(menu => { if (!(event.target instanceof Node) || !menu.closest('.nav-group')?.contains(event.target)) close(menu); });
     }, { signal });
-    header.addEventListener('keydown', event => {
+    document.addEventListener('keydown', event => {
       if (event.key !== 'Escape') return;
       const menu = menus.find(menu => menu.classList.contains('is-expanded'));
       if (!menu) return;
