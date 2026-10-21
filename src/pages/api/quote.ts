@@ -3,7 +3,7 @@ import { env, waitUntil } from 'cloudflare:workers';
 import { notifySavedQuote, quoteSourcePath } from '../../lib/quote-notifications';
 import { wixClient } from '../../lib/wix';
 import { requireQuoteRequestsCollectionId } from '../../lib/quote-collection';
-import { normalizeUaeMobilePhone } from '../../lib/phone';
+import { isValidPhoneNumber } from '../../lib/phone';
 
 export const prerender = false;
 const INSERT_URL = 'https://www.wixapis.com/data/v2/items';
@@ -35,8 +35,7 @@ export const POST: APIRoute = async ({ request }) => {
     const whatsapp = cleanText(body?.whatsapp, 40).replace(/[^\d]/g, '');
     if (!make || !model || !year || !customerName || !whatsapp) return json({ ok: false, message: 'Please complete all required fields.' }, 400);
     if (!/^\d{4}$/.test(year)) return json({ ok: false, message: 'Please select a valid vehicle year.' }, 400);
-    const normalizedPhone = normalizeUaeMobilePhone(body?.whatsapp);
-    if (!normalizedPhone) return json({ ok: false, message: 'Please enter a valid UAE mobile number.' }, 400);
+    if (!isValidPhoneNumber(body?.whatsapp)) return json({ ok: false, message: 'Please enter a valid phone number.' }, 400);
     if (!CUSTOMER_NAME_PATTERN.test(customerName)) return json({ ok: false, message: 'Please enter a valid name.' }, 400);
 
     const tokens = await wixClient.auth.generateVisitorTokens();

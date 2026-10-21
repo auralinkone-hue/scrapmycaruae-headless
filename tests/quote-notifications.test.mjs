@@ -5,7 +5,7 @@ import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import { buildQuoteEmail, notificationKey, notifySavedQuote, quoteSourcePath } from '../src/lib/quote-notifications.ts';
 import { requireQuoteRequestsCollectionId } from '../src/lib/quote-collection.ts';
-import { normalizeUaeMobilePhone } from '../src/lib/phone.ts';
+import { isValidPhoneNumber } from '../src/lib/phone.ts';
 
 const schema = await readFile(new URL('../migrations/quote-notifications/0001_quote_email_deliveries.sql', import.meta.url), 'utf8');
 const quote = {
@@ -118,7 +118,7 @@ test('source details only retain a same-origin path, excluding query strings and
 // Execute the actual route with isolated platform bindings and mocked Wix/Brevo transport.
 const routeSource = await readFile(new URL('../src/pages/api/quote.ts', import.meta.url), 'utf8');
 const routeCode = stripTypeScriptTypes(routeSource.replace(/^import .*;\n/gm, '').replace(/export /g, '').replaceAll('import.meta.env.WIX_QUOTE_REQUESTS_COLLECTION_ID', "'QuoteRequestsStaging'").replaceAll('import.meta.env.PUBLIC_SEO_ENV', "'staging'"));
-const createRoute = new Function('wixClient', 'env', 'waitUntil', 'notifySavedQuote', 'quoteSourcePath', 'requireQuoteRequestsCollectionId', 'normalizeUaeMobilePhone', 'fetch', `${routeCode}\nreturn POST;`);
+const createRoute = new Function('wixClient', 'env', 'waitUntil', 'notifySavedQuote', 'quoteSourcePath', 'requireQuoteRequestsCollectionId', 'isValidPhoneNumber', 'fetch', `${routeCode}\nreturn POST;`);
 async function exerciseRoute({ insertStatus = 200, data = {}, providerFails = false, ledgerFails = false, notificationMode = 'staging-test' } = {}) {
   const { env, sql } = setup(); env.QUOTE_EMAIL_MODE = notificationMode;
   if (ledgerFails) env.QUOTE_NOTIFICATIONS_DB = { prepare() { throw new Error('mock ledger error'); } };
@@ -135,7 +135,7 @@ async function exerciseRoute({ insertStatus = 200, data = {}, providerFails = fa
     if (providerFails) throw new Error('mock provider outage');
     return accepted();
   };
-  const route = createRoute({ auth: { generateVisitorTokens: async () => ({ accessToken: { value: 'mock-visitor-token' } }) } }, env, promise => pending.push(promise), (settings, saved, stage) => notifySavedQuote(settings, saved, stage, transport), quoteSourcePath, requireQuoteRequestsCollectionId, normalizeUaeMobilePhone, transport);
+  const route = createRoute({ auth: { generateVisitorTokens: async () => ({ accessToken: { value: 'mock-visitor-token' } }) } }, env, promise => pending.push(promise), (settings, saved, stage) => notifySavedQuote(settings, saved, stage, transport), quoteSourcePath, requireQuoteRequestsCollectionId, isValidPhoneNumber, transport);
   const response = await route({ request: new Request('https://preview.example.test/api/quote', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ make: quote.make, model: quote.model, year: quote.year, name: quote.customerName, whatsapp: quote.whatsapp, submissionId: quote.submissionId, ...data }) }) });
   const result = await response.json();
   await Promise.all(pending);
@@ -167,5 +167,14 @@ test('provider/ledger/config failures never turn a saved quote into a failed cus
     assert.equal(response.status, 200);
     assert.equal(result.ok, true);
     assert.ok(result.whatsappUrl);
+  }
+});
+
+test('international customer numbers retain CMS save, notification and WhatsApp handoff', async () => {
+  for (const whatsapp of ['+44 7742 107109', '+92 300 1234567', '+1 202 555 0123']) {
+    const { response, result, rows } = await exerciseRoute({ data: { whatsapp } });
+    assert.equal(response.status, 200);
+    assert.equal(rows[0].state, 'accepted');
+    assert.ok(decodeURIComponent(result.whatsappUrl).includes(whatsapp.replace(/\D/g, '')));
   }
 });
