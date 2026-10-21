@@ -184,8 +184,13 @@ const isFreeQuote = variant === 'free-quote';
         });
       });
 
+      // Reuse the ID for retries of unchanged details; keep it out of CMS field mapping.
+      let submissionId = '';
+      let submissionDetails = '';
+      let isSubmitting = false;
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
+        if (isSubmitting) return;
         let firstInvalid = null;
         fields.forEach((field) => {
           field.dataset.touched = 'true';
@@ -199,6 +204,13 @@ const isFreeQuote = variant === 'free-quote';
         const submitButton = root.querySelector('[data-submit]');
         const submitMessage = root.querySelector('[data-submit-message]');
         const data = Object.fromEntries(new FormData(form).entries());
+        const details = JSON.stringify(data);
+        if (!submissionId || details !== submissionDetails) {
+          submissionId = crypto.randomUUID();
+          submissionDetails = details;
+        }
+        data.submissionId = submissionId;
+        isSubmitting = true;
         if (submitButton instanceof HTMLButtonElement) {
           submitButton.disabled = true;
           submitButton.innerHTML = 'Saving your request… <i class="ph ph-circle-notch" aria-hidden="true"></i>';
@@ -216,6 +228,7 @@ const isFreeQuote = variant === 'free-quote';
           window.smcAnalytics?.track('whatsapp_handoff', { form_name: 'valuation_form', cta_location: 'quote_form', destination_type: 'whatsapp' });
           window.location.assign(result.whatsappUrl);
         } catch (error) {
+          isSubmitting = false;
           if (submitMessage instanceof HTMLElement) {
             submitMessage.hidden = false;
             submitMessage.classList.add('error');

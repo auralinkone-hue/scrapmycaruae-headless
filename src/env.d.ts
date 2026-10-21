@@ -11,3 +11,12 @@ interface ImportMeta {
 declare namespace App {
 	interface Locals extends Runtime {}
 }
+
+// Cloudflare runtime secrets/binding. Never PUBLIC_* or build-time email credentials.
+interface Env {
+  BREVO_API_KEY?: string;
+  BREVO_SENDER_EMAIL?: string;
+  BREVO_SENDER_NAME?: string;
+  QUOTE_EMAIL_MODE?: string;
+  QUOTE_NOTIFICATIONS_DB?: D1Database;
+}

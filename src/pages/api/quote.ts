@@ -1,4 +1,6 @@
 import type { APIRoute } from 'astro';
+import { env, waitUntil } from 'cloudflare:workers';
+import { notifySavedQuote, quoteSourcePath } from '../../lib/quote-notifications';
 import { wixClient } from '../../lib/wix';
 import { requireQuoteRequestsCollectionId } from '../../lib/quote-collection';
 import { normalizeUaeMobilePhone } from '../../lib/phone';
@@ -49,9 +51,17 @@ export const POST: APIRoute = async ({ request }) => {
 
     const title = `${make} ${model} ${year} - ${customerName}`;
     const insertResponse = await fetch(INSERT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', authorization: accessToken }, body: JSON.stringify({ dataCollectionId: quoteRequestsCollectionId, dataItem: { data: { title, make, model, year: Number(year), customerName, whatsapp, status: 'New', source: 'Headless Website' } } }) });
-    if (!insertResponse.ok) throw new Error(`Quote request insert failed: ${insertResponse.status} ${await insertResponse.text()}`);
+    if (!insertResponse.ok) throw new Error(`Quote request insert failed: ${insertResponse.status}`);
 
     const inserted = await insertResponse.json();
+    // Email must never turn a confirmed CMS save into a failed customer submission.
+    try {
+      waitUntil(notifySavedQuote(env, {
+        requestId: inserted.dataItem?.id ?? '', submissionId: cleanText(body?.submissionId, 36),
+        collectionId: quoteRequestsCollectionId, make, model, year, customerName, whatsapp,
+        sourcePath: quoteSourcePath(request), savedAt: new Date().toISOString()
+      }, import.meta.env.PUBLIC_SEO_ENV || 'staging'));
+    } catch { console.warn('Quote email scheduling unavailable; CMS enquiry preserved.'); }
     const message = ['Hi Scrap My Car UAE, I would like a free valuation.', '', `Make: ${make}`, `Model: ${model}`, `Year: ${year}`, `Name: ${customerName}`, `Phone: ${whatsapp}`].join('\n');
     return json({ ok: true, requestId: inserted.dataItem?.id ?? '', whatsappUrl: `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}` });
   } catch (error) {

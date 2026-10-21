@@ -38,6 +38,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Configure optional staging notification ledger
+        run: node scripts/configure-quote-notification-binding.mjs
+        env:
+          QUOTE_NOTIFICATIONS_DATABASE_ID: ${{ vars.QUOTE_NOTIFICATIONS_DATABASE_ID }}
+
       - name: Build Astro
         run: npm run build
 
