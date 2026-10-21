@@ -31,19 +31,16 @@ const footerLocationRoutes: Record<string, string> = {
           Get guidance, a free valuation and collection support across the UAE.
         </p>
         <div class="footer-automotive-art" aria-hidden="true">
-          <svg viewBox="0 0 356 142" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
-            <circle cx="291" cy="69" r="59" fill="#E8F2E9" />
-            <path d="M19 117h318" stroke="#D5E6D8" stroke-width="2" stroke-linecap="round" />
-            <path d="M27 96v-9c0-7 4-12 12-14l27-7 19-29c6-8 14-12 26-12h93c15 0 25 5 35 17l24 27 41 9c9 2 15 8 17 18l2 15h-28m-216 0H37c-7 0-10-4-10-11Z" fill="#F2F8F1" stroke="#548663" stroke-width="2.7" stroke-linejoin="round" />
-            <path d="M83 67 99 43c3-4 8-6 14-6h42v34H78Zm85 4V37h33c12 0 18 4 26 14l17 20Z" stroke="#719F7D" stroke-width="2.2" stroke-linejoin="round" />
-            <path d="M45 75h22m184 0h37m-238 9h16m216 0h20m-138-47v34" stroke="#9ABC9E" stroke-width="2.2" stroke-linecap="round" />
-            <path d="M27 103h32m39 0h131m39 0h48" stroke="#548663" stroke-width="2.7" stroke-linecap="round" />
-            <circle cx="79" cy="103" r="20" fill="#F8FAF7" stroke="#3C744B" stroke-width="2.8" />
-            <circle cx="79" cy="103" r="10" fill="#E3EEE5" stroke="#A4C2A9" stroke-width="2" />
-            <circle cx="249" cy="103" r="20" fill="#F8FAF7" stroke="#3C744B" stroke-width="2.8" />
-            <circle cx="249" cy="103" r="10" fill="#E3EEE5" stroke="#A4C2A9" stroke-width="2" />
-            <path d="M17 127h93m19 0h139m15 0h55" stroke="#BDD5C0" stroke-width="2" stroke-linecap="round" />
-          </svg>
+          <img
+            src="/sections/footer-uae-used-cars.webp"
+            srcset="/sections/footer-uae-used-cars-480.webp 480w, /sections/footer-uae-used-cars.webp 960w"
+            sizes="(max-width: 620px) 250px, (max-width: 1100px) 300px, 360px"
+            width="960"
+            height="299"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       </div>
 
@@ -188,7 +185,7 @@ const footerLocationRoutes: Record<string, string> = {
     align-items: start;
   }
 
-  .footer-brand img {
+  .footer-brand > img {
     display: block;
     width: 164px;
     height: auto;
@@ -205,13 +202,20 @@ const footerLocationRoutes: Record<string, string> = {
   }
 
   .footer-automotive-art {
-    width: min(100%, 340px);
+    width: min(100%, 360px);
     margin-top: 16px;
     pointer-events: none;
     user-select: none;
+    opacity: 1;
+    transform: none;
+    transition: opacity 450ms ease, transform 450ms ease;
   }
 
-  .footer-automotive-art svg { display: block; width: 100%; height: auto; }
+  .footer-automotive-art img { display: block; width: 100%; height: auto; object-fit: contain; }
+  .footer-automotive-art.is-pending { opacity: 0; transform: translateY(8px); }
+  @media (max-width: 1100px) {
+    .footer-automotive-art { max-width: 300px; }
+  }
 
   .smc-footer h2 {
     margin: 5px 0 20px;
@@ -558,7 +562,7 @@ const footerLocationRoutes: Record<string, string> = {
     .smc-footer-main { min-height: 0; padding-top: 54px; }
     .footer-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 30px 24px; }
     .footer-brand { grid-column: 1 / -1; }
-    .footer-automotive-art { max-width: 280px; }
+    .footer-automotive-art { max-width: 300px; }
     .contact-strip { grid-template-columns: 1fr 1fr; gap: 20px; }
     .bottom-inner { gap: 18px; }
     .bottom-links { gap: 20px; }
@@ -576,7 +580,7 @@ const footerLocationRoutes: Record<string, string> = {
     .footer-brand { grid-column: 1 / -1; }
     .footer-grid > div:nth-child(2) { grid-column: auto; }
     .footer-brand p { margin-top: 15px; font-size: 14px; }
-    .footer-automotive-art { max-width: 295px; margin-top: 11px; }
+    .footer-automotive-art { max-width: 250px; margin: 14px auto 0; }
     .smc-footer h2 { font-size: 16px; margin-bottom: 16px; }
     .footer-links, .location-list { gap: 12px; }
     .footer-links a, .location-list span, .location-list a { font-size: 14px; }
@@ -635,6 +639,8 @@ const footerLocationRoutes: Record<string, string> = {
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .footer-automotive-art { transition: none; }
+    .footer-automotive-art.is-pending { opacity: 1; transform: none; }
     .footer-links a, .location-list a, .location-list a i, .contact-strip a, .bottom-links a, .cookie-settings-trigger { transition: none; }
     .footer-links a:hover { transform: none; }
     .cookie-consent-banner,
@@ -769,4 +775,23 @@ const footerLocationRoutes: Record<string, string> = {
 
   initialiseCookieControls();
   document.addEventListener('astro:page-load', initialiseCookieControls);
+</script>
+
+<script>
+  const initialiseFooterVisual = () => {
+    const visual = document.querySelector<HTMLElement>('.footer-automotive-art');
+    if (!visual || visual.dataset.ready) return;
+    visual.dataset.ready = 'true';
+    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    visual.classList.add('is-pending');
+    const observer = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return;
+      visual.classList.remove('is-pending');
+      observer.disconnect();
+    }, { threshold: .15 });
+    observer.observe(visual);
+    document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
+  };
+  initialiseFooterVisual();
+  document.addEventListener('astro:page-load', initialiseFooterVisual);
 </script>
