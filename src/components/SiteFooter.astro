@@ -152,12 +152,13 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
     margin-top: 0;
     background: #f7faf5;
     color: #243429;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     border-top: 1px solid #e1eae0;
   }
 
   .smc-footer-main {
     min-height: 455px;
-    padding: clamp(58px, 5.2vw, 78px) 0 34px;
+    padding: clamp(44px, 4.2vw, 64px) 0 32px;
   }
 
   .footer-grid {
@@ -178,9 +179,9 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
   .footer-brand p {
     max-width: 330px;
     margin: 21px 0 0;
-    color: #5e6e62;
-    font-size: 14px;
-    line-height: 1.8;
+    color: #526257;
+    font-size: 15px;
+    line-height: 1.7;
   }
 
   .footer-automotive-art {
@@ -193,32 +194,31 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
   .footer-automotive-art svg { display: block; width: 100%; height: auto; }
 
   .smc-footer h2 {
-    margin: 7px 0 23px;
+    margin: 5px 0 20px;
     color: #1b3825;
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: .055em;
-    line-height: 1.4;
-    text-transform: uppercase;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -.025em;
+    line-height: 1.35;
   }
   .smc-footer h2::after {
     content: '';
     display: block;
-    width: 29px;
+    width: 24px;
     height: 2px;
-    margin-top: 12px;
+    margin-top: 10px;
     border-radius: 3px;
     background: #448653;
   }
 
-  .footer-links, .location-list { display: grid; gap: 13px; }
+  .footer-links, .location-list { display: grid; gap: 11px; }
 
   .footer-links a, .location-list span {
-    color: #4f6154;
+    color: #45574b;
     text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.45;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.6;
   }
 
   .location-list span { display: flex; align-items: flex-start; gap: 8px; }
@@ -236,7 +236,7 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
   }
 
   .contact-strip {
-    margin-top: clamp(35px, 4vw, 50px);
+    margin-top: clamp(28px, 3vw, 38px);
     padding-top: 23px;
     border-top: 1px solid #dfe8df;
     display: grid;
@@ -249,16 +249,15 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
     align-content: start;
     gap: 7px;
     color: #293f30;
-    font-size: 13px;
-    line-height: 1.5;
+    font-size: 14px;
+    line-height: 1.6;
   }
 
   .contact-strip .label {
-    color: #66806b;
-    font-size: 10.5px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: .085em;
+    color: #526d58;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .01em;
     display: inline-flex;
     align-items: center;
     gap: 7px;
@@ -279,7 +278,7 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
     min-height: 75px;
     border-top: 1px solid #dfe8df;
     color: #546559;
-    font-size: 12.5px;
+    font-size: 13px;
   }
   .bottom-inner {
     display: flex;
@@ -552,17 +551,17 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
     .footer-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 30px 18px; }
     .footer-brand { grid-column: 1 / -1; }
     .footer-grid > div:nth-child(2) { grid-column: auto; }
-    .footer-brand p { margin-top: 15px; font-size: 13.5px; }
+    .footer-brand p { margin-top: 15px; font-size: 14px; }
     .footer-automotive-art { max-width: 295px; margin-top: 11px; }
-    .smc-footer h2 { font-size: 12px; margin-bottom: 18px; }
+    .smc-footer h2 { font-size: 16px; margin-bottom: 16px; }
     .footer-links, .location-list { gap: 12px; }
-    .footer-links a, .location-list span { font-size: 13px; }
+    .footer-links a, .location-list span { font-size: 14px; }
     .contact-strip { grid-template-columns: 1fr 1fr; margin-top: 32px; gap: 24px 12px; }
-    .contact-strip > div { font-size: 12px; min-width: 0; }
+    .contact-strip > div { font-size: 13px; min-width: 0; }
     .bottom-inner { min-height: 0; flex-direction: column; align-items: stretch; gap: 14px; padding-block: 16px 20px; }
     .bottom-links { width: 100%; max-width: none; justify-content: flex-start; flex-wrap: wrap; gap: 2px 20px; }
     .bottom-links a, .cookie-settings-trigger { min-height: 38px; display: inline-flex; align-items: center; font-size: 12px; }
-    .footer-copyright { margin: 0; max-width: none; text-align: left; font-size: 11.5px; }
+    .footer-copyright { margin: 0; max-width: none; text-align: left; font-size: 12px; }
     .cookie-consent-banner {
       right: 0;
       bottom: 0;
