@@ -12,7 +12,12 @@ test('contact page keeps real conversion links in its scoped redesign', () => {
   assert.match(contact, /href="\/free-quote"/);
   assert.match(contact, /heading-accent/);
   assert.doesNotMatch(contact, /heading-accent::after/);
-  assert.match(contact, /grid-template-columns: repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(contact, /contact-hero-grid/);
+  assert.match(contact, /<details open>/);
+  assert.match(contact, /mailto:info@scrapmycaruae.com/);
+  assert.match(contact, /Al Sajaa Industrial Area/);
+  assert.match(contact, /IntersectionObserver/);
+  assert.match(contact, /prefers-reduced-motion/);
   assert.match(contact, /@media \(max-width: 700px\)/);
 });
 
