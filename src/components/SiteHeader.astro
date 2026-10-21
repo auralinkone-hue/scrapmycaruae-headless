@@ -146,7 +146,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
             <nav class="mobile-view mobile-view--main is-active" data-mobile-view="main" aria-label="Main mobile navigation">
               <p class="mobile-view__eyebrow">Explore our services</p>
               {links.map((link) => link.children ? (
-                <button type="button" class:list={['mobile-row', 'mobile-row--category', { active: link.href === '/locations/' ? isLocationNavigationActive : mobileServiceGroups.find((group) => group.href === link.href)?.items.some((item) => isActive(item.href)) }]} data-mobile-forward={mobileServiceGroups.find((group) => group.href === link.href)?.id} aria-controls={'mobile-view-' + mobileServiceGroups.find((group) => group.href === link.href)?.id} aria-expanded="false">
+                <button type="button" class:list={['mobile-row', 'mobile-row--category', { active: link.href === '/locations/' ? isLocationNavigationActive : link.href === '/scrap-my-car/' ? isScrapMyCarServiceActive : mobileServiceGroups.find((group) => group.href === link.href)?.items.some((item) => isActive(item.href)) }]} data-mobile-forward={mobileServiceGroups.find((group) => group.href === link.href)?.id} aria-controls={'mobile-view-' + mobileServiceGroups.find((group) => group.href === link.href)?.id} aria-expanded="false">
                   <span class="mobile-row__icon"><i class:list={['ph', link.icon]} aria-hidden="true"></i></span><span>{link.label}</span><i class="ph ph-arrow-right mobile-row__arrow" aria-hidden="true"></i>
                 </button>
               ) : (
@@ -158,11 +158,11 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
                 <div class="mobile-subheading"><button type="button" class="mobile-back" data-mobile-back aria-label="Back to main navigation"><i class="ph ph-arrow-left" aria-hidden="true"></i>Back</button><h2 id={'mobile-heading-' + group.id}>{group.label}</h2></div>
                 <p class="mobile-view__description">{group.description}</p>
                 <nav aria-label={group.label + (group.id === 'locations' ? ' navigation' : ' services')}>
+                  {group.id === 'scrap' && <button type="button" class:list={['mobile-row', { active: pathname === '/cars' || pathname.startsWith('/cars/') }]} data-mobile-forward="manufacturers" aria-controls="mobile-view-manufacturers" aria-expanded="false"><span class="mobile-row__icon"><i class="ph ph-car-profile" aria-hidden="true"></i></span><span>Choose a manufacturer</span><i class="ph ph-arrow-right mobile-row__arrow" aria-hidden="true"></i></button>}
                   {group.id === 'locations' ? <>
                     <a class:list={['mobile-row', 'mobile-row--overview', { active: isLocationPageActive(pathname, locationOverview.href) }]} href={locationOverview.href} aria-current={isLocationPageActive(pathname, locationOverview.href) ? 'page' : undefined}><span class="mobile-row__icon"><i class:list={['ph', locationOverview.icon]} aria-hidden="true"></i></span><span>View All UAE Locations</span><i class="ph ph-caret-right mobile-row__arrow" aria-hidden="true"></i></a>
                     {locationGroups.map(location => <button type="button" class:list={['mobile-row', { active: isLocationGroupActive(pathname, location) }]} data-mobile-forward={'location-' + location.id} aria-controls={'mobile-view-location-' + location.id} aria-expanded="false"><span class="mobile-row__icon"><i class:list={['ph', location.icon]} aria-hidden="true"></i></span><span>{location.label}</span><i class="ph ph-arrow-right mobile-row__arrow" aria-hidden="true"></i></button>)}
                   </> : group.items.map((item, index) => <a class:list={['mobile-row', { 'mobile-row--overview': index === 0, active: isNavigationItemActive(item.href) }]} href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}><span class="mobile-row__icon"><i class:list={['ph', item.icon]} aria-hidden="true"></i></span><span>{index === 0 ? ('overviewLabel' in group ? group.overviewLabel : 'View all ' + group.label) : item.label}</span><i class="ph ph-caret-right mobile-row__arrow" aria-hidden="true"></i></a>)}
-                  {group.id === 'scrap' && <button type="button" class="mobile-row" data-mobile-forward="manufacturers" aria-controls="mobile-view-manufacturers" aria-expanded="false"><span class="mobile-row__icon"><i class="ph ph-car-profile" aria-hidden="true"></i></span><span>Choose a manufacturer</span><i class="ph ph-arrow-right mobile-row__arrow" aria-hidden="true"></i></button>}
                 </nav>
               </section>
             ))}
@@ -659,18 +659,18 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     letter-spacing: .085em; line-height: 1.4; text-transform: uppercase;
   }
   .mobile-row {
-    display: flex; align-items: center; gap: 13px; width: 100%; min-height: 60px;
+    position: relative; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px;
     padding: 10px 9px; border: 0; border-bottom: 1px solid #edf0ed; border-radius: 0;
-    background: transparent; color: #202823; font: inherit; font-size: 15px; font-weight: 650;
+    background: transparent; color: #202823; font: inherit; font-size: 15px; font-weight: 600;
     line-height: 1.4; text-decoration: none; text-align: left; cursor: pointer;
     transition: background-color 160ms ease,color 160ms ease,transform 160ms ease;
   }
   .mobile-row>span:not(.mobile-row__icon):not(.manufacturer-logo) { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-  .mobile-row--category { color: #151d18; font-weight: 750; font-size: 16px; }
+  .mobile-row--category { color: #151d18; font-weight: 650; }
   .mobile-row__icon {
     display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px;
     border: 1px solid #e9eeeb; border-radius: 11px;
-    background: #f5f7f5; color: #48584d; font-size: 19px;
+    background: #f5f7f5; color: #48584d; font-size: 18px;
   }
   .mobile-row--category .mobile-row__icon { background: #f2f7f2; border-color: #e4eee5; color: #397344; }
   .mobile-row__arrow {
@@ -678,10 +678,11 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     color: #89958b; transition: transform 160ms ease, color 160ms ease;
   }
   .mobile-row.active {
-    background: #f0f6f0; color: #19572e;
-    box-shadow: inset 3px 0 #4a8955; border-radius: 10px;
+    background: #f5f7f5; color: #18221b; font-weight: 700;
+    box-shadow: none; border-radius: 10px;
   }
-  .mobile-row.active .mobile-row__icon { background: #e0eee1; border-color: #d2e7d4; color: #2c6838; }
+  .mobile-row.active::before { content: ''; position: absolute; left: 1px; top: calc(50% - 2px); width: 4px; height: 4px; border-radius: 50%; background: #397344; }
+  .mobile-row.active .mobile-row__icon { background: #f5f7f5; border-color: #e9eeeb; color: #397344; }
   .mobile-row.active .mobile-row__arrow { color: #2d6b39; }
   .mobile-subheading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 3px 0 5px; }
   .mobile-back {
@@ -695,8 +696,8 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     font-weight: 800; letter-spacing: .075em; text-transform: uppercase;
   }
   .mobile-view__description { margin: 2px 0 16px; color: #6b796f; font-size: 12.5px; line-height: 1.6; }
-  .mobile-view:not(.mobile-view--main) .mobile-row { font-size: 14.5px; min-height: 56px; }
-  .mobile-row--overview { color: #19572e; font-weight: 800; }
+
+  .mobile-row--overview { color: #202823; font-weight: 650; }
   .mobile-menu-actions {
     display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 9px;
     width: min(100%,640px); justify-self: center;
@@ -781,8 +782,9 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
   .scrap-makes a[aria-current=page] { background: #e1efda; color: #214d28; box-shadow: inset 3px 0 #4e8341; }
   .manufacturer-logo { display: grid; place-items: center; flex: 0 0 38px; width: 38px; height: 38px; border-radius: 9px; background: #fff; }
   .manufacturer-logo img { display: block; width: 30px; height: 30px; object-fit: contain; }
-  .mobile-manufacturer { gap: 14px; padding-inline: 10px; border-radius: 10px; }
-  .mobile-manufacturer .manufacturer-logo { flex-basis: 42px; width: 42px; height: 42px; background: #fff; }
+  .mobile-manufacturer { border-radius: 10px; }
+  .mobile-manufacturer .manufacturer-logo { flex-basis: 36px; width: 36px; height: 36px; background: #fff; }
+  .mobile-manufacturer .manufacturer-logo img { width: 28px; height: 28px; }
   .nav-dropdown__panel { background: #fcfefb; backdrop-filter: none; border-radius: 18px; }
   .desktop-nav[data-enhanced] .nav-dropdown__panel { opacity: 0; transform: translate(-50%,-10px) scale(.985); pointer-events: none; transition: opacity 220ms ease,transform 220ms cubic-bezier(.2,.75,.25,1); }
   .desktop-nav[data-enhanced] .nav-dropdown.is-expanded .nav-dropdown__panel { opacity: 1; transform: translate(-50%,0) scale(1); pointer-events: auto; }
@@ -805,7 +807,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
   .locations-mega__group a { min-height: 44px; padding: 7px 8px; font-size: 12.5px; font-weight: 650; border-radius: 9px; overflow-wrap: anywhere; }
   .locations-mega__group a[aria-current=page] { color: #174b25; background: #dcecd5; border-color: #c6debd; font-weight: 800; box-shadow: inset 3px 0 #4e8341; }
   .mobile-view--location .mobile-row { min-height: 56px; }
-  .mobile-view--location .mobile-row__icon { width: 32px; height: 32px; flex-basis: 32px; font-size: 17px; }
+
   .mobile-view.is-behind { transform: translateX(-12%); }
   @media(prefers-reduced-motion:reduce) {
     .nav-dropdown__panel { transition: none !important; }
