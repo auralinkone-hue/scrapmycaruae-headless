@@ -6,7 +6,9 @@ const logoByMake: Record<string, string> = {
   HONDA: '/brands/honda.svg',
   LEXUS: '/brands/lexus.svg',
   MITSUBISHI: '/brands/mitsubishi.svg',
-  HYUNDAI: '/brands/hyundai.svg'
+  HYUNDAI: '/brands/hyundai.svg',
+  KIA: '/brands/kia.svg',
+  FORD: '/brands/ford.svg'
 };
 
 export const makeLogoForName = (name: string) => logoByMake[name.trim().toUpperCase()];

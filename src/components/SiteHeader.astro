@@ -1,6 +1,7 @@
 ---
 import { locationOverview, locationGroups, isLocationPageActive, isLocationGroupActive } from '../lib/location-navigation';
 import { carManufacturers, manufacturerHref } from '../lib/car-manufacturers';
+import { makeLogoForName } from '../lib/make-logos';
 const pathname = Astro.url.pathname;
 const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
 // Future service routes remain prepared here, but only live routes are exposed in the menu.
@@ -70,12 +71,13 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
 
       <nav class="desktop-nav" aria-label="Primary navigation">
         {links.map((link) => link.children ? (
-          <div class:list={['nav-group', { 'nav-group--locations': link.href === '/locations/', 'nav-group--scrap': link.href === '/scrap-my-car/', 'nav-group--split': link.href === '/scrap-my-car/' || link.href === '/locations/' }]}>
+          <div class:list={['nav-group', { 'nav-group--locations': link.href === '/locations/', 'nav-group--scrap': link.href === '/scrap-my-car/', 'nav-group--split': true }]}>
+          {link.href === '/sell-my-car/' && <a href={link.href} class:list={['nav-link', { active: link.children.some(service => service.href && isActive(service.href)) }]}>{link.label}</a>}
           {link.href === '/scrap-my-car/' && <a href={link.href} class:list={['nav-link', { active: isScrapMyCarServiceActive }]}>{link.label}</a>}
           {link.href === '/locations/' && <a href={link.href} class:list={['nav-link', { active: isLocationNavigationActive }]} aria-current={isLocationPageActive(pathname, link.href) ? 'page' : undefined}>{link.label}</a>}
-          <details name="desktop-services" class:list={['nav-dropdown', { active: link.href === '/locations/' ? isLocationNavigationActive : link.children.some((service) => service.href && (isActive(service.href) || (service.href === '/cars/' && pathname.startsWith('/cars/')))) }]}>
-            <summary class="nav-link nav-dropdown__trigger" aria-label={link.href === '/scrap-my-car/' ? 'Show Scrap My Car services' : link.href === '/locations/' ? 'Show Locations' : undefined}>
-              {link.href !== '/scrap-my-car/' && link.href !== '/locations/' && link.label}
+          <details data-desktop-dropdown class:list={['nav-dropdown', { active: link.href === '/locations/' ? isLocationNavigationActive : link.children.some((service) => service.href && (isActive(service.href) || (service.href === '/cars/' && pathname.startsWith('/cars/')))) }]}>
+            <summary class="nav-link nav-dropdown__trigger" aria-expanded="false" aria-label={link.href === '/scrap-my-car/' ? 'Show Scrap My Car services' : link.href === '/locations/' ? 'Show Locations' : 'Show Sell My Car services'}>
+
               <i class="ph ph-caret-down" aria-hidden="true"></i>
             </summary>
             {link.href === '/locations/' ? (
@@ -94,8 +96,8 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
                 </div>
               </div>
             ) : link.href === '/scrap-my-car/' ? <div class="nav-dropdown__panel scrap-mega" role="region" aria-label="Scrap services and manufacturers">
-              <section><h2>Scrap services</h2>{scrapMyCarServices.map(service=><a href={service.href} class:list={{active:isActive(service.href)}}><span class="service-link-icon"><i class:list={['ph',service.icon]} aria-hidden="true"></i></span>{service.label}</a>)}</section>
-              <section class="scrap-makes"><h2>Explore by manufacturer</h2><div>{carManufacturers.map(make=><a href={manufacturerHref(make.slug)} aria-current={pathname===manufacturerHref(make.slug)?'page':undefined}>{make.name}<i class="ph ph-caret-right" aria-hidden="true"></i></a>)}</div></section>
+              <section><h2>Scrap services</h2>{scrapMyCarServices.map(service=><a href={service.href} class:list={{active:isActive(service.href)}} aria-current={isActive(service.href)?'page':undefined}><span class="service-link-icon"><i class:list={['ph',service.icon]} aria-hidden="true"></i></span>{service.label}</a>)}</section>
+              <section class="scrap-makes"><h2>Explore by manufacturer</h2><div>{carManufacturers.map(make=><a href={manufacturerHref(make.slug)} aria-current={pathname===manufacturerHref(make.slug)?'page':undefined}><span class="manufacturer-logo"><img src={makeLogoForName(make.make)} alt="" width="32" height="32" /></span><span>{make.name}</span><i class="ph ph-caret-right" aria-hidden="true"></i></a>)}</div></section>
             </div> : <div class="nav-dropdown__panel">
               {link.children.filter((service) => service.href).map((service) => (
                 <a href={service.href} class:list={{ active: isNavigationItemActive(service.href) }} aria-current={isActive(service.href) ? 'page' : undefined}>
@@ -157,7 +159,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
             ))}
             <section class="mobile-view" data-mobile-view="manufacturers" id="mobile-view-manufacturers" aria-labelledby="mobile-heading-manufacturers" aria-hidden="true" inert>
               <div class="mobile-subheading"><button type="button" class="mobile-back" data-mobile-back="scrap" aria-label="Back to Scrap My Car"><i class="ph ph-arrow-left" aria-hidden="true"></i>Back</button><h2 id="mobile-heading-manufacturers">Manufacturers</h2></div>
-              <p class="mobile-view__description">Find guidance for your make.</p><nav aria-label="Manufacturer pages"><a class="mobile-row mobile-row--overview" href="/cars/"><span class="mobile-row__icon"><i class="ph ph-car-profile" aria-hidden="true"></i></span><span>All car makes</span></a>{carManufacturers.map(make=><a class="mobile-row" href={manufacturerHref(make.slug)} aria-current={pathname===manufacturerHref(make.slug)?'page':undefined}><span class="mobile-row__icon"><i class="ph ph-car-profile" aria-hidden="true"></i></span><span>{make.name}</span><i class="ph ph-caret-right mobile-row__arrow" aria-hidden="true"></i></a>)}</nav>
+              <p class="mobile-view__description">Find guidance for your make.</p><nav aria-label="Manufacturer pages"><a class="mobile-row mobile-row--overview" href="/cars/"><span class="mobile-row__icon"><i class="ph ph-car-profile" aria-hidden="true"></i></span><span>All car makes</span></a>{carManufacturers.map(make=><a class:list={['mobile-row', 'mobile-manufacturer', {active:pathname===manufacturerHref(make.slug)}]} href={manufacturerHref(make.slug)} aria-current={pathname===manufacturerHref(make.slug)?'page':undefined}><span class="manufacturer-logo"><img src={makeLogoForName(make.make)} alt="" width="32" height="32" /></span><span>{make.name}</span><i class="ph ph-caret-right mobile-row__arrow" aria-hidden="true"></i></a>)}</nav>
             </section>
             {locationGroups.map(group => <section class="mobile-view mobile-view--location" data-mobile-view={'location-' + group.id} id={'mobile-view-location-' + group.id} aria-labelledby={'mobile-heading-location-' + group.id} aria-hidden="true" inert>
               <div class="mobile-subheading"><button type="button" class="mobile-back" data-mobile-back="locations" aria-label="Back to Locations"><i class="ph ph-arrow-left" aria-hidden="true"></i>Back</button><h2 id={'mobile-heading-location-' + group.id}>{group.label}</h2></div>
@@ -182,14 +184,74 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     const header = document.querySelector<HTMLElement>('.smc-header');
     if (!header || header.dataset.desktopReady) return;
     header.dataset.desktopReady = 'true';
-    header.addEventListener('keydown', (event) => {
-      if (event.key !== 'Escape') return;
-      const open = header.querySelector<HTMLDetailsElement>('.nav-dropdown[open]');
-      if (!open) return;
-      event.preventDefault();
-      open.open = false;
-      open.querySelector<HTMLElement>('summary')?.focus();
+    header.querySelector('.desktop-nav')?.setAttribute('data-enhanced', '');
+    const controller = new AbortController();
+    const { signal } = controller;
+    const hover = matchMedia('(min-width: 1101px) and (hover: hover) and (pointer: fine)');
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const menus = Array.from(header.querySelectorAll<HTMLDetailsElement>('.nav-dropdown'));
+    const timers = new Map<HTMLDetailsElement, ReturnType<typeof setTimeout>>();
+    const cancel = (menu: HTMLDetailsElement) => { clearTimeout(timers.get(menu)); timers.delete(menu); };
+    const close = (menu: HTMLDetailsElement, immediate = false) => {
+      cancel(menu);
+      menu.classList.remove('is-expanded');
+      menu.querySelector('summary')?.setAttribute('aria-expanded', 'false');
+      const panel = menu.querySelector<HTMLElement>('.nav-dropdown__panel')!;
+      panel.inert = true;
+      panel.setAttribute('aria-hidden', 'true');
+      if (immediate || reducedMotion.matches) menu.open = false;
+      else timers.set(menu, setTimeout(() => { menu.open = false; timers.delete(menu); }, 220));
+    };
+    const open = (menu: HTMLDetailsElement) => {
+      menus.filter(other => other !== menu).forEach(other => close(other, true));
+      cancel(menu);
+      menu.open = true;
+      const panel = menu.querySelector<HTMLElement>('.nav-dropdown__panel')!;
+      panel.inert = false;
+      panel.removeAttribute('aria-hidden');
+      panel.getBoundingClientRect();
+      menu.classList.add('is-expanded');
+      menu.querySelector('summary')?.setAttribute('aria-expanded', 'true');
+    };
+    menus.forEach(menu => {
+      const group = menu.closest<HTMLElement>('.nav-group')!;
+      const trigger = menu.querySelector<HTMLElement>('summary')!;
+      trigger.addEventListener('click', event => {
+        event.preventDefault();
+        if (menu.classList.contains('is-expanded')) close(menu); else open(menu);
+      }, { signal });
+      trigger.addEventListener('keydown', event => {
+        if (event.key !== 'ArrowDown') return;
+        event.preventDefault(); open(menu);
+        menu.querySelector<HTMLElement>('.nav-dropdown__panel a')?.focus();
+      }, { signal });
+      group.addEventListener('pointerenter', event => { if (hover.matches && event.pointerType !== 'touch') open(menu); }, { signal });
+      group.addEventListener('pointerleave', event => {
+        if (!hover.matches || event.pointerType === 'touch' || group.contains(document.activeElement)) return;
+        cancel(menu);
+        timers.set(menu, setTimeout(() => close(menu), 140));
+      }, { signal });
+      group.addEventListener('focusin', () => cancel(menu), { signal });
+      group.addEventListener('focusout', event => {
+        if (event.relatedTarget instanceof Node && group.contains(event.relatedTarget)) return;
+        if (!(hover.matches && group.matches(':hover'))) close(menu);
+      }, { signal });
     });
+    document.addEventListener('pointerdown', event => {
+      menus.forEach(menu => { if (!(event.target instanceof Node) || !menu.closest('.nav-group')?.contains(event.target)) close(menu); });
+    }, { signal });
+    header.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return;
+      const menu = menus.find(menu => menu.classList.contains('is-expanded'));
+      if (!menu) return;
+      event.preventDefault(); close(menu);
+      menu.querySelector<HTMLElement>('summary')?.focus();
+    }, { signal });
+    hover.addEventListener('change', () => menus.forEach(menu => close(menu, true)), { signal });
+    document.addEventListener('astro:before-swap', () => {
+      menus.forEach(menu => close(menu, true));
+      controller.abort(); delete header.dataset.desktopReady;
+    }, { once: true, signal });
   };
   initialiseDesktopNavigation();
   document.addEventListener('astro:page-load', initialiseDesktopNavigation);
@@ -199,6 +261,8 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     const drawer = document.querySelector<HTMLElement>('.mobile-drawer');
     if (!opener || !drawer || drawer.dataset.ready) return;
     drawer.dataset.ready = 'true';
+    const mobileController = new AbortController();
+    const mobileSignal = mobileController.signal;
     // Mount at body level so header backdrop-filter cannot constrain the fixed drawer.
     document.body.append(drawer);
     const closeButton = drawer.querySelector<HTMLButtonElement>('[data-mobile-close]')!;
@@ -286,9 +350,9 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
       const last = focusable[focusable.length - 1];
       if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
-    });
-    mobileQuery.addEventListener('change', () => { if (!mobileQuery.matches) closeMenu(false, true); });
-    document.addEventListener('astro:before-swap', () => { closeMenu(false, true); drawer.remove(); }, { once: true });
+    }, { signal: mobileSignal });
+    mobileQuery.addEventListener('change', () => { if (!mobileQuery.matches) closeMenu(false, true); }, { signal: mobileSignal });
+    document.addEventListener('astro:before-swap', () => { closeMenu(false, true); clearTimeout(closeTimer); mobileController.abort(); drawer.remove(); }, { once: true });
   };
   initialiseMobileNavigation();
   document.addEventListener('astro:page-load', initialiseMobileNavigation);
@@ -396,7 +460,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     transition: transform 160ms ease;
   }
 
-  .nav-dropdown[open] .nav-dropdown__trigger .ph {
+  .nav-dropdown.is-expanded .nav-dropdown__trigger .ph {
     transform: rotate(180deg);
   }
 
@@ -414,7 +478,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     backdrop-filter: blur(14px);
     transform: translateX(-50%);
     transform-origin: top center;
-    animation: service-menu-in 190ms cubic-bezier(.2,.8,.2,1) both;
+    opacity: 1;
   }
 
   .nav-dropdown__panel a {
@@ -467,11 +531,6 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
   .nav-dropdown__panel a.active .service-link-icon { background: var(--smc-green); color: #fff; }
   .nav-dropdown__panel a:hover .service-link-arrow,
   .nav-dropdown__panel a.active .service-link-arrow { opacity: 1; transform: translate(0, 0); color: var(--smc-green-dark); }
-
-  @keyframes service-menu-in {
-    from { opacity: 0; transform: translate(-50%, -7px) scale(.97); }
-    to { opacity: 1; transform: translate(-50%, 0); }
-  }
 
   .nav-link:focus-visible {
     outline: 3px solid rgba(47, 111, 45, .16);
@@ -656,7 +715,27 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     .mobile-view { padding-inline: 18px; }
   }
 
-  .nav-group--scrap{position:static}.scrap-mega{top:calc(100% - 1px);width:min(680px,calc(100vw - 48px));display:grid;grid-template-columns:1fr 1.25fr;gap:18px;padding:20px;max-height:min(620px,calc(100dvh - 100px));overflow-y:auto;overscroll-behavior:contain}.scrap-mega h2{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#55764d;margin:0 9px 12px}.scrap-makes{border-left:1px solid #dbe7d5;padding-left:18px}.scrap-makes>div{display:grid;grid-template-columns:1fr 1fr;gap:3px}.scrap-makes a{font-size:12px;min-height:48px;padding:9px;justify-content:space-between}.scrap-makes a i{font-size:13px;color:#6f9865}.scrap-makes a[aria-current=page]{background:#e1efda;color:#214d28}
+  .nav-group--scrap { position: static; }
+  .scrap-mega { top: calc(100% - 1px); width: min(820px,calc(100vw - 48px)); display: grid; grid-template-columns: .8fr 1.5fr; gap: 24px; padding: 22px; max-height: min(620px,calc(100dvh - 100px)); overflow-y: auto; overscroll-behavior: contain; }
+  .scrap-mega h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #55764d; margin: 0 10px 12px; }
+  .scrap-mega a { min-height: 51px; font-weight: 650; }
+  .scrap-makes { border-left: 1px solid #dbe7d5; padding-left: 24px; min-width: 0; }
+  .scrap-makes>div { display: grid; grid-template-rows: repeat(5,auto); grid-auto-flow: column; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 3px 8px; }
+  .scrap-makes a { font-size: 12.5px; padding: 8px; gap: 9px; }
+  .scrap-makes a>span:not(.manufacturer-logo) { flex: 1; }
+  .scrap-makes a>i { font-size: 13px; color: #6f9865; transition: transform 180ms ease; }
+  .scrap-makes a:hover>i { transform: translateX(3px); }
+  .scrap-makes a[aria-current=page] { background: #e1efda; color: #214d28; box-shadow: inset 3px 0 #4e8341; }
+  .manufacturer-logo { display: grid; place-items: center; flex: 0 0 38px; width: 38px; height: 38px; border-radius: 9px; background: #fff; }
+  .manufacturer-logo img { display: block; width: 30px; height: 30px; object-fit: contain; }
+  .mobile-manufacturer { gap: 14px; padding-inline: 10px; border-radius: 10px; }
+  .mobile-manufacturer .manufacturer-logo { flex-basis: 42px; width: 42px; height: 42px; background: #fff; }
+  .nav-dropdown__panel { background: #fcfefb; backdrop-filter: none; border-radius: 18px; }
+  .desktop-nav[data-enhanced] .nav-dropdown__panel { opacity: 0; transform: translate(-50%,-10px) scale(.985); pointer-events: none; transition: opacity 220ms ease,transform 220ms cubic-bezier(.2,.75,.25,1); }
+  .desktop-nav[data-enhanced] .nav-dropdown.is-expanded .nav-dropdown__panel { opacity: 1; transform: translate(-50%,0) scale(1); pointer-events: auto; }
+  /* Fill the pointer route between each trigger and its panel. */
+  .nav-dropdown__panel::before { content: ''; position: absolute; bottom: 100%; left: 0; right: 0; height: 20px; }
+  .nav-group--split>.nav-link { display: inline-flex; align-items: center; min-height: 44px; }
   /* Locations only: compact four-column menu, anchored to the header container. */
   .nav-group--locations { position: static; }
   .locations-mega { top: calc(100% - 1px); width: min(880px,calc(100vw - 48px)); padding: 14px; max-height: min(620px,calc(100dvh - 100px)); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #9aba94 transparent; background: #fcfefb; }
@@ -675,8 +754,8 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
   .mobile-view--location .mobile-row__icon { width: 32px; height: 32px; flex-basis: 32px; font-size: 17px; }
   .mobile-view.is-behind { transform: translateX(-12%); }
   @media(prefers-reduced-motion:reduce) {
-    .nav-dropdown__panel { animation: none !important; }
-    .nav-link::after,.nav-dropdown__trigger .ph,.nav-dropdown__panel a,.service-link-icon,.service-link-arrow { transition: none !important; }
+    .nav-dropdown__panel { transition: none !important; }
+    .nav-link::after,.nav-dropdown__trigger .ph,.nav-dropdown__panel a,.service-link-icon,.service-link-arrow,.scrap-makes a>i { transition: none !important; }
     .mobile-drawer,.mobile-view,.mobile-row,.mobile-quote,.mobile-whatsapp { transition: none; }
   }
 </style>
