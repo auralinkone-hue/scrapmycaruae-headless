@@ -113,12 +113,12 @@ const footerLocationRoutes: Record<string, string> = {
 
   <div class="smc-footer-bottom">
     <div class="smc-container bottom-inner">
-      <div class="bottom-links">
-        <button class="cookie-settings-trigger" type="button" data-cookie-settings><i class="ph ph-sliders-horizontal" aria-hidden="true"></i>Cookie Settings</button>
-        <a href="/privacy-policy"><i class="ph ph-shield-check" aria-hidden="true"></i>Privacy Policy</a>
-        <a href="/terms-conditions/"><i class="ph ph-file-text" aria-hidden="true"></i>Terms of Service</a>
-      </div>
       <span class="footer-copyright">© {year} Scrap My Car UAE. All rights reserved.</span>
+      <div class="bottom-links">
+        <button class="cookie-settings-trigger" type="button" data-cookie-settings>Cookie Settings</button>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-conditions/">Terms of Service</a>
+      </div>
     </div>
   </div>
 </footer>
@@ -333,7 +333,7 @@ const footerLocationRoutes: Record<string, string> = {
     background: #163d18;
     color: #fff;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 400;
   }
   .bottom-inner {
     display: flex;
@@ -342,32 +342,34 @@ const footerLocationRoutes: Record<string, string> = {
     justify-content: space-between;
     gap: 26px;
   }
-  /* Reserve the floating WhatsApp action's right-hand lane where it exists. */
-  :global(body:has(.floating-whatsapp)) .bottom-inner { padding-right: 74px; }
+  /* At narrower widths the floating action needs its own clear right-hand lane. */
+  @media (max-width: 1350px) {
+    :global(body:has(.floating-whatsapp)) .bottom-inner { padding-right: 74px; }
+  }
   .bottom-links {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    gap: clamp(16px, 2.8vw, 44px);
-    flex: 1 1 auto;
-    max-width: 710px;
+    gap: 0;
+    margin-left: auto;
+    flex: 0 0 auto;
   }
   .bottom-links a, .cookie-settings-trigger {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
+    position: relative;
     min-height: 44px;
+    padding-inline: 26px;
     color: #fff;
     text-decoration: none;
     font: inherit;
-    font-weight: 500;
+    font-weight: 400;
     white-space: nowrap;
     transition: color 160ms ease;
   }
   .cookie-settings-trigger {
     min-height: 44px;
     margin: 0;
-    padding: 0;
     border: 0;
     background: transparent;
     display: inline-flex;
@@ -375,15 +377,25 @@ const footerLocationRoutes: Record<string, string> = {
     cursor: pointer;
     text-align: left;
   }
-  .bottom-links .ph { font-size: 17px; line-height: 1; color: #c5dbbc; transition: color 160ms ease; }
-  .bottom-links a:hover, .cookie-settings-trigger:hover,
-  .bottom-links a:hover .ph, .cookie-settings-trigger:hover .ph { color: #c5e8b8; text-decoration: none; }
+  .bottom-links > :first-child { padding-left: 0; }
+  .bottom-links > :last-child { padding-right: 0; }
+  .bottom-links > * + *::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 1px;
+    height: 16px;
+    background: rgba(224, 240, 215, .45);
+    transform: translateY(-50%);
+  }
+  .bottom-links a:hover, .cookie-settings-trigger:hover { color: #c5e8b8; text-decoration: none; }
   .bottom-links a:focus-visible, .cookie-settings-trigger:focus-visible {
     outline: 2px solid #c5e8b8;
     outline-offset: 4px;
     border-radius: 2px;
   }
-  .footer-copyright { margin-left: auto; color: #fff; text-align: right; white-space: nowrap; }
+  .footer-copyright { margin: 0; color: #fff; text-align: left; white-space: nowrap; }
 
   .cookie-consent-banner button:focus-visible,
   .cookie-modal button:focus-visible,
@@ -604,7 +616,9 @@ const footerLocationRoutes: Record<string, string> = {
     .footer-automotive-art { max-width: 300px; }
     .contact-strip { grid-template-columns: 1fr 1fr; gap: 20px; }
     .bottom-inner { gap: 18px; }
-    .bottom-links { flex-wrap: wrap; gap: 0 16px; }
+    .bottom-links a, .cookie-settings-trigger { padding-inline: 16px; }
+    .bottom-links > :first-child { padding-left: 0; }
+    .bottom-links > :last-child { padding-right: 0; }
     .footer-copyright { white-space: normal; max-width: 240px; }
 
     .cookie-consent-banner {
@@ -626,7 +640,9 @@ const footerLocationRoutes: Record<string, string> = {
     .contact-strip { grid-template-columns: 1fr 1fr; margin-top: 32px; gap: 24px 12px; }
     .contact-strip > div { font-size: 13px; gap: 10px; }
     .bottom-inner { min-height: 0; flex-direction: column; align-items: stretch; gap: 10px; padding-block: 14px; }
-    .bottom-links { width: 100%; max-width: none; justify-content: flex-start; flex-wrap: wrap; gap: 2px 12px; }
+    .bottom-links { width: 100%; margin-left: 0; justify-content: flex-start; flex-wrap: wrap; gap: 0 16px; }
+    .bottom-links a, .cookie-settings-trigger { padding-inline: 0; }
+    .bottom-links > * + *::before { display: none; }
     .bottom-links a, .cookie-settings-trigger { min-height: 38px; display: inline-flex; align-items: center; font-size: 13px; }
     .footer-copyright { margin: 0; max-width: none; text-align: left; font-size: 13px; }
     .cookie-consent-banner {
@@ -678,7 +694,7 @@ const footerLocationRoutes: Record<string, string> = {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .footer-automotive-art, .contact-icon, .bottom-links .ph { transition: none; }
+    .footer-automotive-art, .contact-icon { transition: none; }
     .contact-strip > div:hover .contact-icon { transform: none; }
     .footer-automotive-art.is-pending { opacity: 1; transform: none; }
     .footer-links a, .location-list a, .location-list a i, .contact-strip a, .bottom-links a, .cookie-settings-trigger { transition: none; }
