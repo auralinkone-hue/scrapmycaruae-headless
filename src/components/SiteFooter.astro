@@ -2,6 +2,18 @@
 const year = new Date().getFullYear();
 const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
 import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
+
+// Only locations with existing published pages receive links.
+const footerLocationRoutes: Record<string, string> = {
+  'Al Qusais': '/locations/dubai/al-qusais/',
+  'Al Quoz': '/locations/dubai/al-quoz/',
+  'Abu Dhabi': '/locations/abu-dhabi/',
+  'Sharjah': '/locations/sharjah/',
+  'Ajman': '/locations/ajman/',
+  'Ras Al Khaimah': '/locations/ras-al-khaimah/',
+  'Fujairah': '/locations/fujairah/',
+  'Al Ain': '/locations/al-ain/'
+};
 ---
 
 <footer class="smc-footer">
@@ -50,14 +62,22 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
       <div>
         <h2>Dubai</h2>
         <div class="location-list">
-          {footerDubaiLocations.map((location) => <span><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</span>)}
+          {footerDubaiLocations.map((location) => footerLocationRoutes[location] ? (
+            <a href={footerLocationRoutes[location]}><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</a>
+          ) : (
+            <span><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</span>
+          ))}
         </div>
       </div>
 
       <div>
         <h2>Across the UAE</h2>
         <div class="location-list">
-          {footerUaeLocations.map((location) => <span><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</span>)}
+          {footerUaeLocations.map((location) => footerLocationRoutes[location] ? (
+            <a href={footerLocationRoutes[location]}><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</a>
+          ) : (
+            <span><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</span>
+          ))}
         </div>
       </div>
     </div>
@@ -213,7 +233,7 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
 
   .footer-links, .location-list { display: grid; gap: 11px; }
 
-  .footer-links a, .location-list span {
+  .footer-links a, .location-list span, .location-list a {
     color: #45574b;
     text-decoration: none;
     font-size: 15px;
@@ -221,15 +241,19 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
     line-height: 1.6;
   }
 
-  .location-list span { display: flex; align-items: flex-start; gap: 8px; }
+  .location-list span, .location-list a { display: flex; align-items: flex-start; gap: 8px; }
   .location-list i { color: #467e53; font-size: 15px; margin-top: 2px; flex: 0 0 auto; }
+  .location-list a { width: fit-content; transition: color 160ms ease; }
+  .location-list a i { transition: color 160ms ease; }
+  .location-list a:hover, .location-list a:focus-visible,
+  .location-list a:hover i, .location-list a:focus-visible i { color: #26723b; text-decoration: none; }
 
   .footer-links a {
     width: fit-content;
     transition: color 160ms ease, transform 160ms ease;
   }
   .footer-links a:hover { color: #205b30; transform: translateX(3px); }
-  .footer-links a:focus-visible, .contact-strip a:focus-visible, .bottom-links a:focus-visible {
+  .footer-links a:focus-visible, .location-list a:focus-visible, .contact-strip a:focus-visible, .bottom-links a:focus-visible {
     outline: 2px solid #367d48;
     outline-offset: 4px;
     border-radius: 2px;
@@ -555,7 +579,7 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
     .footer-automotive-art { max-width: 295px; margin-top: 11px; }
     .smc-footer h2 { font-size: 16px; margin-bottom: 16px; }
     .footer-links, .location-list { gap: 12px; }
-    .footer-links a, .location-list span { font-size: 14px; }
+    .footer-links a, .location-list span, .location-list a { font-size: 14px; }
     .contact-strip { grid-template-columns: 1fr 1fr; margin-top: 32px; gap: 24px 12px; }
     .contact-strip > div { font-size: 13px; min-width: 0; }
     .bottom-inner { min-height: 0; flex-direction: column; align-items: stretch; gap: 14px; padding-block: 16px 20px; }
@@ -611,7 +635,7 @@ import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .footer-links a, .contact-strip a, .bottom-links a, .cookie-settings-trigger { transition: none; }
+    .footer-links a, .location-list a, .location-list a i, .contact-strip a, .bottom-links a, .cookie-settings-trigger { transition: none; }
     .footer-links a:hover { transform: none; }
     .cookie-consent-banner,
     .cookie-modal__backdrop,
