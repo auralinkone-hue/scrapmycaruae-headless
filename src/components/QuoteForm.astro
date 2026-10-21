@@ -78,8 +78,13 @@ const isFreeQuote = variant === 'free-quote';
 
     <label class="hp-field" aria-hidden="true"><span>Website</span><input name="website" tabindex="-1" autocomplete="off" /></label>
     {dataError && <div class="data-error" role="alert">Vehicle options could not be loaded from Wix CMS. Please try again shortly.</div>}
-    <button type="submit" class="submit" data-submit>Get My Free Valuation <i class="ph ph-calculator" aria-hidden="true"></i></button>
-    <div class="submit-message" data-submit-message hidden></div>
+    <button type="submit" class="submit" data-submit data-submit-state="idle">
+      <span class="submit-idle">Get My Free Valuation <i class="ph ph-calculator" aria-hidden="true"></i></span>
+      <span class="submit-feedback submit-saving" aria-hidden="true"><span class="submit-spinner"></span><span>Saving your request...</span><span class="submit-progress"></span></span>
+      <span class="submit-feedback submit-saved" aria-hidden="true"><svg data-submit-check viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg><span>Request saved successfully!</span></span>
+    </button>
+    <span class="quote-submit-status" data-submit-status role="status" aria-live="polite" aria-atomic="true"></span>
+    <div class="submit-message" data-submit-message role="alert" hidden></div>
     {isBlogSidebar && <p class="sidebar-trust">Free valuation <span>•</span> No obligation <span>•</span> UAE-wide collection</p>}
   </form>
 </div>
@@ -188,6 +193,36 @@ const isFreeQuote = variant === 'free-quote';
       let submissionId = '';
       let submissionDetails = '';
       let isSubmitting = false;
+      const submitButton = root.querySelector('[data-submit]');
+      const submitMessage = root.querySelector('[data-submit-message]');
+      const submitStatus = root.querySelector('[data-submit-status]');
+      const setSubmitState = (state) => {
+        const label = state === 'saving' ? 'Saving your request...' : state === 'saved' ? 'Request saved successfully!' : 'Get My Free Valuation';
+        if (submitButton instanceof HTMLButtonElement) {
+          submitButton.dataset.submitState = state;
+          submitButton.disabled = state !== 'idle';
+          submitButton.setAttribute('aria-busy', String(state === 'saving'));
+          submitButton.setAttribute('aria-label', label);
+        }
+        if (submitStatus instanceof HTMLElement) submitStatus.textContent = state === 'idle' ? '' : label;
+      };
+      const showSavedConfirmation = async () => {
+        setSubmitState('saved');
+        // Paint the confirmed state and finish its short entrance animation.
+        // Feedback is bounded even if an animation or background tab stops advancing.
+        let completionTimer;
+        try {
+          await Promise.race([
+            (async () => {
+              await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              const check = submitButton?.querySelector('[data-submit-check]');
+              await Promise.all((check?.getAnimations?.() || []).map(animation => animation.finished.catch(() => {})));
+            })(),
+            new Promise(resolve => { completionTimer = setTimeout(resolve, 300); })
+          ]);
+        } catch { /* Optional animation must never block a confirmed WhatsApp handoff. */ }
+        finally { clearTimeout(completionTimer); }
+      };
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         if (isSubmitting) return;
@@ -201,8 +236,6 @@ const isFreeQuote = variant === 'free-quote';
           return;
         }
 
-        const submitButton = root.querySelector('[data-submit]');
-        const submitMessage = root.querySelector('[data-submit-message]');
         const data = Object.fromEntries(new FormData(form).entries());
         const details = JSON.stringify(data);
         if (!submissionId || details !== submissionDetails) {
@@ -211,32 +244,29 @@ const isFreeQuote = variant === 'free-quote';
         }
         data.submissionId = submissionId;
         isSubmitting = true;
-        if (submitButton instanceof HTMLButtonElement) {
-          submitButton.disabled = true;
-          submitButton.innerHTML = 'Saving your request… <i class="ph ph-circle-notch" aria-hidden="true"></i>';
-        }
+        setSubmitState('saving');
         if (submitMessage instanceof HTMLElement) {
           submitMessage.hidden = true;
           submitMessage.textContent = '';
           submitMessage.classList.remove('error');
         }
         try {
-          const response = await fetch('/api/quote', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+          const response = await fetch('/api/quote', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), signal: AbortSignal.timeout(30000) });
           const result = await response.json();
           if (!response.ok || !result.ok || !result.whatsappUrl) throw new Error(result.message || 'Submission failed.');
           window.smcAnalytics?.track('generate_lead', { form_name: 'valuation_form', cta_location: 'quote_form', destination_type: 'whatsapp' });
+          await showSavedConfirmation();
           window.smcAnalytics?.track('whatsapp_handoff', { form_name: 'valuation_form', cta_location: 'quote_form', destination_type: 'whatsapp' });
           window.location.assign(result.whatsappUrl);
         } catch (error) {
           isSubmitting = false;
+          setSubmitState('idle');
           if (submitMessage instanceof HTMLElement) {
             submitMessage.hidden = false;
             submitMessage.classList.add('error');
-            submitMessage.textContent = error instanceof Error ? error.message : 'We could not submit your request right now.';
-          }
-          if (submitButton instanceof HTMLButtonElement) {
-            submitButton.disabled = false;
-            submitButton.innerHTML = 'Get My Free Valuation <i class="ph ph-calculator" aria-hidden="true"></i>';
+            submitMessage.textContent = error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name)
+              ? 'We could not confirm your request in time. Please try again.'
+              : error instanceof Error ? error.message : 'We could not submit your request right now.';
           }
         }
       });
@@ -252,11 +282,35 @@ const isFreeQuote = variant === 'free-quote';
   .field-control { position: relative; display: block; min-width: 0; } input, select { width: 100%; min-width: 0; height: 50px; padding: 0 14px; border: 1px solid #d5ded2; border-radius: 12px; outline: none; background: #fff; color: #171a17; font: inherit; font-size: 15px; font-weight: 500; transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease; } select { padding-right: 37px; cursor: pointer; } select:disabled { background: #f3f5f2; color: #8b948a; cursor: not-allowed; }
   .with-icon .ph { position: absolute; z-index: 1; top: 50%; left: 14px; color: #5a8d53; font-size: 18px; pointer-events: none; transform: translateY(-50%); } .with-icon input, .with-icon select { padding-left: 43px; } .with-icon select { padding-right: 37px; } input:focus, select:focus { border-color: #609a59; box-shadow: 0 0 0 3px rgba(62,122,55,.1); } input:focus-visible, select:focus-visible, .submit:focus-visible { outline: 3px solid rgba(47,111,45,.16); outline-offset: 2px; }
   .model-availability { grid-column: 1 / -1; display: inline-flex; align-items: center; gap: 5px; width: fit-content; margin: -3px 0 -1px; color: #477a42; font-size: 11px; font-weight: 760; line-height: 1.2; } .model-availability .ph { font-size: 14px; } .model-availability[hidden] { display: none; } .field-error { display: flex; align-items: center; gap: 5px; color: #b42318; font-size: 11px; font-weight: 680; line-height: 1.25; } .field-error::before { content: ""; width: 5px; height: 5px; flex: 0 0 auto; border-radius: 50%; background: currentColor; } .field-error[hidden] { display: none; } .form-field.is-invalid input, .form-field.is-invalid select { border-color: #dd554c; background: #fff9f8; box-shadow: 0 0 0 3px rgba(221,85,76,.09); } .form-field.is-invalid .with-icon .ph { color: #c5423b; }
-  .submit { min-height:54px; margin-top:2px; padding:0 9px 0 20px; border:1px solid #174b25; border-radius:999px; background:linear-gradient(135deg,#1b5428,#276d33); color:#fff; font:inherit; font-size:14px; font-weight:700; letter-spacing:.012em; display:inline-flex; align-items:center; justify-content:center; gap:10px; cursor:pointer; box-shadow:0 12px 24px rgba(23,63,29,.18); transition:transform 160ms ease,background 160ms ease,box-shadow 160ms ease,opacity 160ms ease; } .submit .ph { display:grid; width:34px; height:34px; place-items:center; border-radius:50%; background:#b3e69b; color:#174020; font-size:17px; transition:background-color 160ms ease; } .submit:hover { transform:translateY(-1px); background:#163f20; box-shadow:0 15px 28px rgba(23,63,29,.24); } .submit:hover .ph { background:#fff; } .submit:active { transform:translateY(0) scale(.99); } .submit:disabled { opacity:.68; cursor:wait; } .submit:disabled .ph-circle-notch { animation:smc-spin .8s linear infinite; } @keyframes smc-spin { to { transform:rotate(360deg); } }
+  .submit { min-height:54px; margin-top:2px; padding:0 9px 0 20px; border:1px solid #174b25; border-radius:999px; background:linear-gradient(135deg,#1b5428,#276d33); color:#fff; font:inherit; font-size:14px; font-weight:700; letter-spacing:.012em; display:inline-flex; align-items:center; justify-content:center; gap:10px; cursor:pointer; box-shadow:0 12px 24px rgba(23,63,29,.18); transition:transform 160ms ease,background 160ms ease,box-shadow 160ms ease,opacity 160ms ease; } .submit .ph { display:grid; width:34px; height:34px; place-items:center; border-radius:50%; background:#b3e69b; color:#174020; font-size:17px; transition:background-color 160ms ease; } .submit:hover { transform:translateY(-1px); background:#163f20; box-shadow:0 15px 28px rgba(23,63,29,.24); } .submit:hover .ph { background:#fff; } .submit:active { transform:translateY(0) scale(.99); } .submit:disabled { opacity:.68; cursor:wait; }
   .hp-field { position: absolute !important; width: 1px !important; height: 1px !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; white-space: nowrap !important; } .submit-message, .data-error { padding: 10px 11px; border-radius: 10px; font-size: 12px; line-height: 1.4; } .submit-message { background: #eef6eb; color: var(--smc-green-dark); } .submit-message.error, .data-error { background: #fff0f0; color: #842727; }
   .sidebar-trust { margin: 0; color: #17331d; font-size: 10px; font-weight: 750; line-height: 1.45; text-align: center; } .sidebar-trust span { padding-inline: 2px; }
   .quote-card--blog-sidebar { padding: 20px; border: 1px solid rgba(220, 242, 219, .16); border-radius: 20px; background: #184D2B; box-shadow: 0 10px 24px rgba(15, 52, 29, .18); } .quote-card--blog-sidebar .quote-head h2 { color: #fff; font-size: 1.55rem; } .quote-card--blog-sidebar .quote-head p, .quote-card--blog-sidebar .field-label { color: #d7eadb; } .quote-card--blog-sidebar form { gap: 9px; margin-top: 13px; } .quote-card--blog-sidebar .field-grid { grid-template-columns: 1fr; gap: 8px; } .quote-card--blog-sidebar input, .quote-card--blog-sidebar select { height: 45px; border-color: rgba(16, 59, 34, .16); background: #fff; font-size: 14px; } .quote-card--blog-sidebar .with-icon .ph { color: #347649; } .quote-card--blog-sidebar .model-availability { color: #d7eadb; } .quote-card--blog-sidebar .submit { min-height:48px; background:#d9efc9; border-color:#d9efc9; color:#143b22; box-shadow:none; } .quote-card--blog-sidebar .submit .ph { background:#143b22; color:#d9efc9; } .quote-card--blog-sidebar .submit:hover { background:#c6e5b4; } .quote-card--blog-sidebar .submit:hover .ph { background:#fff; color:#143b22; } .quote-card--blog-sidebar .sidebar-trust { color: #d7eadb; }
   .quote-card--free-quote { padding: 26px; border-color: #dce7da; border-radius: 22px; box-shadow: 0 24px 55px rgba(23, 63, 39, .10), 0 5px 16px rgba(23, 63, 39, .05); } .quote-card--free-quote .quote-head h2 { margin-top: 7px; font-size: 1.65rem; } .quote-card--free-quote form { gap: 13px; margin-top: 18px; } .quote-card--free-quote .field-grid { gap: 12px; } .quote-card--free-quote input, .quote-card--free-quote select { height: 52px; border-radius: 12px; } .quote-card--free-quote select:disabled { color: #667066; background: #f1f4ef; } .quote-card--free-quote input:focus, .quote-card--free-quote select:focus { border-color: #5DB938; box-shadow: 0 0 0 3px rgba(93,185,56,.14); } .quote-card--free-quote .submit { min-height: 54px; background: #184D2B; box-shadow: 0 7px 16px rgba(23,63,39,.11); } .quote-card--free-quote .submit:hover { background: #123D22; box-shadow: 0 8px 18px rgba(23,63,39,.16); }
   @media (max-width: 620px) { .quote-card { padding: 18px; border-radius: 18px; box-shadow: 0 10px 24px rgba(27,55,24,.065); } .quote-head h2 { font-size: 22px; } .quote-head p { font-size: 12px; } form { gap: 10px; margin-top: 13px; } .field-grid { grid-template-columns: 1fr; gap: 10px; } .form-field { gap: 5px; } .field-label { padding-left: 1px; } .model-availability { margin: -1px 0; } input, select { height: 51px; font-size: 16px; } .submit { min-height: 53px; margin-top: 3px; } .quote-card--free-quote { padding: 18px; border-radius: 18px; } .quote-card--free-quote .quote-head h2 { font-size: 22px; } .quote-card--free-quote form { gap: 10px; margin-top: 14px; } .quote-card--free-quote .field-grid { grid-template-columns: 1fr; gap: 10px; } }
   @media (max-width: 370px) { .quote-card { padding-inline: 18px; } }
+  /* Static, overlapping state layers preserve the original pill dimensions and scoped styles. */
+  .submit { position: relative; }
+  .submit-idle { display: inline-flex; width: 100%; align-items: center; justify-content: inherit; gap: 10px; }
+  .submit-feedback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 9px; padding: 5px 10px; color: #fff; font-size: clamp(11px,3.3vw,13px); line-height: 1.2; white-space: nowrap; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 150ms ease; }
+  .submit-saving { padding-bottom: 11px; }
+  .quote-card .submit:is([data-submit-state="saving"],[data-submit-state="saved"]) { opacity: 1; background: #184d2b; color: #fff; transform: none; cursor: wait; }
+  .submit:not([data-submit-state="idle"]) .submit-idle { visibility: hidden; }
+  .submit[data-submit-state="saving"] .submit-saving,.submit[data-submit-state="saved"] .submit-saved { opacity: 1; visibility: visible; }
+  .submit-spinner { display: block; flex: 0 0 18px; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-right-color: #fff; border-radius: 50%; }
+  .submit[data-submit-state="saving"] .submit-spinner { animation: quote-submit-spin .8s linear infinite; }
+  .submit-progress { position: absolute; left: 50%; bottom: 7px; width: 112px; height: 2px; border-radius: 2px; overflow: hidden; background: rgba(255,255,255,.2); transform: translateX(-50%); }
+  .submit-progress::after { content: ''; display: block; width: 40%; height: 100%; border-radius: inherit; background: #fff; }
+  .submit[data-submit-state="saving"] .submit-progress::after { animation: quote-submit-progress 1.2s ease-in-out infinite; }
+  .submit-saved svg { flex: 0 0 20px; }
+  .submit[data-submit-state="saved"] .submit-saved svg { animation: quote-submit-confirm 220ms ease-out both; }
+  .quote-submit-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @keyframes quote-submit-spin { to { transform: rotate(360deg); } }
+  @keyframes quote-submit-progress { from { transform: translateX(-110%); } to { transform: translateX(350%); } }
+  @keyframes quote-submit-confirm { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .submit,.submit-feedback { transition: none; }
+    .submit .submit-spinner,.submit .submit-progress::after,.submit .submit-saved svg { animation: none !important; }
+    .submit-progress::after { margin-inline: auto; }
+  }
 </style>
