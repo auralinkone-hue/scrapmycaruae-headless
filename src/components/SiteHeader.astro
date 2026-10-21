@@ -640,7 +640,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     line-height: 1.4; text-decoration: none; text-align: left; cursor: pointer;
     transition: background-color 160ms ease,box-shadow 160ms ease;
   }
-  .mobile-row>span:not(.mobile-row__icon) { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .mobile-row>span:not(.mobile-row__icon):not(.manufacturer-logo) { flex: 1; min-width: 0; overflow-wrap: anywhere; }
   .mobile-row--category { color: #fff; font-weight: 800; font-size: 18px; background: linear-gradient(90deg,rgba(185,218,168,.05),transparent); }
   .mobile-row__icon {
     display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px; border: 1px solid rgba(194,221,181,.12);
