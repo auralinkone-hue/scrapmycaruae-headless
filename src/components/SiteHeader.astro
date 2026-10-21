@@ -49,6 +49,14 @@ const isNavigationItemActive = (href: string) => href.startsWith('/locations/') 
 const visibleSellMyCarServices = sellMyCarServices.filter(
   (service): service is { href: string; label: string; icon: string } => Boolean(service.href)
 );
+const sellConditionRoutes = new Set([
+  '/sell-damaged-car/', '/sell-accident-damaged-car/',
+  '/sell-non-running-car/', '/sell-flood-damaged-car/'
+]);
+const desktopSellGroups = [
+  { id: 'conditions', label: 'Vehicle Conditions', items: visibleSellMyCarServices.filter(service => sellConditionRoutes.has(service.href)) },
+  { id: 'other', label: 'Mechanical & Other Issues', items: visibleSellMyCarServices.filter(service => service.href !== '/sell-my-car/' && !sellConditionRoutes.has(service.href)) }
+];
 const mobileServiceGroups = [
   { id: 'sell', href: '/sell-my-car/', label: 'Sell My Car', description: 'Find the right route for your vehicle.', items: visibleSellMyCarServices },
   { id: 'scrap', href: '/scrap-my-car/', label: 'Scrap My Car', description: 'Value, collection and disposal options.', items: scrapMyCarServices },
@@ -71,7 +79,7 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
 
       <nav class="desktop-nav" aria-label="Primary navigation">
         {links.map((link) => link.children ? (
-          <div class:list={['nav-group', { 'nav-group--locations': link.href === '/locations/', 'nav-group--scrap': link.href === '/scrap-my-car/', 'nav-group--split': true }]}>
+          <div class:list={['nav-group', { 'nav-group--sell': link.href === '/sell-my-car/', 'nav-group--locations': link.href === '/locations/', 'nav-group--scrap': link.href === '/scrap-my-car/', 'nav-group--split': true }]}>
           {link.href === '/sell-my-car/' && <a href={link.href} class:list={['nav-link', { active: link.children.some(service => service.href && isActive(service.href)) }]}>{link.label}</a>}
           {link.href === '/scrap-my-car/' && <a href={link.href} class:list={['nav-link', { active: isScrapMyCarServiceActive }]}>{link.label}</a>}
           {link.href === '/locations/' && <a href={link.href} class:list={['nav-link', { active: isLocationNavigationActive }]} aria-current={isLocationPageActive(pathname, link.href) ? 'page' : undefined}>{link.label}</a>}
@@ -91,21 +99,28 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
                 <div class="locations-mega__columns">
                   {locationGroups.map(group => <section class:list={['locations-mega__group', { 'is-current-group': isLocationGroupActive(pathname, group) }]} aria-labelledby={'desktop-location-' + group.id}>
                     <h2 id={'desktop-location-' + group.id}><i class:list={['ph', group.icon]} aria-hidden="true"></i>{group.label}</h2>
-                    {group.items.map(item => <a href={item.href} class:list={{ active: isLocationPageActive(pathname, item.href) }} aria-current={isLocationPageActive(pathname, item.href) ? 'page' : undefined}>{item.label}</a>)}
+                    {group.items.map(item => <a href={item.href} class:list={{ active: isLocationPageActive(pathname, item.href) }} aria-current={isLocationPageActive(pathname, item.href) ? 'page' : undefined}><i class="ph ph-map-pin location-link-icon" aria-hidden="true"></i><span>{item.label}</span></a>)}
                   </section>)}
                 </div>
               </div>
             ) : link.href === '/scrap-my-car/' ? <div class="nav-dropdown__panel scrap-mega" role="region" aria-label="Scrap services and manufacturers">
               <section><h2>Scrap services</h2>{scrapMyCarServices.map(service=><a href={service.href} class:list={{active:isActive(service.href)}} aria-current={isActive(service.href)?'page':undefined}><span class="service-link-icon"><i class:list={['ph',service.icon]} aria-hidden="true"></i></span>{service.label}</a>)}</section>
               <section class="scrap-makes"><h2>Explore by manufacturer</h2><div>{carManufacturers.map(make=><a href={manufacturerHref(make.slug)} aria-current={pathname===manufacturerHref(make.slug)?'page':undefined}><span class="manufacturer-logo"><img src={makeLogoForName(make.make)} alt="" width="32" height="32" /></span><span>{make.name}</span><i class="ph ph-caret-right" aria-hidden="true"></i></a>)}</div></section>
-            </div> : <div class="nav-dropdown__panel">
-              {link.children.filter((service) => service.href).map((service) => (
-                <a href={service.href} class:list={{ active: isNavigationItemActive(service.href) }} aria-current={isActive(service.href) ? 'page' : undefined}>
-                  <span class="service-link-icon"><i class:list={['ph', service.icon]} aria-hidden="true"></i></span>
-                  <span>{service.label}</span>
-                  <i class="ph ph-arrow-up-right service-link-arrow" aria-hidden="true"></i>
-                </a>
-              ))}
+            </div> : <div class="nav-dropdown__panel sell-mega" role="region" aria-label="Car selling services">
+              <a class:list={['sell-mega__overview', { active: isActive(link.href) }]} href={link.href} aria-current={isActive(link.href) ? 'page' : undefined}>
+                <span class="service-link-icon"><i class="ph ph-car-profile" aria-hidden="true"></i></span>
+                <span>{link.label}</span>
+                <i class="ph ph-arrow-up-right service-link-arrow" aria-hidden="true"></i>
+              </a>
+              <div class="sell-mega__groups">
+                {desktopSellGroups.map(group => <section class="sell-mega__group" aria-labelledby={'desktop-sell-' + group.id}>
+                  <h2 id={'desktop-sell-' + group.id}>{group.label}</h2>
+                  {group.items.map(service => <a href={service.href} class:list={{ active: isNavigationItemActive(service.href) }} aria-current={isActive(service.href) ? 'page' : undefined}>
+                    <span class="service-link-icon"><i class:list={['ph', service.icon]} aria-hidden="true"></i></span>
+                    <span>{service.label}</span>
+                  </a>)}
+                </section>)}
+              </div>
             </div>}
           </details>
           </div>
@@ -858,6 +873,35 @@ const isScrapMyCarServiceActive = scrapMyCarServices.some((service) => isActive(
     .header-phone-copy, .header-whatsapp span { display: none; }
     .header-whatsapp { width: 42px; padding: 0; }
     .desktop-actions { gap: 8px; }
+  }
+
+  /* Desktop-only service and location panels. Manufacturer and mobile navigation retain their styles. */
+  @media (min-width: 1101px) {
+    .nav-group--sell { position: static; }
+    .sell-mega, .locations-mega { background: #fff; border-color: #dfe7dd; box-shadow: 0 18px 44px #17351f14,0 2px 7px #17351f05; }
+    .sell-mega { top: calc(100% - 1px); width: min(660px,calc(100vw - 48px)); padding: 16px; max-height: min(540px,calc(100dvh - 100px)); overflow-y: auto; overscroll-behavior: contain; }
+    .sell-mega__groups { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+    .sell-mega__group { min-width: 0; }
+    .sell-mega__group + .sell-mega__group { padding-left: 18px; border-left: 1px solid #e8ede6; }
+    .sell-mega__group h2 { margin: 5px 8px 10px; color: #607466; font-size: 11px; font-weight: 600; letter-spacing: .025em; line-height: 1.5; }
+    .sell-mega a { min-height: 44px; padding: 9px 8px; gap: 10px; color: #29362d; font-size: 13px; line-height: 1.5; font-weight: 500; border-radius: 8px; transition: color 180ms ease,background-color 180ms ease,border-color 180ms ease; }
+    .sell-mega .sell-mega__overview { min-height: 46px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #e5ece2; border-radius: 0; color: #213c2a; font-size: 14px; font-weight: 650; }
+    .sell-mega .sell-mega__overview .service-link-arrow { opacity: 1; transform: none; color: #76917b; }
+    .sell-mega .service-link-icon { width: 18px; height: 18px; flex-basis: 18px; background: transparent; border-radius: 0; color: #69836f; font-size: 18px; transition: color 180ms ease; }
+    .sell-mega a:hover, .sell-mega a.active { background: #f0f5ef; border-color: transparent; color: #286238; transform: none; }
+    .sell-mega a:is(:hover,.active) .service-link-icon { background: transparent; color: #2c7040; }
+    .locations-mega { padding: 16px; }
+    .locations-mega__group { padding: 7px 4px; }
+    .locations-mega__group h2 { margin: 0 8px 9px; font-size: 11.5px; font-weight: 650; letter-spacing: .01em; }
+    .locations-mega__group a { align-items: flex-start; gap: 8px; min-height: 44px; padding: 9px 8px; color: #303a32; font-size: 12.5px; line-height: 1.5; font-weight: 500; border-radius: 8px; transition: color 180ms ease,background-color 180ms ease,border-color 180ms ease; }
+    .location-link-icon { flex: 0 0 16px; width: 16px; margin-top: 1px; color: #76917b; font-size: 15px; line-height: 1.45; transition: color 180ms ease; }
+    .locations-mega__group a:hover { background: #f0f5ef; border-color: transparent; color: #286238; transform: none; }
+    .locations-mega__group a:is(:hover,:focus-visible) .location-link-icon { color: #2c7040; }
+    .locations-mega__group a[aria-current=page] { background: #eaf2e7; border-color: transparent; color: #245d34; font-weight: 600; box-shadow: none; }
+    .locations-mega__group a[aria-current=page] .location-link-icon { color: #2c7040; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .location-link-icon { transition: none; }
   }
 
 </style>
