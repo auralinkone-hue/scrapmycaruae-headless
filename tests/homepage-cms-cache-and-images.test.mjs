@@ -16,14 +16,14 @@ test('homepage CMS images are normalized before templates render them', async ()
   assert.match(loader, /coverageImage: normalizeCmsImage\(page\.coverageImage\)/);
   assert.match(page, /const conditionsResponsiveImage = wixResponsiveImage/);
   assert.match(page, /const valueResponsiveImage = wixResponsiveImage/);
-  assert.match(page, /import UaeCoverageMap/);
+  assert.match(page, /uae-coverage-editorial\.webp/);
   assert.doesNotMatch(page, /UaeCollectionIllustration/);
   assert.doesNotMatch(page, /src=\{home\.conditionsImage/);
   assert.doesNotMatch(page, /src=\{home\.valueImage/);
   assert.doesNotMatch(page, /src=\{home\.coverageImage/);
 });
 
-test('value image stays responsive while coverage uses the compact shared map', async () => {
+test('value image stays responsive while coverage uses the responsive WebP map', async () => {
   const loader = await readSource('../src/lib/homepage-content.ts');
   const page = await readSource('../src/pages/index.astro');
 
@@ -33,7 +33,7 @@ test('value image stays responsive while coverage uses the compact shared map', 
   assert.match(page, /widths: \[480, 720, 960, 1200\]/);
   assert.match(page, /fit: 'fit'/);
   assert.match(page, /object-fit: contain/);
-  assert.match(page, /<UaeCoverageMap \/>/);
+  assert.match(page, /uae-coverage-editorial-640\.webp 640w/);
   assert.match(page, /\{valueResponsiveImage\.src && <div class="value-image"/);
   assert.match(page, /loading="lazy"/);
   assert.match(page, /decoding="async"/);

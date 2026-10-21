@@ -4,7 +4,6 @@ export const prerender = false;
 import { media } from '@wix/sdk';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import QuoteForm from '../components/QuoteForm.astro';
-import UaeCoverageMap from '../components/UaeCoverageMap.astro';
 import { carManufacturers, manufacturerHref } from '../lib/car-manufacturers';
 import SectionActionButton from '../components/SectionActionButton.astro';
 import { getHomepageContent } from '../lib/homepage-content';
@@ -201,19 +200,30 @@ const faqJsonLd = {
       <div class="smc-container">
         <div class="make-strip-heading">
           <h2 id="popular-makes-title" class="make-label">{home.makesHeading}</h2>
-          <a class="inline-link" href="/cars/">Explore all car makes <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          <div class="make-tools">
+            <button type="button" class="make-pause inline-link" data-make-pause aria-label="Pause manufacturer marquee" aria-controls="popular-makes-marquee" aria-pressed="false" hidden>Pause <i class="ph ph-pause" aria-hidden="true"></i></button>
+            <a class="inline-link" href="/cars/">Explore all car makes <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </div>
         </div>
-        <div class="make-browser">
-          <button type="button" class="make-scroll" data-make-scroll="-1" aria-label="Previous car makes" aria-controls="popular-makes-list" hidden><i class="ph ph-caret-left" aria-hidden="true"></i></button>
-          <nav class="make-list" id="popular-makes-list" aria-label="Popular car manufacturers">
-            {popularMakes.map((make) => (
-              <a class="make-item" href={manufacturerHref(make.slug)}>
-                <img src={makeLogoForName(make.make)} width="32" height="32" alt="" aria-hidden="true" loading="lazy" decoding="async" />
-                <span>{make.name}</span>
-              </a>
-            ))}
-          </nav>
-          <button type="button" class="make-scroll" data-make-scroll="1" aria-label="More car makes" aria-controls="popular-makes-list" hidden><i class="ph ph-caret-right" aria-hidden="true"></i></button>
+        <div class="make-browser" id="popular-makes-marquee" aria-label="Popular car manufacturers">
+          <div class="make-track">
+            <nav class="make-list" aria-label="Car manufacturer pages">
+              {popularMakes.map((make) => (
+                <a class="make-item" href={manufacturerHref(make.slug)}>
+                  <img src={makeLogoForName(make.make)} width="32" height="32" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                  <span>{make.name}</span>
+                </a>
+              ))}
+            </nav>
+            <div class="make-list make-list-duplicate" aria-hidden="true">
+              {popularMakes.map((make) => (
+                <a class="make-item" href={manufacturerHref(make.slug)} tabindex="-1">
+                  <img src={makeLogoForName(make.make)} width="32" height="32" alt="" loading="lazy" decoding="async" />
+                  <span>{make.name}</span>
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>}
@@ -406,7 +416,11 @@ const faqJsonLd = {
 
         </div>
         <div class="coverage-overview" data-reveal>
-          <UaeCoverageMap />
+          <figure class="coverage-art">
+            <!-- Natural Earth 1:50m public-domain country boundaries; network lines illustrate coverage, not roads. -->
+            <img src="/sections/uae-coverage-editorial.webp" srcset="/sections/uae-coverage-editorial-640.webp 640w, /sections/uae-coverage-editorial.webp 1280w" sizes="(max-width: 760px) calc(100vw - 36px), 48vw" width="1280" height="960" alt="UAE collection coverage illustration with markers around Abu Dhabi, Dubai, the northern emirates and Al Ain" loading="lazy" decoding="async" />
+            <figcaption><i class="ph ph-truck" aria-hidden="true"></i>Collection access is confirmed with your request.</figcaption>
+          </figure>
           <div class="coverage-destinations">
             <h3>Collection across the UAE</h3>
             <nav aria-label="Key collection locations">{collectionLocations.map(([name, href]) => <a href={href}><i class="ph ph-map-pin" aria-hidden="true"></i>{name}</a>)}</nav>
@@ -597,18 +611,22 @@ const faqJsonLd = {
         observer?.observe(item);
       });
     }
-    const makes = root.querySelector<HTMLElement>('.make-list');
-    const controls = root.querySelectorAll<HTMLButtonElement>('[data-make-scroll]');
-    const updateControls = () => controls.forEach(button => {
-      button.disabled = Number(button.dataset.makeScroll) < 0 ? (makes?.scrollLeft ?? 0) <= 1 : (makes?.scrollLeft ?? 0) + (makes?.clientWidth ?? 0) >= (makes?.scrollWidth ?? 0) - 2;
-    });
-    controls.forEach(button => {
-      button.hidden = false;
-      button.addEventListener('click', () => makes?.scrollBy({ left: Number(button.dataset.makeScroll) * makes.clientWidth * .75, behavior: reducedMotion.matches ? 'instant' : 'smooth' }), { signal });
-    });
-    makes?.addEventListener('scroll', updateControls, { signal, passive: true });
-    window.addEventListener('resize', updateControls, { signal, passive: true });
-    updateControls();
+    const makes = root.querySelector<HTMLElement>('.make-browser');
+    const makePause = root.querySelector<HTMLButtonElement>('[data-make-pause]');
+    if (makePause && !reducedMotion.matches) {
+      makePause.hidden = false;
+      makePause.addEventListener('click', () => {
+        const paused = makePause.getAttribute('aria-pressed') !== 'true';
+        makePause.setAttribute('aria-pressed', String(paused));
+        makePause.setAttribute('aria-label', `${paused ? 'Resume' : 'Pause'} manufacturer marquee`);
+        makePause.innerHTML = `${paused ? 'Resume' : 'Pause'} <i class="ph ph-${paused ? 'play' : 'pause'}" aria-hidden="true"></i>`;
+        makes?.classList.toggle('is-paused', paused);
+      }, { signal });
+    }
+    // Keyboard focus reveals the original single set of links, with no moving target.
+    makes?.addEventListener('focusout', event => {
+      if (!makes.contains(event.relatedTarget as Node | null)) makes.scrollLeft = 0;
+    }, { signal });
     const pause = root.querySelector<HTMLButtonElement>('[data-review-pause]');
     if (pause && !reducedMotion.matches) {
       pause.hidden = false;
@@ -631,7 +649,9 @@ const faqJsonLd = {
   .home-page :is(a,button,summary):focus-visible { outline: 2px solid #5d9d4c; outline-offset: 4px; border-radius: 5px; }
   [data-reveal].will-reveal { opacity: 0; transform: translateY(12px); transition: opacity 420ms ease, transform 420ms ease; }
   [data-reveal].is-visible { opacity: 1; transform: none; }
-  .hero { position: relative; border-bottom: 1px solid var(--smc-line); background: #f7faf5; }
+  .hero { position: relative; isolation: isolate; overflow: hidden; border-bottom: 1px solid var(--smc-line); background: #f7faf5; }
+  .hero::before { content: ''; position: absolute; z-index: -1; pointer-events: none; width: 860px; height: 740px; top: -350px; right: -120px; border-radius: 42% 58% 65% 35%; background: linear-gradient(145deg,#dcebdc80,#eef5e940); transform: rotate(-24deg); }
+  .hero::after { content: ''; position: absolute; z-index: -1; pointer-events: none; width: 850px; height: 320px; bottom: -260px; left: -130px; border: 1px solid #a5bfa54d; border-radius: 50%; box-shadow: 0 0 0 45px #dbe8d928,0 0 0 90px #dbe8d918; transform: rotate(-12deg); }
   .hero-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(400px,510px); grid-template-rows: auto; gap: 20px 68px; min-height: 570px; padding-block: 44px; align-content: center; align-items: start; }
   .hero-message { display: grid; gap: 22px; align-self: center; }
   .hero-copy { grid-column: 1; grid-row: 1; }
@@ -651,16 +671,23 @@ const faqJsonLd = {
   .make-label { margin: 0; color: #53634f; font-size: 12px; font-weight: 600; }
   .inline-link { display: inline-flex; gap: 7px; align-items: center; min-height: 36px; color: var(--smc-green-dark); font-size: 12px; font-weight: 650; text-decoration: none; }
   .inline-link:hover { color: #3d8237; }
-  .make-browser { display: flex; gap: 12px; align-items: center; min-width: 0; }
-  .make-list { display: flex; flex: 1; min-width: 0; gap: 8px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding: 4px; padding: 5px 4px 9px; scrollbar-width: thin; scrollbar-color: #b7cdb0 transparent; }
+  .make-tools { display: flex; align-items: center; gap: 20px; }
+  .make-pause { border: 0; background: transparent; cursor: pointer; padding: 0; min-width: 62px; }
+  .make-pause[hidden], .review-pause[hidden] { display: none; }
+  .make-browser { min-width: 0; overflow: hidden; scrollbar-width: none; mask-image: linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent); }
+  .make-browser::-webkit-scrollbar { display: none; }
+  .make-track { display: flex; width: max-content; animation: home-make-marquee 42s linear infinite; }
+  .make-list { display: flex; flex: 0 0 auto; gap: 8px; padding: 5px 8px 5px 0; }
+  .make-browser:is(:hover,.is-paused) .make-track { animation-play-state: paused; }
+  .make-browser:has(a:focus-visible) { mask-image: none; }
+  .make-browser:has(a:focus-visible) .make-track { animation: none; transform: none; }
+  .make-browser:has(a:focus-visible) .make-list-duplicate { visibility: hidden; }
+  @keyframes home-make-marquee { to { transform: translateX(-50%); } }
   .make-item { display: flex; flex: 0 0 136px; align-items: center; justify-content: center; gap: 9px; min-height: 50px; padding: 8px; border: 1px solid transparent; border-radius: 8px; text-decoration: none; scroll-snap-align: start; color: #273525; transition: background 160ms ease, border-color 160ms ease; }
   .make-item img { width: 32px; height: 30px; object-fit: contain; transition: transform 160ms ease; }
   .make-item span { font-size: 12px; font-weight: 600; white-space: nowrap; }
   .make-item:hover { background: #f1f7ee; border-color: #dce8d7; }
   .make-item:hover img { transform: translateY(-2px); }
-  .make-scroll { display: grid; place-items: center; flex: 0 0 38px; height: 44px; background: #fff; color: #295027; border: 1px solid #dbe4d7; border-radius: 8px; cursor: pointer; }
-  .make-scroll[hidden], .review-pause[hidden] { display: none; }
-  .make-scroll:disabled { opacity: .3; cursor: default; }
   .service-discovery { padding-block: 66px; display: grid; grid-template-columns: .95fr 1.05fr; gap: 70px; align-items: center; }
   .discovery-intro h2, .section-heading h2, .process-copy h2, .condition-copy h2, .value-intro h2, .coverage-copy h2, .testimonial-side h2, .blog-heading h2, .faq-heading h2, .final-cta h2 { margin: 10px 0 18px; font-size: clamp(30px,3.4vw,44px); line-height: 1.12; letter-spacing: -.04em; font-weight: 650; text-wrap: balance; }
   .smc-kicker { font-size: 11px; letter-spacing: .09em; }
@@ -736,6 +763,10 @@ const faqJsonLd = {
   .coverage-grid { display: block; }
   .coverage-copy { max-width: 740px; }
   .coverage-overview { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; margin-top: 30px; }
+  .coverage-art { margin: 0; overflow: hidden; border-radius: 20px; border: 1px solid #dbe6dc; background: #eef5f0; }
+  .coverage-art img { display: block; width: 100%; height: auto; }
+  .coverage-art figcaption { display: flex; align-items: center; gap: 9px; padding: 15px 18px; color: #416047; background: #fff; font-size: 14px; line-height: 1.55; }
+  .coverage-art figcaption i { flex-shrink: 0; color: #2f6f2d; font-size: 20px; }
   .coverage-destinations h3 { margin: 0 0 18px; font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
   .coverage-destinations nav { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 14px; }
   .coverage-destinations nav a { display: flex; align-items: center; gap: 7px; min-height: 38px; color: #31572c; font-size: 14px; text-decoration: none; }
@@ -833,11 +864,13 @@ const faqJsonLd = {
     .make-strip-heading { gap: 10px; margin-bottom: 5px; }
     .make-label { max-width: 110px; line-height: 1.5; font-size: 11px; }
     .make-strip .inline-link { font-size: 11px; }
-    .make-browser { gap: 4px; }
+    .make-tools { gap: 13px; }
+    .make-pause { min-width: 50px; }
     .make-item { flex-basis: 128px; gap: 8px; }
     .make-item img { width: 28px; height: 28px; }
-    .make-scroll { flex-basis: 26px; border: 0; }
-    .make-list { gap: 4px; }
+    .make-list { gap: 4px; padding-right: 4px; }
+    .hero::before { width: 540px; height: 540px; top: -220px; right: -320px; opacity: .7; }
+    .hero::after { display: none; }
     .service-discovery { grid-template-columns: 1fr; padding-block: 42px 22px; gap: 22px; }
     .discovery-intro { display: grid; grid-template-columns: 1fr; }
     .discovery-photo { margin-top: 5px; }
@@ -875,6 +908,16 @@ const faqJsonLd = {
     .home-page *, .home-page *::before, .home-page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
     [data-reveal].will-reveal { opacity: 1; transform: none; }
     .review-marquee { overflow-x: auto; mask-image: none; }
-    .review-track-duplicate, .review-pause { display: none; }
+    .review-track-duplicate, .review-pause, .make-list-duplicate, .make-pause { display: none; }
+    .make-browser { overflow: visible; mask-image: none; }
+    .make-track { width: 100%; }
+    .make-list { width: 100%; flex: 1; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 8px; }
+    .make-item { min-width: 0; flex-basis: auto; }
+  }
+  @media (max-width: 1000px) and (prefers-reduced-motion: reduce) {
+    .make-list { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  }
+  @media (max-width: 620px) and (prefers-reduced-motion: reduce) {
+    .make-list { grid-template-columns: repeat(2,minmax(0,1fr)); }
   }
 </style>

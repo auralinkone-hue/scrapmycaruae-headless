@@ -52,7 +52,7 @@ test('service coverage keeps its grouped design while the homepage uses a compac
     readProjectFile('src/components/LocationCoverageList.astro')
   ]);
 
-  assert.match(home, /<UaeCoverageMap/);
+  assert.match(home, /uae-coverage-editorial\.webp/);
   assert.match(home, /href="\/locations\/"/);
   for (const page of [sellMyCar, damagedCar]) {
     assert.match(page, /<LocationCoverageList/);
