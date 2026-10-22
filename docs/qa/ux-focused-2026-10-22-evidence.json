@@ -1,0 +1,199 @@
+{
+  "date": "2026-10-22",
+  "timezone": "Asia/Karachi",
+  "startingCommit": "4cc8b363c7a4ee09525337567d6d4ba879b3755a",
+  "branch": "development",
+  "target": "https://smc-headless-worker.hussain-gscx.workers.dev/",
+  "decision": "HOLD \u2014 focused UX audit incomplete",
+  "browser": {
+    "surface": "connected Chrome extension",
+    "status": "Initially usable, later stalled and session state reset; remaining checks stopped after one reconnection attempt also stalled.",
+    "siteFailureInferred": false,
+    "temporaryViewportReset": "Cleanup attempted, but browser binding had reset and was unavailable; viewport reset not confirmed."
+  },
+  "viewportMeasurements": [
+    {
+      "path": "/",
+      "width": 360,
+      "clientWidth": 345,
+      "scrollWidth": 345,
+      "brokenCompletedVisibleImageCount": 0
+    },
+    {
+      "path": "/",
+      "width": 390,
+      "clientWidth": 375,
+      "scrollWidth": 375,
+      "brokenCompletedVisibleImageCount": 0
+    },
+    {
+      "path": "/",
+      "width": 768,
+      "clientWidth": 753,
+      "scrollWidth": 753,
+      "brokenCompletedVisibleImageCount": 0
+    },
+    {
+      "path": "/",
+      "width": 1440,
+      "clientWidth": 1425,
+      "scrollWidth": 1425,
+      "brokenCompletedVisibleImageCount": 0
+    },
+    {
+      "path": "/cars/bmw/",
+      "width": 360,
+      "clientWidth": 345,
+      "scrollWidth": 345,
+      "brokenCompletedVisibleImageCount": 0
+    },
+    {
+      "path": "/cars/bmw/",
+      "width": 390,
+      "clientWidth": 375,
+      "scrollWidth": 375,
+      "brokenCompletedVisibleImageCount": 0
+    },
+    {
+      "path": "/cars/bmw/",
+      "width": 768,
+      "clientWidth": 753,
+      "scrollWidth": 753,
+      "brokenCompletedVisibleImageCount": 0
+    },
+    {
+      "path": "/cars/bmw/",
+      "width": 1440,
+      "clientWidth": 1425,
+      "scrollWidth": 1425,
+      "brokenCompletedVisibleImageCount": 0
+    }
+  ],
+  "viewportLimits": "DOM width/image observations only; no complete visual or scroll-through sign-off at every width. Lazy images not reached are not counted as loaded.",
+  "visualSamples": [
+    {
+      "path": "/",
+      "width": 1440,
+      "view": "Hero/header/makes strip; balanced layout observed."
+    },
+    {
+      "path": "/",
+      "width": 360,
+      "view": "Invalid form state after submit; field/error alignment observed."
+    },
+    {
+      "path": "/cars/bmw/",
+      "width": 390,
+      "view": "Hero and populated form; image follows form. No visible text or button clipping in inspected view."
+    }
+  ],
+  "desktopNavigation": {
+    "width": 1440,
+    "hoverOpen": [
+      "Sell My Car",
+      "Scrap My Car",
+      "Locations"
+    ],
+    "triggerToPanelStayedOpen": true,
+    "onlyOneMenuOpenWhenSwitching": true,
+    "escapeClosed": true,
+    "keyboardEnterOpened": true,
+    "focusOutline": "rgba(47, 111, 45, 0.16) solid 2.4px",
+    "clickOutside": "Not conclusively tested: intended outside target was covered by an open menu, and Fleet Disposal navigation occurred. No application bug inferred.",
+    "fullTabTraversal": "pending"
+  },
+  "mobileNavigation": {
+    "width": 390,
+    "opened": true,
+    "scrapSubmenuOpened": true,
+    "manufacturerEntryFirst": true,
+    "manufacturerSubmenuOpened": true,
+    "logosLoaded": 10,
+    "manufacturerRowsHeightPx": 57,
+    "overviewAndAllTenHrefsObserved": true,
+    "allTenLinksClicked": false,
+    "backToScrapSubmenu": true,
+    "escapeClosed": true,
+    "focusReturnedToOpenNavigation": true,
+    "bodyOverflowWhileOpen": "hidden",
+    "bodyOverflowAfterClose": "visible",
+    "sellSubmenuOpened": true,
+    "sellOverviewNavigation": "Attempt stalled; outcome not verified.",
+    "locationsSubmenu": "pending",
+    "focusTrapTabCycle": "pending"
+  },
+  "quoteForm": {
+    "path": "/",
+    "width": 360,
+    "emptyValidation": "Five required fields marked aria-invalid with red borders; focus moved to Make.",
+    "makeModel": "TOYOTA populated 31 CMS models; CAMRY and 2013 selected.",
+    "syntheticCustomerLabel": "Staging UX Audit",
+    "phone": "Reserved UK test number; no real customer number used.",
+    "submissionCount": 1,
+    "savingStateObserved": true,
+    "savingDisabledButton": true,
+    "handoffReached": true,
+    "handoffVehicle": {
+      "make": "TOYOTA",
+      "model": "CAMRY",
+      "year": "2013"
+    },
+    "handoffMatchedSyntheticNameAndPhone": true,
+    "whatsappMessageSent": false,
+    "cmsEvidence": "Observed WhatsApp URL reached through the form confirmed-save branch. Source verifies save precedes response. Exact CMS row/request ID not independently inspected.",
+    "collectionConfig": "Deployment workflow specifies QuoteRequestsStaging; production untouched.",
+    "successCheckmark": "Brief success state not directly captured.",
+    "duplicateClicks": "Disabled saving state observed; no repeated live submission attempted.",
+    "emailAndInboxDelivery": "not verified"
+  },
+  "manufacturer": {
+    "path": "/cars/bmw/",
+    "preselectedMake": "BMW",
+    "changeMake": "NISSAN selectable; Nissan model options populated.",
+    "explorerSelection": "5 Series tab",
+    "resultMake": "BMW",
+    "resultModel": "5 SERIES",
+    "yearPreserved": "2013",
+    "namePreserved": "Staging Sync Test",
+    "phonePreserved": "Observed retained input value; browser text output redacts phone.",
+    "secondSubmission": false,
+    "mobileOrder": "Heading/description, form, then photo confirmed via element positions.",
+    "otherInteractiveSections": "pending"
+  },
+  "console": {
+    "scope": "Only inspected after homepage form/handoff flow.",
+    "errorAndWarningEntries": 0,
+    "wholeSiteClaim": false
+  },
+  "pendingPages": [
+    "/sell-my-car/",
+    "/scrap-my-car/",
+    "/locations/dubai/",
+    "/blogs",
+    "individual blog article",
+    "/contact-us/",
+    "/free-quote"
+  ],
+  "pendingChecks": [
+    "Full responsive visual/scroll sweep on all requested pages and widths",
+    "All primary CTA click-throughs",
+    "Blog More categories, pagination, reading progress and image loading",
+    "Keyboard Tab traversal/focus trap and contrast",
+    "Complete console review",
+    "Layout-shift trace and lazy image decoding",
+    "Independent staging CMS-row and notification delivery inspection"
+  ],
+  "supplementalObservation": "Fleet Disposal was incidentally reached during an attempted outside click; rendered without horizontal overflow at the four widths. It does not substitute for requested service/location checks.",
+  "fixes": [],
+  "runtimeChanges": false,
+  "tests": {
+    "passed": 213,
+    "failed": 0,
+    "skipped": 0
+  },
+  "stagingBuild": "PASS",
+  "fullBlogCrawlRepeated": false,
+  "stressTest": false,
+  "productionReadiness": "NOT ESTABLISHED",
+  "productionMainDnsCmsContentPr4Changed": false
+}
