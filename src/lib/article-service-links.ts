@@ -4,7 +4,7 @@ export interface ArticleServiceLink {
   context: string;
 }
 
-// Explicit Phase 3 report rows approved in Batches 2, 3 and 4 only.
+// Explicit Phase 3 report rows approved in Batches 2–5 only.
 // Template-level guidance; never inserted into or saved over Wix article content.
 export const articleServiceLinks: Readonly<Record<string, ArticleServiceLink>> = {
   'how-much-is-my-scrap-car-worth-in-2025-uae-pricing-explained': {
@@ -111,6 +111,46 @@ export const articleServiceLinks: Readonly<Record<string, ArticleServiceLink>> =
     href: "/locations/sharjah/",
     anchor: "Sharjah vehicle valuation and collection",
     context: "If your vehicle is located in Sharjah, review the local valuation and collection guide. This covers practical service details, not legal clearance; confirm current Sharjah requirements with the relevant authority."
+  },
+  'how-long-can-you-keep-a-non-registered-car-in-dubai-before-it-s-fined': {
+    href: '/sell-car-with-expired-registration/',
+    anchor: 'Valuation with expired registration',
+    context: 'If your car was previously registered and that registration has expired, review the vehicle-status and paperwork details for a valuation enquiry. This guidance is not for never-registered vehicles and does not replace current authority requirements.'
+  },
+  'how-to-deregister-and-scrap-your-old-car-in-the-uae-in-2026-a-complete-guide': {
+    href: '/scrap-old-car/',
+    anchor: 'Compare options for your old car',
+    context: 'Considering the next step for an old car after reviewing deregistration? Explore assessment and collection considerations before deciding how to proceed. Confirm current paperwork requirements with the relevant authority.'
+  },
+  'old-cars-new-value-how-dubai-s-scrap-car-industry-works': {
+    href: '/locations/dubai/',
+    anchor: 'Dubai scrap-car valuation',
+    context: 'Apply the Dubai industry overview to your own vehicle: review the condition, parking location and collection-access details to share for an individual assessment.'
+  },
+  'get-the-best-price-for-your-scrap-car-in-dubai': {
+    href: '/scrap-car-value/',
+    anchor: 'Factors affecting your scrap-car valuation',
+    context: 'When comparing quotes, review how vehicle details, usable parts, condition and collection access affect an individual assessment. A valuation enquiry does not guarantee the highest price.'
+  },
+  'a-step-by-step-guide-to-scrapping-your-car-in-dubai-with-scrap-my-car-uae': {
+    href: '/locations/dubai/',
+    anchor: 'Scrapping your car in Dubai',
+    context: 'Planning collection for a car in Dubai? Review which vehicle, parking-position and access details to share before agreeing arrangements. Confirm current deregistration requirements separately with the relevant authority.'
+  },
+  'car-inspection-failure-in-the-uae-essential-steps-to-take-after-failing-the-test': {
+    href: '/scrap-my-car/',
+    anchor: 'Compare repair, sale and scrap options',
+    context: 'A failed inspection alone does not require scrapping. If repair estimates make keeping the car uneconomic, review the scrap-car assessment process alongside repair or sale options before deciding.'
+  },
+  'how-scrap-car-pickup-works-in-the-uae-what-to-expect-on-collection-day': {
+    href: '/car-removal/',
+    anchor: 'Vehicle collection and access guidance',
+    context: 'Preparing for collection day? Review how keys, steering, wheels, parking restrictions and loading access affect removal planning. Share any access limits before agreeing collection arrangements.'
+  },
+  'who-will-take-your-non-running-car-in-the-uae-fast-solutions-you-should-know': {
+    href: '/sell-non-running-car/',
+    anchor: 'Non-running car valuation and collection',
+    context: 'For a car that will not start or move, review the known faults, available keys and collection-access details to share for an assessment. Collection arrangements depend on the vehicle and its location.'
   }
 };
 

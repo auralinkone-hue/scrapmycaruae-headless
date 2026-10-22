@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { articleServiceLinks, getArticleServiceLink } from '../src/lib/article-service-links.ts';
@@ -9,7 +10,7 @@ const scrapSlug = 'before-scrapping-how-to-deregister-your-car-in-uae';
 const batch3 = JSON.parse(await readFile(new URL('../docs/qa/phase3-batch3-2026-10-23-evidence.json', import.meta.url), 'utf8'));
 
 test('the original seven inspected protected sources retain their approved destinations', () => {
-  assert.equal(Object.keys(articleServiceLinks).length, 21);
+  assert.equal(Object.keys(articleServiceLinks).length, 29);
   for (const { source, target } of inspected) {
     const slug = new URL(source).pathname.slice('/post/'.length);
     const link = getArticleServiceLink(slug, '<p>Unmodified Wix article.</p>');
@@ -153,4 +154,44 @@ test('Batch 4 regional and legal contexts separate collection from official proc
   }
   assert.match(articleServiceLinks['car-scrapping-laws-you-must-follow-in-dubai-and-sharjah'].context, /If your vehicle is located in Sharjah/);
   assert.match(articleServiceLinks['value-of-scrap-cars-in-the-uae-market'].context, /Historical price examples are not an offer/);
+});
+
+const batch5 = JSON.parse(await readFile(new URL('../docs/qa/phase3-batch5-2026-10-23-evidence.json', import.meta.url), 'utf8'));
+
+test('Batch 5 configures exactly the eight inspected protected sources without duplicate destinations in their bodies', () => {
+  assert.deepEqual(batch5.articleChecks.map(item => item.row), [18, 23, 24, 25, 26, 28, 29, 30]);
+  assert.equal(Object.keys(articleServiceLinks).length, batch5.configuredCount);
+  for (const item of batch5.articleChecks) {
+    const slug = new URL(item.source).pathname.slice('/post/'.length);
+    assert.equal(item.status, 200);
+    assert.equal(item.decision, 'implemented');
+    assert.deepEqual(item.bodyServiceLinks, []);
+    assert.equal(getArticleServiceLink(slug, '').href, new URL(item.target).pathname);
+    assert.equal(getArticleServiceLink(slug, `<a href="${item.target}">Existing guide</a>`), null);
+    assert.ok(item.reason.length > 50);
+  }
+});
+
+test('all 21 prior mappings and the intentional row-20 skip remain unchanged', () => {
+  const newSlugs = new Set(batch5.articleChecks.map(item => new URL(item.source).pathname.slice('/post/'.length)));
+  const previous = Object.fromEntries(Object.entries(articleServiceLinks).filter(([slug]) => !newSlugs.has(slug)));
+  assert.equal(Object.keys(previous).length, 21);
+  assert.equal(createHash('sha256').update(JSON.stringify(previous)).digest('hex'), 'c93414a2935c224d8d7ed8d32eeabab0ceb09d24423993ef8834fbc8e01a82da');
+  assert.equal(getArticleServiceLink('free-scrap-car-valuation-uae', ''), null);
+  assert.equal(batch5.totalSkippedCount, 1);
+});
+
+test('registration and inspection guidance is conditional and does not promise legal or collection outcomes', () => {
+  const registration = articleServiceLinks['how-long-can-you-keep-a-non-registered-car-in-dubai-before-it-s-fined'].context;
+  assert.match(registration, /previously registered.*registration has expired/);
+  assert.match(registration, /not for never-registered vehicles/);
+  assert.match(registration, /does not replace current authority requirements/);
+  const inspection = articleServiceLinks['car-inspection-failure-in-the-uae-essential-steps-to-take-after-failing-the-test'].context;
+  assert.match(inspection, /failed inspection alone does not require scrapping/);
+  assert.match(inspection, /If repair estimates.*uneconomic/);
+  assert.match(inspection, /alongside repair or sale options/);
+  for (const { source } of batch5.articleChecks) {
+    const { context } = articleServiceLinks[new URL(source).pathname.slice('/post/'.length)];
+    assert.doesNotMatch(context, /same.day|instant (?:cash|payment|collection)|AED|guaranteed|avoid fines/i);
+  }
 });
