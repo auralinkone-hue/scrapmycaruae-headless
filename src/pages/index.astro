@@ -108,6 +108,8 @@ const formatDate = (value: string | Date | undefined) => {
 
 const benefits = homepage.badges.filter((item) => item.group === 'benefits');
 const conditions = homepage.badges.filter((item) => item.group === 'conditions');
+const defaultConditionIndex = Math.max(0, conditions.findIndex(item => /non.running/i.test(item.title)));
+const defaultCondition = conditions[defaultConditionIndex];
 const heroProof = homepage.badges.filter((item) => item.group === 'heroProof');
 const testimonialProof = homepage.badges.filter((item) => item.group === 'testimonialProof');
 const reviews = homepage.reviewsSource === 'cms' ? homepage.reviews.filter(review => review.quote.trim()) : [];
@@ -343,19 +345,42 @@ const faqJsonLd = {
         </div>
 
         <div class="condition-content" data-reveal>
-          <div class="condition-tags">
-            {conditions.map((condition) => (
-              <details class="condition-detail" open={['non-running cars', 'engine or gearbox faults'].includes(condition.title.trim().toLowerCase())}>
-                <summary>
-                  <i class:list={['ph', condition.icon]} aria-hidden="true"></i>
-                  <span>{condition.title}</span>
-                  <i class="ph ph-plus condition-toggle" aria-hidden="true"></i>
-                </summary>
-                <p>{condition.description}</p>
-                <a class="condition-guide" href={condition.buttonLink?.startsWith('/') ? condition.buttonLink : conditionGuide(condition.title).href}>{conditionGuide(condition.title).label} <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
-              </details>
+          <div class="condition-cards" role="group" aria-label="Choose your vehicle condition">
+            {conditions.map((condition, index) => (
+              <button
+                type="button"
+                class:list={['condition-card', { 'is-priority': /engine|gearbox/i.test(condition.title) }]}
+                aria-pressed={index === defaultConditionIndex ? 'true' : 'false'}
+                aria-controls="homepage-condition-panel"
+                data-condition-title={condition.title}
+                data-condition-description={condition.description}
+                data-condition-href={condition.buttonLink?.startsWith('/') ? condition.buttonLink : conditionGuide(condition.title).href}
+                data-condition-label={conditionGuide(condition.title).label}
+              >
+                <i class:list={['ph', condition.icon]} aria-hidden="true"></i>
+                <span>{condition.title}</span>
+                <i class="ph ph-check condition-selected" aria-hidden="true"></i>
+              </button>
             ))}
           </div>
+          {defaultCondition && <div id="homepage-condition-panel" class="condition-panel" role="region" aria-labelledby="homepage-condition-title" aria-live="polite" aria-atomic="true">
+            <h3 id="homepage-condition-title" data-condition-heading>{defaultCondition.title}</h3>
+            <p data-condition-description>{defaultCondition.description}</p>
+            <a class="condition-guide" data-condition-guide href={defaultCondition.buttonLink?.startsWith('/') ? defaultCondition.buttonLink : conditionGuide(defaultCondition.title).href}>
+              <span>{conditionGuide(defaultCondition.title).label}</span> <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
+            </a>
+          </div>}
+          <noscript>
+            <div class="condition-fallback">
+              {conditions.filter((_, index) => index !== defaultConditionIndex).map(condition => (
+                <article>
+                  <h3>{condition.title}</h3>
+                  <p>{condition.description}</p>
+                  <a class="condition-guide" href={condition.buttonLink?.startsWith('/') ? condition.buttonLink : conditionGuide(condition.title).href}>{conditionGuide(condition.title).label}</a>
+                </article>
+              ))}
+            </div>
+          </noscript>
 
           <a class="smc-button condition-button" href={home.conditionsButtonLink}>
             Value a car with problems
@@ -636,6 +661,29 @@ const faqJsonLd = {
     makes?.addEventListener('focusout', event => {
       if (!makes.contains(event.relatedTarget as Node | null)) makes.scrollLeft = 0;
     }, { signal });
+    const conditionCards = Array.from(root.querySelectorAll<HTMLButtonElement>('.condition-card'));
+    const conditionPanel = root.querySelector<HTMLElement>('.condition-panel');
+    const conditionHeading = conditionPanel?.querySelector<HTMLElement>('[data-condition-heading]');
+    const conditionDescription = conditionPanel?.querySelector<HTMLElement>('[data-condition-description]');
+    const conditionLink = conditionPanel?.querySelector<HTMLAnchorElement>('[data-condition-guide]');
+    let conditionAnimation: Animation | undefined;
+    conditionCards.forEach(card => {
+      card.addEventListener('click', () => {
+        if (card.getAttribute('aria-pressed') === 'true' || !conditionPanel || !conditionHeading || !conditionDescription || !conditionLink) return;
+        conditionCards.forEach(item => item.setAttribute('aria-pressed', String(item === card)));
+        conditionHeading.textContent = card.dataset.conditionTitle || '';
+        conditionDescription.textContent = card.dataset.conditionDescription || '';
+        conditionLink.href = card.dataset.conditionHref || '/sell-damaged-car/';
+        const label = conditionLink.querySelector('span');
+        if (label) label.textContent = card.dataset.conditionLabel || '';
+        conditionAnimation?.cancel();
+        if (!reducedMotion.matches) {
+          conditionAnimation = conditionPanel.animate([{ opacity: .5, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }], { duration: 180, easing: 'ease-out' });
+        }
+      }, { signal });
+    });
+    reducedMotion.addEventListener('change', () => conditionAnimation?.cancel(), { signal });
+    signal.addEventListener('abort', () => conditionAnimation?.cancel(), { once: true });
     const carousel = root.querySelector<HTMLElement>('.review-window');
     const track = carousel?.querySelector<HTMLElement>('.review-track');
     const cards = Array.from(carousel?.querySelectorAll<HTMLElement>('.review-card') || []);
@@ -802,39 +850,46 @@ const faqJsonLd = {
   .condition-image-wrap picture { position: relative; z-index: 1; display: block; width: 100%; }
   .condition-image-wrap img { display: block; width: 100%; height: auto; object-fit: contain; }
   .condition-content { grid-area: content; min-width: 0; }
-  .condition-tags { display: block; border-top: 1px solid #39513a; }
-  .condition-detail { border-bottom: 1px solid #39513a; }
-  .condition-detail summary {
-    display: grid;
-    grid-template-columns: 22px minmax(0,1fr) 16px;
+  .condition-cards { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+  .condition-card {
+    position: relative;
+    display: flex;
     align-items: center;
-    gap: 12px;
-    min-height: 54px;
-    padding-block: 13px;
-    cursor: pointer;
-    list-style: none;
-    font-size: 15.5px;
-    line-height: 1.5;
+    gap: 11px;
+    min-width: 0;
+    min-height: 68px;
+    padding: 14px 28px 14px 16px;
+    border: 1px solid #405642;
+    border-radius: 12px;
+    background: #1c3522;
+    color: #eef4eb;
+    font: inherit;
+    font-size: 14px;
     font-weight: 550;
+    line-height: 1.4;
+    text-align: left;
+    cursor: pointer;
+    transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
   }
-  .condition-detail summary::-webkit-details-marker, .faq-list summary::-webkit-details-marker { display: none; }
-  .condition-detail summary > .ph:first-child { color: #a6ce93; font-size: 21px; }
-  .condition-toggle { position: relative; width: 16px; height: 16px; color: #b3d8a3; }
-  .condition-detail .condition-toggle::before, .condition-detail .condition-toggle::after {
-    content: '';
-    position: absolute;
-    top: 7px;
-    left: 2px;
-    width: 12px;
-    height: 1.5px;
-    border-radius: 1px;
-    background: currentColor;
+  .condition-card > .ph:first-child { flex: 0 0 22px; color: #b2d49e; font-size: 22px; }
+  .condition-card.is-priority { border-color: #789468; }
+  .condition-selected { position: absolute; top: 9px; right: 9px; color: #e5f5dc; font-size: 12px; opacity: 0; transition: opacity 180ms ease; }
+  .condition-card[aria-pressed="true"] { border-color: #8fbd74; background: #3b6b2d; color: #fff; }
+  .condition-card[aria-pressed="true"] > .ph:first-child { color: #e2f2d8; }
+  .condition-card[aria-pressed="true"] .condition-selected { opacity: 1; }
+  .condition-section .condition-card:focus-visible { outline: 2px solid #c6e7ad; outline-offset: 3px; border-radius: 12px; }
+  @media (hover: hover) {
+    .condition-card:hover { border-color: #93b67f; background: #2c4d31; }
+    .condition-card[aria-pressed="true"]:hover { background: #457a34; }
   }
-  .condition-detail .condition-toggle::after { transform: rotate(90deg); transition: transform 180ms ease, opacity 180ms ease; }
-  .condition-detail[open] .condition-toggle::after { transform: rotate(0); opacity: 0; }
-  .condition-detail p { margin: 0 16px 2px 34px; color: #c9d8c5; font-size: 14px; line-height: 1.65; }
-  .condition-guide { display: inline-flex; align-items: center; gap: 7px; min-height: 42px; margin-left: 34px; padding-block: 6px 13px; color: #c4e6b4; text-decoration: none; font-size: 13px; font-weight: 550; line-height: 1.5; }
+  .condition-panel, .condition-fallback article { display: flex; flex-direction: column; min-height: 176px; margin-top: 16px; padding: 19px 20px 12px; border: 1px solid #435d41; border-radius: 14px; background: #203b26; }
+  .condition-panel h3, .condition-fallback h3 { margin: 0 0 8px; color: #fff; font-size: 17px; font-weight: 600; line-height: 1.4; }
+  .condition-panel p, .condition-fallback p { margin: 0 0 7px; color: #d0ddcb; font-size: 14px; line-height: 1.65; }
+  .condition-guide { display: inline-flex; align-items: center; align-self: flex-start; gap: 7px; min-height: 42px; margin-top: auto; padding-block: 7px; color: #c4e6b4; text-decoration: none; font-size: 13px; font-weight: 550; line-height: 1.5; }
   .condition-guide:hover { color: #fff; }
+  .condition-guide .ph { transition: transform 180ms ease; }
+  .condition-guide:hover .ph { transform: translate(2px,-2px); }
+  .faq-list summary::-webkit-details-marker { display: none; }
   .condition-button { margin-top: 24px; color: #18371b; background: #fff; }
   @media (max-width: 1024px) {
     .condition-grid { grid-template-columns: minmax(0,1fr); grid-template-areas: "heading" "visual" "content"; gap: 24px; }
@@ -1020,7 +1075,9 @@ const faqJsonLd = {
     .process-section,.condition-section,.value-section,.coverage-section,.testimonial-section,.faq-section { padding-block: 44px; }
     .condition-grid { gap: 22px; }
     .condition-image-wrap { border-radius: 26px; padding: 6px; }
-    .condition-detail summary { font-size: 15px; }
+    .condition-cards { gap: 8px; }
+    .condition-card { flex-direction: column; align-items: flex-start; gap: 8px; min-height: 96px; padding: 13px 18px 13px 13px; font-size: 13px; }
+    .condition-panel { min-height: 202px; padding: 17px 16px 10px; }
     .condition-guide { font-size: 12.5px; }
     .value-promises { grid-template-columns: 1fr; gap: 18px; padding-block: 20px; margin-block: 22px 28px; }
     .value-promises h3 { font-size: 18px; }
