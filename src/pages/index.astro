@@ -11,6 +11,7 @@ import { getVehicleData } from '../lib/vehicle-data';
 import { wixClient } from '../lib/wix';
 import { wixResponsiveImage } from '../lib/wix-image';
 import { makeLogoForName } from '../lib/make-logos';
+import { homepageIdentitySchema, serializeJsonLd } from '../lib/structured-data';
 
 const homepage = await getHomepageContent();
 const home = homepage.page as Record<string, any>;
@@ -141,10 +142,8 @@ const faqJsonLd = {
   canonical="/"
 >
   <Fragment slot="head">
-    <script
-      type="application/ld+json"
-      set:html={JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')}
-    />
+    <script type="application/ld+json" set:html={serializeJsonLd(homepageIdentitySchema())} />
+    {home.faqVisible && faqs.length > 0 && <script type="application/ld+json" set:html={serializeJsonLd(faqJsonLd)} />}
   </Fragment>
 
   <main class="home-page">

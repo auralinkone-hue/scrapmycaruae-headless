@@ -44,7 +44,7 @@ test('post route keeps essential article HTML separate from optional enrichment'
   assert.match(page, /<h1>\{postTitle\}<\/h1>/);
   assert.doesNotMatch(page, /Scrap My Car UAE Blog/);
   assert.match(page, /<article class="article-content" set:html=\{articleHtml\}/);
-  assert.match(page, /'@type': 'BlogPosting'/);
+  assert.match(page, /const jsonLd = post \? blogPostingSchema\(\{/);
   assert.match(page, /getBreadcrumbJsonLd/);
   assert.match(page, /relatedPosts\.filter\(isRenderableRelatedPost\)/);
   assert.match(page, /asSafeText\(post\?\.media\?\.altText, postTitle\)/);

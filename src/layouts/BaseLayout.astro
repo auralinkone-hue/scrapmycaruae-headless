@@ -3,6 +3,7 @@ import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import { canonicalUrl, robotsContent, siteUrl } from '../lib/seo';
+import { defaultSocialImage, defaultSocialImageAlt, serviceSchemaForPath, serializeJsonLd } from '../lib/structured-data';
 
 interface Props {
   title: string;
@@ -32,7 +33,9 @@ const robotsUrl = Astro.isPrerendered ? new URL(Astro.url.pathname, siteUrl) : A
 const resolvedRobots = noindex ? 'noindex,nofollow' : robotsContent(robotsUrl);
 const resolvedPrevUrl = prevUrl ? canonicalUrl(prevUrl) : '';
 const resolvedNextUrl = nextUrl ? canonicalUrl(nextUrl) : '';
-const resolvedOgImage = ogImage ? new URL(ogImage, `${siteUrl}/`).toString() : '';
+const resolvedOgImage = new URL(ogImage || defaultSocialImage, `${siteUrl}/`).toString();
+const resolvedOgImageAlt = ogImage ? title : defaultSocialImageAlt;
+const serviceSchema = serviceSchemaForPath(Astro.url.pathname);
 const gtmId = import.meta.env.PUBLIC_GTM_ID?.trim() || '';
 const analyticsEnabled = import.meta.env.PUBLIC_ANALYTICS_ENABLED === 'true' && Boolean(gtmId);
 ---
@@ -63,12 +66,16 @@ const analyticsEnabled = import.meta.env.PUBLIC_ANALYTICS_ENABLED === 'true' && 
     {description && <meta property="og:description" content={description} />}
     <meta property="og:url" content={resolvedCanonical} />
     {resolvedOgImage && <meta property="og:image" content={resolvedOgImage} />}
+    <meta property="og:image:alt" content={resolvedOgImageAlt} />
 
     <meta name="twitter:card" content={resolvedOgImage ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:url" content={resolvedCanonical} />
     <meta name="twitter:title" content={title} />
     {description && <meta name="twitter:description" content={description} />}
     {resolvedOgImage && <meta name="twitter:image" content={resolvedOgImage} />}
+    <meta name="twitter:image:alt" content={resolvedOgImageAlt} />
+
+    {serviceSchema && <script type="application/ld+json" set:html={serializeJsonLd(serviceSchema)} />}
 
     {analyticsEnabled && <meta name="smc-analytics-config" content={gtmId} />}
     <script>

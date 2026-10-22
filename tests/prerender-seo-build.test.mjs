@@ -7,6 +7,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { stripTypeScriptTypes } from 'node:module';
+import { defaultSocialImage, defaultSocialImageAlt, serviceSchemaForPath, serializeJsonLd } from '../src/lib/structured-data.ts';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const origin = 'https://www.scrapmycaruae.com';
@@ -67,6 +68,11 @@ for (const name of ['node:http', 'node:https']) {
         assert.deepEqual(metaValues(html, 'googlebot'), [expected], `${environment} ${route} Googlebot`);
         assert.equal([...html.matchAll(/<link\b[^>]*rel="canonical"[^>]*>/g)].length, 1);
         assert.ok(html.includes(`href="${origin}${route}"`), `${environment} ${route} canonical`);
+        assert.deepEqual(metaValues(html, 'twitter:image'), [origin + defaultSocialImage]);
+        assert.deepEqual(metaValues(html, 'twitter:image:alt'), [defaultSocialImageAlt]);
+        assert.deepEqual(metaValues(html, 'twitter:card'), ['summary_large_image']);
+        assert.ok(html.includes(`property="og:image" content="${origin}${defaultSocialImage}"`));
+        assert.ok(html.includes(`property="og:url" content="${origin}${route}"`));
       }
       const headers = await readFile(path.join(isolated, 'dist/client/_headers'), 'utf8');
       assert.equal(headers.includes('X-Robots-Tag: noindex'), environment === 'staging');
@@ -79,7 +85,7 @@ for (const name of ['node:http', 'node:https']) {
 test('BaseLayout runtime requests retain hostname checks and explicit noindex overrides', async () => {
   const layout = (await readFile(path.join(root, 'src/layouts/BaseLayout.astro'), 'utf8')).split('---')[1];
   const code = stripTypeScriptTypes(layout.replace(/^import .*\n/gm, '').replaceAll('import.meta.env', '{}'));
-  const resolve = new Function('Astro', 'canonicalUrl', 'robotsContent', 'siteUrl', code + ';return resolvedRobots;');
+  const resolve = new Function('Astro', 'canonicalUrl', 'robotsContent', 'siteUrl', 'defaultSocialImage', 'defaultSocialImageAlt', 'serviceSchemaForPath', 'serializeJsonLd', code + ';return resolvedRobots;');
   for (const environment of ['production', 'staging']) {
     const source = (await readFile(path.join(root, 'src/lib/seo.ts'), 'utf8'))
       .replaceAll('import.meta.env', JSON.stringify({ PUBLIC_SEO_ENV: environment, PUBLIC_SITE_URL: origin }));
@@ -87,8 +93,8 @@ test('BaseLayout runtime requests retain hostname checks and explicit noindex ov
     for (const host of [origin, 'https://preview.example.test', 'https://smc-headless-worker.hussain-gscx.workers.dev', 'http://localhost:4321']) {
       const astro = { url: new URL(host + '/contact-us'), isPrerendered: false, props: {} };
       const expected = environment === 'production' && host === origin ? 'index,follow' : 'noindex,nofollow';
-      assert.equal(resolve(astro, seo.canonicalUrl, seo.robotsContent, seo.siteUrl), expected, `${environment} ${host}`);
-      assert.equal(resolve({ ...astro, props: { noindex: true } }, seo.canonicalUrl, seo.robotsContent, seo.siteUrl), 'noindex,nofollow');
+      assert.equal(resolve(astro, seo.canonicalUrl, seo.robotsContent, seo.siteUrl, defaultSocialImage, defaultSocialImageAlt, serviceSchemaForPath, serializeJsonLd), expected, `${environment} ${host}`);
+      assert.equal(resolve({ ...astro, props: { noindex: true } }, seo.canonicalUrl, seo.robotsContent, seo.siteUrl, defaultSocialImage, defaultSocialImageAlt, serviceSchemaForPath, serializeJsonLd), 'noindex,nofollow');
     }
   }
 });

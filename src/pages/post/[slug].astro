@@ -26,6 +26,7 @@ import { loadPostPageEnrichment } from '../../lib/post-enrichment';
 import { asPositiveNumber, asSafeText, asValidDate, asWixMedia, isRenderableRelatedPost } from '../../lib/wix-post-values';
 import { getVehicleData } from '../../lib/vehicle-data';
 import { blogLoadErrorStatus } from '../../lib/blog-load-status';
+import { blogPostingSchema, serializeJsonLd } from '../../lib/structured-data';
 
 const slug = Astro.params.slug ?? '';
 let post: any = null;
@@ -134,23 +135,10 @@ const formatDate = (date: Date | null) =>
       }).format(date)
     : '';
 
-const jsonLd = post
-  ? {
-      '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      headline: postTitle,
-      description: seoDescription,
-      datePublished: post.firstPublishedDate,
-      dateModified: post.lastPublishedDate || post.firstPublishedDate,
-      mainEntityOfPage: absoluteCanonical,
-      image: coverImage ? [coverImage] : undefined,
-      publisher: {
-        '@type': 'Organization',
-        name: 'Scrap My Car UAE',
-        url: canonicalUrl('/')
-      }
-    }
-  : null;
+const jsonLd = post ? blogPostingSchema({
+  canonical: absoluteCanonical, headline: postTitle, description: seoDescription,
+  publishedDate, updatedDate, image: coverImage, author
+}) : null;
 ---
 
 <BaseLayout
@@ -164,7 +152,7 @@ const jsonLd = post
   {jsonLd && (
     <Fragment slot="head">
       <script is:inline>document.documentElement.classList.add('blog-media-enhanced');</script>
-      <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />
+      <script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />
       {breadcrumbJsonLd && (
         <script
           type="application/ld+json"
