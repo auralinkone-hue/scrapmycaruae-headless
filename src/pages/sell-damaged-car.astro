@@ -7,7 +7,7 @@ import LocationCoverageList from '../components/LocationCoverageList.astro';
 import QuoteForm from '../components/QuoteForm.astro';
 import SectionActionButton from '../components/SectionActionButton.astro';
 import ServicePageMotion from '../components/ServicePageMotion.astro';
-import { getLatestPosts } from '../lib/related-posts';
+import { getServiceGuidePosts } from '../lib/service-guides';
 import { getVehicleData } from '../lib/vehicle-data';
 
 const title = 'Sell Damaged Car UAE | Free Valuation & Vehicle Collection';
@@ -47,7 +47,7 @@ try {
 }
 
 try {
-  helpfulPosts = await getLatestPosts({});
+  helpfulPosts = await getServiceGuidePosts('sell-damaged-car');
 } catch {
   helpfulPosts = [];
 }

@@ -9,7 +9,7 @@ import SectionActionButton from '../components/SectionActionButton.astro';
 import ServicePageMotion from '../components/ServicePageMotion.astro';
 import QuoteForm from '../components/QuoteForm.astro';
 import { getHomepageContent } from '../lib/homepage-content';
-import { getLatestPosts } from '../lib/related-posts';
+import { getServiceGuidePosts } from '../lib/service-guides';
 import { getVehicleData } from '../lib/vehicle-data';
 import { wixResponsiveImage } from '../lib/wix-image';
 
@@ -75,7 +75,7 @@ try {
 }
 
 try {
-  helpfulPosts = await getLatestPosts({});
+  helpfulPosts = await getServiceGuidePosts('sell-my-car');
 } catch {
   helpfulPosts = [];
 }

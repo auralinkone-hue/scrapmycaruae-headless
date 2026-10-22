@@ -23,7 +23,7 @@ test('sell my car hub links the live service pages while using existing data sou
   const page = await readProjectFile('src/pages/sell-my-car.astro');
 
   assert.match(page, /getVehicleData/);
-  assert.match(page, /getLatestPosts/);
+  assert.match(page, /getServiceGuidePosts\('sell-my-car'\)/);
   assert.match(page, /BlogArticleCard/);
   assert.match(page, /wixResponsiveImage/);
   assert.match(page, /'Damaged cars'[\s\S]*?'\/sell-damaged-car\//);

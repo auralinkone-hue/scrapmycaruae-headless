@@ -1,0 +1,147 @@
+{
+  "checkedAt": "2026-10-22T19:14:13.773098+00:00",
+  "startingCommit": "3d03d645d27511b44a70576cff526d9f4776ba52",
+  "environment": "development staging",
+  "method": "Seven article GETs, sequential, 3 seconds between completed requests; no retries. Only anchors inside article.article-content count as article-body links. Trailing slash differences and relative/absolute same-site URLs normalized; sitewide links counted separately.",
+  "articleChecks": [
+    {
+      "row": 1,
+      "source": "https://www.scrapmycaruae.com/post/how-much-is-my-scrap-car-worth-in-2025-uae-pricing-explained",
+      "target": "https://www.scrapmycaruae.com/scrap-car-value/",
+      "status": 200,
+      "seconds": 8.34,
+      "articleBodyPresent": true,
+      "robots": "noindex,nofollow",
+      "bodyRecommendedLinks": [],
+      "bodyInternalLinks": [
+        {
+          "href": "/",
+          "text": "scrapmycaruae.com"
+        },
+        {
+          "href": "/",
+          "text": "scrapmycaruae.com"
+        }
+      ],
+      "sitewideRecommendedLinks": 2
+    },
+    {
+      "row": 2,
+      "source": "https://www.scrapmycaruae.com/post/before-scrapping-how-to-deregister-your-car-in-uae",
+      "target": "https://www.scrapmycaruae.com/scrap-my-car/",
+      "status": 200,
+      "seconds": 9.62,
+      "articleBodyPresent": true,
+      "robots": "noindex,nofollow",
+      "bodyRecommendedLinks": [],
+      "bodyInternalLinks": [],
+      "sitewideRecommendedLinks": 4
+    },
+    {
+      "row": 5,
+      "source": "https://www.scrapmycaruae.com/post/car-scrapping-rules-you-should-know-if-you-live-in-abu-dhabi-or-sharjah",
+      "target": "https://www.scrapmycaruae.com/locations/abu-dhabi/",
+      "status": 200,
+      "seconds": 9.46,
+      "articleBodyPresent": true,
+      "robots": "noindex,nofollow",
+      "bodyRecommendedLinks": [],
+      "bodyInternalLinks": [
+        {
+          "href": "/",
+          "text": "scrapmycaruae.com"
+        }
+      ],
+      "sitewideRecommendedLinks": 3,
+      "bodySharjahLinks": []
+    },
+    {
+      "row": 6,
+      "source": "https://www.scrapmycaruae.com/post/how-to-prepare-your-car-for-scrapping-in-dubai",
+      "target": "https://www.scrapmycaruae.com/locations/dubai/",
+      "status": 200,
+      "seconds": 9.46,
+      "articleBodyPresent": true,
+      "robots": "noindex,nofollow",
+      "bodyRecommendedLinks": [],
+      "bodyInternalLinks": [
+        {
+          "href": "/",
+          "text": "scrapmycaruae.com"
+        }
+      ],
+      "sitewideRecommendedLinks": 3
+    },
+    {
+      "row": 7,
+      "source": "https://www.scrapmycaruae.com/post/imple-steps-to-sell-your-scrap-car-in-uae-for-the-best-price",
+      "target": "https://www.scrapmycaruae.com/scrap-my-car/",
+      "status": 200,
+      "seconds": 9.72,
+      "articleBodyPresent": true,
+      "robots": "noindex,nofollow",
+      "bodyRecommendedLinks": [],
+      "bodyInternalLinks": [],
+      "sitewideRecommendedLinks": 4
+    },
+    {
+      "row": 11,
+      "source": "https://www.scrapmycaruae.com/post/selling-a-car-with-a-faulty-engine-in-the-uae-your-options",
+      "target": "https://www.scrapmycaruae.com/sell-car-with-engine-problems/",
+      "status": 200,
+      "seconds": 9.63,
+      "articleBodyPresent": true,
+      "robots": "noindex,nofollow",
+      "bodyRecommendedLinks": [],
+      "bodyInternalLinks": [
+        {
+          "href": "/",
+          "text": "scrapmycarUAE.com"
+        }
+      ],
+      "sitewideRecommendedLinks": 2
+    },
+    {
+      "row": 12,
+      "source": "https://www.scrapmycaruae.com/post/how-to-sell-a-car-with-gearbox-problems-scrap-my-car-uae",
+      "target": "https://www.scrapmycaruae.com/sell-car-with-gearbox-problems/",
+      "status": 200,
+      "seconds": 10.09,
+      "articleBodyPresent": true,
+      "robots": "noindex,nofollow",
+      "bodyRecommendedLinks": [],
+      "bodyInternalLinks": [
+        {
+          "href": "/free-quote",
+          "text": "Free Collection Service"
+        }
+      ],
+      "sitewideRecommendedLinks": 2
+    }
+  ],
+  "bodyRecommendedLinksPresent": 0,
+  "cmsWrites": 0,
+  "liveFilteredQuery": {
+    "service": "sell-car-with-engine-problems",
+    "count": 3,
+    "slugs": [
+      "selling-a-car-with-a-faulty-engine-in-the-uae-your-options",
+      "who-will-take-your-non-running-car-in-the-uae-fast-solutions-you-should-know",
+      "how-much-is-my-scrap-car-worth-in-2025-uae-pricing-explained"
+    ],
+    "ms": 16543
+  },
+  "curatedGuideSlots": 21,
+  "uniqueCuratedSlugs": 10,
+  "automatedValidation": {
+    "fullSuite": {
+      "tests": 250,
+      "passed": 250,
+      "failed": 0,
+      "skipped": 0
+    },
+    "stagingBuild": "passed",
+    "templates": "unchanged outside loader import/call",
+    "postDeployment": "reported separately after workflow completes"
+  }
+}

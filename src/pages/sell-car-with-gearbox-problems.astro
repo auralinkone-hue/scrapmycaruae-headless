@@ -7,7 +7,7 @@ import LocationCoverageList from '../components/LocationCoverageList.astro';
 import QuoteForm from '../components/QuoteForm.astro';
 import SectionActionButton from '../components/SectionActionButton.astro';
 import ServicePageMotion from '../components/ServicePageMotion.astro';
-import { getLatestPosts } from '../lib/related-posts';
+import { getServiceGuidePosts } from '../lib/service-guides';
 import { getVehicleData } from '../lib/vehicle-data';
 
 const title = 'Sell Car With Gearbox Problems UAE | Free Valuation';
@@ -45,7 +45,7 @@ let vehicleData = { makes: [], models: [], years: [] };
 let vehicleDataError = '';
 let helpfulPosts: any[] = [];
 try { vehicleData = await getVehicleData(); } catch (error) { vehicleDataError = error instanceof Error ? error.message : String(error); }
-try { helpfulPosts = await getLatestPosts({}); } catch { helpfulPosts = []; }
+try { helpfulPosts = await getServiceGuidePosts('sell-car-with-gearbox-problems'); } catch { helpfulPosts = []; }
 
 const breadcrumbJsonLd = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
   { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.scrapmycaruae.com/' },

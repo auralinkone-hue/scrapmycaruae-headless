@@ -8,7 +8,7 @@ import MakeLogoRail from '../components/MakeLogoRail.astro';
 import QuoteForm from '../components/QuoteForm.astro';
 import SectionActionButton from '../components/SectionActionButton.astro';
 import ServicePageMotion from '../components/ServicePageMotion.astro';
-import { getLatestPosts } from '../lib/related-posts';
+import { getServiceGuidePosts } from '../lib/service-guides';
 import { getVehicleData } from '../lib/vehicle-data';
 
 const title = 'Sell Accident Damaged Car UAE | Free Valuation';
@@ -42,7 +42,7 @@ let vehicleData = { makes: [], models: [], years: [] };
 let vehicleDataError = '';
 let helpfulPosts: any[] = [];
 try { vehicleData = await getVehicleData(); } catch (error) { vehicleDataError = error instanceof Error ? error.message : String(error); }
-try { helpfulPosts = await getLatestPosts({}); } catch { helpfulPosts = []; }
+try { helpfulPosts = await getServiceGuidePosts('sell-accident-damaged-car'); } catch { helpfulPosts = []; }
 const preferredMakes = ['TOYOTA', 'NISSAN', 'MERCEDES-BENZ', 'BMW', 'HONDA', 'LEXUS', 'MITSUBISHI', 'HYUNDAI'];
 const makeLookup = new Map(vehicleData.makes.map((item) => [item.make.toUpperCase(), item.make]));
 const selectedMakes = preferredMakes.map((make) => makeLookup.get(make)).filter(Boolean) as string[];
