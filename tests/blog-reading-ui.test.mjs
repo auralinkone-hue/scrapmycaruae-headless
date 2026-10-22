@@ -9,10 +9,10 @@ test('blog articles have a real reading progress bar tied to the reading content
     getFile('src/pages/post/[slug].astro'),
     getFile('src/components/BlogReadingProgress.astro'),
   ]);
-  assert.match(article, /<BlogReadingProgress \\/>/);
+  assert.match(article, /<BlogReadingProgress\s*\/>/);
   assert.match(progress, /class="blog-reading-progress"/);
   assert.match(progress, /\.article-content/);
-  assert.match(progress, /window\.scrollY \\/ finishAt/);
+  assert.match(progress, /window\.scrollY\s*\/\s*finishAt/);
   assert.match(progress, /addEventListener\('scroll', requestUpdate, \{ passive: true \}\)/);
   assert.match(progress, /requestAnimationFrame\(update\)/);
   assert.match(progress, /prefers-reduced-motion/);

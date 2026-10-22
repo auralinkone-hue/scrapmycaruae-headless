@@ -106,9 +106,9 @@ test('category navigation exposes accessible mobile and More-menu behaviour', as
 
 test('More menu uses a real consistently sized down-caret icon with state transition', async () => {
   const archive = await readArchive();
-  assert.match(archive, /More <i class="ph ph-caret-down" aria-hidden="true"><\\/i>/);
+  assert.match(archive, /More <i class="ph ph-caret-down" aria-hidden="true"><\/i>/);
   assert.match(archive, /\.more-categories\[open\] summary \.ph \{ transform: rotate\(180deg\)/);
-  assert.doesNotMatch(archive, /More <span aria-hidden="true">⌄<\\/span>/);
+  assert.doesNotMatch(archive, /More <span aria-hidden="true">⌄<\/span>/);
 });
 
 test('archive media reserves space and marks its load state for the premium shimmer', async () => {

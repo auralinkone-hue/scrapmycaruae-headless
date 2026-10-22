@@ -154,9 +154,9 @@ const jsonLd = post
   ogType="article"
   noindex={!post || Boolean(wixSeo?.noindex)}
 >
-  {post && <Fragment slot="head"><script is:inline>document.documentElement.classList.add('blog-media-enhanced');</script></Fragment>}
   {jsonLd && (
     <Fragment slot="head">
+      <script is:inline>document.documentElement.classList.add('blog-media-enhanced');</script>
       <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />
       {breadcrumbJsonLd && (
         <script
