@@ -18,6 +18,24 @@ async function read(url, body) {
       errorCodes: (result.errors || []).map(e => typeof e.code === 'number' ? e.code : null) };
   } catch (error) { return { error: error.name }; }
 }
+let codeInspection;
+try {
+  const response = await fetch(`${api}/scripts/${worker}/content/v2`, {
+    headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(20000)
+  });
+  const code = await response.text();
+  const argumentsFound = [...code.matchAll(/requireQuoteRequestsCollectionId\(([^)]{0,180})\)/g)].map(match => match[1]);
+  codeInspection = { status: response.status, bytes: code.length,
+    guardFound: code.includes('Quote submission collection configuration is unavailable.'),
+    guardArguments: argumentsFound.map(argument => ({
+      isStagingLiteral: /^['"]QuoteRequestsStaging['"]$/.test(argument.trim()),
+      isProductionLiteral: /^['"]QuoteRequests['"]$/.test(argument.trim()),
+      isMissingBuildValue: /^(undefined|void 0)$/.test(argument.trim()),
+      usesRuntimeBinding: /env\.WIX_QUOTE_REQUESTS_COLLECTION_ID/.test(argument),
+      usesImportMetaEnv: /import\.meta\.env/.test(argument)
+    })) };
+} catch (error) { codeInspection = { error: error.name }; }
+
 const settings = await read(`${api}/scripts/${worker}/settings`);
 const bindings = settings.result?.bindings || [];
 const names = ['QUOTE_EMAIL_MODE', 'BREVO_API_KEY', 'BREVO_SENDER_EMAIL', 'BREVO_SENDER_NAME', 'QUOTE_NOTIFICATIONS_DB', 'WIX_QUOTE_REQUESTS_COLLECTION_ID', 'PUBLIC_WIX_CLIENT_ID', 'PUBLIC_SEO_ENV'];
@@ -70,6 +88,7 @@ const safeEvents = relevant.map(event => {
     sourceKeys: Object.keys(source).filter(k => !['headers', 'body', 'request'].includes(k)) };
 });
 console.log('DEVELOPMENT_QUOTE_DIAGNOSTICS ' + JSON.stringify({ worker,
+  codeInspection,
   settings: { status: settings.status, success: settings.success, error: settings.error, errorCodes: settings.errorCodes,
     bindings: safeBindings, limits: settings.result?.limits, observability: settings.result?.observability },
   logs: { status: query.status, success: query.success, error: query.error, errorCodes: query.errorCodes,
