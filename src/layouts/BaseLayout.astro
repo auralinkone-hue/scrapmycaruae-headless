@@ -27,7 +27,9 @@ const {
 } = Astro.props;
 
 const resolvedCanonical = canonicalUrl(canonical || Astro.url.pathname);
-const resolvedRobots = noindex ? 'noindex,nofollow' : robotsContent(Astro.url);
+// Prerendering uses a synthetic localhost URL; runtime requests keep host protection.
+const robotsUrl = Astro.isPrerendered ? new URL(Astro.url.pathname, siteUrl) : Astro.url;
+const resolvedRobots = noindex ? 'noindex,nofollow' : robotsContent(robotsUrl);
 const resolvedPrevUrl = prevUrl ? canonicalUrl(prevUrl) : '';
 const resolvedNextUrl = nextUrl ? canonicalUrl(nextUrl) : '';
 const resolvedOgImage = ogImage ? new URL(ogImage, `${siteUrl}/`).toString() : '';
