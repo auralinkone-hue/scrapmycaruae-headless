@@ -13,6 +13,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: "!contains(github.event.head_commit.message, '[diagnostic-only]')"
     runs-on: ubuntu-latest
     permissions:
       contents: read
