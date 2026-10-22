@@ -1,0 +1,26 @@
+name: Diagnose development blog failures
+on:
+  push:
+    branches: [development]
+    paths:
+      - '.github/workflows/diagnose-development-blog.yml'
+      - 'scripts/diagnose-development-blog-worker.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Read preview-only Worker outcomes with synthetic blog GET probes
+        run: node scripts/diagnose-development-blog-worker.mjs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
