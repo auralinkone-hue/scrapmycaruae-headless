@@ -28,7 +28,7 @@ test('blog images use subtle real load-triggered animation and reduced-motion su
   assert.match(article, /class="cover-wrap blog-media-load" data-image-loading/);
   assert.match(article, /\.article-content figure/);
   assert.match(article, /image\.addEventListener\('error', finish/);
-  assert.match(archive, /class="card-image blog-media-load" data-image-loading/);
+  assert.match(archive, /class:list=\{\['card-image', responsiveImage\.src && 'blog-media-load'\]\}/);
   assert.match(style, /\.blog-media-load\.is-loaded img/);
   assert.match(style, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(layout, /document\.querySelectorAll\('\[data-image-loading\]'\)/);

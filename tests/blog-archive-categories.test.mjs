@@ -113,6 +113,6 @@ test('More menu uses a real consistently sized down-caret icon with state transi
 
 test('archive media reserves space and marks its load state for the premium shimmer', async () => {
   const archive = await readArchive();
-  assert.match(archive, /class="card-image blog-media-load" data-image-loading/);
+  assert.match(archive, /class:list=\{\['card-image', responsiveImage\.src && 'blog-media-load'\]\}/);
   assert.match(archive, /blog-media-enhanced/);
 });

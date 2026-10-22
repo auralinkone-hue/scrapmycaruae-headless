@@ -171,7 +171,7 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
         return (
           <article class="archive-card">
             <a class="card-image-link" href={postHref} aria-label={'Read ' + post.title}>
-              <div class="card-image blog-media-load" data-image-loading>
+              <div class:list={['card-image', responsiveImage.src && 'blog-media-load']} data-image-loading={responsiveImage.src ? '' : undefined}>
                 {responsiveImage.src && (
                   <picture>
                     <source type="image/avif" srcset={responsiveImage.avifSrcset} sizes="(max-width: 620px) calc(100vw - 32px), (max-width: 900px) calc(50vw - 30px), 390px" />
