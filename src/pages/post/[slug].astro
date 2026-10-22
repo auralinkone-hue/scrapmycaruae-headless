@@ -25,6 +25,7 @@ import { getLatestPosts, getRelatedPosts } from '../../lib/related-posts';
 import { loadPostPageEnrichment } from '../../lib/post-enrichment';
 import { asPositiveNumber, asSafeText, asValidDate, asWixMedia, isRenderableRelatedPost } from '../../lib/wix-post-values';
 import { getVehicleData } from '../../lib/vehicle-data';
+import { blogLoadErrorStatus } from '../../lib/blog-load-status';
 
 const slug = Astro.params.slug ?? '';
 let post: any = null;
@@ -41,9 +42,14 @@ try {
     post = result.post;
   }
 } catch (error) {
-  Astro.response.status = 404;
+  Astro.response.status = blogLoadErrorStatus(error);
+  if (Astro.response.status === 503) {
+    Astro.response.headers.set('Retry-After', '60');
+    Astro.response.headers.set('Cache-Control', 'no-store');
+  }
   loadError = error instanceof Error ? error.message : String(error);
 }
+const articleTemporarilyUnavailable = Astro.response.status === 503;
 
 const { author, categoryBreadcrumb, relatedPosts } = post
   ? await loadPostPageEnrichment({
@@ -274,8 +280,8 @@ const jsonLd = post
     </main>
   ) : (
     <main class="not-found">
-      <h1>Article not found</h1>
-      <p>The article may have been moved or is no longer available.</p>
+      {articleTemporarilyUnavailable ? <h1>Article temporarily unavailable</h1> : <h1>Article not found</h1>}
+      <p>{articleTemporarilyUnavailable ? 'We could not load this article right now. Please try again shortly.' : 'The article may have been moved or is no longer available.'}</p>
       <p><a href="/blogs">Return to the blogs</a></p>
       {import.meta.env.DEV && loadError && <pre>{loadError}</pre>}
     </main>

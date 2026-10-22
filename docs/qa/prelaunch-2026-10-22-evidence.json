@@ -1,0 +1,106 @@
+{
+  "initialCrawl": {
+    "pages": 646,
+    "statuses": {
+      "200": 598,
+      "404": 48
+    },
+    "protectedStatus": {
+      "200": 542,
+      "404": 46
+    },
+    "protectedFailures": [
+      "/post/is-your-old-car-costing-you-more-than-it-s-worth-here-s-when-to-scrap-it",
+      "/post/lost-your-car-number-plates-in-the-uae-essential-steps-to-take-before-selling-or-scrapping-your-veh",
+      "/post/lost-your-car-registration-in-the-uae-essential-steps-to-take-before-selling-or-scrapping-your-vehi",
+      "/post/lost-your-mulkiya-card-important-things-to-handle-before-selling-or-scrapping-your-vehicle-in-the-u",
+      "/post/low-traffic-zones-in-the-uae",
+      "/post/maximizing-car-value-through-diy-repairs",
+      "/post/mercedes-benz-e-class-estate-review-luxury-meets-practicality",
+      "/post/mustang-gt500-review-performance-and-features-analysis",
+      "/post/old-cars-new-value-how-dubai-s-scrap-car-industry-works",
+      "/post/recognizing-the-top-5-signs-of-transmission-failure",
+      "/post/recognizing-the-top-5-signs-of-transmission-failure-1",
+      "/post/regional-hotspots-for-car-scrapping-in-the-uae",
+      "/post/regulations-for-selling-scrap-cars-in-dubai",
+      "/post/removing-a-financed-vehicle-mortgage-in-the-uae-key-requirements-and-smart-ways-to-complete-the-pro",
+      "/post/revitalizing-your-old-car-interiors-a-guide-to-bringing-new-life-to-your-vehicle",
+      "/post/scrap-car-laws-in-dubai-what-every-owner-should-know-in-2025",
+      "/post/scrap-car-value-in-2025-what-s-the-market-worth-in-the-uae",
+      "/post/scrap-car-with-loan-in-uae-what-you-need-to-know-before-you-start",
+      "/post/scrap-vs-repair-cars-in-uae-why-more-drivers-are-making-the-switch",
+      "/post/scrap-yard-rules-in-dubai-what-sellers-need-to-prepare-in-2026",
+      "/post/scrap-your-car-in-uae-2025-with-scrap-my-car-uae",
+      "/post/scrap-your-car-without-the-paperwork-here-s-what-you-still-need",
+      "/post/scrap-your-old-car-in-uae",
+      "/post/scraping-cars-with-or-without-catalytic-converters",
+      "/post/scrapping-a-financed-car-in-the-uae-here-s-what-you-should-know",
+      "/post/uncovering-the-relationship-between-uae-weather-and-your-car-s-longevity",
+      "/post/understanding-car-metal-recycling-prices-in-the-uae-what-determines-your-vehicle-s-scrap-worth",
+      "/post/understanding-car-scrap-pricing-in-the-uae-essential-factors-that-determine-your-vehicle-s-final-va",
+      "/post/understanding-elvs-in-the-uae",
+      "/post/understanding-vehicle-ownership-verification-in-the-uae-important-checks-every-car-seller-should-co",
+      "/post/unlocking-the-secrets-to-extending-the-battery-life-of-electric-cars-in-dubai-uae",
+      "/post/unveiling-5-driving-myths-and-debunking-common-driving-misconceptions",
+      "/post/unveiling-the-future-car-recycling-innovations",
+      "/post/unveiling-the-mystery-of-white-substance-under-the-oil-filler-cap-causes-and-solutions",
+      "/post/unveiling-the-mystery-what-is-a-certificate-of-destruction",
+      "/post/used-car-ownership-transfer-mistakes-to-avoid-in-uae-essential-tips-every-seller-should-know",
+      "/post/used-car-selling-guidelines-you-must-follow-in-dubai-and-sharjah",
+      "/post/vehicle-deregistration-rules-you-must-know-before-scrapping-your-car-in-the-uae",
+      "/post/want-to-scrap-your-accident-car-fast-here-s-the-easiest-way",
+      "/post/what-are-the-essential-documents-needed-to-tax-your-car",
+      "/post/what-are-the-most-difficult-mechanical-issues-to-diagnose-on-a-car",
+      "/post/what-caused-my-brakes-to-seize-and-how-should-i-get-rid-of-this",
+      "/post/what-coolant-do-i-need-for-an-audi-how-to-top-up",
+      "/post/what-documents-do-you-need-to-scrap-your-car-in-the-uae",
+      "/post/what-does-your-check-engine-light-mean",
+      "/post/what-happens-after-you-scrap-your-car-in-the-uae-full-breakdown"
+    ]
+  },
+  "metadataCrawl": {
+    "pagesAttempted": 660,
+    "htmlParsed": 105,
+    "successfulHtml": 104,
+    "networkBlocked": 555,
+    "schemaParseFailures": 0,
+    "badH1": 0,
+    "badCanonicalCount": 0,
+    "missingTitle": 0,
+    "missingDescription": 0,
+    "missingMetaNoindex": 0,
+    "missingHeaderNoindex": [
+      "/contact-us",
+      "/faqs"
+    ]
+  },
+  "assets": {
+    "uniqueImageSources": 243,
+    "localImageSources": 87,
+    "missingLocalFiles": [],
+    "missingAltOccurrences": 0
+  },
+  "wix": {
+    "currentPublishedPosts": 591,
+    "protectedMissingFromCms": []
+  },
+  "faqSchema": {
+    "documents": 34,
+    "mismatches": []
+  },
+  "fragmentCheck": {
+    "checkedPages": 105,
+    "missingTargets": []
+  },
+  "wixSeoParity": {
+    "compared": 64,
+    "errors": 0,
+    "differences": 0
+  },
+  "executedTests": {
+    "passed": 207,
+    "failed": 0,
+    "skipped": 0
+  },
+  "auditedStartingCommit": "3329c9205efd6bcd360dc7b54b946769957036b3"
+}
