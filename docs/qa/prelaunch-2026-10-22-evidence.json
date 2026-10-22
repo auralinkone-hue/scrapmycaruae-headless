@@ -209,5 +209,33 @@
       "After remediation, complete another controlled 588-URL pass with no unresolved/recurring failures."
     ],
     "scope": "development staging only; no production, Wix CMS content, DNS, PR #4 or article SEO changes."
+  },
+  "lightweightBlogFollowup": {
+    "startingCommit": "02514312d9546b8570bfdabbd1e5135cd69e4e3a",
+    "runtimeCommit": "0399081b2ef2985129b75831e39039dd3eaf977a",
+    "baselineArtifact": "blog-lightweight-2026-10-22-before.json",
+    "postFixArtifact": "blog-lightweight-2026-10-22-after.json",
+    "report": "blog-lightweight-2026-10-22.md",
+    "baselinePassed": 5,
+    "postFixPassed": 2,
+    "totalArticleRequests": 7,
+    "concurrency": 1,
+    "pauseAfterResponseMs": 3000,
+    "retries": 0,
+    "fullCrawlRepeated": false,
+    "failuresReproduced": false,
+    "optimisation": "Skip author About lookup only on article bylines; preserve public identity and author-page biography. Behavior-tested reduction from two author-data API calls to one.",
+    "rootCause": "Historical resource exhaustion confirmed; CPU versus memory and exact upstream error remain undetermined. No latency improvement established.",
+    "tests": {
+      "passed": 213,
+      "failed": 0,
+      "skipped": 0
+    },
+    "stagingBuild": "PASS",
+    "runtimeDeployment": {
+      "result": "success",
+      "workflow": "https://github.com/auralinkone-hue/scrapmycaruae-headless/actions/runs/39760977879"
+    },
+    "productionReadiness": "NOT ESTABLISHED; small HTTP sample only."
   }
 }

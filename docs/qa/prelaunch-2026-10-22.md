@@ -8,6 +8,12 @@ Audited starting commit: `3329c9205efd6bcd360dc7b54b946769957036b3` (includes th
 
 No main/release branch, production Worker, DNS, production CMS data or live Wix page was changed. PR #4 was not merged or modified.
 
+## Latest follow-up — lightweight reliability check
+
+See `blog-lightweight-2026-10-22.md` and its before/after JSON evidence. Five sequential baseline article requests and two post-fix checks all returned valid 200 articles, with at least three seconds between requests and no retries. No resource/upstream errors were reproduced. The article-only unused author-biography request was removed; author-page biographies remain intact. All 213 tests and the staging build passed. Runtime commit `0399081b2ef2985129b75831e39039dd3eaf977a` deployed successfully (workflow 39760977879).
+
+The historical failures below remain recorded, with CPU-versus-memory and exact upstream cause unconfirmed. This limited normal-browsing HTTP sample is encouraging but does not establish production readiness or a measured speedup. Per the revised task, no full crawl or stress test was repeated; the earlier recommendation for another 588-URL crawl is not an instruction for this lightweight follow-up.
+
 ## Follow-up — completed protected-blog recheck (22 October 2026)
 
 **Decision remains HOLD.** The environment's server-side staging access recovered. All 46 original failures now return valid articles, but a completed 588-URL pass still had two unavailable articles. A later two-URL confirmation recovered both; this is evidence of intermittent availability, not a clean completed pass.

@@ -1,0 +1,81 @@
+{
+  "startingCommit": "02514312d9546b8570bfdabbd1e5135cd69e4e3a",
+  "base": "https://smc-headless-worker.hussain-gscx.workers.dev",
+  "startedAt": "2026-10-22T10:08:05.221Z",
+  "settings": {
+    "concurrency": 1,
+    "pauseAfterResponseMs": 3000,
+    "maxAttempts": 1,
+    "timeoutMs": 30000,
+    "stopOnResourceError": true
+  },
+  "results": [
+    {
+      "path": "/post/maximizing-your-car-s-resale-value-tips-and-tricks",
+      "status": 200,
+      "responseMs": 4367,
+      "at": "2026-10-22T10:08:09.588Z",
+      "articlePresent": true,
+      "title": "Maximizing Your Car&#39;s Resale Value: Tips and Tricks",
+      "canonical": "https://www.scrapmycaruae.com/post/maximizing-your-car-s-resale-value-tips-and-tricks",
+      "retryAfter": null,
+      "robots": "noindex, nofollow, noarchive",
+      "cloudflareRay": "a4e7b2f74dc5022a-ORD",
+      "resourceError": false
+    },
+    {
+      "path": "/post/top-money-making-vehicle-parts-in-the-uae-what-scrap-dealers-pay-for",
+      "status": 200,
+      "responseMs": 691,
+      "at": "2026-10-22T10:08:13.284Z",
+      "articlePresent": true,
+      "title": "Top Money-Making Vehicle Parts in the UAE: What Scrap Dealers Pay For!",
+      "canonical": "https://www.scrapmycaruae.com/post/top-money-making-vehicle-parts-in-the-uae-what-scrap-dealers-pay-for",
+      "retryAfter": null,
+      "robots": "noindex, nofollow, noarchive",
+      "cloudflareRay": "a4e7b30ebb28022a-ORD",
+      "resourceError": false
+    },
+    {
+      "path": "/post/recognizing-the-top-5-signs-of-transmission-failure",
+      "status": 200,
+      "responseMs": 502,
+      "at": "2026-10-22T10:08:16.788Z",
+      "articlePresent": true,
+      "title": "5 Signs of Transmission Failure",
+      "canonical": "https://www.scrapmycaruae.com/post/recognizing-the-top-5-signs-of-transmission-failure",
+      "retryAfter": null,
+      "robots": "noindex, nofollow, noarchive",
+      "cloudflareRay": "a4e7b325d87d022a-ORD",
+      "resourceError": false
+    },
+    {
+      "path": "/post/imple-steps-to-sell-your-scrap-car-in-uae-for-the-best-price",
+      "status": 200,
+      "responseMs": 399,
+      "at": "2026-10-22T10:08:20.190Z",
+      "articlePresent": true,
+      "title": "Simple Steps to Sell Your Scrap Car in UAE for the Best Price",
+      "canonical": "https://www.scrapmycaruae.com/post/imple-steps-to-sell-your-scrap-car-in-uae-for-the-best-price",
+      "retryAfter": null,
+      "robots": "noindex, nofollow, noarchive",
+      "cloudflareRay": "a4e7b33bbd77022a-ORD",
+      "resourceError": false
+    },
+    {
+      "path": "/post/why-modern-scrap-yards-are-becoming-data-driven-in-the-uae",
+      "status": 200,
+      "responseMs": 448,
+      "at": "2026-10-22T10:08:23.640Z",
+      "articlePresent": true,
+      "title": "Why Modern Scrap Yards Are Becoming Data-Driven in the UAE",
+      "canonical": "https://www.scrapmycaruae.com/post/why-modern-scrap-yards-are-becoming-data-driven-in-the-uae",
+      "retryAfter": null,
+      "robots": "noindex, nofollow, noarchive",
+      "cloudflareRay": "a4e7b350fa8e022a-ORD",
+      "resourceError": false
+    }
+  ],
+  "finishedAt": "2026-10-22T10:08:23.640Z",
+  "untested": []
+}

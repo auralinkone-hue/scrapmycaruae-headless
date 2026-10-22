@@ -1,0 +1,46 @@
+{
+  "commit": "0399081b2ef2985129b75831e39039dd3eaf977a",
+  "deploymentWorkflow": "https://github.com/auralinkone-hue/scrapmycaruae-headless/actions/runs/39760977879",
+  "base": "https://smc-headless-worker.hussain-gscx.workers.dev",
+  "startedAt": "2026-10-22T10:10:34.418Z",
+  "settings": {
+    "concurrency": 1,
+    "pauseAfterResponseMs": 3000,
+    "maxAttempts": 1,
+    "timeoutMs": 30000,
+    "stopOnResourceError": true
+  },
+  "results": [
+    {
+      "path": "/post/maximizing-your-car-s-resale-value-tips-and-tricks",
+      "status": 200,
+      "responseMs": 4477,
+      "at": "2026-10-22T10:10:38.895Z",
+      "articlePresent": true,
+      "title": "Maximizing Your Car&#39;s Resale Value: Tips and Tricks",
+      "canonical": "https://www.scrapmycaruae.com/post/maximizing-your-car-s-resale-value-tips-and-tricks",
+      "titleUnchanged": true,
+      "canonicalUnchanged": true,
+      "robots": "noindex, nofollow, noarchive",
+      "retryAfter": null,
+      "cloudflareRay": "a4e7b69c0bd38052-ORD",
+      "resourceError": false
+    },
+    {
+      "path": "/post/top-money-making-vehicle-parts-in-the-uae-what-scrap-dealers-pay-for",
+      "status": 200,
+      "responseMs": 520,
+      "at": "2026-10-22T10:10:42.419Z",
+      "articlePresent": true,
+      "title": "Top Money-Making Vehicle Parts in the UAE: What Scrap Dealers Pay For!",
+      "canonical": "https://www.scrapmycaruae.com/post/top-money-making-vehicle-parts-in-the-uae-what-scrap-dealers-pay-for",
+      "titleUnchanged": true,
+      "canonicalUnchanged": true,
+      "robots": "noindex, nofollow, noarchive",
+      "retryAfter": null,
+      "cloudflareRay": "a4e7b6b3ed938052-ORD",
+      "resourceError": false
+    }
+  ],
+  "finishedAt": "2026-10-22T10:10:42.419Z"
+}
