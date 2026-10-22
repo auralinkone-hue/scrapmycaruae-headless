@@ -53,7 +53,8 @@ const articleTemporarilyUnavailable = Astro.response.status === 503;
 
 const { author, categoryBreadcrumb, relatedPosts } = post
   ? await loadPostPageEnrichment({
-      loadAuthor: () => getBlogAuthor(post),
+      // Article bylines use the public identity, not the author-page biography.
+      loadAuthor: () => getBlogAuthor(post, { includeAbout: false }),
       loadCategoryBreadcrumb: () => getPostCategoryBreadcrumb(post),
       loadRelatedPosts: () => getRelatedPosts(post)
     })

@@ -54,14 +54,14 @@ async function getPublicAbout(memberId: string): Promise<string | undefined> {
   }
 }
 
-async function authorFromMember(member: any): Promise<BlogAuthor | null> {
+async function authorFromMember(member: any, includeAbout = true): Promise<BlogAuthor | null> {
   const id = safeMemberId(member?._id);
   const name = typeof member?.profile?.nickname === 'string'
     ? member.profile.nickname.trim()
     : '';
   if (!id || !name) return null;
 
-  const about = await getPublicAbout(id);
+  const about = includeAbout ? await getPublicAbout(id) : undefined;
   return {
     id,
     name,
@@ -71,7 +71,10 @@ async function authorFromMember(member: any): Promise<BlogAuthor | null> {
   };
 }
 
-export async function getBlogAuthor(post: any): Promise<BlogAuthor | null> {
+export async function getBlogAuthor(
+  post: any,
+  { includeAbout = true }: { includeAbout?: boolean } = {}
+): Promise<BlogAuthor | null> {
   const memberId = safeMemberId(post?.memberId);
   if (!memberId) return null;
 
@@ -79,7 +82,7 @@ export async function getBlogAuthor(post: any): Promise<BlogAuthor | null> {
     const member = await wixClient.members.getMember(memberId, {
       fieldsets: ['PUBLIC']
     });
-    return authorFromMember(member);
+    return authorFromMember(member, includeAbout);
   } catch {
     return null;
   }
