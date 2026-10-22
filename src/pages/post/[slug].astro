@@ -3,6 +3,8 @@ export const prerender = false;
 
 import { media } from '@wix/sdk';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogReadingProgress from '../../components/BlogReadingProgress.astro';
+import '../../styles/blog-media-loading.css';
 import { wixClient } from '../../lib/wix';
 import { wixResponsiveImage } from '../../lib/wix-image';
 import { renderRicosDocumentWithTableOfContents } from '../../lib/rich-content';
@@ -152,6 +154,7 @@ const jsonLd = post
   ogType="article"
   noindex={!post || Boolean(wixSeo?.noindex)}
 >
+  {post && <Fragment slot="head"><script is:inline>document.documentElement.classList.add('blog-media-enhanced');</script></Fragment>}
   {jsonLd && (
     <Fragment slot="head">
       <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />
@@ -166,7 +169,8 @@ const jsonLd = post
 
   {post ? (
     <main class="article-shell">
-      <BlogBreadcrumb items={breadcrumbItems} />
+      <BlogReadingProgress />
+      <BlogBreadcrumb> items={breadcrumbItems} />
       <section class="article-opening">
         <div class="article-opening__copy">
           <h1>{postTitle}</h1>
@@ -201,7 +205,7 @@ const jsonLd = post
           </div>
         </div>
         {responsiveCover.src && (
-          <div class="cover-wrap" data-image-loading>
+          <div class="cover-wrap blog-media-load" data-image-loading>
             <picture>
               {responsiveCover.avifSrcset && <source type="image/avif" srcset={responsiveCover.avifSrcset} sizes="(max-width: 900px) calc(100vw - 40px), 48vw" />}
               <img
@@ -277,6 +281,28 @@ const jsonLd = post
     </main>
   )}
 </BaseLayout>
+
+<script>
+  // Wix Ricos places article media inside figures. Enhance only genuine images;
+  // content stays visible when JavaScript is disabled.
+  const initialiseArticleImageLoading = () => {
+    document.querySelectorAll<HTMLElement>('.article-content figure').forEach(figure => {
+      if (figure.dataset.blogImageReady === 'true') return;
+      const image = figure.querySelector('img');
+      if (!(image instanceof HTMLImageElement)) return;
+      figure.dataset.blogImageReady = 'true';
+      figure.classList.add('blog-media-load');
+      const finish = () => figure.classList.add('is-loaded');
+      if (image.complete) finish();
+      else {
+        image.addEventListener('load', finish, { once: true });
+        image.addEventListener('error', finish, { once: true });
+      }
+    });
+  };
+  initialiseArticleImageLoading();
+  document.addEventListener('astro:page-load', initialiseArticleImageLoading);
+</script>
 
 <style>
       .article-shell {

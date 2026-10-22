@@ -102,3 +102,17 @@ test('category navigation exposes accessible mobile and More-menu behaviour', as
   assert.match(page, /overflow-x: auto/);
   assert.match(page, /scrollbar-width: none/);
 });
+
+
+test('More menu uses a real consistently sized down-caret icon with state transition', async () => {
+  const archive = await readArchive();
+  assert.match(archive, /More <i class="ph ph-caret-down" aria-hidden="true"><\\/i>/);
+  assert.match(archive, /\.more-categories\[open\] summary \.ph \{ transform: rotate\(180deg\)/);
+  assert.doesNotMatch(archive, /More <span aria-hidden="true">⌄<\\/span>/);
+});
+
+test('archive media reserves space and marks its load state for the premium shimmer', async () => {
+  const archive = await readArchive();
+  assert.match(archive, /class="card-image blog-media-load" data-image-loading/);
+  assert.match(archive, /blog-media-enhanced/);
+});

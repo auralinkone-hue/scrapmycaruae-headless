@@ -1,0 +1,40 @@
+/* Lightweight, JS-enhanced loading shimmer for Wix Blog media.
+   Without JS images stay visible and no shimmer is shown. */
+.blog-media-load {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: #eaf0e8;
+}
+html.blog-media-enhanced .blog-media-load::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 1;
+  background: linear-gradient(100deg,
+    transparent 15%,
+    rgba(255, 255, 255, 0.66) 46%,
+    transparent 75%);
+  transform: translateX(-110%);
+  animation: blog-image-shimmer 1.3s ease-in-out infinite;
+}
+html.blog-media-enhanced .blog-media-load.is-loaded::after {
+  opacity: 0;
+  animation: none;
+}
+html.blog-media-enhanced .blog-media-load img {
+  opacity: 0;
+  transition: opacity 440ms ease;
+}
+html.blog-media-enhanced .blog-media-load.is-loaded img {
+  opacity: 1;
+}
+@keyframes blog-image-shimmer {
+  to { transform: translateX(110%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.blog-media-enhanced .blog-media-load::after { animation: none; opacity: 0; }
+  html.blog-media-enhanced .blog-media-load img { opacity: 1; transition: none; }
+}

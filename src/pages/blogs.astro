@@ -2,6 +2,7 @@
 export const prerender = false;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/blog-media-loading.css';
 import { wixClient } from '../lib/wix';
 import { wixResponsiveImage } from '../lib/wix-image';
 import { createBlogArchivePostsQuery, readBlogArchivePostsResponse } from '../lib/blog-archive-query';
@@ -114,6 +115,7 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
   canonical="/blogs"
   noindex={Boolean(activeCategory)}
 >
+  <Fragment slot="head"><script is:inline>document.documentElement.classList.add('blog-media-enhanced');</script></Fragment>
   <main class="blog-archive">
     <section class="archive-hero">
       <p class="eyebrow">SCRAP MY CAR UAE</p>
@@ -136,7 +138,7 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
         {moreCategories.length > 0 && (
           <details class:list={['more-categories', activeCategoryIsInMore && 'has-active-category']}>
             <summary class="category-button" aria-haspopup="menu" aria-expanded="false">
-              More <span aria-hidden="true">⌄</span>
+              More <i class="ph ph-caret-down" aria-hidden="true"></i>
             </summary>
             <div class="more-menu" role="menu">
               {moreCategories.map((category) => (
@@ -169,7 +171,7 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
         return (
           <article class="archive-card">
             <a class="card-image-link" href={postHref} aria-label={'Read ' + post.title}>
-              <div class="card-image">
+              <div class="card-image blog-media-load" data-image-loading>
                 {responsiveImage.src && (
                   <picture>
                     <source type="image/avif" srcset={responsiveImage.avifSrcset} sizes="(max-width: 620px) calc(100vw - 32px), (max-width: 900px) calc(50vw - 30px), 390px" />
@@ -258,6 +260,10 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
   .more-categories { position: relative; }
   .more-categories summary { list-style: none; }
   .more-categories summary::-webkit-details-marker { display: none; }
+  .more-categories summary .ph { display: inline-block; margin-left: 8px; font-size: 14px; line-height: 1; transition: transform 180ms ease; }
+  .more-categories[open] summary .ph { transform: rotate(180deg); }
+  .more-categories summary:focus-visible { outline: 2px solid #286b3d; outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .more-categories summary .ph { transition: none; } }
   .more-menu { background: #fff; border: 1px solid #dce6d9; border-radius: 12px; box-shadow: 0 14px 30px rgba(22, 38, 19, .12); min-width: 235px; padding: 6px; position: absolute; right: 0; top: calc(100% + 8px); z-index: 10; }
   .more-menu a { align-items: center; border-radius: 8px; color: #294032; display: flex; font-size: 14px; font-weight: 700; gap: 12px; justify-content: space-between; padding: 11px 12px; text-decoration: none; }
   .more-menu a:hover, .more-menu a:focus-visible { background: #edf6e8; color: #184d2b; outline: none; }
