@@ -70,6 +70,8 @@ function logCodes(text) {
   if (/Quote email scheduling unavailable/.test(text)) codes.push('email_schedule_unavailable');
   if (/Quote email unavailable/.test(text)) codes.push('email_unavailable');
   if (/Quote email rejected/.test(text)) codes.push('email_rejected');
+  for (const outcome of ['disabled', 'blocked', 'unconfigured', 'accepted', 'duplicate', 'failed'])
+    if (text.includes(`Quote notification outcome: ${outcome}`)) codes.push(`email_${outcome}`);
   if (/exceededCpu|exceededMemory|Worker exceeded resource limits/.test(text)) codes.push('worker_resource_limit');
   return codes;
 }

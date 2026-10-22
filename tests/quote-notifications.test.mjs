@@ -117,15 +117,16 @@ test('source details only retain a same-origin path, excluding query strings and
 
 // Execute the actual route with isolated platform bindings and mocked Wix/Brevo transport.
 const routeSource = await readFile(new URL('../src/pages/api/quote.ts', import.meta.url), 'utf8');
-const routeCode = stripTypeScriptTypes(routeSource.replace(/^import .*;\n/gm, '').replace(/export /g, '').replaceAll('import.meta.env.WIX_QUOTE_REQUESTS_COLLECTION_ID', "'QuoteRequestsStaging'").replaceAll('import.meta.env.PUBLIC_SEO_ENV', "'staging'"));
-const createRoute = new Function('wixClient', 'env', 'waitUntil', 'notifySavedQuote', 'quoteSourcePath', 'requireQuoteRequestsCollectionId', 'isValidPhoneNumber', 'fetch', `${routeCode}\nreturn POST;`);
-async function exerciseRoute({ insertStatus = 200, data = {}, providerFails = false, ledgerFails = false, notificationMode = 'staging-test' } = {}) {
+const routeCode = stripTypeScriptTypes(routeSource.replace(/^import .*;\n/gm, '').replace(/export /g, '').replaceAll('import.meta.env.WIX_QUOTE_REQUESTS_COLLECTION_ID', 'buildCollection').replaceAll('import.meta.env.PUBLIC_SEO_ENV', "'staging'"));
+const createRoute = new Function('wixClient', 'env', 'waitUntil', 'notifySavedQuote', 'quoteSourcePath', 'requireQuoteRequestsCollectionId', 'isValidPhoneNumber', 'fetch', 'buildCollection', `${routeCode}\nreturn POST;`);
+async function exerciseRoute({ insertStatus = 200, data = {}, providerFails = false, ledgerFails = false, notificationMode = 'staging-test', runtimeCollection, buildCollection = 'QuoteRequestsStaging', buildMissing = false, tokenFails = false, validationStatus = 200, scheduleFails = false } = {}) {
   const { env, sql } = setup(); env.QUOTE_EMAIL_MODE = notificationMode;
+  if (runtimeCollection !== undefined) env.WIX_QUOTE_REQUESTS_COLLECTION_ID = runtimeCollection;
   if (ledgerFails) env.QUOTE_NOTIFICATIONS_DB = { prepare() { throw new Error('mock ledger error'); } };
   const calls = []; const pending = [];
   const transport = async (url, init) => {
     calls.push(url);
-    if (url.endsWith('/query')) return Response.json({ dataItems: [{ id: 'valid-catalogue-entry' }] });
+    if (url.endsWith('/query')) return Response.json({ dataItems: [{ id: 'valid-catalogue-entry' }] }, { status: validationStatus });
     if (url === 'https://www.wixapis.com/data/v2/items') {
       assert.equal(JSON.parse(init.body).dataCollectionId, 'QuoteRequestsStaging');
       return Response.json({ dataItem: { id: 'wix-enquiry-1' } }, { status: insertStatus });
@@ -135,7 +136,7 @@ async function exerciseRoute({ insertStatus = 200, data = {}, providerFails = fa
     if (providerFails) throw new Error('mock provider outage');
     return accepted();
   };
-  const route = createRoute({ auth: { generateVisitorTokens: async () => ({ accessToken: { value: 'mock-visitor-token' } }) } }, env, promise => pending.push(promise), (settings, saved, stage) => notifySavedQuote(settings, saved, stage, transport), quoteSourcePath, requireQuoteRequestsCollectionId, isValidPhoneNumber, transport);
+  const route = createRoute({ auth: { generateVisitorTokens: async () => { if (tokenFails) throw new Error('mock token failure'); return { accessToken: { value: 'mock-visitor-token' } }; } } }, env, promise => { pending.push(promise); if (scheduleFails) throw new Error('mock scheduler failure'); }, (settings, saved, stage) => notifySavedQuote(settings, saved, stage, transport), quoteSourcePath, requireQuoteRequestsCollectionId, isValidPhoneNumber, transport, buildMissing ? undefined : buildCollection);
   const response = await route({ request: new Request('https://preview.example.test/api/quote', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ make: quote.make, model: quote.model, year: quote.year, name: quote.customerName, whatsapp: quote.whatsapp, submissionId: quote.submissionId, ...data }) }) });
   const result = await response.json();
   await Promise.all(pending);
@@ -177,4 +178,46 @@ test('international customer numbers retain CMS save, notification and WhatsApp 
     assert.equal(rows[0].state, 'accepted');
     assert.ok(decodeURIComponent(result.whatsappUrl).includes(whatsapp.replace(/\D/g, '')));
   }
+});
+
+
+test('runtime staging binding restores saves when the deployed build value is missing', async () => {
+  const { response, result, calls, rows } = await exerciseRoute({
+    runtimeCollection: 'QuoteRequestsStaging', buildMissing: true, notificationMode: 'off'
+  });
+  assert.equal(response.status, 200);
+  assert.equal(result.ok, true);
+  assert.ok(result.whatsappUrl);
+  assert.ok(calls.includes('https://www.wixapis.com/data/v2/items'));
+  assert.ok(!calls.includes('https://api.brevo.com/v3/smtp/email'));
+  assert.equal(rows.length, 0);
+});
+
+test('missing, invalid or production runtime collection fails closed before any Wix query or email', async () => {
+  for (const options of [{ buildMissing: true }, { runtimeCollection: '' },
+    { runtimeCollection: 'bad collection' }, { runtimeCollection: 'QuoteRequests' }]) {
+    const { response, result, calls, rows } = await exerciseRoute(options);
+    assert.equal(response.status, 500);
+    assert.equal(result.ok, false);
+    assert.deepEqual(calls, []);
+    assert.deepEqual(rows, []);
+  }
+});
+
+test('token and catalogue failures never insert an enquiry or schedule a notification', async () => {
+  for (const options of [{ tokenFails: true }, { validationStatus: 503 }]) {
+    const { response, result, calls, rows } = await exerciseRoute(options);
+    assert.equal(response.status, 500);
+    assert.equal(result.ok, false);
+    assert.ok(!calls.includes('https://www.wixapis.com/data/v2/items'));
+    assert.ok(!calls.includes('https://api.brevo.com/v3/smtp/email'));
+    assert.deepEqual(rows, []);
+  }
+});
+
+test('waitUntil scheduling exception cannot turn a confirmed CMS insert into failure', async () => {
+  const { response, result } = await exerciseRoute({ scheduleFails: true, notificationMode: 'off' });
+  assert.equal(response.status, 200);
+  assert.equal(result.ok, true);
+  assert.ok(result.whatsappUrl);
 });

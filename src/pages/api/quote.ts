@@ -23,7 +23,14 @@ async function queryOne(accessToken: string, collectionId: string, filter: Recor
 export const POST: APIRoute = async ({ request }) => {
   try {
     let quoteRequestsCollectionId: string;
-    try { quoteRequestsCollectionId = requireQuoteRequestsCollectionId(import.meta.env.WIX_QUOTE_REQUESTS_COLLECTION_ID); }
+    try {
+      // Dashboard secrets are runtime bindings, not Vite build-time variables.
+      const runtimeCollection = (env as { WIX_QUOTE_REQUESTS_COLLECTION_ID?: unknown }).WIX_QUOTE_REQUESTS_COLLECTION_ID;
+      quoteRequestsCollectionId = requireQuoteRequestsCollectionId(
+        runtimeCollection ?? import.meta.env.WIX_QUOTE_REQUESTS_COLLECTION_ID,
+        import.meta.env.PUBLIC_SEO_ENV || 'staging'
+      );
+    }
     catch { console.error('Quote submission collection configuration is unavailable.'); return json({ ok: false, message: 'We could not submit your request right now. Please try again.' }, 500); }
 
     const body = await request.json();
@@ -59,7 +66,10 @@ export const POST: APIRoute = async ({ request }) => {
         requestId: inserted.dataItem?.id ?? '', submissionId: cleanText(body?.submissionId, 36),
         collectionId: quoteRequestsCollectionId, make, model, year, customerName, whatsapp,
         sourcePath: quoteSourcePath(request), savedAt: new Date().toISOString()
-      }, import.meta.env.PUBLIC_SEO_ENV || 'staging'));
+      }, import.meta.env.PUBLIC_SEO_ENV || 'staging').then(outcome => {
+        // Fixed server-generated outcome only; no credentials or enquiry details.
+        console.info(`Quote notification outcome: ${outcome}`);
+      }));
     } catch { console.warn('Quote email scheduling unavailable; CMS enquiry preserved.'); }
     const message = ['Hi Scrap My Car UAE, I would like a free valuation.', '', `Make: ${make}`, `Model: ${model}`, `Year: ${year}`, `Name: ${customerName}`, `Phone: ${whatsapp}`].join('\n');
     return json({ ok: true, requestId: inserted.dataItem?.id ?? '', whatsappUrl: `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}` });

@@ -1,0 +1,435 @@
+{
+  "diagnostic": {
+    "worker": "smc-headless-worker",
+    "codeInspection": {
+      "status": 200,
+      "bytes": 2629624,
+      "guardFound": true,
+      "guardArguments": [
+        {
+          "isStagingLiteral": false,
+          "isProductionLiteral": false,
+          "isMissingBuildValue": false,
+          "usesRuntimeBinding": false,
+          "usesImportMetaEnv": false
+        },
+        {
+          "isStagingLiteral": false,
+          "isProductionLiteral": false,
+          "isMissingBuildValue": true,
+          "usesRuntimeBinding": false,
+          "usesImportMetaEnv": false
+        }
+      ]
+    },
+    "settings": {
+      "status": 200,
+      "success": true,
+      "errorCodes": [],
+      "bindings": [
+        {
+          "name": "QUOTE_EMAIL_MODE",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "BREVO_API_KEY",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "BREVO_SENDER_EMAIL",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "BREVO_SENDER_NAME",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "QUOTE_NOTIFICATIONS_DB",
+          "present": false
+        },
+        {
+          "name": "WIX_QUOTE_REQUESTS_COLLECTION_ID",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "PUBLIC_WIX_CLIENT_ID",
+          "present": false
+        },
+        {
+          "name": "PUBLIC_SEO_ENV",
+          "present": false
+        }
+      ],
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "redact_query_string": false,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true,
+          "invocation_logs": true
+        },
+        "traces": {
+          "enabled": false,
+          "persist": true,
+          "head_sampling_rate": 1
+        }
+      }
+    },
+    "logs": {
+      "status": 200,
+      "success": true,
+      "errorCodes": [],
+      "timeframe": {
+        "from": 1792666080000,
+        "to": 1792667435291
+      },
+      "returned": 35,
+      "matched": 26,
+      "total": 35,
+      "events": [
+        {
+          "timestamp": 1792667141354,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 5,
+          "wallTimeMs": 13,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792667141354,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666851498,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 0,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666851498,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666762061,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 0,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666762061,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761846,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761846,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761686,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 0,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761686,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761519,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761519,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761374,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 0,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761374,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666760775,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666760775,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666758647,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 2,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666758647,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666652532,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 2,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666652532,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666370817,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 2,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666370817,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666330237,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666330237,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666312127,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 7,
+          "wallTimeMs": 18,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666312127,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        }
+      ]
+    },
+    "workflow": "https://github.com/auralinkone-hue/scrapmycaruae-headless/actions/runs/39768587939"
+  },
+  "cms": {
+    "collection": "QuoteRequestsStaging",
+    "total": 36,
+    "returned": 36,
+    "latestSavedAt": "2026-10-22T10:28:28.054Z",
+    "reportedFailureWindow": {
+      "from": "2026-10-22T10:48:00Z",
+      "to": "2026-10-22T10:58:00Z",
+      "rows": 0
+    },
+    "timestampNormalization": "Wix returned $date wrappers; conclusion uses the returned full descending timestamp list, not unnormalized JavaScript comparisons.",
+    "writes": 0
+  },
+  "probe": {
+    "type": "empty-invalid-payload-no-insert",
+    "at": "2026-10-22T11:05:41.375Z",
+    "status": 500,
+    "responseMs": 7522,
+    "ray": "a4e80740bd1c5314-ORD"
+  },
+  "rootCause": "Deployed collection guard receives a missing build-time value; runtime collection secret is present but not read by the old route.",
+  "syntheticSubmissions": 0
+}
