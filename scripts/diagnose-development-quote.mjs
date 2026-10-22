@@ -27,6 +27,7 @@ try {
   const argumentsFound = [...code.matchAll(/requireQuoteRequestsCollectionId\(([^)]{0,180})\)/g)].map(match => match[1]);
   codeInspection = { status: response.status, bytes: code.length,
     guardFound: code.includes('Quote submission collection configuration is unavailable.'),
+    runtimeCollectionLookupPresent: code.includes('env.WIX_QUOTE_REQUESTS_COLLECTION_ID'),
     guardArguments: argumentsFound.map(argument => ({
       isStagingLiteral: /^['"]QuoteRequestsStaging['"]$/.test(argument.trim()),
       isProductionLiteral: /^['"]QuoteRequests['"]$/.test(argument.trim()),
@@ -70,6 +71,8 @@ function logCodes(text) {
   if (/Quote email scheduling unavailable/.test(text)) codes.push('email_schedule_unavailable');
   if (/Quote email unavailable/.test(text)) codes.push('email_unavailable');
   if (/Quote email rejected/.test(text)) codes.push('email_rejected');
+  if (/Quote notification gate: disabled/.test(text)) codes.push('email_gate_disabled');
+  if (/Quote notification gate: enabled/.test(text)) codes.push('email_gate_enabled');
   for (const outcome of ['disabled', 'blocked', 'unconfigured', 'accepted', 'duplicate', 'failed'])
     if (text.includes(`Quote notification outcome: ${outcome}`)) codes.push(`email_${outcome}`);
   if (/exceededCpu|exceededMemory|Worker exceeded resource limits/.test(text)) codes.push('worker_resource_limit');

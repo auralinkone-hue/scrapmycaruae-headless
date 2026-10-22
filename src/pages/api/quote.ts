@@ -33,6 +33,9 @@ export const POST: APIRoute = async ({ request }) => {
     }
     catch { console.error('Quote submission collection configuration is unavailable.'); return json({ ok: false, message: 'We could not submit your request right now. Please try again.' }, 500); }
 
+    const emailMode = (env as { QUOTE_EMAIL_MODE?: string }).QUOTE_EMAIL_MODE;
+    console.info(!emailMode || emailMode === 'off' ? 'Quote notification gate: disabled' : 'Quote notification gate: enabled');
+
     const body = await request.json();
     if (cleanText(body?.website, 200)) return json({ ok: true });
     const make = cleanText(body?.make, 80);
