@@ -116,3 +116,17 @@ test('archive media reserves space and marks its load state for the premium shim
   assert.match(archive, /class:list=\{\['card-image', responsiveImage\.src && 'blog-media-load'\]\}/);
   assert.match(archive, /blog-media-enhanced/);
 });
+
+test('mobile More dropdown stays outside the horizontally scrollable category rail', async () => {
+  const page = await readArchive();
+  const railEnd = page.indexOf('</div>\n      {moreCategories.length > 0 && (');
+  const moreStart = page.indexOf('<details class:list=');
+  const navEnd = page.indexOf('</nav>', moreStart);
+  assert.ok(railEnd > 0 && moreStart > railEnd && navEnd > moreStart, 'More must be a sibling of the scroll rail');
+  assert.match(page, /\.category-nav \{[^}]*overflow: visible/);
+  assert.match(page, /\.more-menu \{[^}]*position: absolute/);
+  assert.doesNotMatch(page, /\.more-menu \{ position: fixed/);
+  assert.match(page, /aria-controls="more-blog-categories"/);
+  assert.match(page, /menu\.addEventListener\('toggle', syncExpandedState\)/);
+  assert.doesNotMatch(page, /role="menuitem"/);
+});

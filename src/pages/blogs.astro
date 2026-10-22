@@ -135,26 +135,25 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
             {categoryLabel(category)}
           </a>
         ))}
-        {moreCategories.length > 0 && (
-          <details class:list={['more-categories', activeCategoryIsInMore && 'has-active-category']}>
-            <summary class="category-button" aria-haspopup="menu" aria-expanded="false">
-              More <i class="ph ph-caret-down" aria-hidden="true"></i>
-            </summary>
-            <div class="more-menu" role="menu">
-              {moreCategories.map((category) => (
-                <a
-                  href={'/blogs?category=' + encodeURIComponent(category.slug ?? '')}
-                  role="menuitem"
-                  aria-current={activeCategory?._id === category._id ? 'page' : undefined}
-                >
-                  {categoryLabel(category)}
-                  {typeof category.postCount === 'number' && <small>{category.postCount}</small>}
-                </a>
-              ))}
-            </div>
-          </details>
-        )}
       </div>
+      {moreCategories.length > 0 && (
+        <details class:list={['more-categories', activeCategoryIsInMore && 'has-active-category']}>
+          <summary class="category-button" aria-expanded="false" aria-controls="more-blog-categories">
+            More <i class="ph ph-caret-down" aria-hidden="true"></i>
+          </summary>
+          <div class="more-menu" id="more-blog-categories">
+            {moreCategories.map((category) => (
+              <a
+                href={'/blogs?category=' + encodeURIComponent(category.slug ?? '')}
+                aria-current={activeCategory?._id === category._id ? 'page' : undefined}
+              >
+                {categoryLabel(category)}
+                {typeof category.postCount === 'number' && <small>{category.postCount}</small>}
+              </a>
+            ))}
+          </div>
+        </details>
+      )}
     </nav>
 
     <section class="archive-grid" aria-label={activeCategory ? categoryLabel(activeCategory) + ' articles' : 'All articles'}>
@@ -252,19 +251,23 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
   .eyebrow { color: #2f7d32; font-size: .78rem; font-weight: 850; letter-spacing: .1em; margin: 0 0 .6rem; }
   h1 { color: #184d2b; font-size: clamp(2.25rem, 5vw, 4rem); line-height: 1.04; margin: 0; }
   .archive-hero > p:last-child { color: #536057; font-size: 1.05rem; line-height: 1.65; margin: 1rem 0 0; }
-  .category-nav { margin-bottom: 1.75rem; }
-  .category-rail { align-items: center; background: #f8faf7; border: 1px solid #dce6d9; border-radius: 14px; display: flex; gap: 6px; padding: 6px; position: relative; }
+  /* Keep More outside the scrolling rail so its popup cannot be clipped on touch screens. */
+  .category-nav { margin-bottom: 1.75rem; display: flex; align-items: stretch; gap: 6px; padding: 6px; position: relative; z-index: 20; background: #f8faf7; border: 1px solid #dce6d9; border-radius: 14px; }
+  .category-rail { display: flex; flex: 1 1 auto; min-width: 0; align-items: center; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+  .category-rail::-webkit-scrollbar { display: none; }
   .category-button { align-items: center; border: 0; border-radius: 10px; color: #405447; cursor: pointer; display: inline-flex; font-size: 14px; font-weight: 750; justify-content: center; min-height: 42px; padding: 0 16px; text-decoration: none; transition: background-color .18s ease, color .18s ease; white-space: nowrap; }
   .category-button:hover, .category-button:focus-visible { background: #edf6e8; color: #184d2b; outline: none; }
   .category-button.is-active, .has-active-category > .category-button { background: #184d2b; color: #fff; }
-  .more-categories { position: relative; }
+  .more-categories { position: relative; flex: 0 0 auto; }
+  .more-categories::before { content: ''; position: absolute; left: -4px; top: 9px; bottom: 9px; border-left: 1px solid #dce6d9; pointer-events: none; }
   .more-categories summary { list-style: none; }
   .more-categories summary::-webkit-details-marker { display: none; }
   .more-categories summary .ph { display: inline-block; margin-left: 8px; font-size: 14px; line-height: 1; transition: transform 180ms ease; }
   .more-categories[open] summary .ph { transform: rotate(180deg); }
   .more-categories summary:focus-visible { outline: 2px solid #286b3d; outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { .more-categories summary .ph { transition: none; } }
-  .more-menu { background: #fff; border: 1px solid #dce6d9; border-radius: 12px; box-shadow: 0 14px 30px rgba(22, 38, 19, .12); min-width: 235px; padding: 6px; position: absolute; right: 0; top: calc(100% + 8px); z-index: 10; }
+  .more-menu { background: #fff; border: 1px solid #dce6d9; border-radius: 12px; box-shadow: 0 14px 30px rgba(22, 38, 19, .15); min-width: 235px; max-width: calc(100vw - 32px); max-height: min(66vh, 420px); overflow-y: auto; overscroll-behavior: contain; padding: 6px; position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; }
+  .more-categories[open] .more-menu { display: block; }
   .more-menu a { align-items: center; border-radius: 8px; color: #294032; display: flex; font-size: 14px; font-weight: 700; gap: 12px; justify-content: space-between; padding: 11px 12px; text-decoration: none; }
   .more-menu a:hover, .more-menu a:focus-visible { background: #edf6e8; color: #184d2b; outline: none; }
   .more-menu [aria-current='page'] { background: #edf6e8; color: #184d2b; }
@@ -293,11 +296,12 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
   @media (max-width: 900px) { .archive-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 620px) {
     .blog-archive { padding: 3.1rem 1rem 3.5rem; }
-    .category-nav { margin-left: -1rem; margin-right: -1rem; overflow: hidden; padding: 0 1rem; }
-    .category-rail { border-radius: 0; overflow-x: auto; scrollbar-width: none; }
-    .category-rail::-webkit-scrollbar { display: none; }
-    .category-button, .more-categories { flex: 0 0 auto; }
-    .more-menu { position: fixed; right: 1rem; }
+    .category-nav { margin-inline: 0; overflow: visible; padding: 5px; }
+    .category-rail { overflow-x: auto; overscroll-behavior-x: contain; }
+    .category-rail .category-button { flex: 0 0 auto; }
+    .category-button { padding-inline: 12px; font-size: 13px; }
+    .more-categories { flex: 0 0 auto; }
+    .more-menu { width: min(295px, calc(100vw - 32px)); max-height: min(64vh, 420px); }
     .archive-grid { gap: 16px; grid-template-columns: 1fr; }
     .category-badge { right: 10px; top: 10px; }
     .card-content { padding: 15px 16px; }
