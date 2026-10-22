@@ -6,6 +6,7 @@ import { locationGroups } from '../lib/location-navigation';
 // Reuse the published navigation registry; coverage-only areas have no footer links.
 const footerDubaiLocations = locationGroups.filter(group => group.id === 'dubai').flatMap(group => group.items);
 const footerUaeLocations = locationGroups.filter(group => group.id !== 'dubai').flatMap(group => group.items);
+const footerUaeLocationColumns = [footerUaeLocations.filter(location => /^\/locations\/(abu-dhabi|sharjah)(?:\/|$)/.test(location.href)), footerUaeLocations.filter(location => !/^\/locations\/(abu-dhabi|sharjah)(?:\/|$)/.test(location.href))];
 const locationLabel = (label: string) => label.replace(/ overview$/, '');
 
 ---
@@ -67,9 +68,11 @@ const locationLabel = (label: string) => label.replace(/ overview$/, '');
       <div class="footer-uae-locations">
         <h2>Across the UAE</h2>
         <nav class="location-list location-list--uae" aria-label="Other UAE locations">
-          {footerUaeLocations.map(location => (
-            <a href={location.href}><i class="ph ph-map-pin" aria-hidden="true"></i>{locationLabel(location.label)}</a>
-          ))}
+          {footerUaeLocationColumns.map(column => <div class="location-column">
+            {column.map(location => (
+              <a href={location.href}><i class="ph ph-map-pin" aria-hidden="true"></i>{locationLabel(location.label)}</a>
+            ))}
+          </div>)}
         </nav>
       </div>
     </div>
@@ -110,9 +113,9 @@ const locationLabel = (label: string) => label.replace(/ overview$/, '');
     <div class="smc-container bottom-inner">
       <span class="footer-copyright">© {year} Scrap My Car UAE. All rights reserved.</span>
       <div class="bottom-links">
-        <button class="cookie-settings-trigger" type="button" data-cookie-settings>Cookie Settings</button>
-        <a href="/privacy-policy">Privacy Policy</a>
-        <a href="/terms-conditions/">Terms of Service</a>
+        <button class="cookie-settings-trigger" type="button" data-cookie-settings><img class="legal-icon" src="/icons/cookie.svg" width="17" height="17" alt="" aria-hidden="true" />Cookie Settings</button>
+        <a href="/privacy-policy"><i class="ph ph-shield-check legal-icon" aria-hidden="true"></i>Privacy Policy</a>
+        <a href="/terms-conditions/"><i class="ph ph-file-text legal-icon" aria-hidden="true"></i>Terms of Service</a>
       </div>
     </div>
   </div>
@@ -261,7 +264,8 @@ const locationLabel = (label: string) => label.replace(/ overview$/, '');
   }
 
   .footer-links, .location-list { display: grid; gap: 11px; }
-  .location-list--uae { grid-template-columns: repeat(2,minmax(0,1fr)); column-gap: 18px; }
+  .location-list--uae { grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); align-items: start; column-gap: 28px; }
+  .location-column { display: grid; align-content: start; gap: 11px; }
   .location-list--uae a { min-width: 0; overflow-wrap: anywhere; }
 
   .footer-links a, .location-list span, .location-list a {
@@ -370,6 +374,7 @@ const locationLabel = (label: string) => label.replace(/ overview$/, '');
     flex: 0 0 auto;
   }
   .bottom-links a, .cookie-settings-trigger {
+    gap: 7px;
     display: inline-flex;
     align-items: center;
     position: relative;
@@ -410,6 +415,7 @@ const locationLabel = (label: string) => label.replace(/ overview$/, '');
     outline-offset: 4px;
     border-radius: 2px;
   }
+  .legal-icon { width: 17px; height: 17px; flex: 0 0 17px; font-size: 17px; line-height: 1; opacity: .9; }
   .footer-copyright { margin: 0; color: #fff; text-align: left; white-space: nowrap; }
 
   .cookie-consent-banner button:focus-visible,
@@ -654,16 +660,18 @@ const locationLabel = (label: string) => label.replace(/ overview$/, '');
     .footer-brand p { margin-top: 15px; font-size: 14px; }
     .footer-automotive-art { max-width: 250px; margin: 14px auto 0; }
     .smc-footer h2 { font-size: 16px; margin-bottom: 16px; }
-    .footer-links, .location-list { gap: 12px; }
+    .footer-links, .location-list, .location-column { gap: 12px; }
     .footer-links a, .location-list span, .location-list a { font-size: 14px; }
     .contact-strip { grid-template-columns: 1fr 1fr; margin-top: 32px; gap: 24px 12px; }
     .contact-strip > div { font-size: 13px; gap: 10px; }
-    .bottom-inner { min-height: 0; flex-direction: column; align-items: stretch; gap: 10px; padding-block: 14px; }
-    .bottom-links { width: 100%; margin-left: 0; justify-content: flex-start; flex-wrap: wrap; gap: 0 16px; }
+    .bottom-inner { min-height: 0; flex-direction: column; align-items: center; gap: 6px; padding-block: 14px; }
+    :global(body:has(.floating-whatsapp)) .bottom-inner { padding-right: 0; }
+    .bottom-links { order: 1; width: 100%; margin-left: 0; justify-content: center; flex-wrap: nowrap; gap: clamp(8px,2vw,14px); }
     .bottom-links a, .cookie-settings-trigger { padding-inline: 0; }
     .bottom-links > * + *::before { display: none; }
-    .bottom-links a, .cookie-settings-trigger { min-height: 38px; display: inline-flex; align-items: center; font-size: 13px; }
-    .footer-copyright { margin: 0; max-width: none; text-align: left; font-size: 13px; }
+    .bottom-links a, .cookie-settings-trigger { min-height: 44px; gap: 5px; display: inline-flex; align-items: center; font-size: clamp(11px,3vw,12px); }
+    .bottom-links .legal-icon { width: 14px; height: 14px; flex-basis: 14px; font-size: 14px; }
+    .footer-copyright { order: 2; display: flex; align-items: center; justify-content: center; min-height: 48px; margin: 0; max-width: calc(100% - 96px); text-align: center; font-size: 12px; line-height: 1.5; }
     .cookie-consent-banner {
       right: 0;
       bottom: 0;
