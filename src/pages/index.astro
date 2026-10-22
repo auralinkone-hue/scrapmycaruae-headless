@@ -257,14 +257,14 @@ const faqJsonLd = {
 
     {home.benefitsVisible && <section class="benefits smc-container" aria-labelledby="homepage-benefits-heading">
       <div class="benefits-heading" data-reveal>
-        <h2 id="homepage-benefits-heading">{home.benefitsHeading}</h2>
+        <h2 id="homepage-benefits-heading">{home.benefitsHeading.includes('your car') ? <>{home.benefitsHeading.split('your car')[0]}<span class="heading-accent">your car</span>{home.benefitsHeading.split('your car')[1]}</> : home.benefitsHeading}</h2>
         <p>{home.benefitsDescription}</p>
       </div>
 
       <div class="benefit-grid">
         {benefits.map((benefit, index) => (
           <article class="benefit-card" data-reveal>
-            <a class="benefit-link" href={benefit.buttonLink || benefitDestinations[benefit.icon] || '/scrap-my-car/'} aria-labelledby={`homepage-benefit-${index}`}>
+            <a class="benefit-link" href={benefitDestinations[benefit.icon] || benefit.buttonLink || '/scrap-my-car/'} aria-labelledby={`homepage-benefit-${index}`}>
               <span class="benefit-icon"><i class:list={['ph', benefit.icon]} aria-hidden="true"></i></span>
               <h3 id={`homepage-benefit-${index}`}>{benefit.title}</h3>
               <p>{benefit.description}</p>
@@ -771,7 +771,7 @@ const faqJsonLd = {
   .make-item:hover { background: #f1f7ee; border-color: #dce8d7; }
   .make-item:hover img { transform: translateY(-2px); }
   .service-discovery { padding-block: 66px; display: grid; grid-template-columns: .95fr 1.05fr; gap: 70px; align-items: center; }
-  .discovery-intro h2, .section-heading h2, .process-copy h2, .condition-copy h2, .value-intro h2, .coverage-copy h2, .testimonial-side h2, .blog-heading h2, .faq-heading h2, .final-cta h2 { margin: 10px 0 18px; font-size: clamp(30px,3.4vw,44px); line-height: 1.12; letter-spacing: -.04em; font-weight: 650; text-wrap: balance; }
+  .discovery-intro h2, .benefits-heading h2, .section-heading h2, .process-copy h2, .condition-copy h2, .value-intro h2, .coverage-copy h2, .testimonial-side h2, .blog-heading h2, .faq-heading h2, .final-cta h2 { margin: 10px 0 18px; font-size: clamp(30px,3.4vw,44px); line-height: 1.12; letter-spacing: -.04em; font-weight: 650; text-wrap: balance; }
   .smc-kicker { font-size: 11px; letter-spacing: .09em; }
   .discovery-photo { margin: 24px 0 0; border-radius: 15px; overflow: hidden; background: #f3f5f0; border: 1px solid #e4e9e1; }
   .discovery-photo img { display: block; width: 100%; height: auto; aspect-ratio: 2.15; object-fit: cover; object-position: center 58%; transition: transform 350ms ease; }
@@ -787,7 +787,7 @@ const faqJsonLd = {
   .path-arrow { color: var(--smc-green); transition: transform 180ms ease; }
   .service-paths a:hover .path-arrow { transform: translate(2px,-2px); }
   .benefits { padding-block: 56px 64px; }
-  .benefits-heading { max-width: 800px; margin: 0 auto 34px; text-align: center; }
+  .benefits-heading { max-width: 900px; margin: 0 auto 34px; text-align: center; }
   .benefits-heading h2 { margin: 0; text-wrap: balance; }
   .benefits-heading p { max-width: 640px; margin: 16px auto 0; color: var(--smc-muted); font-size: 16px; line-height: 1.7; text-wrap: pretty; }
   .section-heading { display: grid; grid-template-columns: 1.2fr 1fr; gap: 0 60px; align-items: end; margin-bottom: 28px; }
