@@ -8,6 +8,50 @@ Audited starting commit: `3329c9205efd6bcd360dc7b54b946769957036b3` (includes th
 
 No main/release branch, production Worker, DNS, production CMS data or live Wix page was changed. PR #4 was not merged or modified.
 
+## Follow-up — completed protected-blog recheck (22 October 2026)
+
+**Decision remains HOLD.** The environment's server-side staging access recovered. All 46 original failures now return valid articles, but a completed 588-URL pass still had two unavailable articles. A later two-URL confirmation recovered both; this is evidence of intermittent availability, not a clean completed pass.
+
+| Check | Result | Executed evidence |
+| --- | --- | --- |
+| Original 46 failures | PASS | 46/46 valid HTTP 200 on first attempts, no retries; 09:42:02–09:42:41 UTC. Per-URL timings, titles, canonicals and outcomes in `blog-url-recheck-2026-10-22-failed.json`. |
+| All 588 protected URLs | FAIL | All 588 tested, none untested; 586 valid final 200, two final 503 after three attempts. 26 URLs recovered on retry. No 404 observed. Run 09:42:53–09:55:57 UTC. |
+| Request pacing | EXECUTED | Three workers, globally spaced request starts at least 750ms apart, 30s timeout, at most three attempts, 2s/8s backoff, Retry-After respected (60s where supplied), maximum retry wait 120s. |
+| Attempt-level results | FAIL / availability | 626 attempts: 591 HTTP 200 (five without article content, rejected and retried), 35 HTTP 503. Of the 503s, 15 were application responses with Retry-After: 60 / Cache-Control: no-store; 20 were Cloudflare “Worker exceeded resource limits” pages without application retry headers. |
+| Later confirmation | PASS, limited | The two unresolved paths returned valid 200 on first attempts at 09:59:20 UTC using one worker. These separate results do not overwrite the failed complete pass. |
+| Genuine missing negative control | PASS | `/post/prelaunch-recheck-genuine-missing-article-20261022` returned 404, “Article not found”, no article body and staging noindex. No placeholder or redirect. |
+| Temporary-error status policy | PASS for observed application responses | All 15 observed application 503 attempts had the expected retry/no-store headers. Cloudflare resource-limit errors occur outside that route handling and did not supply Retry-After. |
+| Worker diagnostic | INCONCLUSIVE root cause | Read-only sanitized Wrangler tail captured 15 successful article events, 12–70ms CPU, 322–846ms wall time; no failing event captured. Five explicit probes returned 200. CPU versus memory exhaustion cannot be inferred from successful events. Workflow 39759082902 succeeded. |
+| Automated tests / staging build | PASS | 210 tests passed, zero failed/skipped; production-style staging build succeeded with `QuoteRequestsStaging`. |
+| Staging deployment | PASS | Tooling commit `413790d544bb03cdd93050979ccc5583e46c139d`, workflow 39759082935 succeeded. Application code was unchanged from `805bc909d65a5877559aabb6938fcc347d158309`; accompanying evidence-only commit deploys the same runtime. |
+
+### Unresolved paths from the complete pass
+
+- `/post/maximizing-your-car-s-resale-value-tips-and-tricks`: three Cloudflare resource-limit 503s; 606ms, 677ms, 1774ms response times, 14,940ms total including pacing/backoff. Later valid 200.
+- `/post/top-money-making-vehicle-parts-in-the-uae-what-scrap-dealers-pay-for`: three Cloudflare resource-limit 503s; 292ms, 458ms, 2103ms response times, 12,859ms total including pacing/backoff. Later valid 200.
+
+No protected post is confirmed permanently missing. Every protected path returned a valid 200 across these checks, but **not all within one completed pass**, and recurring 503s remain unresolved. Do not mark the acceptance criteria or production readiness PASS.
+
+### Investigation and changes
+
+The earlier application fix correctly distinguishes temporary failures from missing articles; live responses now corroborate that policy. Current route inspection shows additional per-request Wix catalogue, author, category and related/latest-post work. Those are profiling candidates, not proven causes. No speculative runtime change, artificial redirect, content substitute, aggressive cache or Worker account-limit adjustment was introduced.
+
+Added a reusable staging-restricted crawler, regression coverage for audit retry/body classification, and a read-only CI diagnostic that emits only public paths, status/outcome, timings and exception names. Request headers, credentials, query strings and raw runtime logs are excluded. Original crawl results remain intact below and in the evidence JSON.
+
+**Remaining high-priority blocker:** capture a failing Worker event with its CPU/memory outcome and correlate safe upstream Wix status/code before selecting a runtime or resource-limit remedy. Then repeat all 588 with controlled pacing. The exact upstream failure cause and CPU-versus-memory limit remain unproven; successful diagnostic requests cannot settle them. The browser, accessibility, performance and production-configuration limitations of the original audit remain open.
+
+Detailed artifacts:
+
+- `blog-url-recheck-2026-10-22-all.json`: every protected URL, attempt status, response time, retry delay, canonical/title and final outcome.
+- `blog-url-recheck-2026-10-22-failed.json`: original 46 independently rechecked.
+- `blog-url-recheck-2026-10-22-confirmation.json`: later two-URL recovery, kept separate.
+- `blog-url-recheck-2026-10-22-controls.json`: genuine missing control and all observed application 503 headers.
+- `blog-url-recheck-2026-10-22-worker-diagnostics.json`: sanitized tail/probe results and workflow reference.
+
+Times measure complete fetch/body response, not isolated origin TTFB or Core Web Vitals. The full-crawl process predates the more specific resource-error classifier; its retained raw titles identify all 20 Cloudflare resource errors even where the historical classification reads `temporarily-unavailable`.
+
+## Original audit record (historical results and limitations)
+
 ## Executed checks
 
 | Area | Result | Evidence and limits |

@@ -102,5 +102,112 @@
     "failed": 0,
     "skipped": 0
   },
-  "auditedStartingCommit": "3329c9205efd6bcd360dc7b54b946769957036b3"
+  "auditedStartingCommit": "3329c9205efd6bcd360dc7b54b946769957036b3",
+  "blogUrlRecheck": {
+    "applicationCommit": "805bc909d65a5877559aabb6938fcc347d158309",
+    "toolingCommit": "413790d544bb03cdd93050979ccc5583e46c139d",
+    "original46": {
+      "startedAt": "2026-10-22T09:42:02.752Z",
+      "finishedAt": "2026-10-22T09:42:41.122Z",
+      "settings": {
+        "concurrency": 3,
+        "spacingMs": 750,
+        "maxAttempts": 3,
+        "timeoutMs": 30000,
+        "maximumRetryWaitMs": 120000
+      },
+      "summary": {
+        "planned": 46,
+        "completed": 46,
+        "successful": 46,
+        "finalStatuses": {
+          "200": 46
+        },
+        "recoveredOnRetry": 0,
+        "unresolved": [],
+        "untested": [],
+        "stoppedForAccess": false,
+        "passed": true
+      },
+      "artifact": "blog-url-recheck-2026-10-22-failed.json"
+    },
+    "full588": {
+      "startedAt": "2026-10-22T09:42:53.384Z",
+      "finishedAt": "2026-10-22T09:55:57.522Z",
+      "settings": {
+        "concurrency": 3,
+        "spacingMs": 750,
+        "maxAttempts": 3,
+        "timeoutMs": 30000,
+        "maximumRetryWaitMs": 120000
+      },
+      "summary": {
+        "planned": 588,
+        "completed": 588,
+        "successful": 586,
+        "finalStatuses": {
+          "200": 586,
+          "503": 2
+        },
+        "recoveredOnRetry": 26,
+        "unresolved": [
+          "/post/maximizing-your-car-s-resale-value-tips-and-tricks",
+          "/post/top-money-making-vehicle-parts-in-the-uae-what-scrap-dealers-pay-for"
+        ],
+        "untested": [],
+        "stoppedForAccess": false,
+        "passed": false
+      },
+      "artifact": "blog-url-recheck-2026-10-22-all.json",
+      "attemptCounts": {
+        "total": 626,
+        "http200": 591,
+        "http503": 35,
+        "http404": 0,
+        "application503": 15,
+        "cloudflareResource503": 20,
+        "http200WithoutArticle": 5
+      },
+      "classificationNote": "The full crawl started before resource-specific classification was added. Raw titles distinguish all 20 Cloudflare resource failures; historical classifications remain unmodified."
+    },
+    "laterTwoUrlConfirmation": {
+      "artifact": "blog-url-recheck-2026-10-22-confirmation.json",
+      "summary": {
+        "planned": 2,
+        "completed": 2,
+        "successful": 2,
+        "finalStatuses": {
+          "200": 2
+        },
+        "recoveredOnRetry": 0,
+        "unresolved": [],
+        "untested": [],
+        "stoppedForAccess": false,
+        "passed": true
+      },
+      "note": "Both eventually returned valid 200 articles. Does not replace the failed complete pass or establish resolved availability."
+    },
+    "controlsArtifact": "blog-url-recheck-2026-10-22-controls.json",
+    "workerDiagnosticArtifact": "blog-url-recheck-2026-10-22-worker-diagnostics.json",
+    "complete588Acceptance": "FAIL: no completed pass with all 588 valid articles; recurring 503 availability remains unresolved.",
+    "permanentMissingProtectedPostsConfirmed": 0,
+    "runtimeChangesInThisFollowup": false,
+    "tests": {
+      "passed": 210,
+      "failed": 0,
+      "skipped": 0
+    },
+    "stagingBuild": "PASS",
+    "deployment": {
+      "commit": "413790d544bb03cdd93050979ccc5583e46c139d",
+      "result": "success",
+      "workflow": "https://github.com/auralinkone-hue/scrapmycaruae-headless/actions/runs/39759082935"
+    },
+    "remainingBlockers": [
+      "Cloudflare Worker resource exhaustion: obtain failure-matched Worker CPU/memory outcome and profile before selecting remediation.",
+      "Application upstream 503 failures: collect safe Wix error status/code and correlate request timings. Exact underlying cause not established.",
+      "After remediation, complete another controlled 588-URL pass with no unresolved/recurring failures."
+    ],
+    "scope": "development staging only; no production, Wix CMS content, DNS, PR #4 or article SEO changes."
+  }
 }

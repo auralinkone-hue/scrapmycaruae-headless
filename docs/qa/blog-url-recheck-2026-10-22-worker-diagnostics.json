@@ -1,0 +1,162 @@
+{
+  "worker": "smc-headless-worker",
+  "base": "https://smc-headless-worker.hussain-gscx.workers.dev",
+  "tailEvents": 15,
+  "tailExitCode": null,
+  "outcomes": [
+    {
+      "path": "/post/maximizing-your-car-s-resale-value-tips-and-tricks",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 50,
+      "wallTime": 687,
+      "exceptions": []
+    },
+    {
+      "path": "/post/maximizing-sales-strategies-for-selling-cars-in-the-uae-summer-heat",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 23,
+      "wallTime": 377,
+      "exceptions": []
+    },
+    {
+      "path": "/post/maximizing-the-return-uncovering-the-best-value-for-your-scrap-car",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 25,
+      "wallTime": 437,
+      "exceptions": []
+    },
+    {
+      "path": "/post/recognizing-the-top-5-signs-of-transmission-failure",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 70,
+      "wallTime": 440,
+      "exceptions": []
+    },
+    {
+      "path": "/post/imple-steps-to-sell-your-scrap-car-in-uae-for-the-best-price",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 24,
+      "wallTime": 322,
+      "exceptions": []
+    },
+    {
+      "path": "/post/why-engine-overheating-blows-up-the-head-gasket",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 61,
+      "wallTime": 537,
+      "exceptions": []
+    },
+    {
+      "path": "/post/why-dubai-residents-are-scrapping-cars-before-road-tax-renewal",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 40,
+      "wallTime": 743,
+      "exceptions": []
+    },
+    {
+      "path": "/post/why-do-cars-fail-the-rta-inspection-in-the-uae-common-causes-explained",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 33,
+      "wallTime": 846,
+      "exceptions": []
+    },
+    {
+      "path": "/post/why-has-my-car-insurance-gone-up",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 18,
+      "wallTime": 416,
+      "exceptions": []
+    },
+    {
+      "path": "/post/why-ignoring-your-old-car-is-costing-you-more-than-you-think",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 18,
+      "wallTime": 349,
+      "exceptions": []
+    },
+    {
+      "path": "/post/why-is-my-car-heater-blowing-cold-air",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 13,
+      "wallTime": 541,
+      "exceptions": []
+    },
+    {
+      "path": "/post/why-is-there-water-on-the-floor-of-my-car",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 24,
+      "wallTime": 533,
+      "exceptions": []
+    },
+    {
+      "path": "/post/why-it-s-smarter-to-scrap-an-old-car-than-to-keep-repairing-it-in-dubai",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 17,
+      "wallTime": 583,
+      "exceptions": []
+    },
+    {
+      "path": "/post/why-life-might-be-about-to-get-harder-for-new-drivers",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 12,
+      "wallTime": 504,
+      "exceptions": []
+    },
+    {
+      "path": "/post/why-modern-scrap-yards-are-becoming-data-driven-in-the-uae",
+      "outcome": "ok",
+      "status": 200,
+      "cpuTime": 15,
+      "wallTime": 493,
+      "exceptions": []
+    }
+  ],
+  "probes": [
+    {
+      "path": "/post/maximizing-your-car-s-resale-value-tips-and-tricks",
+      "status": 200,
+      "responseMs": 893,
+      "retryAfter": null
+    },
+    {
+      "path": "/post/maximizing-sales-strategies-for-selling-cars-in-the-uae-summer-heat",
+      "status": 200,
+      "responseMs": 419,
+      "retryAfter": null
+    },
+    {
+      "path": "/post/maximizing-the-return-uncovering-the-best-value-for-your-scrap-car",
+      "status": 200,
+      "responseMs": 479,
+      "retryAfter": null
+    },
+    {
+      "path": "/post/recognizing-the-top-5-signs-of-transmission-failure",
+      "status": 200,
+      "responseMs": 587,
+      "retryAfter": null
+    },
+    {
+      "path": "/post/imple-steps-to-sell-your-scrap-car-in-uae-for-the-best-price",
+      "status": 200,
+      "responseMs": 344,
+      "retryAfter": null
+    }
+  ],
+  "workflowRun": "https://github.com/auralinkone-hue/scrapmycaruae-headless/actions/runs/39759082902",
+  "interpretation": "All 15 captured tail events were successful; no failing event was captured. CPU versus memory cause of earlier Cloudflare resource-limit responses remains undetermined."
+}

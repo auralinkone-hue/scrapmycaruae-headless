@@ -1,0 +1,947 @@
+{
+  "base": "https://smc-headless-worker.hussain-gscx.workers.dev",
+  "startedAt": "2026-10-22T09:42:02.752Z",
+  "finishedAt": "2026-10-22T09:42:41.122Z",
+  "settings": {
+    "concurrency": 3,
+    "spacingMs": 750,
+    "maxAttempts": 3,
+    "timeoutMs": 30000,
+    "maximumRetryWaitMs": 120000
+  },
+  "summary": {
+    "planned": 46,
+    "completed": 46,
+    "successful": 46,
+    "finalStatuses": {
+      "200": 46
+    },
+    "recoveredOnRetry": 0,
+    "unresolved": [],
+    "untested": [],
+    "stoppedForAccess": false,
+    "passed": true
+  },
+  "results": [
+    {
+      "path": "/post/is-your-old-car-costing-you-more-than-it-s-worth-here-s-when-to-scrap-it",
+      "finalStatus": 200,
+      "totalMs": 4148,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:06.901Z",
+          "status": 200,
+          "responseMs": 4148,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/is-your-old-car-costing-you-more-than-it-s-worth-here-s-when-to-scrap-it",
+          "title": "Is Your Old Car Costing You More Than It’s Worth? Here’s When to Scrap It",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/lost-your-car-number-plates-in-the-uae-essential-steps-to-take-before-selling-or-scrapping-your-veh",
+      "finalStatus": 200,
+      "totalMs": 4180,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:06.933Z",
+          "status": 200,
+          "responseMs": 3430,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/lost-your-car-number-plates-in-the-uae-essential-steps-to-take-before-selling-or-scrapping-your-veh",
+          "title": "Lost Your Car Number Plates in the UAE? Essential Steps to Take Before Selling or Scrapping Your Vehicle",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/lost-your-car-registration-in-the-uae-essential-steps-to-take-before-selling-or-scrapping-your-vehi",
+      "finalStatus": 200,
+      "totalMs": 4100,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:06.852Z",
+          "status": 200,
+          "responseMs": 2598,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/lost-your-car-registration-in-the-uae-essential-steps-to-take-before-selling-or-scrapping-your-vehi",
+          "title": "Lost Your Car Registration in the UAE? Essential Steps to Take Before Selling or Scrapping Your Vehicle",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/lost-your-mulkiya-card-important-things-to-handle-before-selling-or-scrapping-your-vehicle-in-the-u",
+      "finalStatus": 200,
+      "totalMs": 826,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:07.684Z",
+          "status": 200,
+          "responseMs": 825,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/lost-your-mulkiya-card-important-things-to-handle-before-selling-or-scrapping-your-vehicle-in-the-u",
+          "title": "Lost Your Mulkiya Card? Important Things to Handle Before Selling or Scrapping Your Vehicle in the UAE",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/low-traffic-zones-in-the-uae",
+      "finalStatus": 200,
+      "totalMs": 1217,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:08.124Z",
+          "status": 200,
+          "responseMs": 514,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/low-traffic-zones-in-the-uae",
+          "title": "Low Traffic Zones in the UAE?",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/maximizing-car-value-through-diy-repairs",
+      "finalStatus": 200,
+      "totalMs": 1903,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:08.838Z",
+          "status": 200,
+          "responseMs": 478,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/maximizing-car-value-through-diy-repairs",
+          "title": "Maximizing Car Value through DIY Repairs",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/mercedes-benz-e-class-estate-review-luxury-meets-practicality",
+      "finalStatus": 200,
+      "totalMs": 1962,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:09.647Z",
+          "status": 200,
+          "responseMs": 536,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/mercedes-benz-e-class-estate-review-luxury-meets-practicality",
+          "title": "Mercedes-Benz E-Class Estate Review",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/mustang-gt500-review-performance-and-features-analysis",
+      "finalStatus": 200,
+      "totalMs": 2281,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:10.405Z",
+          "status": 200,
+          "responseMs": 544,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/mustang-gt500-review-performance-and-features-analysis",
+          "title": "Mustang GT500 Review: Performance and Features Analysis   ",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/old-cars-new-value-how-dubai-s-scrap-car-industry-works",
+      "finalStatus": 200,
+      "totalMs": 2409,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:11.247Z",
+          "status": 200,
+          "responseMs": 636,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/old-cars-new-value-how-dubai-s-scrap-car-industry-works",
+          "title": "Old Cars, New Value: How Dubai’s Scrap Car Industry Works",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/recognizing-the-top-5-signs-of-transmission-failure",
+      "finalStatus": 200,
+      "totalMs": 2142,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:11.789Z",
+          "status": 200,
+          "responseMs": 429,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/recognizing-the-top-5-signs-of-transmission-failure",
+          "title": "5 Signs of Transmission Failure",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/recognizing-the-top-5-signs-of-transmission-failure-1",
+      "finalStatus": 200,
+      "totalMs": 2284,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:12.690Z",
+          "status": 200,
+          "responseMs": 579,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/recognizing-the-top-5-signs-of-transmission-failure-1",
+          "title": "Recognizing the Top 5 Signs of Transmission Failure",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/regional-hotspots-for-car-scrapping-in-the-uae",
+      "finalStatus": 200,
+      "totalMs": 2225,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:13.473Z",
+          "status": 200,
+          "responseMs": 611,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/regional-hotspots-for-car-scrapping-in-the-uae",
+          "title": "Regional Hotspots for Car Scrapping in the UAE",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/regulations-for-selling-scrap-cars-in-dubai",
+      "finalStatus": 200,
+      "totalMs": 2332,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:14.122Z",
+          "status": 200,
+          "responseMs": 509,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/regulations-for-selling-scrap-cars-in-dubai",
+          "title": "Regulations for Selling Scrap Cars in Dubai",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/removing-a-financed-vehicle-mortgage-in-the-uae-key-requirements-and-smart-ways-to-complete-the-pro",
+      "finalStatus": 200,
+      "totalMs": 2381,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:15.071Z",
+          "status": 200,
+          "responseMs": 706,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/removing-a-financed-vehicle-mortgage-in-the-uae-key-requirements-and-smart-ways-to-complete-the-pro",
+          "title": "Removing a Financed Vehicle Mortgage in the UAE: Key Requirements and Smart Ways to Complete the Process",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/revitalizing-your-old-car-interiors-a-guide-to-bringing-new-life-to-your-vehicle",
+      "finalStatus": 200,
+      "totalMs": 2242,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:15.716Z",
+          "status": 200,
+          "responseMs": 601,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/revitalizing-your-old-car-interiors-a-guide-to-bringing-new-life-to-your-vehicle",
+          "title": "Revitalizing Your Old Car Interiors: A Guide to Bringing New Life to Your Vehicle",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/scrap-car-laws-in-dubai-what-every-owner-should-know-in-2025",
+      "finalStatus": 200,
+      "totalMs": 2681,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:16.806Z",
+          "status": 200,
+          "responseMs": 940,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/scrap-car-laws-in-dubai-what-every-owner-should-know-in-2025",
+          "title": "Scrap Car Laws in Dubai: What Every Owner Should Know in 2025",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/scrap-car-value-in-2025-what-s-the-market-worth-in-the-uae",
+      "finalStatus": 200,
+      "totalMs": 5418,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:20.489Z",
+          "status": 200,
+          "responseMs": 3873,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/scrap-car-value-in-2025-what-s-the-market-worth-in-the-uae",
+          "title": "Scrap Car Value in 2025: What’s the Market Worth in the UAE?",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/scrap-car-with-loan-in-uae-what-you-need-to-know-before-you-start",
+      "finalStatus": 200,
+      "totalMs": 2247,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:17.963Z",
+          "status": 200,
+          "responseMs": 597,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/scrap-car-with-loan-in-uae-what-you-need-to-know-before-you-start",
+          "title": "Scrap Car With Loan in UAE: What You Need to Know Before You Start",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/scrap-vs-repair-cars-in-uae-why-more-drivers-are-making-the-switch",
+      "finalStatus": 200,
+      "totalMs": 2163,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:18.970Z",
+          "status": 200,
+          "responseMs": 853,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/scrap-vs-repair-cars-in-uae-why-more-drivers-are-making-the-switch",
+          "title": "Scrap vs Repair Cars in UAE – Why More Drivers Are Making the Switch",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/scrap-yard-rules-in-dubai-what-sellers-need-to-prepare-in-2026",
+      "finalStatus": 200,
+      "totalMs": 2768,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:20.732Z",
+          "status": 200,
+          "responseMs": 1865,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/scrap-yard-rules-in-dubai-what-sellers-need-to-prepare-in-2026",
+          "title": "Scrap Yard Rules in Dubai: What Sellers Need to Prepare in 2026",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/scrap-your-car-in-uae-2025-with-scrap-my-car-uae",
+      "finalStatus": 200,
+      "totalMs": 1278,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:20.249Z",
+          "status": 200,
+          "responseMs": 632,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/scrap-your-car-in-uae-2025-with-scrap-my-car-uae",
+          "title": "Scrap Your Car in UAE 2025 with Scrap My Car UAE",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/scrap-your-car-without-the-paperwork-here-s-what-you-still-need",
+      "finalStatus": 200,
+      "totalMs": 676,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:20.925Z",
+          "status": 200,
+          "responseMs": 558,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/scrap-your-car-without-the-paperwork-here-s-what-you-still-need",
+          "title": "Scrap Your Car Without the Paperwork? Here’s What You Still Need!",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/scrap-your-old-car-in-uae",
+      "finalStatus": 200,
+      "totalMs": 1363,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:21.858Z",
+          "status": 200,
+          "responseMs": 740,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/scrap-your-old-car-in-uae",
+          "title": "Is Your Aging Vehicle Costing More Than It’s Worth? Signs It May Be Time to Scrap Your Old Car in UAE",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/scraping-cars-with-or-without-catalytic-converters",
+      "finalStatus": 200,
+      "totalMs": 1727,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:22.460Z",
+          "status": 200,
+          "responseMs": 591,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/scraping-cars-with-or-without-catalytic-converters",
+          "title": "Scraping Cars With or Without Catalytic Converters",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/scrapping-a-financed-car-in-the-uae-here-s-what-you-should-know",
+      "finalStatus": 200,
+      "totalMs": 2341,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:23.267Z",
+          "status": 200,
+          "responseMs": 648,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/scrapping-a-financed-car-in-the-uae-here-s-what-you-should-know",
+          "title": "Scrapping a Financed Car in the UAE? Here’s What You Should Know",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/uncovering-the-relationship-between-uae-weather-and-your-car-s-longevity",
+      "finalStatus": 200,
+      "totalMs": 2086,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:23.945Z",
+          "status": 200,
+          "responseMs": 575,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/uncovering-the-relationship-between-uae-weather-and-your-car-s-longevity",
+          "title": "Uncovering the Relationship Between UAE Weather and Your Car&#39;s Longevity",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/understanding-car-metal-recycling-prices-in-the-uae-what-determines-your-vehicle-s-scrap-worth",
+      "finalStatus": 200,
+      "totalMs": 2414,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:24.875Z",
+          "status": 200,
+          "responseMs": 755,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/understanding-car-metal-recycling-prices-in-the-uae-what-determines-your-vehicle-s-scrap-worth",
+          "title": "Understanding Car Metal Recycling Prices in the UAE: What Determines Your Vehicle’s Scrap Worth",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/understanding-car-scrap-pricing-in-the-uae-essential-factors-that-determine-your-vehicle-s-final-va",
+      "finalStatus": 200,
+      "totalMs": 5208,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:28.476Z",
+          "status": 200,
+          "responseMs": 3605,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/understanding-car-scrap-pricing-in-the-uae-essential-factors-that-determine-your-vehicle-s-final-va",
+          "title": "Understanding Car Scrap Pricing in the UAE: Essential Factors That Determine Your Vehicle&#39;s Final Value",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/understanding-elvs-in-the-uae",
+      "finalStatus": 200,
+      "totalMs": 2322,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:26.268Z",
+          "status": 200,
+          "responseMs": 647,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/understanding-elvs-in-the-uae",
+          "title": "Understanding ELVs in the UAE",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/understanding-vehicle-ownership-verification-in-the-uae-important-checks-every-car-seller-should-co",
+      "finalStatus": 200,
+      "totalMs": 2098,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:26.973Z",
+          "status": 200,
+          "responseMs": 601,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/understanding-vehicle-ownership-verification-in-the-uae-important-checks-every-car-seller-should-co",
+          "title": "Understanding Vehicle Ownership Verification in the UAE: Important Checks Every Car Seller Should Complete Before Closing the Deal",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/unlocking-the-secrets-to-extending-the-battery-life-of-electric-cars-in-dubai-uae",
+      "finalStatus": 200,
+      "totalMs": 1499,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:27.768Z",
+          "status": 200,
+          "responseMs": 644,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/unlocking-the-secrets-to-extending-the-battery-life-of-electric-cars-in-dubai-uae",
+          "title": "Unlocking the Secrets to Extending the Battery Life of Electric Cars in Dubai, UAE",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/unveiling-5-driving-myths-and-debunking-common-driving-misconceptions",
+      "finalStatus": 200,
+      "totalMs": 1429,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:28.403Z",
+          "status": 200,
+          "responseMs": 530,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/unveiling-5-driving-myths-and-debunking-common-driving-misconceptions",
+          "title": "Unveiling 5 Driving Myths and Debunking Common Driving Misconceptions",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/unveiling-the-future-car-recycling-innovations",
+      "finalStatus": 200,
+      "totalMs": 1496,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:29.264Z",
+          "status": 200,
+          "responseMs": 641,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/unveiling-the-future-car-recycling-innovations",
+          "title": "Unveiling the Future: Car Recycling Innovations",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/unveiling-the-mystery-of-white-substance-under-the-oil-filler-cap-causes-and-solutions",
+      "finalStatus": 200,
+      "totalMs": 1521,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:29.925Z",
+          "status": 200,
+          "responseMs": 551,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/unveiling-the-mystery-of-white-substance-under-the-oil-filler-cap-causes-and-solutions",
+          "title": "Unveiling the Mystery of White Substance Under the Oil Filler Cap: Causes and Solutions",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/unveiling-the-mystery-what-is-a-certificate-of-destruction",
+      "finalStatus": 200,
+      "totalMs": 2193,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:30.670Z",
+          "status": 200,
+          "responseMs": 545,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/unveiling-the-mystery-what-is-a-certificate-of-destruction",
+          "title": "Unveiling the Mystery: What is a Certificate of Destruction?",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/used-car-ownership-transfer-mistakes-to-avoid-in-uae-essential-tips-every-seller-should-know",
+      "finalStatus": 200,
+      "totalMs": 2216,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:31.481Z",
+          "status": 200,
+          "responseMs": 605,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/used-car-ownership-transfer-mistakes-to-avoid-in-uae-essential-tips-every-seller-should-know",
+          "title": "Used Car Ownership Transfer Mistakes to Avoid in UAE: Essential Tips Every Seller Should Know",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/used-car-selling-guidelines-you-must-follow-in-dubai-and-sharjah",
+      "finalStatus": 200,
+      "totalMs": 2455,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:32.381Z",
+          "status": 200,
+          "responseMs": 755,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/used-car-selling-guidelines-you-must-follow-in-dubai-and-sharjah",
+          "title": "Used Car Selling Guidelines You Must Follow in Dubai and Sharjah",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/vehicle-deregistration-rules-you-must-know-before-scrapping-your-car-in-the-uae",
+      "finalStatus": 200,
+      "totalMs": 2524,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:33.194Z",
+          "status": 200,
+          "responseMs": 817,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/vehicle-deregistration-rules-you-must-know-before-scrapping-your-car-in-the-uae",
+          "title": "Vehicle Deregistration Rules You Must Know Before Scrapping Your Car in the UAE",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/want-to-scrap-your-accident-car-fast-here-s-the-easiest-way",
+      "finalStatus": 200,
+      "totalMs": 2321,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:33.803Z",
+          "status": 200,
+          "responseMs": 676,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/want-to-scrap-your-accident-car-fast-here-s-the-easiest-way",
+          "title": "Want to Scrap Your Accident Car Fast? Here’s the Easiest Way!",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/what-are-the-essential-documents-needed-to-tax-your-car",
+      "finalStatus": 200,
+      "totalMs": 1994,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:34.376Z",
+          "status": 200,
+          "responseMs": 499,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/what-are-the-essential-documents-needed-to-tax-your-car",
+          "title": "What are the essential documents needed to tax your car?",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/what-are-the-most-difficult-mechanical-issues-to-diagnose-on-a-car",
+      "finalStatus": 200,
+      "totalMs": 2032,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:35.227Z",
+          "status": 200,
+          "responseMs": 598,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/what-are-the-most-difficult-mechanical-issues-to-diagnose-on-a-car",
+          "title": "What Are the Most Difficult Mechanical Issues to Diagnose on a Car?",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/what-caused-my-brakes-to-seize-and-how-should-i-get-rid-of-this",
+      "finalStatus": 200,
+      "totalMs": 2167,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:35.971Z",
+          "status": 200,
+          "responseMs": 592,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/what-caused-my-brakes-to-seize-and-how-should-i-get-rid-of-this",
+          "title": "What caused my brakes to seize, and how should I get rid of this?",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/what-coolant-do-i-need-for-an-audi-how-to-top-up",
+      "finalStatus": 200,
+      "totalMs": 2326,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:36.703Z",
+          "status": 200,
+          "responseMs": 575,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/what-coolant-do-i-need-for-an-audi-how-to-top-up",
+          "title": "What Coolant Do I Need For An Audi &amp; How To Top Up?",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/what-documents-do-you-need-to-scrap-your-car-in-the-uae",
+      "finalStatus": 200,
+      "totalMs": 2470,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:37.698Z",
+          "status": 200,
+          "responseMs": 818,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/what-documents-do-you-need-to-scrap-your-car-in-the-uae",
+          "title": "What Documents Do You Need to Scrap Your Car in the UAE?",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/what-does-your-check-engine-light-mean",
+      "finalStatus": 200,
+      "totalMs": 5149,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:41.121Z",
+          "status": 200,
+          "responseMs": 3490,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/what-does-your-check-engine-light-mean",
+          "title": "What Does Your Check Engine Light Mean?",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    },
+    {
+      "path": "/post/what-happens-after-you-scrap-your-car-in-the-uae-full-breakdown",
+      "finalStatus": 200,
+      "totalMs": 2528,
+      "attempts": [
+        {
+          "number": 1,
+          "at": "2026-10-22T09:42:39.232Z",
+          "status": 200,
+          "responseMs": 851,
+          "retryAfter": null,
+          "cacheControl": null,
+          "articlePresent": true,
+          "canonical": "https://www.scrapmycaruae.com/post/what-happens-after-you-scrap-your-car-in-the-uae-full-breakdown",
+          "title": "What Happens After You Scrap Your Car in the UAE? Full Breakdown",
+          "classification": "article-ok"
+        }
+      ],
+      "outcome": "first-attempt-success"
+    }
+  ]
+}
