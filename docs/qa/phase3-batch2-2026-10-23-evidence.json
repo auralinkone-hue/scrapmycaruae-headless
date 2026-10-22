@@ -1,0 +1,626 @@
+{
+  "startingCommit": "0f38c6aa0b178f5a03c04ac319623c634014c58c",
+  "checkedAt": "2026-10-22T19:37:01.521224+00:00",
+  "baseline": [
+    {
+      "row": 1,
+      "path": "/post/how-much-is-my-scrap-car-worth-in-2025-uae-pricing-explained",
+      "target": "/scrap-car-value/",
+      "status": 200,
+      "seconds": 7.95,
+      "articleSha256": "bd8ad46ddb6f3a439109494b175e37bed02dd4f978f8212f74905833c30e7afe",
+      "articleBytes": 8301,
+      "title": "How Much is My Scrap Car Worth in 2025? UAE Pricing Explained!",
+      "canonical": [
+        "https://www.scrapmycaruae.com/post/how-much-is-my-scrap-car-worth-in-2025-uae-pricing-explained"
+      ],
+      "metadata": {
+        "": "",
+        "viewport": "width=device-width, initial-scale=1",
+        "generator": "Astro v7.3.3",
+        "description": "Discover how much your scrap car is worth in 2025 in the UAE. Learn about scrap cars pricing, factors affecting value, and maximize your payout.",
+        "robots": "noindex,nofollow",
+        "googlebot": "noindex,nofollow",
+        "og:type": "article",
+        "og:site_name": "Scrap My Car UAE",
+        "og:locale": "en_AE",
+        "og:title": "How Much is My Scrap Car Worth in 2025? UAE Pricing Explained!",
+        "og:description": "Discover how much your scrap car is worth in 2025 in the UAE. Learn about scrap cars pricing, factors affecting value, and maximize your payout.",
+        "og:url": "https://www.scrapmycaruae.com/post/how-much-is-my-scrap-car-worth-in-2025-uae-pricing-explained",
+        "og:image": "https://static.wixstatic.com/media/ff8df3_dbccf512fa8446429a6dad291aa91338~mv2.jpg",
+        "og:image:alt": "How Much is My Scrap Car Worth in 2025? UAE Pricing Explained!",
+        "twitter:card": "summary_large_image",
+        "twitter:url": "https://www.scrapmycaruae.com/post/how-much-is-my-scrap-car-worth-in-2025-uae-pricing-explained",
+        "twitter:title": "How Much is My Scrap Car Worth in 2025? UAE Pricing Explained!",
+        "twitter:description": "Discover how much your scrap car is worth in 2025 in the UAE. Learn about scrap cars pricing, factors affecting value, and maximize your payout.",
+        "twitter:image": "https://static.wixstatic.com/media/ff8df3_dbccf512fa8446429a6dad291aa91338~mv2.jpg",
+        "twitter:image:alt": "How Much is My Scrap Car Worth in 2025? UAE Pricing Explained!"
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "@id": "https://www.scrapmycaruae.com/post/how-much-is-my-scrap-car-worth-in-2025-uae-pricing-explained#article",
+          "headline": "How Much is My Scrap Car Worth in 2025? UAE Pricing Explained!",
+          "description": "Discover how much your scrap car is worth in 2025 in the UAE. Learn about scrap cars pricing, factors affecting value, and maximize your payout.",
+          "mainEntityOfPage": "https://www.scrapmycaruae.com/post/how-much-is-my-scrap-car-worth-in-2025-uae-pricing-explained",
+          "datePublished": "2025-07-08T12:50:49.292Z",
+          "dateModified": "2025-07-08T12:50:49.292Z",
+          "image": [
+            "https://static.wixstatic.com/media/ff8df3_dbccf512fa8446429a6dad291aa91338~mv2.jpg"
+          ],
+          "publisher": {
+            "@type": "Organization",
+            "@id": "https://www.scrapmycaruae.com/#organization",
+            "name": "Scrap My Car UAE",
+            "url": "https://www.scrapmycaruae.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://static.wixstatic.com/media/ff8df3_ee2506a8a7ed4752b5b7832449c71105~mv2.png"
+            }
+          },
+          "isPartOf": {
+            "@id": "https://www.scrapmycaruae.com/#website"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.scrapmycaruae.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Blogs",
+              "item": "https://www.scrapmycaruae.com/blogs"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "How Much is My Scrap Car Worth in 2025? UAE Pricing Explained!",
+              "item": "https://www.scrapmycaruae.com/post/how-much-is-my-scrap-car-worth-in-2025-uae-pricing-explained"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "row": 2,
+      "path": "/post/before-scrapping-how-to-deregister-your-car-in-uae",
+      "target": "/scrap-my-car/",
+      "status": 200,
+      "seconds": 8.74,
+      "articleSha256": "42d9940ab6d99c779a6ec3228b0d03a441354ef88cafc1c9f146ed69296b9bab",
+      "articleBytes": 7476,
+      "title": "Before Scrapping: How to Deregister Your Car in UAE?",
+      "canonical": [
+        "https://www.scrapmycaruae.com/post/before-scrapping-how-to-deregister-your-car-in-uae"
+      ],
+      "metadata": {
+        "": "",
+        "viewport": "width=device-width, initial-scale=1",
+        "generator": "Astro v7.3.3",
+        "description": "Learn how to deregister your car in the UAE before scrapping. Protect yourself from fines and liabilities by following our essential guide.",
+        "robots": "noindex,nofollow",
+        "googlebot": "noindex,nofollow",
+        "og:type": "article",
+        "og:site_name": "Scrap My Car UAE",
+        "og:locale": "en_AE",
+        "og:title": "Before Scrapping: How to Deregister Your Car in UAE?",
+        "og:description": "Learn how to deregister your car in the UAE before scrapping. Protect yourself from fines and liabilities by following our essential guide.",
+        "og:url": "https://www.scrapmycaruae.com/post/before-scrapping-how-to-deregister-your-car-in-uae",
+        "og:image": "https://static.wixstatic.com/media/ff8df3_7988fd2eb6514c5491c446e243b2d1a0~mv2.png",
+        "og:image:alt": "Before Scrapping: How to Deregister Your Car in UAE?",
+        "twitter:card": "summary_large_image",
+        "twitter:url": "https://www.scrapmycaruae.com/post/before-scrapping-how-to-deregister-your-car-in-uae",
+        "twitter:title": "Before Scrapping: How to Deregister Your Car in UAE?",
+        "twitter:description": "Learn how to deregister your car in the UAE before scrapping. Protect yourself from fines and liabilities by following our essential guide.",
+        "twitter:image": "https://static.wixstatic.com/media/ff8df3_7988fd2eb6514c5491c446e243b2d1a0~mv2.png",
+        "twitter:image:alt": "Before Scrapping: How to Deregister Your Car in UAE?"
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "@id": "https://www.scrapmycaruae.com/post/before-scrapping-how-to-deregister-your-car-in-uae#article",
+          "headline": "Before Scrapping: How to Deregister Your Car in UAE?",
+          "description": "Learn how to deregister your car in the UAE before scrapping. Protect yourself from fines and liabilities by following our essential guide.",
+          "mainEntityOfPage": "https://www.scrapmycaruae.com/post/before-scrapping-how-to-deregister-your-car-in-uae",
+          "datePublished": "2025-01-20T12:35:17.961Z",
+          "dateModified": "2025-02-14T06:21:29.636Z",
+          "image": [
+            "https://static.wixstatic.com/media/ff8df3_7988fd2eb6514c5491c446e243b2d1a0~mv2.png"
+          ],
+          "publisher": {
+            "@type": "Organization",
+            "@id": "https://www.scrapmycaruae.com/#organization",
+            "name": "Scrap My Car UAE",
+            "url": "https://www.scrapmycaruae.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://static.wixstatic.com/media/ff8df3_ee2506a8a7ed4752b5b7832449c71105~mv2.png"
+            }
+          },
+          "isPartOf": {
+            "@id": "https://www.scrapmycaruae.com/#website"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.scrapmycaruae.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Blogs",
+              "item": "https://www.scrapmycaruae.com/blogs"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Before Scrapping: How to Deregister Your Car in UAE?",
+              "item": "https://www.scrapmycaruae.com/post/before-scrapping-how-to-deregister-your-car-in-uae"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "row": 5,
+      "path": "/post/car-scrapping-rules-you-should-know-if-you-live-in-abu-dhabi-or-sharjah",
+      "target": "/locations/abu-dhabi/",
+      "status": 200,
+      "seconds": 8.55,
+      "articleSha256": "4c3e52e12cb8e2ae4bf775813a607a919263a85f17074a8f01e2967596844e7d",
+      "articleBytes": 9472,
+      "title": "Car Scrapping Rules You Should Know if You Live in Abu Dhabi or Sharjah",
+      "canonical": [
+        "https://www.scrapmycaruae.com/post/car-scrapping-rules-you-should-know-if-you-live-in-abu-dhabi-or-sharjah"
+      ],
+      "metadata": {
+        "": "",
+        "viewport": "width=device-width, initial-scale=1",
+        "generator": "Astro v7.3.3",
+        "description": "Discover essential car scrapping rules in Abu Dhabi & Sharjah. Avoid fines by following local regulations. Learn how to scrap your car legally today!",
+        "robots": "noindex,nofollow",
+        "googlebot": "noindex,nofollow",
+        "og:type": "article",
+        "og:site_name": "Scrap My Car UAE",
+        "og:locale": "en_AE",
+        "og:title": "Car Scrapping Rules You Should Know if You Live in Abu Dhabi or Sharjah",
+        "og:description": "Discover essential car scrapping rules in Abu Dhabi & Sharjah. Avoid fines by following local regulations. Learn how to scrap your car legally today!",
+        "og:url": "https://www.scrapmycaruae.com/post/car-scrapping-rules-you-should-know-if-you-live-in-abu-dhabi-or-sharjah",
+        "og:image": "https://static.wixstatic.com/media/ff8df3_02d0e95fc87a434e99bb82de35c12859~mv2.png",
+        "og:image:alt": "Car Scrapping Rules You Should Know if You Live in Abu Dhabi or Sharjah",
+        "twitter:card": "summary_large_image",
+        "twitter:url": "https://www.scrapmycaruae.com/post/car-scrapping-rules-you-should-know-if-you-live-in-abu-dhabi-or-sharjah",
+        "twitter:title": "Car Scrapping Rules You Should Know if You Live in Abu Dhabi or Sharjah",
+        "twitter:description": "Discover essential car scrapping rules in Abu Dhabi & Sharjah. Avoid fines by following local regulations. Learn how to scrap your car legally today!",
+        "twitter:image": "https://static.wixstatic.com/media/ff8df3_02d0e95fc87a434e99bb82de35c12859~mv2.png",
+        "twitter:image:alt": "Car Scrapping Rules You Should Know if You Live in Abu Dhabi or Sharjah"
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "@id": "https://www.scrapmycaruae.com/post/car-scrapping-rules-you-should-know-if-you-live-in-abu-dhabi-or-sharjah#article",
+          "headline": "Car Scrapping Rules You Should Know if You Live in Abu Dhabi or Sharjah",
+          "description": "Discover essential car scrapping rules in Abu Dhabi & Sharjah. Avoid fines by following local regulations. Learn how to scrap your car legally today!",
+          "mainEntityOfPage": "https://www.scrapmycaruae.com/post/car-scrapping-rules-you-should-know-if-you-live-in-abu-dhabi-or-sharjah",
+          "datePublished": "2025-05-28T10:42:59.670Z",
+          "dateModified": "2025-05-28T10:42:59.670Z",
+          "image": [
+            "https://static.wixstatic.com/media/ff8df3_02d0e95fc87a434e99bb82de35c12859~mv2.png"
+          ],
+          "publisher": {
+            "@type": "Organization",
+            "@id": "https://www.scrapmycaruae.com/#organization",
+            "name": "Scrap My Car UAE",
+            "url": "https://www.scrapmycaruae.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://static.wixstatic.com/media/ff8df3_ee2506a8a7ed4752b5b7832449c71105~mv2.png"
+            }
+          },
+          "isPartOf": {
+            "@id": "https://www.scrapmycaruae.com/#website"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.scrapmycaruae.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Blogs",
+              "item": "https://www.scrapmycaruae.com/blogs"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Car Scrapping Rules You Should Know if You Live in Abu Dhabi or Sharjah",
+              "item": "https://www.scrapmycaruae.com/post/car-scrapping-rules-you-should-know-if-you-live-in-abu-dhabi-or-sharjah"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "row": 6,
+      "path": "/post/how-to-prepare-your-car-for-scrapping-in-dubai",
+      "target": "/locations/dubai/",
+      "status": 200,
+      "seconds": 8.54,
+      "articleSha256": "bbdb6ddaa802d6267137fe6317409f96f15de05ee2a4b6f7eee62ada91c277ab",
+      "articleBytes": 10185,
+      "title": "How to Prepare Your Car for Scrapping in Dubai!",
+      "canonical": [
+        "https://www.scrapmycaruae.com/post/how-to-prepare-your-car-for-scrapping-in-dubai"
+      ],
+      "metadata": {
+        "": "",
+        "viewport": "width=device-width, initial-scale=1",
+        "generator": "Astro v7.3.3",
+        "description": "Learn how to prepare your car for scrapping in Dubai with our guide. Ensure a smooth car scrapping process and get the best value today!",
+        "robots": "noindex,nofollow",
+        "googlebot": "noindex,nofollow",
+        "og:type": "article",
+        "og:site_name": "Scrap My Car UAE",
+        "og:locale": "en_AE",
+        "og:title": "How to Prepare Your Car for Scrapping in Dubai!",
+        "og:description": "Learn how to prepare your car for scrapping in Dubai with our guide. Ensure a smooth car scrapping process and get the best value today!",
+        "og:url": "https://www.scrapmycaruae.com/post/how-to-prepare-your-car-for-scrapping-in-dubai",
+        "og:image": "https://static.wixstatic.com/media/ff8df3_dbccf512fa8446429a6dad291aa91338~mv2.jpg",
+        "og:image:alt": "How to Prepare Your Car for Scrapping in Dubai!",
+        "twitter:card": "summary_large_image",
+        "twitter:url": "https://www.scrapmycaruae.com/post/how-to-prepare-your-car-for-scrapping-in-dubai",
+        "twitter:title": "How to Prepare Your Car for Scrapping in Dubai!",
+        "twitter:description": "Learn how to prepare your car for scrapping in Dubai with our guide. Ensure a smooth car scrapping process and get the best value today!",
+        "twitter:image": "https://static.wixstatic.com/media/ff8df3_dbccf512fa8446429a6dad291aa91338~mv2.jpg",
+        "twitter:image:alt": "How to Prepare Your Car for Scrapping in Dubai!"
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "@id": "https://www.scrapmycaruae.com/post/how-to-prepare-your-car-for-scrapping-in-dubai#article",
+          "headline": "How to Prepare Your Car for Scrapping in Dubai!",
+          "description": "Learn how to prepare your car for scrapping in Dubai with our guide. Ensure a smooth car scrapping process and get the best value today!",
+          "mainEntityOfPage": "https://www.scrapmycaruae.com/post/how-to-prepare-your-car-for-scrapping-in-dubai",
+          "datePublished": "2025-05-30T12:00:52.527Z",
+          "dateModified": "2025-05-30T12:00:52.527Z",
+          "image": [
+            "https://static.wixstatic.com/media/ff8df3_dbccf512fa8446429a6dad291aa91338~mv2.jpg"
+          ],
+          "publisher": {
+            "@type": "Organization",
+            "@id": "https://www.scrapmycaruae.com/#organization",
+            "name": "Scrap My Car UAE",
+            "url": "https://www.scrapmycaruae.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://static.wixstatic.com/media/ff8df3_ee2506a8a7ed4752b5b7832449c71105~mv2.png"
+            }
+          },
+          "isPartOf": {
+            "@id": "https://www.scrapmycaruae.com/#website"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.scrapmycaruae.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Blogs",
+              "item": "https://www.scrapmycaruae.com/blogs"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "How to Prepare Your Car for Scrapping in Dubai!",
+              "item": "https://www.scrapmycaruae.com/post/how-to-prepare-your-car-for-scrapping-in-dubai"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "row": 7,
+      "path": "/post/imple-steps-to-sell-your-scrap-car-in-uae-for-the-best-price",
+      "target": "/scrap-my-car/",
+      "status": 200,
+      "seconds": 9.22,
+      "articleSha256": "3cd1d04279527deb1ad860a5f0ede6262f7b7cc0d533835042ae9ebddbf58c2e",
+      "articleBytes": 6786,
+      "title": "Simple Steps to Sell Your Scrap Car in UAE for the Best Price",
+      "canonical": [
+        "https://www.scrapmycaruae.com/post/imple-steps-to-sell-your-scrap-car-in-uae-for-the-best-price"
+      ],
+      "metadata": {
+        "": "",
+        "viewport": "width=device-width, initial-scale=1",
+        "generator": "Astro v7.3.3",
+        "description": "Get the best price for your scrap car in the UAE with these simple steps. Evaluate, gather documents, get quotes, negotiate, and sell responsibly.",
+        "robots": "noindex,nofollow",
+        "googlebot": "noindex,nofollow",
+        "og:type": "article",
+        "og:site_name": "Scrap My Car UAE",
+        "og:locale": "en_AE",
+        "og:title": "Simple Steps to Sell Your Scrap Car in UAE for the Best Price",
+        "og:description": "Get the best price for your scrap car in the UAE with these simple steps. Evaluate, gather documents, get quotes, negotiate, and sell responsibly.",
+        "og:url": "https://www.scrapmycaruae.com/post/imple-steps-to-sell-your-scrap-car-in-uae-for-the-best-price",
+        "og:image": "https://static.wixstatic.com/media/ff8df3_fe1a3d41ec284354bd1081eefdf3d678~mv2.png",
+        "og:image:alt": "Simple Steps to Sell Your Scrap Car in UAE for the Best Price",
+        "twitter:card": "summary_large_image",
+        "twitter:url": "https://www.scrapmycaruae.com/post/imple-steps-to-sell-your-scrap-car-in-uae-for-the-best-price",
+        "twitter:title": "Simple Steps to Sell Your Scrap Car in UAE for the Best Price",
+        "twitter:description": "Get the best price for your scrap car in the UAE with these simple steps. Evaluate, gather documents, get quotes, negotiate, and sell responsibly.",
+        "twitter:image": "https://static.wixstatic.com/media/ff8df3_fe1a3d41ec284354bd1081eefdf3d678~mv2.png",
+        "twitter:image:alt": "Simple Steps to Sell Your Scrap Car in UAE for the Best Price"
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "@id": "https://www.scrapmycaruae.com/post/imple-steps-to-sell-your-scrap-car-in-uae-for-the-best-price#article",
+          "headline": "Simple Steps to Sell Your Scrap Car in UAE for the Best Price",
+          "description": "Get the best price for your scrap car in the UAE with these simple steps. Evaluate, gather documents, get quotes, negotiate, and sell responsibly.",
+          "mainEntityOfPage": "https://www.scrapmycaruae.com/post/imple-steps-to-sell-your-scrap-car-in-uae-for-the-best-price",
+          "datePublished": "2024-07-04T12:45:28.306Z",
+          "dateModified": "2024-09-25T11:54:58.169Z",
+          "image": [
+            "https://static.wixstatic.com/media/ff8df3_fe1a3d41ec284354bd1081eefdf3d678~mv2.png"
+          ],
+          "publisher": {
+            "@type": "Organization",
+            "@id": "https://www.scrapmycaruae.com/#organization",
+            "name": "Scrap My Car UAE",
+            "url": "https://www.scrapmycaruae.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://static.wixstatic.com/media/ff8df3_ee2506a8a7ed4752b5b7832449c71105~mv2.png"
+            }
+          },
+          "isPartOf": {
+            "@id": "https://www.scrapmycaruae.com/#website"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.scrapmycaruae.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Blogs",
+              "item": "https://www.scrapmycaruae.com/blogs"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Simple Steps to Sell Your Scrap Car in UAE for the Best Price",
+              "item": "https://www.scrapmycaruae.com/post/imple-steps-to-sell-your-scrap-car-in-uae-for-the-best-price"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "row": 11,
+      "path": "/post/selling-a-car-with-a-faulty-engine-in-the-uae-your-options",
+      "target": "/sell-car-with-engine-problems/",
+      "status": 200,
+      "seconds": 8.67,
+      "articleSha256": "31cdf2d5fa455846a026f55859d87df33fa35d9dcd81777d98fd2489ba00f5d7",
+      "articleBytes": 5963,
+      "title": "Selling a Car with a Faulty Engine in the UAE: Your Options",
+      "canonical": [
+        "https://www.scrapmycaruae.com/post/selling-a-car-with-a-faulty-engine-in-the-uae-your-options"
+      ],
+      "metadata": {
+        "": "",
+        "viewport": "width=device-width, initial-scale=1",
+        "generator": "Astro v7.3.3",
+        "description": "Discover practical ways to sell a car with a faulty engine in the UAE. Explore options for your faulty engine vehicle and get cash today!",
+        "robots": "noindex,nofollow",
+        "googlebot": "noindex,nofollow",
+        "og:type": "article",
+        "og:site_name": "Scrap My Car UAE",
+        "og:locale": "en_AE",
+        "og:title": "Selling a Car with a Faulty Engine in the UAE: Your Options",
+        "og:description": "Discover practical ways to sell a car with a faulty engine in the UAE. Explore options for your faulty engine vehicle and get cash today!",
+        "og:url": "https://www.scrapmycaruae.com/post/selling-a-car-with-a-faulty-engine-in-the-uae-your-options",
+        "og:image": "https://static.wixstatic.com/media/ff8df3_56c1a29a32314e4fbbd90ab3d7ce42ae~mv2.jpg",
+        "og:image:alt": "Selling a Car with a Faulty Engine in the UAE: Your Options",
+        "twitter:card": "summary_large_image",
+        "twitter:url": "https://www.scrapmycaruae.com/post/selling-a-car-with-a-faulty-engine-in-the-uae-your-options",
+        "twitter:title": "Selling a Car with a Faulty Engine in the UAE: Your Options",
+        "twitter:description": "Discover practical ways to sell a car with a faulty engine in the UAE. Explore options for your faulty engine vehicle and get cash today!",
+        "twitter:image": "https://static.wixstatic.com/media/ff8df3_56c1a29a32314e4fbbd90ab3d7ce42ae~mv2.jpg",
+        "twitter:image:alt": "Selling a Car with a Faulty Engine in the UAE: Your Options"
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "@id": "https://www.scrapmycaruae.com/post/selling-a-car-with-a-faulty-engine-in-the-uae-your-options#article",
+          "headline": "Selling a Car with a Faulty Engine in the UAE: Your Options",
+          "description": "Discover practical ways to sell a car with a faulty engine in the UAE. Explore options for your faulty engine vehicle and get cash today!",
+          "mainEntityOfPage": "https://www.scrapmycaruae.com/post/selling-a-car-with-a-faulty-engine-in-the-uae-your-options",
+          "datePublished": "2025-07-17T11:44:46.059Z",
+          "dateModified": "2025-07-17T11:44:46.059Z",
+          "image": [
+            "https://static.wixstatic.com/media/ff8df3_56c1a29a32314e4fbbd90ab3d7ce42ae~mv2.jpg"
+          ],
+          "publisher": {
+            "@type": "Organization",
+            "@id": "https://www.scrapmycaruae.com/#organization",
+            "name": "Scrap My Car UAE",
+            "url": "https://www.scrapmycaruae.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://static.wixstatic.com/media/ff8df3_ee2506a8a7ed4752b5b7832449c71105~mv2.png"
+            }
+          },
+          "isPartOf": {
+            "@id": "https://www.scrapmycaruae.com/#website"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.scrapmycaruae.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Blogs",
+              "item": "https://www.scrapmycaruae.com/blogs"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Selling a Car with a Faulty Engine in the UAE: Your Options",
+              "item": "https://www.scrapmycaruae.com/post/selling-a-car-with-a-faulty-engine-in-the-uae-your-options"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "row": 12,
+      "path": "/post/how-to-sell-a-car-with-gearbox-problems-scrap-my-car-uae",
+      "target": "/sell-car-with-gearbox-problems/",
+      "status": 200,
+      "seconds": 8.47,
+      "articleSha256": "d31862200097ff4e0a97a0f4c95530b20f630c1b6bea7d8fe011a18e3342fe63",
+      "articleBytes": 6026,
+      "title": "How to Sell a Car With Gearbox Problems - Scrap My Car UAE",
+      "canonical": [
+        "https://www.scrapmycaruae.com/post/how-to-sell-a-car-with-gearbox-problems-scrap-my-car-uae"
+      ],
+      "metadata": {
+        "": "",
+        "viewport": "width=device-width, initial-scale=1",
+        "generator": "Astro v7.3.3",
+        "description": "Learn how to navigate selling a car with gearbox problems in the UAE. From selling to individual buyers to scrapping companies, we've got you covered!",
+        "robots": "noindex,nofollow",
+        "googlebot": "noindex,nofollow",
+        "og:type": "article",
+        "og:site_name": "Scrap My Car UAE",
+        "og:locale": "en_AE",
+        "og:title": "How to Sell a Car With Gearbox Problems - Scrap My Car UAE",
+        "og:description": "Learn how to navigate selling a car with gearbox problems in the UAE. From selling to individual buyers to scrapping companies, we've got you covered!",
+        "og:url": "https://www.scrapmycaruae.com/post/how-to-sell-a-car-with-gearbox-problems-scrap-my-car-uae",
+        "og:image": "https://static.wixstatic.com/media/ff8df3_88c1bcb1209940dfbb365223d86cf40b~mv2.png",
+        "og:image:alt": "How to Sell a Car With Gearbox Problems - Scrap My Car UAE",
+        "twitter:card": "summary_large_image",
+        "twitter:url": "https://www.scrapmycaruae.com/post/how-to-sell-a-car-with-gearbox-problems-scrap-my-car-uae",
+        "twitter:title": "How to Sell a Car With Gearbox Problems - Scrap My Car UAE",
+        "twitter:description": "Learn how to navigate selling a car with gearbox problems in the UAE. From selling to individual buyers to scrapping companies, we've got you covered!",
+        "twitter:image": "https://static.wixstatic.com/media/ff8df3_88c1bcb1209940dfbb365223d86cf40b~mv2.png",
+        "twitter:image:alt": "How to Sell a Car With Gearbox Problems - Scrap My Car UAE"
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "@id": "https://www.scrapmycaruae.com/post/how-to-sell-a-car-with-gearbox-problems-scrap-my-car-uae#article",
+          "headline": "How to Sell a Car With Gearbox Problems - Scrap My Car UAE",
+          "description": "Learn how to navigate selling a car with gearbox problems in the UAE. From selling to individual buyers to scrapping companies, we've got you covered!",
+          "mainEntityOfPage": "https://www.scrapmycaruae.com/post/how-to-sell-a-car-with-gearbox-problems-scrap-my-car-uae",
+          "datePublished": "2024-03-26T10:45:29.789Z",
+          "dateModified": "2024-03-26T10:45:29.789Z",
+          "image": [
+            "https://static.wixstatic.com/media/ff8df3_88c1bcb1209940dfbb365223d86cf40b~mv2.png"
+          ],
+          "publisher": {
+            "@type": "Organization",
+            "@id": "https://www.scrapmycaruae.com/#organization",
+            "name": "Scrap My Car UAE",
+            "url": "https://www.scrapmycaruae.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://static.wixstatic.com/media/ff8df3_ee2506a8a7ed4752b5b7832449c71105~mv2.png"
+            }
+          },
+          "isPartOf": {
+            "@id": "https://www.scrapmycaruae.com/#website"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.scrapmycaruae.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Blogs",
+              "item": "https://www.scrapmycaruae.com/blogs"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "How to Sell a Car With Gearbox Problems - Scrap My Car UAE",
+              "item": "https://www.scrapmycaruae.com/post/how-to-sell-a-car-with-gearbox-problems-scrap-my-car-uae"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "baselineMethod": "Seven staging GETs, serial, three-second pacing, no retries; article inner-HTML SHA-256, title, meta, canonical and parsed JSON-LD recorded for post-deployment comparison.",
+  "tests": {
+    "total": 258,
+    "passed": 258,
+    "failed": 0,
+    "skipped": 0
+  },
+  "stagingBuild": "passed",
+  "cmsWrites": 0,
+  "additionalRuntimeRequests": 0,
+  "postDeploymentVerification": "Reported separately after development deployment."
+}

@@ -1,0 +1,26 @@
+---
+import type { ArticleServiceLink } from '../lib/article-service-links';
+
+interface Props { link: ArticleServiceLink }
+const { link } = Astro.props;
+---
+
+<aside class="article-service-link" aria-label="Related service guidance">
+  <p>{link.context}</p>
+  <a href={link.href}>
+    <span>{link.anchor}</span>
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+  </a>
+</aside>
+
+<style>
+  .article-service-link { min-width: 0; margin: 28px 0; padding: clamp(16px, 3vw, 22px); border: 1px solid #dce7d8; border-radius: 12px; background: #f4f8f1; }
+  .article-service-link p { margin: 0 0 8px; color: #4c584e; font-size: 15px; line-height: 1.65; overflow-wrap: anywhere; }
+  .article-service-link a { display: inline-flex; align-items: center; gap: 10px; max-width: 100%; min-height: 44px; color: #245b2c; font-size: 15px; font-weight: 650; line-height: 1.5; text-decoration: none; text-underline-offset: 4px; }
+  .article-service-link a span { min-width: 0; overflow-wrap: anywhere; }
+  .article-service-link svg { flex: 0 0 auto; transition: transform 180ms ease; }
+  .article-service-link a:hover { color: #327a30; text-decoration: underline; }
+  .article-service-link a:hover svg { transform: translateX(3px); }
+  .article-service-link a:focus-visible { outline: 2px solid #327a30; outline-offset: 4px; border-radius: 3px; }
+  @media (prefers-reduced-motion: reduce) { .article-service-link svg { transition: none; } .article-service-link a:hover svg { transform: none; } }
+</style>

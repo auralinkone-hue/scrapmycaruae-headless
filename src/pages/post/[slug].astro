@@ -27,6 +27,8 @@ import { asPositiveNumber, asSafeText, asValidDate, asWixMedia, isRenderableRela
 import { getVehicleData } from '../../lib/vehicle-data';
 import { blogLoadErrorStatus } from '../../lib/blog-load-status';
 import { blogPostingSchema, serializeJsonLd } from '../../lib/structured-data';
+import ArticleServiceLink from '../../components/ArticleServiceLink.astro';
+import { getArticleServiceLink } from '../../lib/article-service-links';
 
 const slug = Astro.params.slug ?? '';
 let post: any = null;
@@ -118,6 +120,7 @@ const renderedArticle = post?.richContent
   ? renderRicosDocumentWithTableOfContents(post.richContent)
   : { html: post?.contentText ? `<p>${post.contentText}</p>` : '', items: [], headingCount: 0 };
 const articleHtml = renderedArticle.html;
+const serviceLink = post ? getArticleServiceLink(slug, articleHtml) : null;
 const tocItems = renderedArticle.items;
 
 const publishedDate = asValidDate(post?.firstPublishedDate);
@@ -223,6 +226,7 @@ const jsonLd = post ? blogPostingSchema({
         <div class="article-reading">
           {renderedArticle.headingCount >= 4 && <ArticleTableOfContents items={tocItems} />}
           <article class="article-content" set:html={articleHtml} />
+          {serviceLink && <ArticleServiceLink link={serviceLink} />}
 
           <section class="article-quote-cta" aria-labelledby="article-quote-title">
             <div>
