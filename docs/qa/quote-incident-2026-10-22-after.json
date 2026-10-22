@@ -1,0 +1,988 @@
+{
+  "deployment": {
+    "commit": "c4c0411466cbcf3987d63b779a52f9ec090e2705",
+    "workflow": "https://github.com/auralinkone-hue/scrapmycaruae-headless/actions/runs/39769437536",
+    "status": "success"
+  },
+  "emailOffGateCheck": {
+    "worker": "smc-headless-worker",
+    "codeInspection": {
+      "status": 200,
+      "bytes": 2630149,
+      "guardFound": true,
+      "runtimeCollectionLookupPresent": true,
+      "guardArguments": [
+        {
+          "isStagingLiteral": false,
+          "isProductionLiteral": false,
+          "isMissingBuildValue": false,
+          "usesRuntimeBinding": false,
+          "usesImportMetaEnv": false
+        },
+        {
+          "isStagingLiteral": false,
+          "isProductionLiteral": false,
+          "isMissingBuildValue": false,
+          "usesRuntimeBinding": false,
+          "usesImportMetaEnv": false
+        }
+      ]
+    },
+    "settings": {
+      "status": 200,
+      "success": true,
+      "errorCodes": [],
+      "bindings": [
+        {
+          "name": "QUOTE_EMAIL_MODE",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "BREVO_API_KEY",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "BREVO_SENDER_EMAIL",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "BREVO_SENDER_NAME",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "QUOTE_NOTIFICATIONS_DB",
+          "present": false
+        },
+        {
+          "name": "WIX_QUOTE_REQUESTS_COLLECTION_ID",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "PUBLIC_WIX_CLIENT_ID",
+          "present": false
+        },
+        {
+          "name": "PUBLIC_SEO_ENV",
+          "present": false
+        }
+      ],
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "redact_query_string": false,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true,
+          "invocation_logs": true
+        },
+        "traces": {
+          "enabled": false,
+          "persist": true,
+          "head_sampling_rate": 1
+        }
+      }
+    },
+    "logs": {
+      "status": 200,
+      "success": true,
+      "errorCodes": [],
+      "timeframe": {
+        "from": 1792666080000,
+        "to": 1792667945188
+      },
+      "returned": 43,
+      "matched": 29,
+      "total": 43,
+      "events": [
+        {
+          "timestamp": 1792667921231,
+          "status": 400,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 9,
+          "wallTimeMs": 26,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792667921231,
+          "method": "POST",
+          "logCodes": [
+            "email_gate_disabled"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792667730615,
+          "status": 400,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 10,
+          "wallTimeMs": 26,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792667141354,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 5,
+          "wallTimeMs": 13,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792667141354,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666851498,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 0,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666851498,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666762061,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 0,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666762061,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761846,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761846,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761686,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 0,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761686,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761519,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761519,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761374,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 0,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761374,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666760775,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666760775,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666758647,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 2,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666758647,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666652532,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 2,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666652532,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666370817,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 2,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666370817,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666330237,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666330237,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666312127,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 7,
+          "wallTimeMs": 18,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666312127,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        }
+      ]
+    }
+  },
+  "finalDiagnostic": {
+    "worker": "smc-headless-worker",
+    "codeInspection": {
+      "status": 200,
+      "bytes": 2630149,
+      "guardFound": true,
+      "runtimeCollectionLookupPresent": true,
+      "guardArguments": [
+        {
+          "isStagingLiteral": false,
+          "isProductionLiteral": false,
+          "isMissingBuildValue": false,
+          "usesRuntimeBinding": false,
+          "usesImportMetaEnv": false
+        },
+        {
+          "isStagingLiteral": false,
+          "isProductionLiteral": false,
+          "isMissingBuildValue": false,
+          "usesRuntimeBinding": false,
+          "usesImportMetaEnv": false
+        }
+      ]
+    },
+    "settings": {
+      "status": 200,
+      "success": true,
+      "errorCodes": [],
+      "bindings": [
+        {
+          "name": "QUOTE_EMAIL_MODE",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "BREVO_API_KEY",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "BREVO_SENDER_EMAIL",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "BREVO_SENDER_NAME",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "QUOTE_NOTIFICATIONS_DB",
+          "present": false
+        },
+        {
+          "name": "WIX_QUOTE_REQUESTS_COLLECTION_ID",
+          "present": true,
+          "type": "secret_text"
+        },
+        {
+          "name": "PUBLIC_WIX_CLIENT_ID",
+          "present": false
+        },
+        {
+          "name": "PUBLIC_SEO_ENV",
+          "present": false
+        }
+      ],
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "redact_query_string": false,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true,
+          "invocation_logs": true
+        },
+        "traces": {
+          "enabled": false,
+          "persist": true,
+          "head_sampling_rate": 1
+        }
+      }
+    },
+    "logs": {
+      "status": 200,
+      "success": true,
+      "errorCodes": [],
+      "timeframe": {
+        "from": 1792666080000,
+        "to": 1792668074695
+      },
+      "returned": 46,
+      "matched": 32,
+      "total": 46,
+      "events": [
+        {
+          "timestamp": 1792668035452,
+          "status": 200,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 11,
+          "wallTimeMs": 383,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792668035452,
+          "method": "POST",
+          "logCodes": [
+            "email_disabled"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792668035077,
+          "method": "POST",
+          "logCodes": [
+            "email_gate_disabled"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792667921231,
+          "status": 400,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 9,
+          "wallTimeMs": 26,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792667921231,
+          "method": "POST",
+          "logCodes": [
+            "email_gate_disabled"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792667730615,
+          "status": 400,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 10,
+          "wallTimeMs": 26,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792667141354,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 5,
+          "wallTimeMs": 13,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792667141354,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666851498,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 0,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666851498,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666762061,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 0,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666762061,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761846,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761846,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761686,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 0,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761686,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761519,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761519,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761374,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 0,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666761374,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666760775,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666760775,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666758647,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 2,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666758647,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666652532,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 2,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666652532,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666370817,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 2,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666370817,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666330237,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 1,
+          "wallTimeMs": 1,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666330237,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666312127,
+          "status": 500,
+          "method": "POST",
+          "outcome": "ok",
+          "cpuTimeMs": 7,
+          "wallTimeMs": 18,
+          "logCodes": [],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        },
+        {
+          "timestamp": 1792666312127,
+          "method": "POST",
+          "logCodes": [
+            "quote_collection_config_unavailable"
+          ],
+          "sourceKeys": [
+            "level",
+            "message"
+          ]
+        }
+      ]
+    },
+    "workflow": "https://github.com/auralinkone-hue/scrapmycaruae-headless/actions/runs/39769437427"
+  },
+  "cmsSyntheticReadback": {
+    "collection": "QuoteRequestsStaging",
+    "matchedRows": 1,
+    "totalMatches": 1,
+    "savedAt": "2026-10-22T11:20:35.423Z",
+    "labelMatches": true,
+    "vehicleMatches": true,
+    "mutationsByReadback": 0
+  },
+  "syntheticSubmissions": 1,
+  "emailsAttempted": 0,
+  "whatsappMessagesSent": 0,
+  "invalidPayloadProbe": {
+    "type": "empty-invalid-payload-no-insert",
+    "at": "2026-10-22T11:15:30.652Z",
+    "status": 400,
+    "responseMs": 8781,
+    "ray": "a4e815a33ba9116b-ORD",
+    "response": {
+      "ok": false,
+      "message": "Please complete all required fields."
+    }
+  },
+  "emailGateInvalidProbe": {
+    "type": "email-gate-check-invalid-payload-no-insert",
+    "at": "2026-10-22T11:18:41.265Z",
+    "status": 400,
+    "responseMs": 9611,
+    "ray": "a4e81a4a1cc7116b-ORD",
+    "response": {
+      "ok": false,
+      "message": "Please complete all required fields."
+    }
+  },
+  "syntheticResult": {
+    "at": "2026-10-22T11:20:26.122Z",
+    "finishedAt": "2026-10-22T11:20:35.477Z",
+    "status": 200,
+    "responseMs": 9355,
+    "ok": true,
+    "hasRequestId": true,
+    "handoffHost": "api.whatsapp.com",
+    "handoffVehicleMatches": true,
+    "handoffSyntheticDetailsMatch": true,
+    "emailOffConfirmedBeforeSubmission": true,
+    "whatsappMessageSent": false,
+    "syntheticAttempt": 1,
+    "ray": "a4e81d12eb2a116b-ORD"
+  }
+}
