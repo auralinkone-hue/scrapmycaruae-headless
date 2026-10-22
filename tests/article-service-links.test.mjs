@@ -9,7 +9,7 @@ const scrapSlug = 'before-scrapping-how-to-deregister-your-car-in-uae';
 const batch3 = JSON.parse(await readFile(new URL('../docs/qa/phase3-batch3-2026-10-23-evidence.json', import.meta.url), 'utf8'));
 
 test('the original seven inspected protected sources retain their approved destinations', () => {
-  assert.equal(Object.keys(articleServiceLinks).length, 14);
+  assert.equal(Object.keys(articleServiceLinks).length, 21);
   for (const { source, target } of inspected) {
     const slug = new URL(source).pathname.slice('/post/'.length);
     const link = getArticleServiceLink(slug, '<p>Unmodified Wix article.</p>');
@@ -124,4 +124,33 @@ test('service note uses escaped template expressions and a normal accessible lin
   assert.match(component, /overflow-wrap: anywhere/);
   assert.match(component, /prefers-reduced-motion/);
   assert.doesNotMatch(component, /set:html|<script|target=|nofollow|onclick|fetch\(/);
+});
+
+const batch4 = JSON.parse(await readFile(new URL('../docs/qa/phase3-batch4-2026-10-23-evidence.json', import.meta.url), 'utf8'));
+
+test('Batch 4 maps seven exact inspected sources and skips the already-linked valuation article', () => {
+  assert.deepEqual(batch4.articleChecks.map(item => item.row), [14, 15, 16, 19, 20, 21, 22, 27]);
+  for (const item of batch4.articleChecks) {
+    assert.equal(item.status, 200);
+    const slug = new URL(item.source).pathname.slice('/post/'.length);
+    if (item.row === 20) {
+      assert.equal(item.decision, 'skipped');
+      assert.ok(item.bodyServiceLinks.some(link => link.text.trim() === 'free quote'));
+      assert.equal(getArticleServiceLink(slug, ''), null);
+    } else {
+      assert.equal(item.decision, 'implemented');
+      assert.deepEqual(item.bodyServiceLinks, []);
+      assert.equal(getArticleServiceLink(slug, '').href, new URL(item.target).pathname);
+      assert.equal(getArticleServiceLink(slug, `<a href="${item.target}">Existing guide</a>`), null);
+    }
+  }
+});
+
+test('Batch 4 regional and legal contexts separate collection from official procedures', () => {
+  assert.match(articleServiceLinks['regional-hotspots-for-car-scrapping-in-the-uae'].context, /coverage areas, not business branches/);
+  for (const slug of ['the-step-by-step-guide-to-scrapping-a-car-legally-in-the-uae', 'scrap-car-laws-in-dubai-what-every-owner-should-know-in-2025', 'car-scrapping-laws-you-must-follow-in-dubai-and-sharjah']) {
+    assert.match(articleServiceLinks[slug].context, /relevant authority/);
+  }
+  assert.match(articleServiceLinks['car-scrapping-laws-you-must-follow-in-dubai-and-sharjah'].context, /If your vehicle is located in Sharjah/);
+  assert.match(articleServiceLinks['value-of-scrap-cars-in-the-uae-market'].context, /Historical price examples are not an offer/);
 });

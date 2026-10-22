@@ -4,7 +4,7 @@ export interface ArticleServiceLink {
   context: string;
 }
 
-// Explicit Phase 3 report rows approved in Batches 2 and 3 only.
+// Explicit Phase 3 report rows approved in Batches 2, 3 and 4 only.
 // Template-level guidance; never inserted into or saved over Wix article content.
 export const articleServiceLinks: Readonly<Record<string, ArticleServiceLink>> = {
   'how-much-is-my-scrap-car-worth-in-2025-uae-pricing-explained': {
@@ -76,6 +76,41 @@ export const articleServiceLinks: Readonly<Record<string, ArticleServiceLink>> =
     href: '/scrap-my-car/#paperwork-title',
     anchor: 'Ownership and paperwork checks',
     context: 'A valuation enquiry does not bypass proof of ownership or authorisation. Review ownership and paperwork checks before discussing whether the vehicle can proceed.'
+  },
+  "scrap-or-sell-the-ultimate-decision-guide-for-dubai-car-owners": {
+    href: "/locations/dubai/",
+    anchor: "Sell or scrap your car in Dubai",
+    context: "Deciding what to do with your own car in Dubai? Review vehicle condition and collection-access details before requesting an individual assessment."
+  },
+  "the-step-by-step-guide-to-scrapping-a-car-legally-in-the-uae": {
+    href: "/scrap-my-car/",
+    anchor: "Start a scrap-car valuation enquiry",
+    context: "For the commercial next step, review the valuation and collection process. An enquiry does not replace official deregistration or ownership requirements; confirm current procedures with the relevant authority."
+  },
+  "value-of-scrap-cars-in-the-uae-market": {
+    href: "/scrap-car-value/",
+    anchor: "Understand your scrap car’s value",
+    context: "Apply the market discussion to your own vehicle: review how identity, condition, usable parts and collection access affect an individual assessment. Historical price examples are not an offer for your car."
+  },
+  "regional-hotspots-for-car-scrapping-in-the-uae": {
+    href: "/locations/",
+    anchor: "UAE vehicle-collection locations",
+    context: "Compare the UAE service-area guides for your vehicle location and collection access. These describe coverage areas, not business branches; discuss access and arrangements for your specific car."
+  },
+  "scrap-car-laws-in-dubai-what-every-owner-should-know-in-2025": {
+    href: "/locations/dubai/",
+    anchor: "Dubai vehicle valuation and collection",
+    context: "For a vehicle located in Dubai, review the practical details to share for valuation and collection. Confirm current legal and registration requirements with the relevant authority separately."
+  },
+  "selling-your-damaged-vehicle-in-the-uae-expert-advice-and-proven-tips": {
+    href: "/sell-damaged-car/",
+    anchor: "Sell a damaged car in the UAE",
+    context: "Considering an as-is sale? Review which known faults, damage photos and vehicle-access details to share for a damaged-car assessment."
+  },
+  "car-scrapping-laws-you-must-follow-in-dubai-and-sharjah": {
+    href: "/locations/sharjah/",
+    anchor: "Sharjah vehicle valuation and collection",
+    context: "If your vehicle is located in Sharjah, review the local valuation and collection guide. This covers practical service details, not legal clearance; confirm current Sharjah requirements with the relevant authority."
   }
 };
 
