@@ -480,7 +480,7 @@ const faqJsonLd = {
             {reviews.map((review) => (
               <article class="review-card">
                 {Number.isFinite(review.rating) && review.rating > 0 && review.rating <= 5 && (
-                  <div class="review-rating" aria-label={`${review.rating} out of 5 stars`}>
+                  <div class="review-rating" role="img" aria-label={`${review.rating} out of 5 stars`}>
                     <span class="review-stars" style={`--rating-fill: ${review.rating / 5 * 100}%`} aria-hidden="true">★★★★★</span>
                     <span aria-hidden="true">{review.rating}/5</span>
                   </div>
