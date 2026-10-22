@@ -1,23 +1,22 @@
 ---
 const year = new Date().getFullYear();
 const whatsappUrl = 'https://api.whatsapp.com/send?phone=%2B971557458322';
-import { footerDubaiLocations, footerUaeLocations } from '../lib/locations';
+import { locationGroups } from '../lib/location-navigation';
 
-// Only locations with existing published pages receive links.
-const footerLocationRoutes: Record<string, string> = {
-  'Al Qusais': '/locations/dubai/al-qusais/',
-  'Al Quoz': '/locations/dubai/al-quoz/',
-  'Abu Dhabi': '/locations/abu-dhabi/',
-  'Sharjah': '/locations/sharjah/',
-  'Ajman': '/locations/ajman/',
-  'Ras Al Khaimah': '/locations/ras-al-khaimah/',
-  'Fujairah': '/locations/fujairah/',
-  'Al Ain': '/locations/al-ain/'
-};
+// Reuse the published navigation registry; coverage-only areas have no footer links.
+const footerDubaiLocations = locationGroups.filter(group => group.id === 'dubai').flatMap(group => group.items);
+const footerUaeLocations = locationGroups.filter(group => group.id !== 'dubai').flatMap(group => group.items);
+const locationLabel = (label: string) => label.replace(/ overview$/, '');
+
 ---
 
 <footer class="smc-footer">
   <div class="smc-footer-main">
+    <svg class="footer-contours" viewBox="0 0 560 400" fill="none" aria-hidden="true" focusable="false">
+      <path d="M570 24C364-44 334 136 442 190S582 320 380 402" />
+      <path d="M570 62C400-10 366 133 470 184S608 342 418 416" />
+      <path d="M570 102C432 28 402 130 498 178S636 362 456 430" />
+    </svg>
     <div class="smc-container footer-grid">
       <div class="footer-brand">
         <img
@@ -58,24 +57,20 @@ const footerLocationRoutes: Record<string, string> = {
 
       <div>
         <h2>Dubai</h2>
-        <div class="location-list">
-          {footerDubaiLocations.map((location) => footerLocationRoutes[location] ? (
-            <a href={footerLocationRoutes[location]}><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</a>
-          ) : (
-            <span><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</span>
+        <nav class="location-list" aria-label="Dubai locations">
+          {footerDubaiLocations.map(location => (
+            <a href={location.href}><i class="ph ph-map-pin" aria-hidden="true"></i>{locationLabel(location.label)}</a>
           ))}
-        </div>
+        </nav>
       </div>
 
-      <div>
+      <div class="footer-uae-locations">
         <h2>Across the UAE</h2>
-        <div class="location-list">
-          {footerUaeLocations.map((location) => footerLocationRoutes[location] ? (
-            <a href={footerLocationRoutes[location]}><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</a>
-          ) : (
-            <span><i class="ph ph-map-pin" aria-hidden="true"></i>{location}</span>
+        <nav class="location-list location-list--uae" aria-label="Other UAE locations">
+          {footerUaeLocations.map(location => (
+            <a href={location.href}><i class="ph ph-map-pin" aria-hidden="true"></i>{locationLabel(location.label)}</a>
           ))}
-        </div>
+        </nav>
       </div>
     </div>
 
@@ -186,13 +181,19 @@ const footerLocationRoutes: Record<string, string> = {
   }
 
   .smc-footer-main {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
     min-height: 455px;
     padding: clamp(44px, 4.2vw, 64px) 0 32px;
   }
 
+  .footer-contours { position: absolute; z-index: -1; top: 8px; right: -120px; width: min(48vw, 560px); height: auto; color: #467e53; opacity: .1; pointer-events: none; }
+  .footer-contours path { stroke: currentColor; stroke-width: 1; vector-effect: non-scaling-stroke; }
+
   .footer-grid {
     display: grid;
-    grid-template-columns: minmax(240px,1.4fr) repeat(3,minmax(0,.82fr));
+    grid-template-columns: minmax(220px,1.2fr) minmax(100px,.65fr) minmax(130px,.85fr) minmax(0,1.5fr);
     gap: clamp(28px, 3.4vw, 52px);
     align-items: start;
   }
@@ -214,6 +215,8 @@ const footerLocationRoutes: Record<string, string> = {
   }
 
   .footer-automotive-art {
+    position: relative;
+    isolation: isolate;
     width: min(100%, 360px);
     margin-top: 16px;
     pointer-events: none;
@@ -223,6 +226,16 @@ const footerLocationRoutes: Record<string, string> = {
     transition: opacity 450ms ease, transform 450ms ease;
   }
 
+  .footer-automotive-art::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -12% 4% 3%;
+    border: 1px solid rgba(70,126,83,.12);
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    transform: rotate(-9deg);
+  }
   .footer-automotive-art img { display: block; width: 100%; height: auto; object-fit: contain; }
   .footer-automotive-art.is-pending { opacity: 0; transform: translateY(8px); }
   @media (max-width: 1100px) {
@@ -248,6 +261,8 @@ const footerLocationRoutes: Record<string, string> = {
   }
 
   .footer-links, .location-list { display: grid; gap: 11px; }
+  .location-list--uae { grid-template-columns: repeat(2,minmax(0,1fr)); column-gap: 18px; }
+  .location-list--uae a { min-width: 0; overflow-wrap: anywhere; }
 
   .footer-links a, .location-list span, .location-list a {
     color: #45574b;
@@ -613,6 +628,7 @@ const footerLocationRoutes: Record<string, string> = {
     .smc-footer-main { min-height: 0; padding-top: 54px; }
     .footer-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 30px 24px; }
     .footer-brand { grid-column: 1 / -1; }
+    .location-list--uae { grid-template-columns: 1fr; }
     .footer-automotive-art { max-width: 300px; }
     .contact-strip { grid-template-columns: 1fr 1fr; gap: 20px; }
     .bottom-inner { gap: 18px; }
@@ -632,6 +648,9 @@ const footerLocationRoutes: Record<string, string> = {
     .footer-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 30px 18px; }
     .footer-brand { grid-column: 1 / -1; }
     .footer-grid > div:nth-child(2) { grid-column: auto; }
+    .footer-uae-locations { grid-column: 1 / -1; }
+    .location-list--uae { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .footer-contours { width: 320px; right: -160px; opacity: .07; }
     .footer-brand p { margin-top: 15px; font-size: 14px; }
     .footer-automotive-art { max-width: 250px; margin: 14px auto 0; }
     .smc-footer h2 { font-size: 16px; margin-bottom: 16px; }
