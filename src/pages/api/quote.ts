@@ -68,6 +68,7 @@ export const POST: APIRoute = async ({ request }) => {
       waitUntil(notifySavedQuote(env, {
         requestId: inserted.dataItem?.id ?? '', submissionId: cleanText(body?.submissionId, 36),
         collectionId: quoteRequestsCollectionId, make, model, year, customerName, whatsapp,
+        contactPhoneInput: cleanText(body?.whatsapp, 40),
         sourcePath: quoteSourcePath(request), savedAt: new Date().toISOString()
       }, import.meta.env.PUBLIC_SEO_ENV || 'staging').then(outcome => {
         // Fixed server-generated outcome only; no credentials or enquiry details.

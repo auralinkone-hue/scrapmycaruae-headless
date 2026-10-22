@@ -123,15 +123,17 @@ async function exerciseRoute({ insertStatus = 200, data = {}, providerFails = fa
   const { env, sql } = setup(); env.QUOTE_EMAIL_MODE = notificationMode;
   if (runtimeCollection !== undefined) env.WIX_QUOTE_REQUESTS_COLLECTION_ID = runtimeCollection;
   if (ledgerFails) env.QUOTE_NOTIFICATIONS_DB = { prepare() { throw new Error('mock ledger error'); } };
-  const calls = []; const pending = [];
+  const calls = []; const pending = []; const outboundEmails = []; const savedItems = [];
   const transport = async (url, init) => {
     calls.push(url);
     if (url.endsWith('/query')) return Response.json({ dataItems: [{ id: 'valid-catalogue-entry' }] }, { status: validationStatus });
     if (url === 'https://www.wixapis.com/data/v2/items') {
       assert.equal(JSON.parse(init.body).dataCollectionId, 'QuoteRequestsStaging');
+      savedItems.push(JSON.parse(init.body).dataItem.data);
       return Response.json({ dataItem: { id: 'wix-enquiry-1' } }, { status: insertStatus });
     }
     assert.equal(url, 'https://api.brevo.com/v3/smtp/email');
+    outboundEmails.push(JSON.parse(init.body));
     assert.ok(calls.includes('https://www.wixapis.com/data/v2/items'));
     if (providerFails) throw new Error('mock provider outage');
     return accepted();
@@ -141,7 +143,7 @@ async function exerciseRoute({ insertStatus = 200, data = {}, providerFails = fa
   const result = await response.json();
   await Promise.all(pending);
   const rows = sql.prepare('SELECT * FROM quote_email_deliveries').all(); sql.close();
-  return { response, result, calls, rows };
+  return { response, result, calls, rows, outboundEmails, savedItems };
 }
 
 test('actual quote route saves to staging CMS before notification and keeps the WhatsApp handoff', async () => {
@@ -220,4 +222,19 @@ test('waitUntil scheduling exception cannot turn a confirmed CMS insert into fai
   assert.equal(response.status, 200);
   assert.equal(result.ok, true);
   assert.ok(result.whatsappUrl);
+});
+
+
+test('notification contact links use submitted international format while CMS and customer handoff remain unchanged', async () => {
+  for (const input of ['+971 50 123 4567', '0044 7742 107109']) {
+    const { response, result, outboundEmails, savedItems } = await exerciseRoute({ data: { whatsapp: input } });
+    const savedDigits = input.replace(/\D/g, '');
+    const destination = input.startsWith('00') ? savedDigits.slice(2) : savedDigits;
+    assert.equal(response.status, 200);
+    assert.equal(savedItems[0].whatsapp, savedDigits);
+    assert.equal(savedItems[0].contactPhoneInput, undefined);
+    assert.match(outboundEmails[0].htmlContent, new RegExp(`href="tel:\\+${destination}"`));
+    assert.ok(outboundEmails[0].textContent.includes(`https://wa.me/${destination}?text=`));
+    assert.ok(decodeURIComponent(result.whatsappUrl).includes(savedDigits));
+  }
 });
