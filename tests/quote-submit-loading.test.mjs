@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const source = await readFile(new URL('../src/components/QuoteForm.astro', import.meta.url), 'utf8');
-const fragment = source.slice(source.indexOf('      // Reuse the ID'), source.indexOf('\n    });\n  })();', source.indexOf('      // Reuse the ID')));
+const fragment = source.slice(source.indexOf('      // Reuse the ID'), source.indexOf('\n    });\n  }', source.indexOf('      // Reuse the ID')));
 const deferred = () => { let resolve; const promise = new Promise(done => { resolve = done; }); return { promise, resolve }; };
 class Element {
   dataset = {}; attributes = {}; hidden = true; textContent = ''; classes = new Set();
@@ -24,12 +24,13 @@ function setup(fetcher, { animated = false, stalledFrames = false } = {}) {
   const requests = [], redirects = [], analytics = [];
   const form = { addEventListener: (_, listener) => { handler = listener; } };
   const FormData = class { entries() { return Object.entries(payload); } };
-  new Function('form', 'fields', 'root', 'validateField', 'FormData', 'HTMLElement', 'HTMLButtonElement', 'crypto', 'fetch', 'window', 'requestAnimationFrame', fragment)(
+  new Function('form', 'fields', 'root', 'validateField', 'FormData', 'HTMLElement', 'HTMLButtonElement', 'crypto', 'fetch', 'window', 'requestAnimationFrame', 'phone', fragment)(
     form, [], { querySelector: selector => elements[selector] }, () => true, FormData, Element, Button,
     { randomUUID: () => `submission-${++issuedIds}` },
     (url, init) => { requests.push({ url, init }); return fetcher(url, init); },
     { smcAnalytics: { track: name => analytics.push(name) }, location: { assign: url => redirects.push(url) } },
-    callback => { if (!stalledFrames) queueMicrotask(callback); }
+    callback => { if (!stalledFrames) queueMicrotask(callback); },
+    { number: () => ({ e164: '+971501234567' }) }
   );
   return { button, message, status, payload, animation, requests, redirects, analytics, submit: () => handler({ preventDefault() {} }) };
 }

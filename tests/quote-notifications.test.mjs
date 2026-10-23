@@ -5,7 +5,7 @@ import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import { buildQuoteEmail, notificationKey, notifySavedQuote, quoteSourcePath } from '../src/lib/quote-notifications.ts';
 import { requireQuoteRequestsCollectionId } from '../src/lib/quote-collection.ts';
-import { isValidPhoneNumber } from '../src/lib/phone.ts';
+import { normalizePhoneNumber } from '../src/lib/phone.ts';
 
 const schema = await readFile(new URL('../migrations/quote-notifications/0001_quote_email_deliveries.sql', import.meta.url), 'utf8');
 const quote = {
@@ -118,7 +118,7 @@ test('source details only retain a same-origin path, excluding query strings and
 // Execute the actual route with isolated platform bindings and mocked Wix/Brevo transport.
 const routeSource = await readFile(new URL('../src/pages/api/quote.ts', import.meta.url), 'utf8');
 const routeCode = stripTypeScriptTypes(routeSource.replace(/^import .*;\n/gm, '').replace(/export /g, '').replaceAll('import.meta.env.WIX_QUOTE_REQUESTS_COLLECTION_ID', 'buildCollection').replaceAll('import.meta.env.PUBLIC_SEO_ENV', 'seoEnvironment'));
-const createRoute = new Function('wixClient', 'env', 'waitUntil', 'notifySavedQuote', 'quoteSourcePath', 'requireQuoteRequestsCollectionId', 'isValidPhoneNumber', 'fetch', 'buildCollection', 'seoEnvironment', `${routeCode}\nreturn POST;`);
+const createRoute = new Function('wixClient', 'env', 'waitUntil', 'notifySavedQuote', 'quoteSourcePath', 'requireQuoteRequestsCollectionId', 'normalizePhoneNumber', 'fetch', 'buildCollection', 'seoEnvironment', `${routeCode}\nreturn POST;`);
 async function exerciseRoute({ insertStatus = 200, data = {}, providerFails = false, ledgerFails = false, notificationMode = 'staging-test', runtimeCollection, buildCollection = 'QuoteRequestsStaging', buildMissing = false, tokenFails = false, validationStatus = 200, scheduleFails = false, seoEnvironment = 'staging' } = {}) {
   const { env, sql } = setup(); env.QUOTE_EMAIL_MODE = notificationMode;
   if (runtimeCollection !== undefined) env.WIX_QUOTE_REQUESTS_COLLECTION_ID = runtimeCollection;
@@ -138,8 +138,8 @@ async function exerciseRoute({ insertStatus = 200, data = {}, providerFails = fa
     if (providerFails) throw new Error('mock provider outage');
     return accepted();
   };
-  const route = createRoute({ auth: { generateVisitorTokens: async () => { if (tokenFails) throw new Error('mock token failure'); return { accessToken: { value: 'mock-visitor-token' } }; } } }, env, promise => { pending.push(promise); if (scheduleFails) throw new Error('mock scheduler failure'); }, (settings, saved, stage) => notifySavedQuote(settings, saved, stage, transport), quoteSourcePath, requireQuoteRequestsCollectionId, isValidPhoneNumber, transport, buildMissing ? undefined : buildCollection, seoEnvironment);
-  const response = await route({ request: new Request('https://preview.example.test/api/quote', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ make: quote.make, model: quote.model, year: quote.year, name: quote.customerName, whatsapp: quote.whatsapp, submissionId: quote.submissionId, ...data }) }) });
+  const route = createRoute({ auth: { generateVisitorTokens: async () => { if (tokenFails) throw new Error('mock token failure'); return { accessToken: { value: 'mock-visitor-token' } }; } } }, env, promise => { pending.push(promise); if (scheduleFails) throw new Error('mock scheduler failure'); }, (settings, saved, stage) => notifySavedQuote(settings, saved, stage, transport), quoteSourcePath, requireQuoteRequestsCollectionId, normalizePhoneNumber, transport, buildMissing ? undefined : buildCollection, seoEnvironment);
+  const response = await route({ request: new Request('https://preview.example.test/api/quote', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ make: quote.make, model: quote.model, year: quote.year, name: quote.customerName, whatsapp: quote.whatsapp, phoneCountry: 'AE', submissionId: quote.submissionId, ...data }) }) });
   const result = await response.json();
   await Promise.all(pending);
   const rows = sql.prepare('SELECT * FROM quote_email_deliveries').all(); sql.close();
@@ -228,8 +228,8 @@ test('waitUntil scheduling exception cannot turn a confirmed CMS insert into fai
 test('notification contact links use submitted international format while CMS and customer handoff remain unchanged', async () => {
   for (const input of ['+971 50 123 4567', '0044 7742 107109']) {
     const { response, result, outboundEmails, savedItems } = await exerciseRoute({ data: { whatsapp: input } });
-    const savedDigits = input.replace(/\D/g, '');
-    const destination = input.startsWith('00') ? savedDigits.slice(2) : savedDigits;
+    const savedDigits = normalizePhoneNumber(input).digits;
+    const destination = savedDigits;
     assert.equal(response.status, 200);
     assert.equal(savedItems[0].whatsApp, savedDigits);
     assert.equal(savedItems[0].whatsapp, undefined);
@@ -287,5 +287,66 @@ test('runtime destination mapping and environment isolation cannot be overridden
     assert.equal(rejected.response.status, 500);
     assert.deepEqual(rejected.savedItems, []);
     assert.deepEqual(rejected.calls, []);
+  }
+});
+
+for (const [phoneCountry, whatsapp, digits, display] of [
+  ['AE', '050 123 4567', '971501234567', '+971 50 123 4567'],
+  ['AE', '+971 50 123 4567', '971501234567', '+971 50 123 4567'],
+  ['PK', '0300 1234567', '923001234567', '+92 300 1234567'],
+  ['GB', '07742 107109', '447742107109', '+44 7742 107109'],
+  ['AE', '+44 7742 107109', '447742107109', '+44 7742 107109'],
+  ['GB', '0044 7742 107109', '447742107109', '+44 7742 107109'],
+]) {
+  test(`actual route normalizes ${phoneCountry} ${whatsapp} consistently through staging CMS, email and handoff`, async () => {
+    const r = await exerciseRoute({ data: { phoneCountry, whatsapp } });
+    assert.equal(r.response.status, 200);
+    assert.equal(r.savedItems.length, 1);
+    assert.equal(r.savedItems[0].whatsApp, digits);
+    assert.equal(Object.hasOwn(r.savedItems[0], 'phoneCountry'), false);
+    const mail = r.outboundEmails[0];
+    assert.ok(mail.textContent.includes(`Phone / WhatsApp: ${display}`));
+    assert.ok(mail.htmlContent.includes(display));
+    assert.ok(mail.textContent.includes(`WhatsApp Customer: https://wa.me/${digits}?text=`));
+    assert.ok(mail.textContent.includes(`Call Customer: tel:+${digits}`));
+    assert.equal(new URL(r.result.whatsappUrl).searchParams.get('phone'), '971557458322');
+    assert.ok(new URL(r.result.whatsappUrl).searchParams.get('text').includes(`Phone: ${digits}`));
+    assert.equal(r.calls.filter(url => url.endsWith('/query')).length, 3);
+  });
+}
+
+test('invalid numbers and unsupported country values fail before Wix authentication, queries, saves, email or handoff', async () => {
+  for (const data of [
+    { phoneCountry: 'AE', whatsapp: '050123' }, { phoneCountry: 'AE', whatsapp: '0000000000' },
+    { phoneCountry: 'AE', whatsapp: '07742 107109' }, { phoneCountry: 'XX', whatsapp: '+971501234567' },
+    { phoneCountry: null, whatsapp: '+971501234567' }, { phoneCountry: ['AE'], whatsapp: '+971501234567' },
+    { phoneCountry: 'AE', whatsapp: '+971971501234567' }, { whatsapp: '07742107109' },
+    { phoneCountry: 'AE', whatsapp: '+971501234567 ext 2' },
+    { phoneCountry: undefined, whatsapp: '2025550123' }, { phoneCountry: undefined, whatsapp: '971501234567' }
+  ]) {
+    const r = await exerciseRoute({ data, tokenFails: true });
+    assert.equal(r.response.status, 400, JSON.stringify(data));
+    assert.equal(r.result.ok, false);
+    assert.equal(r.result.whatsappUrl, undefined);
+    assert.deepEqual(r.calls, []);
+    assert.deepEqual(r.savedItems, []);
+    assert.deepEqual(r.outboundEmails, []);
+  }
+});
+
+test('country-aware production payload keeps lowercase field and normalized international digits', async () => {
+  const r = await exerciseRoute({ seoEnvironment: 'production', buildCollection: 'QuoteRequests', notificationMode: 'off',
+    data: { phoneCountry: 'PK', whatsapp: '0300 1234567' } });
+  assert.equal(r.response.status, 200);
+  assert.equal(r.savedItems[0].whatsapp, '923001234567');
+  assert.equal(Object.hasOwn(r.savedItems[0], 'whatsApp'), false);
+  assert.equal(r.outboundEmails.length, 0);
+});
+
+test('older clients with explicit international prefixes remain compatible without a country field', async () => {
+  for (const whatsapp of ['+971501234567', '+447742107109', '00923001234567']) {
+    const r = await exerciseRoute({ data: { whatsapp, phoneCountry: undefined }, notificationMode: 'off' });
+    assert.equal(r.response.status, 200);
+    assert.equal(r.savedItems[0].whatsApp, normalizePhoneNumber(whatsapp).digits);
   }
 });

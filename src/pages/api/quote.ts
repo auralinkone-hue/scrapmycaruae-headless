@@ -3,7 +3,7 @@ import { env, waitUntil } from 'cloudflare:workers';
 import { notifySavedQuote, quoteSourcePath } from '../../lib/quote-notifications';
 import { wixClient } from '../../lib/wix';
 import { requireQuoteRequestsCollectionId } from '../../lib/quote-collection';
-import { isValidPhoneNumber } from '../../lib/phone';
+import { normalizePhoneNumber } from '../../lib/phone';
 
 export const prerender = false;
 const INSERT_URL = 'https://www.wixapis.com/data/v2/items';
@@ -42,10 +42,11 @@ export const POST: APIRoute = async ({ request }) => {
     const model = cleanText(body?.model, 120);
     const year = cleanText(body?.year, 4);
     const customerName = cleanText(body?.name, 120);
-    const whatsapp = cleanText(body?.whatsapp, 40).replace(/[^\d]/g, '');
-    if (!make || !model || !year || !customerName || !whatsapp) return json({ ok: false, message: 'Please complete all required fields.' }, 400);
+    const phone = normalizePhoneNumber(body?.whatsapp, body?.phoneCountry);
+    const whatsapp = phone?.digits || '';
+    if (!make || !model || !year || !customerName || !cleanText(body?.whatsapp, 64)) return json({ ok: false, message: 'Please complete all required fields.' }, 400);
     if (!/^\d{4}$/.test(year)) return json({ ok: false, message: 'Please select a valid vehicle year.' }, 400);
-    if (!isValidPhoneNumber(body?.whatsapp)) return json({ ok: false, message: 'Please enter a valid phone number.' }, 400);
+    if (!phone) return json({ ok: false, message: 'Please enter a valid phone number with its country code, or select the correct country.' }, 400);
     if (!CUSTOMER_NAME_PATTERN.test(customerName)) return json({ ok: false, message: 'Please enter a valid name.' }, 400);
 
     const tokens = await wixClient.auth.generateVisitorTokens();
@@ -70,7 +71,7 @@ export const POST: APIRoute = async ({ request }) => {
       waitUntil(notifySavedQuote(env, {
         requestId: inserted.dataItem?.id ?? '', submissionId: cleanText(body?.submissionId, 36),
         collectionId: quoteRequestsCollectionId, make, model, year, customerName, whatsapp,
-        contactPhoneInput: cleanText(body?.whatsapp, 40),
+        contactPhoneInput: phone.e164,
         sourcePath: quoteSourcePath(request), savedAt: new Date().toISOString()
       }, import.meta.env.PUBLIC_SEO_ENV || 'staging').then(outcome => {
         // Fixed server-generated outcome only; no credentials or enquiry details.

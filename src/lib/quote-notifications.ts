@@ -1,4 +1,4 @@
-import { countryDialOptions } from './country-codes.ts';
+import { normalizePhoneNumber } from './phone.ts';
 
 /** Server-only delivery. A permanent D1 claim provides at-most-once dispatch across isolates. */
 export interface NotificationEnv {
@@ -17,7 +17,7 @@ export interface SavedQuote {
   year: string;
   customerName: string;
   whatsapp: string;
-  /** Original validated format, notification-only; CMS storage stays unchanged. */
+  /** Server-normalized E.164 for new enquiries; legacy explicit international input is also accepted. */
   contactPhoneInput?: string;
   sourcePath: string;
   savedAt: string;
@@ -29,20 +29,16 @@ const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-
 const escapeHtml = (value: string) => value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]!);
 const singleLine = (value: string) => value.replace(/[\r\n\u0000-\u001f\u007f]/g, ' ').trim();
 
-const dialPrefixes = [...new Set(countryDialOptions.map(country => country.dial.slice(1)))];
-
 export function customerContactLinks(quote: SavedQuote): { whatsapp: string; call: string } | null {
   const raw = (quote.contactPhoneInput ?? quote.whatsapp).trim();
   // Never infer a country from a local number or a bare digit string.
-  if (!/^(?:\+|00)[\d ().-]+$/.test(raw) || raw.includes('(0)')) return null;
-  const originalDigits = raw.replace(/\D/g, '');
+  if (!/^(?:\+|00)[\d ().-]+$/.test(raw)) return null;
+  const phone = normalizePhoneNumber(raw);
+  if (!phone) return null;
   const savedDigits = quote.whatsapp.replace(/\D/g, '');
-  // Original formatting may identify the prefix, but cannot change the saved recipient.
-  if (originalDigits !== savedDigits) return null;
-  const digits = raw.startsWith('00') ? originalDigits.slice(2) : originalDigits;
-  if (!/^[1-9]\d{6,14}$/.test(digits) || !dialPrefixes.some(prefix => digits.startsWith(prefix))) return null;
-  // A national trunk zero is not part of an international UAE/UK number.
-  if (/^(?:971|44)0/.test(digits)) return null;
+  // Never change the saved recipient. Accept the previous 00-prefixed CMS representation too.
+  if (savedDigits !== phone.digits && !(raw.startsWith('00') && savedDigits === '00' + phone.digits)) return null;
+  const digits = phone.digits;
   const message = `Hi ${singleLine(quote.customerName)}, this is Scrap My Car UAE regarding your ${singleLine(quote.year)} ${singleLine(quote.make)} ${singleLine(quote.model)} valuation enquiry.`;
   return { whatsapp: `https://wa.me/${digits}?text=${encodeURIComponent(message)}`, call: `tel:+${digits}` };
 }
@@ -63,15 +59,16 @@ export async function notificationKey(quote: SavedQuote): Promise<string> {
 }
 
 export function buildQuoteEmail(quote: SavedQuote, sender: { email: string; name: string }, staging: boolean, key: string) {
+  const contact = customerContactLinks(quote);
+  const displayPhone = contact ? normalizePhoneNumber(contact.call.slice(4))!.international : quote.whatsapp;
   const rows = [
-    ['Customer', quote.customerName], ['Phone / WhatsApp', quote.whatsapp],
+    ['Customer', quote.customerName], ['Phone / WhatsApp', displayPhone],
     ['Make', quote.make], ['Model', quote.model], ['Year', quote.year],
     ['Enquiry ID', quote.requestId], ['Saved at (UTC)', quote.savedAt],
     ['Source', 'Headless Website'], ['Page', quote.sourcePath], ['CMS collection', quote.collectionId]
   ];
   const heading = `${staging ? '[STAGING TEST] ' : ''}New Car Valuation Enquiry`;
   const intro = staging ? 'Staging test enquiry only. Do not treat this as a live customer lead.' : 'A new website valuation enquiry has been saved successfully. Please review the details and contact the customer.';
-  const contact = customerContactLinks(quote);
   const contactNote = 'Confirm the customer’s international country code before contacting them. No contact link was generated for this number.';
   const contactText = contact
     ? `WhatsApp Customer: ${contact.whatsapp}\nCall Customer: ${contact.call}`
