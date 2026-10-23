@@ -1,0 +1,93 @@
+{
+  "baselineSha": "bf19a67b57acfd7d077df8b663fa369dc9cb2828",
+  "initialFixStagingSha": "5be1429583e9a73a2bbe0a986c40366029fb685f",
+  "initialFixWorkflow": "https://github.com/auralinkone-hue/scrapmycaruae-headless/actions/runs/39912568998",
+  "method": "Six sequential staging GETs, three-second spacing, no retries; no injected outage, form submission or full crawl.",
+  "checks": [
+    {
+      "path": "/blogs",
+      "status": 200,
+      "seconds": 10.81,
+      "canonical": [
+        "https://www.scrapmycaruae.com/blogs"
+      ],
+      "robots": [
+        "noindex,nofollow"
+      ],
+      "retryAfter": null,
+      "cloudflareResourceError": false
+    },
+    {
+      "path": "/blogs/category/safety-precautions",
+      "status": 200,
+      "seconds": 10.1,
+      "canonical": [
+        "https://www.scrapmycaruae.com/blogs/category/safety-precautions"
+      ],
+      "robots": [
+        "noindex,nofollow"
+      ],
+      "retryAfter": null,
+      "cloudflareResourceError": false
+    },
+    {
+      "path": "/author/smc-uae",
+      "status": 200,
+      "seconds": 9.82,
+      "canonical": [
+        "https://www.scrapmycaruae.com/author/smc-uae"
+      ],
+      "robots": [
+        "noindex,nofollow"
+      ],
+      "retryAfter": null,
+      "cloudflareResourceError": false
+    },
+    {
+      "path": "/post/maximizing-your-car-s-resale-value-tips-and-tricks",
+      "status": 200,
+      "seconds": 8.96,
+      "canonical": [
+        "https://www.scrapmycaruae.com/post/maximizing-your-car-s-resale-value-tips-and-tricks"
+      ],
+      "robots": [
+        "noindex,nofollow"
+      ],
+      "retryAfter": null,
+      "cloudflareResourceError": false
+    },
+    {
+      "path": "/post/top-money-making-vehicle-parts-in-the-uae-what-scrap-dealers-pay-for",
+      "status": 200,
+      "seconds": 9.74,
+      "canonical": [
+        "https://www.scrapmycaruae.com/post/top-money-making-vehicle-parts-in-the-uae-what-scrap-dealers-pay-for"
+      ],
+      "robots": [
+        "noindex,nofollow"
+      ],
+      "retryAfter": null,
+      "cloudflareResourceError": false
+    },
+    {
+      "path": "/blogs/category/phase4-genuine-missing-category-20261023",
+      "status": 404,
+      "seconds": 9.12,
+      "canonical": [
+        "https://www.scrapmycaruae.com/blogs/category/phase4-genuine-missing-category-20261023"
+      ],
+      "robots": [
+        "noindex,nofollow"
+      ],
+      "retryAfter": null,
+      "cloudflareResourceError": false
+    }
+  ],
+  "finalLocalValidation": {
+    "testsPassed": 279,
+    "testsFailed": 0,
+    "stagingBuild": "passed"
+  },
+  "sdkFollowup": "Added real SDK response.status shape support based on installed primary code; final deployment verification reported separately.",
+  "historical503RootCause": "unconfirmed; no failing Worker event captured or authenticated observability access available"
+}

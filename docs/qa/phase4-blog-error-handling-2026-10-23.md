@@ -11,7 +11,7 @@ The pre-existing, uncommitted `phase4-production-readiness-2026-10-23.md` is pre
 | Category identity → category article list | Every caught failure became 404. A successful but malformed category response also became 404. | Confirmed missing identity stays 404; essential temporary/malformed responses become 503. A list failure cannot mark an already confirmed category missing. |
 | Author slug/member-ID → public member identity → optional biography | Lookup swallowed all exceptions as null, which the route converted to 404. | Empty, successful member query or confirmed 404 stays missing. Other failures propagate to the route as 503; malformed identity/query responses are temporary failures. |
 | Individual post → essential getPostBySlug → optional enrichment | Thrown upstream failures already used 503, but empty/malformed successful responses were treated as missing. | Malformed essential responses become 503; confirmed not-found status/code still gives 404. Valid Wix article records/rendering are unchanged. |
-| Shared error classifier | A POST_NOT_FOUND code could override a contradictory explicit upstream status. | Explicit status takes precedence: e.g. HTTP 503 cannot become 404 through a conflicting error code. Existing code-only POST_NOT_FOUND handling remains. |
+| Shared error classifier | A POST_NOT_FOUND code could override a contradictory explicit upstream status. | The installed SDK stores HTTP status under `error.response.status`; both that shape and top-level status are handled. Explicit status takes precedence: e.g. HTTP 503 cannot become 404 through a conflicting error code. Existing code-only POST_NOT_FOUND handling remains. |
 
 503 route responses use `Retry-After: 60` and `Cache-Control: no-store`, generic retry copy and noindex. Successful category/author metadata, canonicals, query budgets, UI and pagination are retained. No extra API calls, client scripts, dependencies, retries, cache or placeholder content.
 
@@ -23,12 +23,13 @@ The same Wix client serves the archive, article/category/author pages, sitemap, 
 
 ## Verification
 
-- Full suite: **278 passed, zero failed/skipped** (266 previous + 12 new tests).
+- Full suite: **279 passed, zero failed/skipped** (266 previous + 13 new tests).
 - Staging build: **PASS**, with staging SEO, canonical production base and `QuoteRequestsStaging`.
-- New tests execute actual category/author frontmatter, the real author loader and the essential post frontmatter against mocked Wix transports. Cases: HTTP 502/503/504, timeout, network error, malformed success, confirmed 404, empty valid author query, category-list failure after confirmed identity, valid empty lists, metadata/canonical preservation, optional degradation and error-state UI/noindex wiring.
+- New tests execute actual category/author frontmatter, the real author loader and the essential post frontmatter against mocked Wix transports. Cases: HTTP 502/503/504, timeout, network error, malformed success, confirmed 404, installed SDK response.status errors, empty valid author query, category-list failure after confirmed identity, valid empty lists, metadata/canonical preservation, optional degradation and error-state UI/noindex wiring.
 - Existing tests retain protected-slug/link mappings, form/storage/email isolation, robots, sitemap and generated production/staging HTML checks. The old source-only malformed-post-as-404 assertion was corrected and replaced by behavioral route coverage.
 - No application outage was induced in staging. Real failure response behavior is verified with isolated mocks, not claimed as live fault injection.
-- Postdeployment limited HTTP checks and development workflow outcome are reported after deployment.
+- Initial fix staging deployment `5be1429583e9a73a2bbe0a986c40366029fb685f`, workflow 39912568998, succeeded. Six sequential, paced GETs returned five valid 200 pages (archive, real category, author and both historical troublesome posts) plus a genuine missing-category 404. All had staging noindex and expected canonicals. No resource-limit error was reproduced in this sample. Compact public evidence is in `phase4-blog-error-handling-2026-10-23-evidence.json`.
+- An SDK-shape compatibility follow-up was then validated with all 279 tests/build; its final deployment checks are reported separately. A small passing sample is not proof of production reliability.
 
 ## Separate investigation: historical intermittent 503s
 

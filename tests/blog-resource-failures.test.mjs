@@ -46,6 +46,21 @@ function unavailable(result) {
 }
 const transient = [failure(502), failure(503), failure(504), new DOMException('Timed out', 'TimeoutError'), new TypeError('Network unavailable')];
 
+test('installed Wix SDK response.status shape preserves genuine missing versus temporary failures on all routes', async () => {
+  for (const status of [404, 502, 503, 504]) {
+    const error = Object.assign(new Error('Wix SDK error'), { response: { status, data: { details: { applicationError: { code: 'POST_NOT_FOUND' } } } } });
+    const results = [
+      await route('category', client({ categories: { getCategoryBySlug: throwError(error) } })),
+      await route('author', client({ members: { queryMembers: () => chain(throwError(error)) } })),
+      await route('post', client({ posts: { getPostBySlug: throwError(error) } }))
+    ];
+    for (const result of results) {
+      if (status === 404) assert.equal(result.status, 404);
+      else unavailable(result);
+    }
+  }
+});
+
 for (const [index, error] of transient.entries()) {
   test(`category and author identity failures remain temporary: case ${index + 1}`, async () => {
     unavailable(await route('category', client({ categories: { getCategoryBySlug: throwError(error) } })));
