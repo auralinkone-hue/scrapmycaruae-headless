@@ -254,3 +254,9 @@ export const countryFlag = (iso: string) =>
     .replace(/[A-Z]/g, (letter) =>
       String.fromCodePoint(127397 + letter.charCodeAt(0))
     );
+
+/** Local SVG flags also render on platforms without emoji flag support (including Windows). */
+export const countryFlagAsset = (iso: string) => {
+  const code = countryDialOptions.find(country => country.iso === iso.toUpperCase())?.iso || 'AE';
+  return `/flags/${code.toLowerCase()}.svg`;
+};

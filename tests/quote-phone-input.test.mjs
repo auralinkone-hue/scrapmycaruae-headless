@@ -19,7 +19,7 @@ function setup() {
 
 test('shared phone controller defaults to UAE flag, dial code, national placeholder and full example', () => {
   const ui = setup();
-  assert.equal(ui.country.value, 'AE'); assert.equal(ui.flag.textContent, '🇦🇪');
+  assert.equal(ui.country.value, 'AE'); assert.equal(ui.flag.src, '/flags/ae.svg');
   assert.equal(ui.dial.textContent, '+971'); assert.equal(ui.input.placeholder, '50 123 4567');
   assert.equal(ui.hint.textContent, 'e.g. +971 50 123 4567');
   assert.equal(ui.phone.error(), 'Please enter your phone number.');
@@ -32,7 +32,7 @@ test('country changes update visible flag, dial and examples; local UK and Pakis
     ['PK', '🇵🇰', '+92', '0300 1234567', '+923001234567']
   ]) {
     ui.select(country); ui.type(input);
-    assert.equal(ui.flag.textContent, flag); assert.equal(ui.dial.textContent, code);
+    assert.equal(ui.flag.src, `/flags/${country.toLowerCase()}.svg`); assert.equal(ui.dial.textContent, code);
     assert.ok(ui.hint.textContent.includes(code)); assert.equal(ui.phone.number().e164, expected);
     assert.equal(ui.phone.error(), '');
   }

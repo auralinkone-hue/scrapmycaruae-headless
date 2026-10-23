@@ -1,23 +1,26 @@
 import { normalizePhoneNumber, phoneExample, phoneDialCode } from './phone.ts';
-import { countryDialOptions, countryFlag } from './country-codes.ts';
+import { countryDialOptions, countryFlagAsset } from './country-codes.ts';
+import { initialiseCountryPicker } from './country-picker.ts';
 
-/** Native select retains platform keyboard, type-to-search and mobile picker behaviour. */
+/** The picker enhances the same select; number validation and form payload remain shared. */
 export function initialiseQuotePhone(root: Element) {
   const country = root.querySelector<HTMLSelectElement>('[data-phone-country]')!;
   const input = root.querySelector<HTMLInputElement>('input[name="whatsapp"]')!;
-  const flag = root.querySelector<HTMLElement>('[data-phone-flag]')!;
+  const flag = root.querySelector<HTMLImageElement>('[data-phone-flag]')!;
   const dial = root.querySelector<HTMLElement>('[data-phone-dial]')!;
   const hint = root.querySelector<HTMLElement>('[data-phone-example]')!;
   const announcement = root.querySelector<HTMLElement>('[data-phone-status]')!;
+  const picker = initialiseCountryPicker(root);
   let previousCountry = country.value;
   const updateCountry = () => {
     const option = countryDialOptions.find(option => option.iso === country.value)!;
     const example = phoneExample(country.value);
-    flag.textContent = countryFlag(option.iso);
+    flag.src = countryFlagAsset(option.iso);
     dial.textContent = phoneDialCode(option.iso);
     input.placeholder = example.national;
     hint.textContent = example.international ? `e.g. ${example.international}` : '';
     previousCountry = country.value;
+    picker.sync();
   };
   const number = () => {
     const parsed = normalizePhoneNumber(input.value, country.value);

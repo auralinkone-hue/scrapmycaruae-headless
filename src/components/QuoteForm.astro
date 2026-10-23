@@ -80,11 +80,22 @@ const isFreeQuote = variant === 'free-quote';
       </div>
       <div class="field-control phone-control">
         <span class="phone-country">
-          <span class="phone-country-face" aria-hidden="true"><span data-phone-flag>{countryFlag('AE')}</span><span data-phone-dial>+971</span><span class="phone-country-arrow">⌄</span></span>
+          <button type="button" class="phone-country-face" data-country-trigger tabindex="-1" aria-hidden="true" aria-haspopup="dialog" aria-controls={`${phoneId}-country-menu`} aria-expanded="false" aria-label="Change phone country: United Arab Emirates (+971)">
+            <img data-phone-flag src="/flags/ae.svg" width="24" height="24" alt="" decoding="async" />
+            <span data-phone-dial>+971</span>
+            <svg class="phone-country-arrow" width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </button>
           <select name="phoneCountry" data-phone-country aria-label="Phone country and calling code" autocomplete="country">
             {countryDialOptions.map(country => <option value={country.iso} selected={country.iso === 'AE'}>{countryFlag(country.iso)} {country.name} ({phoneDialCode(country.iso)})</option>)}
           </select>
         </span>
+        <div class="phone-country-menu" id={`${phoneId}-country-menu`} data-country-menu popover="manual" role="dialog" aria-labelledby={`${phoneId}-country-heading`} hidden>
+          <div class="country-menu-heading"><span id={`${phoneId}-country-heading`}>Choose your country</span><button type="button" data-country-close aria-label="Close country list"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" /></svg></button></div>
+          <div class="country-search-wrap"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6" /><path d="m13 13 4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg><input class="country-search" data-country-search type="search" role="combobox" aria-label="Search countries or calling codes" aria-autocomplete="list" aria-controls={`${phoneId}-country-list`} aria-expanded="false" autocomplete="off" spellcheck="false" placeholder="Search country or code" /></div>
+          <div class="phone-country-list" id={`${phoneId}-country-list`} data-country-list role="listbox" aria-label="Phone country"></div>
+          <p class="country-empty" data-country-empty role="status" hidden>No countries found. Try a name or calling code.</p>
+          <span class="phone-status" data-country-results role="status" aria-live="polite"></span>
+        </div>
         <input id={phoneId} name="whatsapp" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="50 123 4567" maxlength="64" aria-describedby={`${phoneId}-example ${phoneId}-error`} required />
       </div>
       <span class="field-error" id={`${phoneId}-error`} data-error-for="whatsapp" role="alert" hidden></span>
@@ -311,12 +322,43 @@ const isFreeQuote = variant === 'free-quote';
   .phone-label-row { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:3px 8px; }
   .phone-example { color:#61715f; font-size:10px; line-height:1.2; white-space:nowrap; }
   .phone-control { display:flex; align-items:stretch; }
-  .phone-country { position:relative; flex:0 0 104px; min-width:0; }
-  .phone-country-face { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:6px; border:1px solid #d5ded2; border-right:0; border-radius:11px 0 0 11px; background:#f5f8f3; color:#24372a; font-size:13px; font-weight:600; pointer-events:none; }
-  [data-phone-flag] { font-family:system-ui,sans-serif; font-size:20px; line-height:1; }
-  .phone-country-arrow { color:#63765e; font-size:14px; }
+  .phone-country { position:relative; flex:0 0 110px; min-width:0; }
+  .phone-country-face { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:7px; padding:0 10px; border:1px solid #d5ded2; border-right:0; border-radius:11px 0 0 11px; background:#f5f8f3; color:#24372a; font:inherit; font-size:13px; font-weight:650; pointer-events:none; transition:background 160ms ease,box-shadow 160ms ease; }
+  .phone-country-face[data-enhanced] { pointer-events:auto; cursor:pointer; }
+  .phone-country-face[data-enhanced]:hover,.phone-country-face[aria-expanded="true"] { background:#eaf3e5; }
+  [data-phone-flag] { display:block; flex:0 0 24px; width:24px; height:24px; border-radius:50%; box-shadow:0 0 0 1px rgba(22,60,32,.08); }
+  .phone-country-arrow { flex:0 0 14px; color:#50714e; transition:transform 160ms ease; }
+  .phone-country-face[aria-expanded="true"] .phone-country-arrow { transform:rotate(180deg); }
   .phone-country select { position:relative; z-index:1; opacity:0; padding:0; cursor:pointer; }
-  .phone-control input { flex:1 1 0; width:0; border-radius:0 12px 12px 0; padding-inline:12px; }
+  .phone-country-menu { position:fixed; inset:auto; z-index:100; display:flex; flex-direction:column; box-sizing:border-box; margin:0; padding:12px; border:1px solid #dce6d8; border-radius:16px; background:#fff; color:#203326; box-shadow:0 16px 48px rgba(18,50,28,.16),0 2px 8px rgba(18,50,28,.06); overflow:hidden; font-family:inherit; }
+  .phone-country-menu[hidden],.phone-country select[hidden],.country-empty[hidden] { display:none; }
+  .phone-country-menu:popover-open { animation:country-picker-in 160ms ease-out; }
+  .country-menu-heading { display:flex; flex:0 0 auto; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; padding-left:3px; font-size:12px; font-weight:700; }
+  .country-menu-heading button { display:grid; place-items:center; width:28px; height:28px; padding:0; border:0; border-radius:7px; background:#f2f6f0; color:#4b674a; cursor:pointer; }
+  .country-search-wrap { position:relative; flex:0 0 auto; margin-bottom:9px; }
+  .country-search-wrap>svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#658260; pointer-events:none; }
+  .phone-control .country-search { width:100%; height:42px; padding:0 12px 0 38px; border:1px solid #dce5d7; border-radius:9px; background:#f8faf6; color:#24372a; font-size:14px; font-weight:450; }
+  .phone-country-list { flex:1 1 auto; min-height:0; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#4e8b47 #edf3e9; scrollbar-gutter:stable; -webkit-overflow-scrolling:touch; }
+  .phone-country-list::-webkit-scrollbar { width:5px; }
+  .phone-country-list::-webkit-scrollbar-track { background:#edf3e9; border-radius:8px; }
+  .phone-country-list::-webkit-scrollbar-thumb { background:#4e8b47; border-radius:8px; }
+  .phone-country-list::-webkit-scrollbar-thumb:hover { background:#2f6d35; }
+  .phone-country-list :global(.country-group-label) { margin:9px 8px 5px; color:#73826d; font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; }
+  .phone-country-list :global(.country-option) { display:grid; grid-template-columns:24px minmax(0,1fr) auto 14px; align-items:center; gap:10px; width:100%; min-height:44px; margin:2px 0; padding:9px 8px; border:0; border-radius:9px; background:transparent; color:#273b2c; font:inherit; font-size:13px; line-height:1.35; text-align:left; cursor:pointer; transition:background 130ms ease,color 130ms ease; }
+  .phone-country-list :global(.country-option img) { display:block; width:24px; height:24px; border-radius:50%; }
+  .phone-country-list :global(.country-option-name) { overflow-wrap:anywhere; }
+  .phone-country-list :global(.country-option-dial) { color:#788575; font-size:12px; font-variant-numeric:tabular-nums; }
+  .phone-country-list :global(.country-option-check) { visibility:hidden; color:#2e7139; font-weight:800; text-align:center; }
+  .phone-country-list :global(.country-option:hover),.phone-country-list :global(.country-option.is-highlighted) { background:#f0f6ec; }
+  .phone-country-list :global(.country-option[aria-selected="true"]) { background:#e7f1df; color:#204c29; font-weight:650; }
+  .phone-country-list :global(.country-option[aria-selected="true"] .country-option-dial) { color:#3f6c3c; }
+  .phone-country-list :global(.country-option[aria-selected="true"] .country-option-check) { visibility:visible; }
+  .country-empty { margin:10px 6px; color:#687763; font-size:13px; line-height:1.6; }
+  .phone-country-face:focus-visible,.country-menu-heading button:focus-visible,.phone-country-list :global(.country-option:focus-visible) { outline:2px solid #609a59; outline-offset:-2px; }
+  @keyframes country-picker-in { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+  @media (max-width:620px) { .phone-control .country-search { height:44px; font-size:16px; } .phone-country-list :global(.country-option) { min-height:46px; font-size:14px; } }
+  @media (prefers-reduced-motion:reduce) { .phone-country-face,.phone-country-arrow,.phone-country-list :global(.country-option) { transition:none; } .phone-country-menu:popover-open { animation:none; } }
+  .quote-card .phone-control>input { flex:1 1 0; width:0; border-radius:0 12px 12px 0; padding-inline:12px; }
   .phone-country:focus-within .phone-country-face { border-color:#609a59; box-shadow:0 0 0 3px rgba(62,122,55,.14); }
   .phone-field.is-invalid .phone-country-face { border-color:#dd554c; background:#fff0ed; }
   .quote-card--blog-sidebar .phone-example { color:#d7eadb; }

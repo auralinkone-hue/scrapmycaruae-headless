@@ -16,7 +16,7 @@ test('actual offline Astro output renders accessible country and phone controls 
   await mkdir(path.join(fixture, 'src/pages'), { recursive: true });
   await mkdir(path.join(fixture, 'src/components'), { recursive: true });
   await mkdir(path.join(fixture, 'src/lib'), { recursive: true });
-  for (const file of ['src/components/QuoteForm.astro', 'src/lib/phone.ts', 'src/lib/quote-phone-input.ts', 'src/lib/country-codes.ts']) {
+  for (const file of ['src/components/QuoteForm.astro', 'src/lib/phone.ts', 'src/lib/quote-phone-input.ts', 'src/lib/country-codes.ts', 'src/lib/country-picker.ts']) {
     await cp(path.join(root, file), path.join(fixture, file));
   }
   await symlink(path.join(root, 'node_modules'), path.join(fixture, 'node_modules'));
@@ -58,5 +58,9 @@ const years = [{year:2014}];
   assert.equal([...html.matchAll(/e.g. \+971 50 123 4567/g)].length, 3);
   assert.equal([...html.matchAll(/data-vehicle-models=/g)].length, 3);
   assert.ok(html.includes('CAMRY') && html.includes('CIVIC'));
+  assert.equal([...html.matchAll(/src="\/flags\/ae.svg"/g)].length, 3);
+  assert.equal([...html.matchAll(/data-country-trigger/g)].length, 3);
+  assert.equal([...html.matchAll(/role="dialog"/g)].length, 3);
+  assert.equal([...html.matchAll(/data-country-search/g)].length, 3);
   assert.match(html, /<script type="module" src="\/_astro\//);
 });
