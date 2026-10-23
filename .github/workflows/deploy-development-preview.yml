@@ -13,12 +13,14 @@ concurrency:
 
 jobs:
   deploy:
-    if: "!contains(github.event.head_commit.message, '[diagnostic-only]')"
+    if: "github.ref == 'refs/heads/development' && !contains(github.event.head_commit.message, '[diagnostic-only]')"
     runs-on: ubuntu-latest
     permissions:
       contents: read
 
     env:
+      DEPLOYMENT_WORKER_NAME: smc-headless-worker
+      DEPLOYMENT_CONFIG_FILE: wrangler.jsonc
       PUBLIC_WIX_CLIENT_ID: f3ac0e15-b92a-42ce-8340-f9ec2a40d267
       WIX_QUOTE_REQUESTS_COLLECTION_ID: QuoteRequestsStaging
       PUBLIC_SEO_ENV: staging
@@ -39,6 +41,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Verify staging target before build
+        run: npm run deployment:verify -- staging
+
+      - name: Run automated tests
+        run: npm test
+
       - name: Configure optional staging notification ledger
         run: node scripts/configure-quote-notification-binding.mjs
         env:
@@ -47,9 +55,12 @@ jobs:
       - name: Build Astro
         run: npm run build
 
+      - name: Verify generated staging target before upload
+        run: npm run deployment:verify -- staging --built
+
       - name: Deploy Cloudflare Worker preview
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy
+          command: deploy --name smc-headless-worker --config wrangler.jsonc

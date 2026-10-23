@@ -15,5 +15,9 @@ export function requireQuoteRequestsCollectionId(value: unknown, seoEnvironment?
     throw new Error('Staging quote submissions require the staging collection.');
   }
 
+  if (seoEnvironment === 'production' && collectionId !== 'QuoteRequests') {
+    throw new Error('Production quote submissions require the production collection.');
+  }
+
   return collectionId;
 }

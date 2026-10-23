@@ -11,6 +11,7 @@ export default defineConfig({
   integrations: [stagingAssetHeaders(seoEnvironment)],
 
   adapter: cloudflare({
+    configPath: process.env.DEPLOYMENT_CONFIG_FILE || 'wrangler.jsonc',
     imageService: 'compile',
     prerenderEnvironment: 'node'
   })

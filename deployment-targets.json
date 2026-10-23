@@ -1,0 +1,7 @@
+{
+  "staging": {
+    "workerName": "smc-headless-worker",
+    "configFile": "wrangler.jsonc"
+  },
+  "production": null
+}
