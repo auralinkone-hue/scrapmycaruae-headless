@@ -41,8 +41,8 @@ test('archive filters valid categories in the server-side Wix post query and rej
 });
 
 test('All Articles keeps categorized and uncategorized posts from the real Wix response shape', () => {
-  const categorizedPost = { _id: 'post-1', categoryIds: ['safety-category'] };
-  const uncategorizedPost = { _id: 'post-2', categoryIds: [] };
+  const categorizedPost = { _id: 'post-1', slug: 'existing-one', title: 'Existing one', categoryIds: ['safety-category'] };
+  const uncategorizedPost = { _id: 'post-2', slug: 'existing-two', title: 'Existing two', categoryIds: [] };
   const response = {
     posts: [categorizedPost, uncategorizedPost],
     pagingMetadata: { total: 2 }

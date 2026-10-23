@@ -22,6 +22,7 @@ const requestedCategorySlug = Astro.url.searchParams.get('category')?.trim().toL
 const requestedPage = Math.max(1, Number.parseInt(Astro.url.searchParams.get('page') ?? '1', 10) || 1);
 
 let categories: BlogCategory[] = [];
+let allCategories: BlogCategory[] = [];
 let categoryLoadFailed = false;
 
 try {
@@ -31,16 +32,20 @@ try {
     .limit(100)
     .find();
 
-  categories = (categoryResult.items ?? [])
-    .filter((category): category is BlogCategory => Boolean(category?._id && category.slug))
-    .filter((category) => (category.postCount ?? 1) > 0);
+  if (!Array.isArray(categoryResult?.items) || !categoryResult.items.every(category =>
+    category && typeof category._id === 'string' && category._id.trim() &&
+    typeof category.slug === 'string' && category.slug.trim())) {
+    throw new Error('Malformed Wix archive categories.');
+  }
+  allCategories = categoryResult.items;
+  categories = allCategories.filter((category) => (category.postCount ?? 1) > 0);
 } catch (error) {
   categoryLoadFailed = true;
-  console.error('Unable to load Wix Blog categories for archive navigation.', error);
+  console.error('Unable to load Wix Blog categories for archive navigation.');
 }
 
 const activeCategory = requestedCategorySlug
-  ? categories.find((category) => category.slug?.toLowerCase() === requestedCategorySlug)
+  ? allCategories.find((category) => category.slug?.toLowerCase() === requestedCategorySlug)
   : undefined;
 
 if (requestedCategorySlug && !categoryLoadFailed && !activeCategory) {
@@ -56,23 +61,32 @@ let posts: any[] = [];
 let totalCount = 0;
 let postQueryFailed = false;
 
-try {
+if (requestedCategorySlug && categoryLoadFailed) {
+  // Do not run an unfiltered query when the requested category is unknown.
+  postQueryFailed = true;
+} else try {
   // This established archive request has no filter for All Articles.
   const postResult = await wixClient.posts.queryPosts(
     createBlogArchivePostsQuery(requestedPage, PAGE_SIZE, activeCategory?._id)
   );
-  const archiveResult = readBlogArchivePostsResponse(postResult);
+  const archiveResult = readBlogArchivePostsResponse(postResult, activeCategory?._id);
   posts = archiveResult.posts;
   totalCount = archiveResult.totalCount;
 } catch (error) {
   postQueryFailed = true;
-  Astro.response.status = 500;
-  console.error('Unable to load Wix Blog posts for archive.', error);
+  console.error('Unable to load Wix Blog posts for archive.');
+}
+
+if (postQueryFailed) {
+  // A failed collection query is not proof that the requested page is absent.
+  Astro.response.status = 503;
+  Astro.response.headers.set('Retry-After', '60');
+  Astro.response.headers.set('Cache-Control', 'no-store');
 }
 
 const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
-if (requestedPage > totalPages) {
+if (!postQueryFailed && requestedPage > totalPages) {
   const categoryQuery = activeCategory?.slug ? '?category=' + encodeURIComponent(activeCategory.slug) : '';
   return Astro.redirect('/blogs' + categoryQuery, 302);
 }
@@ -113,7 +127,7 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
   title="Blogs | Scrap My Car UAE"
   description="Practical car scrapping, disposal, recycling and safety guidance from Scrap My Car UAE."
   canonical="/blogs"
-  noindex={Boolean(activeCategory)}
+  noindex={Boolean(activeCategory) || postQueryFailed}
 >
   <Fragment slot="head"><script is:inline>document.documentElement.classList.add('blog-media-enhanced');</script></Fragment>
   <main class="blog-archive">
@@ -125,7 +139,7 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
 
     <nav class="category-nav" aria-label="Blog categories">
       <div class="category-rail">
-        <a class:list={['category-button', !activeCategory && 'is-active']} href="/blogs" aria-current={!activeCategory ? 'page' : undefined}>All Articles</a>
+        <a class:list={['category-button', !activeCategory && !requestedCategorySlug && 'is-active']} href="/blogs" aria-current={!activeCategory && !requestedCategorySlug ? 'page' : undefined}>All Articles</a>
         {directCategories.map((category) => (
           <a
             class:list={['category-button', activeCategory?._id === category._id && 'is-active']}
@@ -156,7 +170,7 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
       )}
     </nav>
 
-    <section class="archive-grid" aria-label={activeCategory ? categoryLabel(activeCategory) + ' articles' : 'All articles'}>
+    {!postQueryFailed && <section class="archive-grid" aria-label={activeCategory ? categoryLabel(activeCategory) + ' articles' : 'All articles'}>
       {posts.map((post) => {
         const postCategory = getPrimaryCategory(post);
         const postHref = getPostHref(post);
@@ -204,7 +218,7 @@ const readingTime = (post: any) => post.minutesToRead ? post.minutesToRead + ' m
           </article>
         );
       })}
-    </section>
+    </section>}
 
     {posts.length === 0 && (
       <p class="empty-state">
