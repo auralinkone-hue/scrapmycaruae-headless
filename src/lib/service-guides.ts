@@ -3,6 +3,11 @@ import { wixClient } from './wix';
 // Established protected Wix articles selected for each existing service's intent.
 // These are service → guide recommendations, not edits to the articles themselves.
 export const serviceGuideSlugs = {
+  'sell-unwanted-car': [
+    'scrap-or-sell-the-ultimate-decision-guide-for-dubai-car-owners',
+    'who-will-take-your-non-running-car-in-the-uae-fast-solutions-you-should-know',
+    'what-documents-do-you-need-to-scrap-or-sell-a-car-in-dubai'
+  ],
   'sell-my-car': [
     'how-to-sell-your-scrap-car-in-the-uae-in-2025-a-complete-guide',
     'scrap-or-sell-the-ultimate-decision-guide-for-dubai-car-owners',

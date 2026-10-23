@@ -2,6 +2,7 @@
 export const indexableStaticRoutes = [
   '/',
   '/sell-my-car/',
+  '/sell-unwanted-car/',
   '/sell-damaged-car/',
   '/sell-accident-damaged-car/',
   '/sell-non-running-car/',

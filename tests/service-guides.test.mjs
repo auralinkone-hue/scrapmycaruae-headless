@@ -85,7 +85,7 @@ test('every curated article retains its exact protected URL', async () => {
   assert.ok(config['scrap-my-car'].includes('imple-steps-to-sell-your-scrap-car-in-uae-for-the-best-price'));
 });
 
-test('only the seven newest-only service blocks use the new loader and keep existing card visibility/rendering', async () => {
+test('curated service blocks use the shared guide loader and keep existing card visibility/rendering', async () => {
   for (const service of Object.keys(config)) {
     const page = await readFile(new URL(`../src/pages/${service}.astro`, import.meta.url), 'utf8');
     assert.ok(page.includes(`getServiceGuidePosts('${service}')`));
