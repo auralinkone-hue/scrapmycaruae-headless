@@ -19,7 +19,9 @@ Both supported deployment commands require the `development` branch, explicit
 `DEPLOYMENT_WORKER_NAME` and `DEPLOYMENT_CONFIG_FILE` matching the checked-in target
 manifest, and complete environment settings. They validate before running tests or
 building, run tests and the build, revalidate the generated Worker target and actual
-prerendered SEO output, then upload using explicit `--name` and `--config` arguments.
+prerendered SEO output, then upload using an explicit `--name` and Wrangler’s verified
+`.wrangler/deploy/config.json` redirect. Do not pass source `--config` to upload;
+it bypasses the generated Astro deployment configuration.
 Any failed prerequisite stops upload. Additional command-line overrides are rejected.
 
 Staging configuration:

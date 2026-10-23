@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, realpathSync, statSync, readdirSync } from 'node:fs';
 import { resolve, relative, isAbsolute } from 'node:path';
 
 export const STAGING_WORKER = 'smc-headless-worker';
@@ -48,6 +48,19 @@ export function verifyDeploymentBuild(plan, env = process.env, root = process.cw
   if (resolve(generated.userConfigPath || generated.configPath || '') !== resolve(root, plan.configFile)) fail('build was generated from a different Wrangler config.');
   const redirect = JSON.parse(readFileSync(resolve(root, '.wrangler/deploy/config.json'), 'utf8'));
   if (resolve(root, '.wrangler/deploy', redirect.configPath || '') !== resolve(root, 'dist/server/wrangler.json') || redirect.auxiliaryWorkers?.length) fail('unexpected generated deployment target.');
+  // The redirect must lead to a real built entrypoint, never the source adapter specifier.
+  const serverDir = resolve(root, 'dist/server');
+  if (typeof generated.main !== 'string' || isAbsolute(generated.main)) fail('generated Worker entrypoint must be local to the server output.');
+  const entry = resolve(serverDir, generated.main);
+  if (relative(serverDir, entry).startsWith('..') || !statSync(entry).isFile() || relative(realpathSync(serverDir), realpathSync(entry)).startsWith('..')) fail('generated Worker entrypoint is missing or unsafe.');
+
+  // Validate the actual compiled quote fallback as well as env/config vars. Remote
+  // encrypted overrides remain subject to the existing runtime collection guard.
+  const quoteChunks = readdirSync(resolve(serverDir, 'chunks')).filter(file => /^quote_[^/]+\.mjs$/.test(file));
+  if (quoteChunks.length !== 1) fail('exactly one generated quote route is required.');
+  const quoteCode = readFileSync(resolve(serverDir, 'chunks', quoteChunks[0]), 'utf8');
+  const fallback = quoteCode.match(/requireQuoteRequestsCollectionId\(\s*\w+\s*\?\?\s*["']([^"']+)["']\s*,\s*["']([^"']+)["']\s*\)/);
+  if (!fallback || fallback[1] !== plan.collection || fallback[2] !== plan.environment) fail('built quote collection or SEO environment does not match target.');
   const directive = plan.environment === 'staging' ? 'noindex,nofollow' : 'index,follow';
   for (const page of ['contact-us', 'faqs', 'terms-conditions']) {
     const html = readFileSync(resolve(root, `dist/client/${page}/index.html`), 'utf8');

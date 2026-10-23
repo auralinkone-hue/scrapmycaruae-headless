@@ -98,7 +98,7 @@ test('mocked deployment verifies both source and output before explicit-target u
   options.run = (command, args) => { if (args.includes('deploy')) upload = args; return runner(command, args); };
   runDeployment('staging', options);
   assert.deepEqual(calls, ['check', 'test', 'run build', 'check', 'artifacts', 'upload']);
-  assert.deepEqual(upload.slice(1), ['deploy', '--name', 'smc-headless-worker', '--config', 'wrangler.jsonc']);
+  assert.deepEqual(upload.slice(1), ['deploy', '--name', 'smc-headless-worker']);
 });
 test('CI gates target, tests, build and generated output in order with no failure bypass', () => {
   const workflow = readFileSync(join(root, '.github/workflows/deploy-development-preview.yml'), 'utf8');
@@ -107,7 +107,8 @@ test('CI gates target, tests, build and generated output in order with no failur
   assert.ok(offsets.every((offset, i) => offset >= 0 && (!i || offset > offsets[i - 1])));
   assert.doesNotMatch(workflow, /continue-on-error|always\(|\|\|\s*true/);
   assert.match(workflow, /github.ref == 'refs\/heads\/development'/);
-  assert.match(workflow, /command: deploy --name smc-headless-worker --config wrangler.jsonc/);
+  assert.match(workflow, /command: deploy --name smc-headless-worker\n/);
+  assert.doesNotMatch(workflow, /command: deploy[^\n]*--config/);
   const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
   assert.equal(pkg.scripts.deploy, 'node scripts/deploy.mjs production');
   assert.equal(pkg.scripts['deploy:staging'], 'node scripts/deploy.mjs staging');
@@ -118,8 +119,10 @@ test('actual generated artifact verifier rejects mixed environment output and ta
   const plan = validateStage({});
   try {
     write('deployment-targets.json', targets);
-    write('dist/server/wrangler.json', { ...stagingConfig, userConfigPath: join(dir, 'wrangler.jsonc') });
+    write('dist/server/wrangler.json', { ...stagingConfig, main: 'entry.mjs', userConfigPath: join(dir, 'wrangler.jsonc') });
     write('.wrangler/deploy/config.json', { configPath: '../../dist/server/wrangler.json', auxiliaryWorkers: [] });
+    write('dist/server/entry.mjs', 'export default {};');
+    write('dist/server/chunks/quote_fixture.mjs', 'requireQuoteRequestsCollectionId(runtimeCollection ?? "QuoteRequestsStaging", "staging")');
     const html = page => `<link rel="canonical" href="https://www.scrapmycaruae.com/${page}"><meta name="robots" content="noindex,nofollow"><meta name="googlebot" content="noindex,nofollow">`;
     for (const page of ['contact-us', 'faqs', 'terms-conditions']) write(`dist/client/${page}/index.html`, html(page));
     write('dist/client/_headers', '/*\n  X-Robots-Tag: noindex, nofollow, noarchive\n');
@@ -130,4 +133,47 @@ test('actual generated artifact verifier rejects mixed environment output and ta
     write('.wrangler/deploy/config.json', { configPath: '../../other/wrangler.json' });
     assert.throws(() => verifyDeploymentBuild(plan, staging, dir), /target/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+function generatedFixture() {
+  const dir = mkdtempSync(join(tmpdir(), 'smc-generated-upload-'));
+  const write = (file, data) => {
+    const full = join(dir, file);
+    mkdirSync(resolve(full, '..'), { recursive: true });
+    writeFileSync(full, typeof data === 'string' ? data : JSON.stringify(data));
+  };
+  const generated = { ...stagingConfig, main: 'entry.mjs', userConfigPath: join(dir, 'wrangler.jsonc') };
+  write('deployment-targets.json', targets);
+  write('dist/server/wrangler.json', generated);
+  write('.wrangler/deploy/config.json', { configPath: '../../dist/server/wrangler.json', auxiliaryWorkers: [] });
+  write('dist/server/entry.mjs', 'export default {};');
+  write('dist/server/chunks/quote_fixture.mjs', 'requireQuoteRequestsCollectionId(runtimeCollection ?? "QuoteRequestsStaging", "staging")');
+  for (const page of ['contact-us', 'faqs', 'terms-conditions']) {
+    write(`dist/client/${page}/index.html`, `<link rel="canonical" href="https://www.scrapmycaruae.com/${page}"><meta name="robots" content="noindex,nofollow"><meta name="googlebot" content="noindex,nofollow">`);
+  }
+  write('dist/client/_headers', '/*\n  X-Robots-Tag: noindex, nofollow, noarchive\n');
+  return { dir, write, generated };
+}
+
+for (const [name, mutate] of [
+  ['missing redirect', f => rmSync(join(f.dir, '.wrangler/deploy/config.json'))],
+  ['missing generated config', f => rmSync(join(f.dir, 'dist/server/wrangler.json'))],
+  ['missing built entrypoint', f => rmSync(join(f.dir, 'dist/server/entry.mjs'))],
+  ['source entrypoint specifier', f => f.write('dist/server/wrangler.json', { ...f.generated, main: '@astrojs/cloudflare/entrypoints/server' })],
+  ['entrypoint outside server output', f => f.write('dist/server/wrangler.json', { ...f.generated, main: '../../package.json' })],
+  ['wrong generated Worker name', f => f.write('dist/server/wrangler.json', { ...f.generated, name: 'wrong-worker' })],
+  ['production routes in generated config', f => f.write('dist/server/wrangler.json', { ...f.generated, routes: ['www.scrapmycaruae.com/*'] })],
+  ['production CMS runtime var', f => f.write('dist/server/wrangler.json', { ...f.generated, vars: { WIX_QUOTE_REQUESTS_COLLECTION_ID: 'QuoteRequests' } })],
+  ['production CMS compiled fallback', f => f.write('dist/server/chunks/quote_fixture.mjs', 'requireQuoteRequestsCollectionId(runtimeCollection ?? "QuoteRequests", "staging")')],
+  ['production compiled SEO mode', f => f.write('dist/server/chunks/quote_fixture.mjs', 'requireQuoteRequestsCollectionId(runtimeCollection ?? "QuoteRequestsStaging", "production")')],
+  ['missing compiled quote route', f => rmSync(join(f.dir, 'dist/server/chunks/quote_fixture.mjs'))]
+]) test(`actual ${name} blocks upload without bypassing artifact guard`, () => {
+  const fixture = generatedFixture();
+  const { calls, options } = harness();
+  try {
+    mutate(fixture);
+    options.verifyBuild = plan => verifyDeploymentBuild(plan, staging, fixture.dir);
+    assert.throws(() => runDeployment('staging', options));
+    assert.ok(!calls.includes('upload'));
+  } finally { rmSync(fixture.dir, { recursive: true, force: true }); }
 });

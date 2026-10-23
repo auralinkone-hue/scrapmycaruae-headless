@@ -21,7 +21,8 @@ export function runDeployment(environment, {
   const final = check();
   if (JSON.stringify(initial) !== JSON.stringify(final)) throw new Error('Deployment approval changed during build.');
   verifyBuild(final);
-  execute(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'deploy', '--name', final.workerName, '--config', final.configFile]);
+  // No --config: Wrangler must follow the verified Astro-generated redirect.
+  execute(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'deploy', '--name', final.workerName]);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
