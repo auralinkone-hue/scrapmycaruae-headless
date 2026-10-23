@@ -3,7 +3,8 @@ export type AnalyticsEvent =
   | 'whatsapp_handoff'
   | 'whatsapp_click'
   | 'phone_click'
-  | 'quote_cta_click';
+  | 'quote_cta_click'
+  | 'quote_form_start';
 
 type EventParams = {
   form_name?: string;
@@ -16,6 +17,7 @@ declare global {
     dataLayer?: unknown[];
     smcAnalytics?: { track: (event: AnalyticsEvent, params?: EventParams) => void };
     smcAnalyticsConsentGranted?: boolean;
+    smcPostHog?: { track: (event: AnalyticsEvent, params?: Record<string, string>) => void };
   }
 }
 
@@ -35,7 +37,9 @@ function safeParams(params: EventParams = {}) {
 export function trackAnalyticsEvent(event: AnalyticsEvent, params: EventParams = {}) {
   try {
     if (!window.smcAnalyticsConsentGranted || !Array.isArray(window.dataLayer)) return;
-    window.dataLayer.push({ event, ...safeParams(params) });
+    const properties = safeParams(params);
+    window.dataLayer.push({ event, ...properties });
+    window.smcPostHog?.track(event, properties);
   } catch {
     // Analytics is deliberately best-effort and must never affect the customer flow.
   }
@@ -48,6 +52,17 @@ function whatsappHref(href: string) {
 export function initializeAnalytics() {
   if (window.smcAnalytics) return;
   window.smcAnalytics = { track: trackAnalyticsEvent };
+
+  // Anonymous funnel entry; do not inspect or send field contents.
+  const startedForms = new WeakSet<Element>();
+  document.addEventListener('focusin', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element) || !target.matches('input, select, textarea')) return;
+    const form = target.closest('[data-quote-form]');
+    if (!form || startedForms.has(form)) return;
+    startedForms.add(form);
+    trackAnalyticsEvent('quote_form_start', { form_name: 'valuation_form' });
+  });
 
   document.addEventListener('click', (event) => {
     const target = event.target;

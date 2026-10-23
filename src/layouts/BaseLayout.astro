@@ -38,6 +38,12 @@ const resolvedOgImageAlt = ogImage ? title : defaultSocialImageAlt;
 const serviceSchema = serviceSchemaForPath(Astro.url.pathname);
 const gtmId = import.meta.env.PUBLIC_GTM_ID?.trim() || '';
 const analyticsEnabled = import.meta.env.PUBLIC_ANALYTICS_ENABLED === 'true' && Boolean(gtmId);
+const posthogProjectToken = import.meta.env.PUBLIC_POSTHOG_PROJECT_TOKEN?.trim() || '';
+const posthogEnabled =
+  import.meta.env.PUBLIC_SEO_ENV === 'production' && analyticsEnabled &&
+  import.meta.env.PUBLIC_POSTHOG_ENABLED === 'true' &&
+  /^phc_[A-Za-z0-9]+$/.test(posthogProjectToken) &&
+  siteUrl === 'https://www.scrapmycaruae.com';
 const cloudflareAnalyticsToken = import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN?.trim() || '';
 const cloudflareAnalyticsEnabled =
   import.meta.env.PUBLIC_SEO_ENV === 'production' && analyticsEnabled &&
@@ -87,6 +93,11 @@ const cloudflareAnalyticsEnabled =
     <script>
       import { initializeCloudflareAnalytics } from '../scripts/cloudflare-analytics';
       initializeCloudflareAnalytics();
+    </script>
+    {posthogEnabled && <meta name="smc-posthog-config" content={posthogProjectToken} />}
+    <script>
+      import { initializePostHogAnalytics } from '../scripts/posthog-analytics';
+      initializePostHogAnalytics();
     </script>
     {analyticsEnabled && <meta name="smc-analytics-config" content={gtmId} />}
     <script>

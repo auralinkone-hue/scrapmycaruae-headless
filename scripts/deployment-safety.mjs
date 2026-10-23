@@ -22,6 +22,9 @@ export function validateDeployment(environment, env, targets, config) {
   if (env.WIX_QUOTE_REQUESTS_COLLECTION_ID !== collection) fail('quote collection must exactly match the deployment environment.');
   if (!['true', 'false'].includes(env.PUBLIC_ANALYTICS_ENABLED) || (environment === 'staging' && env.PUBLIC_ANALYTICS_ENABLED !== 'false')) fail('explicit analytics setting required; staging analytics must be disabled.');
   if (env.PUBLIC_ANALYTICS_ENABLED === 'true' && !/^GTM-[A-Z0-9]+$/.test(env.PUBLIC_GTM_ID || '')) fail('enabled analytics requires the existing GTM configuration.');
+  const posthogEnabled = env.PUBLIC_POSTHOG_ENABLED;
+  if (posthogEnabled && !['true', 'false'].includes(posthogEnabled)) fail('invalid PostHog flag.');
+  if (posthogEnabled === 'true' && (environment !== 'production' || env.PUBLIC_ANALYTICS_ENABLED !== 'true' || !/^phc_[A-Za-z0-9]+$/.test(env.PUBLIC_POSTHOG_PROJECT_TOKEN || ''))) fail('PostHog requires approved production targeting, analytics consent plumbing and a valid public project token.');
   const cloudflareAnalytics = env.PUBLIC_CLOUDFLARE_ANALYTICS_ENABLED;
   if (cloudflareAnalytics && !['true', 'false'].includes(cloudflareAnalytics)) fail('invalid Cloudflare analytics flag.');
   if (cloudflareAnalytics === 'true' && (environment !== 'production' || env.PUBLIC_ANALYTICS_ENABLED !== 'true' || !/^[a-f0-9]{32}$/i.test(env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN || ''))) fail('Cloudflare analytics requires approved production targeting, enabled analytics and a valid public token.');
@@ -29,7 +32,7 @@ export function validateDeployment(environment, env, targets, config) {
   if (env.CLOUDFLARE_ENV || env.WRANGLER_ENV) fail('implicit named Wrangler environments are not supported.');
   if (config.name !== target.workerName || config.env && Object.keys(config.env).length) fail('Wrangler target must match explicitly, without named environment overrides.');
   if (environment === 'staging' && (config.route || config.routes?.length || config.zone_id)) fail('preview config must not attach domain routes.');
-  for (const [key, expected] of Object.entries({ PUBLIC_SEO_ENV: environment, WIX_QUOTE_REQUESTS_COLLECTION_ID: collection, PUBLIC_SITE_URL: env.PUBLIC_SITE_URL, PUBLIC_ANALYTICS_ENABLED: env.PUBLIC_ANALYTICS_ENABLED, PUBLIC_CLOUDFLARE_ANALYTICS_ENABLED: cloudflareAnalytics || 'false' })) {
+  for (const [key, expected] of Object.entries({ PUBLIC_SEO_ENV: environment, WIX_QUOTE_REQUESTS_COLLECTION_ID: collection, PUBLIC_SITE_URL: env.PUBLIC_SITE_URL, PUBLIC_ANALYTICS_ENABLED: env.PUBLIC_ANALYTICS_ENABLED, PUBLIC_CLOUDFLARE_ANALYTICS_ENABLED: cloudflareAnalytics || 'false', PUBLIC_POSTHOG_ENABLED: posthogEnabled || 'false' })) {
     if (config.vars?.[key] !== undefined && config.vars[key] !== expected) fail('runtime vars conflict with validated build settings.');
   }
   return { ...target, environment, collection, origin: ORIGIN };

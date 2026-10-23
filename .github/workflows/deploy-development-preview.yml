@@ -28,6 +28,7 @@ jobs:
       PUBLIC_GTM_ID: GTM-TFQ7BDGX
       PUBLIC_ANALYTICS_ENABLED: "false"
       PUBLIC_CLOUDFLARE_ANALYTICS_ENABLED: "false"
+      PUBLIC_POSTHOG_ENABLED: "false"
 
     steps:
       - name: Checkout development
