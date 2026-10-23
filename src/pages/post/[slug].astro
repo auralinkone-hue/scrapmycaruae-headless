@@ -38,12 +38,10 @@ try {
   const result = await wixClient.posts.getPostBySlug(slug, {
     fieldsets: ['URL', 'SEO', 'RICH_CONTENT', 'CONTENT_TEXT']
   });
-  if (!result?.post) {
-    Astro.response.status = 404;
-    loadError = 'The requested article is unavailable.';
-  } else {
-    post = result.post;
+  if (!result?.post || typeof result.post !== 'object' || Array.isArray(result.post) || typeof result.post.slug !== 'string' || !result.post.slug.trim()) {
+    throw new Error('Malformed Wix article response.');
   }
+  post = result.post;
 } catch (error) {
   Astro.response.status = blogLoadErrorStatus(error);
   if (Astro.response.status === 503) {

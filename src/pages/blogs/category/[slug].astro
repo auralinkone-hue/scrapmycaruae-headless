@@ -5,6 +5,7 @@ import { media } from '@wix/sdk';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { wixClient } from '../../../lib/wix';
 import { wixResponsiveImage } from '../../../lib/wix-image';
+import { blogLoadErrorStatus } from '../../../lib/blog-load-status';
 
 const slug = Astro.params.slug ?? '';
 let category: any = null;
@@ -13,10 +14,10 @@ let loadError = '';
 
 try {
   const result = await wixClient.categories.getCategoryBySlug(slug);
-  category = result.category;
+  category = result?.category;
 
-  if (!category?._id || !category?.label || !category?.slug) {
-    Astro.response.status = 404;
+  if (![category?._id, category?.label, category?.slug].every(value => typeof value === 'string' && value.trim())) {
+    throw new Error('Malformed Wix category response.');
   } else {
     const postResult = await wixClient.posts
       .queryPosts()
@@ -25,12 +26,19 @@ try {
       .limit(100)
       .find();
 
-    posts = postResult.items ?? [];
+    if (!Array.isArray(postResult?.items)) throw new Error('Malformed Wix category articles response.');
+    posts = postResult.items;
   }
 } catch (error) {
-  Astro.response.status = 404;
-  loadError = error instanceof Error ? error.message : String(error);
+  // A failed article-list lookup cannot make a confirmed category disappear.
+  Astro.response.status = category ? 503 : blogLoadErrorStatus(error);
+  loadError = 'The blog category could not be loaded.';
+  if (Astro.response.status === 503) {
+    Astro.response.headers.set('Retry-After', '60');
+    Astro.response.headers.set('Cache-Control', 'no-store');
+  }
 }
+const temporarilyUnavailable = Astro.response.status === 503;
 
 const canonical = category?.slug
   ? `/blogs/category/${encodeURIComponent(category.slug)}`
@@ -38,7 +46,7 @@ const canonical = category?.slug
 
 const title = category?.label
   ? `${category.label} | Scrap My Car UAE Blog`
-  : 'Category not found | Scrap My Car UAE';
+  : temporarilyUnavailable ? 'Category temporarily unavailable | Scrap My Car UAE' : 'Category not found | Scrap My Car UAE';
 
 const description = category?.description || '';
 
@@ -67,8 +75,8 @@ const formatDate = (value: string | Date | undefined) => {
 };
 ---
 
-<BaseLayout title={title} description={description} canonical={canonical} noindex={!category}>
-  {category ? (
+<BaseLayout title={title} description={description} canonical={canonical} noindex={!category || temporarilyUnavailable}>
+  {category && !temporarilyUnavailable ? (
     <main class="category-shell smc-container">
       <a class="back-link" href="/blogs"><i class="ph ph-arrow-left" aria-hidden="true"></i>All articles</a>
 
@@ -124,8 +132,8 @@ const formatDate = (value: string | Date | undefined) => {
     </main>
   ) : (
     <main class="not-found smc-container">
-      <h1>Category not found</h1>
-      <p>The requested blog category is unavailable.</p>
+      <h1>{temporarilyUnavailable ? 'Category temporarily unavailable' : 'Category not found'}</h1>
+      <p>{temporarilyUnavailable ? 'Please try again shortly.' : 'The requested blog category is unavailable.'}</p>
       <a href="/blogs">Return to all articles</a>
       {import.meta.env.DEV && loadError && <pre>{loadError}</pre>}
     </main>

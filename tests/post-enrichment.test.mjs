@@ -86,11 +86,12 @@ test('related article cards protect malformed optional Wix values', async () => 
   assert.match(card, /asSafeArticleSlug\(post\?\.slug\)/);
 });
 
-test('missing essential article data returns a semantic not-found page, not a blank page', async () => {
+test('essential article errors distinguish malformed responses from genuine missing content', async () => {
   const page = await readProjectFile('src/pages/post/[slug].astro');
 
-  assert.match(page, /Astro\.response\.status = 404/);
-  assert.match(page, /if \(!result\?\.post\)/);
+  assert.match(page, /Astro\.response\.status = blogLoadErrorStatus\(error\)/);
+  assert.match(page, /if \(!result\?\.post \|\|/);
+  assert.match(page, /throw new Error\('Malformed Wix article response\.'\)/);
   assert.match(page, /<h1>Article not found<\/h1>/);
   assert.doesNotMatch(page, /Promise\.all\(\[\s*getBlogAuthor/);
 });

@@ -1,4 +1,5 @@
 import { wixClient } from './wix';
+import { blogLoadErrorStatus } from './blog-load-status';
 
 export type BlogAuthor = {
   id: string;
@@ -97,7 +98,9 @@ export async function getBlogAuthorBySlug(value: unknown): Promise<BlogAuthor | 
     const memberId = fallbackMemberId(slug);
     if (memberId) {
       const member = await wixClient.members.getMember(memberId, { fieldsets: ['PUBLIC'] });
-      return authorFromMember(member);
+      const author = await authorFromMember(member);
+      if (!author) throw new Error('Malformed Wix author response.');
+      return author;
     }
 
     const result = await wixClient.members
@@ -105,8 +108,13 @@ export async function getBlogAuthorBySlug(value: unknown): Promise<BlogAuthor | 
       .eq('profile.slug', slug)
       .limit(1)
       .find();
-    return authorFromMember(result.items?.[0]);
-  } catch {
-    return null;
+    if (!Array.isArray(result?.items)) throw new Error('Malformed Wix author query response.');
+    if (result.items.length === 0) return null;
+    const author = await authorFromMember(result.items[0]);
+    if (!author) throw new Error('Malformed Wix author response.');
+    return author;
+  } catch (error) {
+    if (blogLoadErrorStatus(error) === 404) return null;
+    throw error;
   }
 }
