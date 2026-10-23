@@ -117,9 +117,9 @@ test('source details only retain a same-origin path, excluding query strings and
 
 // Execute the actual route with isolated platform bindings and mocked Wix/Brevo transport.
 const routeSource = await readFile(new URL('../src/pages/api/quote.ts', import.meta.url), 'utf8');
-const routeCode = stripTypeScriptTypes(routeSource.replace(/^import .*;\n/gm, '').replace(/export /g, '').replaceAll('import.meta.env.WIX_QUOTE_REQUESTS_COLLECTION_ID', 'buildCollection').replaceAll('import.meta.env.PUBLIC_SEO_ENV', "'staging'"));
-const createRoute = new Function('wixClient', 'env', 'waitUntil', 'notifySavedQuote', 'quoteSourcePath', 'requireQuoteRequestsCollectionId', 'isValidPhoneNumber', 'fetch', 'buildCollection', `${routeCode}\nreturn POST;`);
-async function exerciseRoute({ insertStatus = 200, data = {}, providerFails = false, ledgerFails = false, notificationMode = 'staging-test', runtimeCollection, buildCollection = 'QuoteRequestsStaging', buildMissing = false, tokenFails = false, validationStatus = 200, scheduleFails = false } = {}) {
+const routeCode = stripTypeScriptTypes(routeSource.replace(/^import .*;\n/gm, '').replace(/export /g, '').replaceAll('import.meta.env.WIX_QUOTE_REQUESTS_COLLECTION_ID', 'buildCollection').replaceAll('import.meta.env.PUBLIC_SEO_ENV', 'seoEnvironment'));
+const createRoute = new Function('wixClient', 'env', 'waitUntil', 'notifySavedQuote', 'quoteSourcePath', 'requireQuoteRequestsCollectionId', 'isValidPhoneNumber', 'fetch', 'buildCollection', 'seoEnvironment', `${routeCode}\nreturn POST;`);
+async function exerciseRoute({ insertStatus = 200, data = {}, providerFails = false, ledgerFails = false, notificationMode = 'staging-test', runtimeCollection, buildCollection = 'QuoteRequestsStaging', buildMissing = false, tokenFails = false, validationStatus = 200, scheduleFails = false, seoEnvironment = 'staging' } = {}) {
   const { env, sql } = setup(); env.QUOTE_EMAIL_MODE = notificationMode;
   if (runtimeCollection !== undefined) env.WIX_QUOTE_REQUESTS_COLLECTION_ID = runtimeCollection;
   if (ledgerFails) env.QUOTE_NOTIFICATIONS_DB = { prepare() { throw new Error('mock ledger error'); } };
@@ -128,7 +128,7 @@ async function exerciseRoute({ insertStatus = 200, data = {}, providerFails = fa
     calls.push(url);
     if (url.endsWith('/query')) return Response.json({ dataItems: [{ id: 'valid-catalogue-entry' }] }, { status: validationStatus });
     if (url === 'https://www.wixapis.com/data/v2/items') {
-      assert.equal(JSON.parse(init.body).dataCollectionId, 'QuoteRequestsStaging');
+      assert.equal(JSON.parse(init.body).dataCollectionId, seoEnvironment === 'production' ? 'QuoteRequests' : 'QuoteRequestsStaging');
       savedItems.push(JSON.parse(init.body).dataItem.data);
       return Response.json({ dataItem: { id: 'wix-enquiry-1' } }, { status: insertStatus });
     }
@@ -138,7 +138,7 @@ async function exerciseRoute({ insertStatus = 200, data = {}, providerFails = fa
     if (providerFails) throw new Error('mock provider outage');
     return accepted();
   };
-  const route = createRoute({ auth: { generateVisitorTokens: async () => { if (tokenFails) throw new Error('mock token failure'); return { accessToken: { value: 'mock-visitor-token' } }; } } }, env, promise => { pending.push(promise); if (scheduleFails) throw new Error('mock scheduler failure'); }, (settings, saved, stage) => notifySavedQuote(settings, saved, stage, transport), quoteSourcePath, requireQuoteRequestsCollectionId, isValidPhoneNumber, transport, buildMissing ? undefined : buildCollection);
+  const route = createRoute({ auth: { generateVisitorTokens: async () => { if (tokenFails) throw new Error('mock token failure'); return { accessToken: { value: 'mock-visitor-token' } }; } } }, env, promise => { pending.push(promise); if (scheduleFails) throw new Error('mock scheduler failure'); }, (settings, saved, stage) => notifySavedQuote(settings, saved, stage, transport), quoteSourcePath, requireQuoteRequestsCollectionId, isValidPhoneNumber, transport, buildMissing ? undefined : buildCollection, seoEnvironment);
   const response = await route({ request: new Request('https://preview.example.test/api/quote', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ make: quote.make, model: quote.model, year: quote.year, name: quote.customerName, whatsapp: quote.whatsapp, submissionId: quote.submissionId, ...data }) }) });
   const result = await response.json();
   await Promise.all(pending);
@@ -231,10 +231,61 @@ test('notification contact links use submitted international format while CMS an
     const savedDigits = input.replace(/\D/g, '');
     const destination = input.startsWith('00') ? savedDigits.slice(2) : savedDigits;
     assert.equal(response.status, 200);
-    assert.equal(savedItems[0].whatsapp, savedDigits);
+    assert.equal(savedItems[0].whatsApp, savedDigits);
+    assert.equal(savedItems[0].whatsapp, undefined);
     assert.equal(savedItems[0].contactPhoneInput, undefined);
     assert.match(outboundEmails[0].htmlContent, new RegExp(`href="tel:\\+${destination}"`));
     assert.ok(outboundEmails[0].textContent.includes(`https://wa.me/${destination}?text=`));
     assert.ok(decodeURIComponent(result.whatsappUrl).includes(savedDigits));
+  }
+});
+
+test('staging CMS uses the declared whatsApp key while notification and handoff retain the same phone', async () => {
+  const { response, result, savedItems, outboundEmails } = await exerciseRoute({ data: { whatsapp: '+971 50 123 4567' } });
+  assert.equal(response.status, 200);
+  assert.equal(savedItems[0].whatsApp, '971501234567');
+  assert.equal(Object.hasOwn(savedItems[0], 'whatsapp'), false);
+  assert.deepEqual(Object.keys(savedItems[0]).sort(), ['title','make','model','year','customerName','whatsApp','status','source'].sort());
+  assert.equal(outboundEmails[0].textContent.includes('971501234567'), true);
+  assert.equal(outboundEmails[0].textContent.includes('tel:+971501234567'), true);
+  assert.equal(decodeURIComponent(result.whatsappUrl).includes('Phone: 971501234567'), true);
+});
+
+test('production CMS keeps the original lowercase whatsapp field and unchanged payload', async () => {
+  const { response, result, savedItems, calls } = await exerciseRoute({
+    seoEnvironment: 'production', buildCollection: 'QuoteRequests', notificationMode: 'off',
+    data: { whatsapp: '+44 7742 107109' }
+  });
+  assert.equal(response.status, 200);
+  assert.equal(savedItems[0].whatsapp, '447742107109');
+  assert.equal(Object.hasOwn(savedItems[0], 'whatsApp'), false);
+  assert.deepEqual(Object.keys(savedItems[0]).sort(), ['title','make','model','year','customerName','whatsapp','status','source'].sort());
+  assert.equal(savedItems[0].make, quote.make);
+  assert.equal(savedItems[0].model, quote.model);
+  assert.equal(savedItems[0].year, Number(quote.year));
+  assert.equal(savedItems[0].customerName, quote.customerName);
+  assert.equal(savedItems[0].status, 'New');
+  assert.equal(savedItems[0].source, 'Headless Website');
+  assert.equal(decodeURIComponent(result.whatsappUrl).includes('Phone: 447742107109'), true);
+  assert.equal(calls.filter(url => url === 'https://www.wixapis.com/data/v2/items').length, 1);
+  assert.ok(!calls.includes('https://api.brevo.com/v3/smtp/email'));
+});
+
+test('runtime destination mapping and environment isolation cannot be overridden by payload phone keys', async () => {
+  const staging = await exerciseRoute({ runtimeCollection: 'QuoteRequestsStaging', buildMissing: true,
+    data: { whatsapp: '+971 50 123 4567', whatsApp: 'untrusted alternate value' }, notificationMode: 'off' });
+  assert.equal(staging.savedItems[0].whatsApp, '971501234567');
+  assert.equal(Object.hasOwn(staging.savedItems[0], 'whatsapp'), false);
+  const production = await exerciseRoute({ seoEnvironment: 'production', runtimeCollection: 'QuoteRequests', buildMissing: true, notificationMode: 'off' });
+  assert.equal(production.savedItems[0].whatsapp, quote.whatsapp);
+  assert.equal(Object.hasOwn(production.savedItems[0], 'whatsApp'), false);
+  for (const options of [
+    { runtimeCollection: 'QuoteRequests' },
+    { seoEnvironment: 'production', runtimeCollection: 'QuoteRequestsStaging', buildCollection: 'QuoteRequests' }
+  ]) {
+    const rejected = await exerciseRoute(options);
+    assert.equal(rejected.response.status, 500);
+    assert.deepEqual(rejected.savedItems, []);
+    assert.deepEqual(rejected.calls, []);
   }
 });

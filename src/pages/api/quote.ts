@@ -58,8 +58,10 @@ export const POST: APIRoute = async ({ request }) => {
     ]);
     if (!makeRow || !modelRow || !yearRow) return json({ ok: false, message: 'Please select valid vehicle details from the dropdowns.' }, 400);
 
+    // Derive the CMS field key only from the server-validated destination.
+    const phoneFieldKey = quoteRequestsCollectionId === 'QuoteRequestsStaging' ? 'whatsApp' : 'whatsapp';
     const title = `${make} ${model} ${year} - ${customerName}`;
-    const insertResponse = await fetch(INSERT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', authorization: accessToken }, body: JSON.stringify({ dataCollectionId: quoteRequestsCollectionId, dataItem: { data: { title, make, model, year: Number(year), customerName, whatsapp, status: 'New', source: 'Headless Website' } } }) });
+    const insertResponse = await fetch(INSERT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', authorization: accessToken }, body: JSON.stringify({ dataCollectionId: quoteRequestsCollectionId, dataItem: { data: { title, make, model, year: Number(year), customerName, [phoneFieldKey]: whatsapp, status: 'New', source: 'Headless Website' } } }) });
     if (!insertResponse.ok) throw new Error(`Quote request insert failed: ${insertResponse.status}`);
 
     const inserted = await insertResponse.json();
