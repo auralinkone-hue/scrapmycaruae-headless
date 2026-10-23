@@ -14,7 +14,7 @@ const sellMyCarServices = [
   { href: '/sell-car-with-gearbox-problems/', label: 'Gearbox Problems', icon: 'ph-gear-six' },
   { href: '/sell-flood-damaged-car/', label: 'Flood-Damaged Car', icon: 'ph-drop' },
   { href: '/sell-car-with-expired-registration/', label: 'Expired Registration', icon: 'ph-identification-card' },
-  { href: null, label: 'Old / Unwanted Cars' },
+  { href: '/sell-unwanted-car/', label: 'Sell Unwanted Car', icon: 'ph-clock-counter-clockwise' },
   { href: null, label: 'Car Removal' },
   { href: null, label: 'Fleet Disposal' }
 ] as const;
@@ -51,7 +51,7 @@ const visibleSellMyCarServices = sellMyCarServices.filter(
 );
 const sellConditionRoutes = new Set([
   '/sell-damaged-car/', '/sell-accident-damaged-car/',
-  '/sell-non-running-car/', '/sell-flood-damaged-car/'
+  '/sell-non-running-car/', '/sell-flood-damaged-car/', '/sell-unwanted-car/'
 ]);
 const desktopSellGroups = [
   { id: 'conditions', label: 'Vehicle Conditions', items: visibleSellMyCarServices.filter(service => sellConditionRoutes.has(service.href)) },

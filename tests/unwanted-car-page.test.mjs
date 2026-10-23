@@ -79,6 +79,14 @@ test('actual offline page HTML preserves SEO, eight matching FAQs, shared form a
   assert.deepEqual(faq.mainEntity.map(q=>[q.name,q.acceptedAnswer.text]),unwantedCarFaqs);
   for(const [q,a] of unwantedCarFaqs){assert.ok(html.includes(q));assert.ok(html.includes(a.replaceAll('&','&amp;')));}
   const crumbs=schemas.find(s=>s['@type']==='BreadcrumbList');assert.equal(crumbs.itemListElement.at(-1).item,'https://www.scrapmycaruae.com/sell-unwanted-car/');
+  const desktopNav=html.match(/<nav class="desktop-nav"[^>]*>([\s\S]*?)<\/nav>/)?.[1];
+  const mobileSellNav=html.match(/<section[^>]*id="mobile-view-sell"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+  for(const nav of [desktopNav,mobileSellNav]){
+    assert.ok(nav, 'Expected rendered desktop/mobile Sell My Car navigation');
+    assert.equal((nav.match(/href="\/sell-unwanted-car\/"/g)||[]).length,1);
+    assert.ok(nav.includes('Sell Unwanted Car'));
+    assert.ok(nav.includes('ph-clock-counter-clockwise'));
+  }
   assert.equal((html.match(/data-quote-form/g)||[]).length,1);
   for(const val of ['TOYOTA','HONDA','CAMRY','CIVIC','2014','2016'])assert.ok(html.includes(val));
   assert.ok(html.includes('placeholder="e.g. 50 123 4567"'));assert.ok(html.includes('src="/flags/ae.svg"'));
