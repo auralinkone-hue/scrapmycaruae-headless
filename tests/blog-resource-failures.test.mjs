@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { stripTypeScriptTypes } from 'node:module';
 import test from 'node:test';
 import { blogLoadErrorStatus } from '../src/lib/blog-load-status.ts';
+import { createBlogFailureDiagnostics } from '../src/lib/blog-failure-diagnostics.ts';
 
 const read = path => readFile(new URL('../' + path, import.meta.url), 'utf8');
 const stripImports = source => source.replace(/^import[\s\S]*?;\n/gm, '').replace(/export /g, '');
@@ -25,7 +26,9 @@ async function loaders(wixClient) {
   const code = stripTypeScriptTypes(stripImports(await read('src/lib/blog-author.ts')));
   return new Function('wixClient', 'blogLoadErrorStatus', code + ';return {getBlogAuthorBySlug,getBlogAuthor};')(wixClient, blogLoadErrorStatus);
 }
-async function route(kind, wixClient) {
+async function route(kind, wixClient, diagnosticOptions = {}) {
+  const diagnostics = [];
+  const startBlogOperation = createBlogFailureDiagnostics({ environment: 'staging', sink: event => diagnostics.push(event), ...diagnosticOptions });
   const paths = { category: 'src/pages/blogs/category/[slug].astro', author: 'src/pages/author/[slug].astro', post: 'src/pages/post/[slug].astro' };
   let code = (await read(paths[kind])).split('---')[1];
   // Essential post-load block only; optional enrichment has separate regressions.
@@ -33,11 +36,11 @@ async function route(kind, wixClient) {
   code = stripTypeScriptTypes(stripImports(code));
   const Astro = { params: { slug: kind === 'post' ? 'protected-article' : kind === 'author' ? 'smc-uae' : 'car-advice' },
     url: new URL('https://www.scrapmycaruae.com/'), response: { status: 200, headers: new Headers() } };
-  const dependencies = { Astro, wixClient, blogLoadErrorStatus, ...(await loaders(wixClient)) };
+  const dependencies = { Astro, wixClient, blogLoadErrorStatus, startBlogOperation, ...(await loaders(wixClient)) };
   const values = kind === 'category' ? '{category,posts,canonical,title,description,temporarilyUnavailable}'
     : kind === 'author' ? '{author,posts,canonical,title,description,temporarilyUnavailable}' : '{post,articleTemporarilyUnavailable}';
   const result = await new AsyncFunction(...Object.keys(dependencies), code + ';return ' + values)(...Object.values(dependencies));
-  return { ...result, status: Astro.response.status, headers: Astro.response.headers };
+  return { ...result, status: Astro.response.status, headers: Astro.response.headers, diagnostics };
 }
 function unavailable(result) {
   assert.equal(result.status, 503);
@@ -139,4 +142,34 @@ test('temporary error views use noindex and generic retry copy without changing 
     assert.match(source, /noindex=\{!(?:author|category)(?: \|\| temporarilyUnavailable)?\}/);
   }
   assert.equal(blogLoadErrorStatus({ status: 503, details: { applicationError: { code: 'POST_NOT_FOUND' } } }), 503);
+});
+
+test('actual article failure preserves 503 headers and emits one sanitized SDK-status diagnostic', async () => {
+  const error = { response: { status: 503, data: { private: 'PRIVATE_PAYLOAD' } }, message: 'PRIVATE_PAYLOAD' };
+  const r = await route('post', client({ posts: { getPostBySlug: throwError(error) } }));
+  unavailable(r);
+  assert.equal(r.diagnostics.length, 1);
+  assert.equal(r.diagnostics[0].operation, 'post-by-slug');
+  assert.equal(r.diagnostics[0].upstreamStatus, 503);
+  assert.equal(r.diagnostics[0].responseStatus, 503);
+  assert.ok(!JSON.stringify(r.diagnostics).includes('PRIVATE_PAYLOAD'));
+});
+test('actual routes preserve success, missing, malformed and optional-failure status with diagnostics', async () => {
+  for (const kind of ['category', 'author', 'post']) assert.deepEqual((await route(kind, client())).diagnostics, []);
+  const missing = await route('post', client({ posts: { getPostBySlug: throwError(failure(404)) } }));
+  assert.equal(missing.status, 404); assert.equal(missing.diagnostics[0].classification, 'not_found');
+  const malformed = await route('post', client({ posts: { getPostBySlug: async () => ({}) } }));
+  unavailable(malformed); assert.equal(malformed.diagnostics[0].classification, 'malformed_response');
+  const categoryResult = await route('category', client({ posts: { queryPosts: () => chain(throwError(failure(404))) } }));
+  unavailable(categoryResult); assert.equal(categoryResult.diagnostics[0].operation, 'category-posts');
+  assert.equal(categoryResult.diagnostics[0].responseStatus, 503); assert.equal(categoryResult.diagnostics[0].upstreamStatus, 404);
+  const authorResult = await route('author', client({ posts: { queryPosts: () => chain(throwError(failure(503))) } }));
+  assert.equal(authorResult.status, 200); assert.equal(authorResult.diagnostics[0].operation, 'author-posts');
+  assert.equal(authorResult.diagnostics[0].responseStatus, 200);
+});
+test('actual page response is unaffected when logging throws or environment is production', async () => {
+  const bad = client({ posts: { getPostBySlug: throwError(failure(503)) } });
+  unavailable(await route('post', bad, { sink: () => { throw new Error('sink unavailable'); } }));
+  const production = await route('post', bad, { environment: 'production' });
+  unavailable(production); assert.deepEqual(production.diagnostics, []);
 });

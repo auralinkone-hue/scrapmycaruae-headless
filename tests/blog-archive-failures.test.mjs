@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { stripTypeScriptTypes } from 'node:module';
 import test from 'node:test';
+import { createBlogFailureDiagnostics } from '../src/lib/blog-failure-diagnostics.ts';
 import { createBlogArchivePostsQuery, readBlogArchivePostsResponse } from '../src/lib/blog-archive-query.ts';
 import { defaultSocialImage, defaultSocialImageAlt, serviceSchemaForPath, serializeJsonLd } from '../src/lib/structured-data.ts';
 
@@ -13,7 +14,7 @@ const frontmatter = stripImports(source.split('---')[1]);
 const code = stripTypeScriptTypes(`async function execute() { ${frontmatter}
  return { posts, totalCount, totalPages, requestedPage, activeCategory, categories, categoryLoadFailed,
  postQueryFailed, archiveUrl, getPostHref, getPostImage, getPrimaryCategory, formatDate }; }`);
-const execute = new Function('Astro', 'wixClient', 'createBlogArchivePostsQuery', 'readBlogArchivePostsResponse', 'console', code + ';return execute();');
+const execute = new Function('Astro', 'wixClient', 'createBlogArchivePostsQuery', 'readBlogArchivePostsResponse', 'console', 'startBlogOperation', code + ';return execute();');
 const category = { _id: 'safety-id', slug: 'safety-precautions', label: 'Safety', postCount: 24 };
 const article = { _id: 'original-id', slug: 'imple-steps-to-sell-your-scrap-car-in-uae-for-the-best-price', title: 'Original Wix title', categoryIds: ['safety-id'],
   media: { wixMedia: { image: { url: 'https://static.wixstatic.com/media/original.webp', width: 1200, height: 675 } } }, firstPublishedDate: '2026-01-02T00:00:00Z' };
@@ -21,6 +22,8 @@ const fail = status => async () => { throw Object.assign(new Error('Mock upstrea
 const throws = error => async () => { throw error; };
 async function route(path = '/blogs', options = {}) {
   const calls = { categories: 0, posts: [] };
+  const diagnostics = [];
+  const startBlogOperation = createBlogFailureDiagnostics({ environment: 'staging', sink: event => diagnostics.push(event), ...options.diagnosticOptions });
   const Astro = { url: new URL(path, 'https://www.scrapmycaruae.com'), response: { status: 200, headers: new Headers() },
     redirect: (location, status) => new Response(null, { status, headers: { Location: location } }) };
   const wixClient = {
@@ -28,8 +31,8 @@ async function route(path = '/blogs', options = {}) {
       find: options.categories || (async () => ({ items: [category] })) }; } },
     posts: { async queryPosts(query) { calls.posts.push(query); return (options.posts || (async () => ({ posts: [article], pagingMetadata: { total: 24 } })))(query); } }
   };
-  const result = await execute(Astro, wixClient, createBlogArchivePostsQuery, readBlogArchivePostsResponse, { error() {} });
-  return { result, calls, status: result instanceof Response ? result.status : Astro.response.status,
+  const result = await execute(Astro, wixClient, createBlogArchivePostsQuery, readBlogArchivePostsResponse, { error() {} }, startBlogOperation);
+  return { result, calls, diagnostics, status: result instanceof Response ? result.status : Astro.response.status,
     headers: result instanceof Response ? result.headers : Astro.response.headers };
 }
 function unavailable(value) {
@@ -182,4 +185,18 @@ test('actual layout and middleware preserve canonicals, production success polic
       }
     }
   }
+});
+
+test('actual archive emits only failure diagnostics without altering page-2 or category error policy', async () => {
+  assert.deepEqual((await route()).diagnostics, []);
+  const page2 = await route('/blogs?page=2', { posts: fail(503) });
+  unavailable(page2); assert.equal(page2.diagnostics.length, 1);
+  assert.equal(page2.diagnostics[0].operation, 'archive-posts'); assert.equal(page2.diagnostics[0].upstreamStatus, 503);
+  const categories = await route('/blogs?category=safety-precautions', { categories: fail(503) });
+  unavailable(categories); assert.equal(categories.calls.posts.length, 0);
+  assert.equal(categories.diagnostics.length, 1); assert.equal(categories.diagnostics[0].operation, 'archive-categories');
+  const optional = await route('/blogs', { categories: fail(503) });
+  assert.equal(optional.status, 200); assert.equal(optional.diagnostics[0].responseStatus, 200);
+  const noLogger = await route('/blogs?page=2', { posts: fail(503), diagnosticOptions: { sink: () => { throw new Error('logger offline'); } } });
+  unavailable(noLogger);
 });

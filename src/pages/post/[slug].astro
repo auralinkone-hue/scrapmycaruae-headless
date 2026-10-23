@@ -26,6 +26,7 @@ import { loadPostPageEnrichment } from '../../lib/post-enrichment';
 import { asPositiveNumber, asSafeText, asValidDate, asWixMedia, isRenderableRelatedPost } from '../../lib/wix-post-values';
 import { getVehicleData } from '../../lib/vehicle-data';
 import { blogLoadErrorStatus } from '../../lib/blog-load-status';
+import { startBlogOperation } from '../../lib/blog-failure-diagnostics';
 import { blogPostingSchema, serializeJsonLd } from '../../lib/structured-data';
 import ArticleServiceLink from '../../components/ArticleServiceLink.astro';
 import { getArticleServiceLink } from '../../lib/article-service-links';
@@ -33,6 +34,7 @@ import { getArticleServiceLink } from '../../lib/article-service-links';
 const slug = Astro.params.slug ?? '';
 let post: any = null;
 let loadError = '';
+const recordPostFailure = startBlogOperation('post-by-slug', 'article');
 
 try {
   const result = await wixClient.posts.getPostBySlug(slug, {
@@ -44,6 +46,7 @@ try {
   post = result.post;
 } catch (error) {
   Astro.response.status = blogLoadErrorStatus(error);
+  recordPostFailure(error, Astro.response.status);
   if (Astro.response.status === 503) {
     Astro.response.headers.set('Retry-After', '60');
     Astro.response.headers.set('Cache-Control', 'no-store');

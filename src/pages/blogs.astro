@@ -4,6 +4,7 @@ export const prerender = false;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/blog-media-loading.css';
 import { wixClient } from '../lib/wix';
+import { startBlogOperation } from '../lib/blog-failure-diagnostics';
 import { wixResponsiveImage } from '../lib/wix-image';
 import { createBlogArchivePostsQuery, readBlogArchivePostsResponse } from '../lib/blog-archive-query';
 
@@ -24,6 +25,7 @@ const requestedPage = Math.max(1, Number.parseInt(Astro.url.searchParams.get('pa
 let categories: BlogCategory[] = [];
 let allCategories: BlogCategory[] = [];
 let categoryLoadFailed = false;
+const recordCategoryFailure = startBlogOperation('archive-categories', 'archive');
 
 try {
   const categoryResult = await wixClient.categories
@@ -41,7 +43,7 @@ try {
   categories = allCategories.filter((category) => (category.postCount ?? 1) > 0);
 } catch (error) {
   categoryLoadFailed = true;
-  console.error('Unable to load Wix Blog categories for archive navigation.');
+  recordCategoryFailure(error, requestedCategorySlug ? 503 : 200);
 }
 
 const activeCategory = requestedCategorySlug
@@ -60,6 +62,7 @@ const categoryById = new Map(categories.map((category) => [category._id, categor
 let posts: any[] = [];
 let totalCount = 0;
 let postQueryFailed = false;
+const recordPostsFailure = startBlogOperation('archive-posts', 'archive');
 
 if (requestedCategorySlug && categoryLoadFailed) {
   // Do not run an unfiltered query when the requested category is unknown.
@@ -74,7 +77,7 @@ if (requestedCategorySlug && categoryLoadFailed) {
   totalCount = archiveResult.totalCount;
 } catch (error) {
   postQueryFailed = true;
-  console.error('Unable to load Wix Blog posts for archive.');
+  recordPostsFailure(error, 503);
 }
 
 if (postQueryFailed) {

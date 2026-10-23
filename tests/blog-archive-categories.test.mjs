@@ -13,7 +13,7 @@ test('archive loads Wix categories once and retains the normal archive on catego
 
   assert.match(page, /wixClient\.categories\s*\.queryCategories\(\)\s*\.ascending\('displayPosition'\)\s*\.limit\(100\)\s*\.find\(\)/);
   assert.match(page, /categoryLoadFailed = true/);
-  assert.match(page, /Unable to load Wix Blog categories/);
+  assert.match(page, /recordCategoryFailure\(error, requestedCategorySlug \? 503 : 200\)/);
   assert.match(page, /let posts: any\[\] = \[\]/);
 });
 

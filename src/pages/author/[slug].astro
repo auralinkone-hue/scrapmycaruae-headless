@@ -6,17 +6,20 @@ import BlogArticleCard from '../../components/BlogArticleCard.astro';
 import { getBlogAuthorBySlug } from '../../lib/blog-author';
 import { wixClient } from '../../lib/wix';
 import { blogLoadErrorStatus } from '../../lib/blog-load-status';
+import { startBlogOperation } from '../../lib/blog-failure-diagnostics';
 
 const PAGE_SIZE = 12;
 const requestedSlug = Astro.params.slug ?? '';
 const cursor = Astro.url.searchParams.get('cursor') || '';
 
 let author: Awaited<ReturnType<typeof getBlogAuthorBySlug>> = null;
+const recordAuthorFailure = startBlogOperation('author-by-slug', 'author');
 try {
   author = await getBlogAuthorBySlug(requestedSlug);
   if (!author) Astro.response.status = 404;
 } catch (error) {
   Astro.response.status = blogLoadErrorStatus(error);
+  recordAuthorFailure(error, Astro.response.status);
   if (Astro.response.status === 503) {
     Astro.response.headers.set('Retry-After', '60');
     Astro.response.headers.set('Cache-Control', 'no-store');
@@ -28,6 +31,7 @@ let nextCursor = '';
 let previousCursor = '';
 
 if (author) {
+  const recordPostsFailure = startBlogOperation('author-posts', 'author');
   try {
     let query = wixClient.posts
       .queryPosts()
@@ -39,7 +43,8 @@ if (author) {
     posts = result.items ?? [];
     nextCursor = typeof result.cursors?.next === 'string' ? result.cursors.next : '';
     previousCursor = typeof result.cursors?.prev === 'string' ? result.cursors.prev : '';
-  } catch {
+  } catch (error) {
+    recordPostsFailure(error, 200);
     // The author profile itself still renders if the optional post list is temporarily unavailable.
     posts = [];
   }
