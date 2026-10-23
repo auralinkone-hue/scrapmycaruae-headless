@@ -58,7 +58,7 @@ export function initializeAnalytics() {
   document.addEventListener('focusin', (event) => {
     const target = event.target;
     if (!(target instanceof Element) || !target.matches('input, select, textarea')) return;
-    const form = target.closest('[data-quote-form]');
+    const form = target.closest('.quote-card');
     if (!form || startedForms.has(form)) return;
     startedForms.add(form);
     trackAnalyticsEvent('quote_form_start', { form_name: 'valuation_form' });
