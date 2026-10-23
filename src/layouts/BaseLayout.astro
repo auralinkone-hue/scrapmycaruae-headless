@@ -38,6 +38,12 @@ const resolvedOgImageAlt = ogImage ? title : defaultSocialImageAlt;
 const serviceSchema = serviceSchemaForPath(Astro.url.pathname);
 const gtmId = import.meta.env.PUBLIC_GTM_ID?.trim() || '';
 const analyticsEnabled = import.meta.env.PUBLIC_ANALYTICS_ENABLED === 'true' && Boolean(gtmId);
+const cloudflareAnalyticsToken = import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN?.trim() || '';
+const cloudflareAnalyticsEnabled =
+  import.meta.env.PUBLIC_SEO_ENV === 'production' && analyticsEnabled &&
+  import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_ENABLED === 'true' &&
+  /^[a-f0-9]{32}$/i.test(cloudflareAnalyticsToken) &&
+  siteUrl === 'https://www.scrapmycaruae.com';
 ---
 
 <!doctype html>
@@ -77,6 +83,11 @@ const analyticsEnabled = import.meta.env.PUBLIC_ANALYTICS_ENABLED === 'true' && 
 
     {serviceSchema && <script type="application/ld+json" set:html={serializeJsonLd(serviceSchema)} />}
 
+    {cloudflareAnalyticsEnabled && <meta name="smc-cloudflare-analytics-config" content={cloudflareAnalyticsToken} />}
+    <script>
+      import { initializeCloudflareAnalytics } from '../scripts/cloudflare-analytics';
+      initializeCloudflareAnalytics();
+    </script>
     {analyticsEnabled && <meta name="smc-analytics-config" content={gtmId} />}
     <script>
       import { initializeAnalytics } from '../scripts/analytics';

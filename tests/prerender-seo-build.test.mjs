@@ -49,7 +49,11 @@ for (const name of ['node:http', 'node:https']) {
         ...inherited, PUBLIC_SEO_ENV: environment, PUBLIC_SITE_URL: origin,
         PUBLIC_WIX_CLIENT_ID: '00000000-0000-4000-8000-000000000000',
         WIX_QUOTE_REQUESTS_COLLECTION_ID: 'QuoteRequestsStaging',
-        PUBLIC_ANALYTICS_ENABLED: 'false', ASTRO_TELEMETRY_DISABLED: '1', WRANGLER_SEND_METRICS: 'false',
+        PUBLIC_ANALYTICS_ENABLED: environment === 'production' ? 'true' : 'false',
+        PUBLIC_GTM_ID: 'GTM-TFQ7BDGX',
+        PUBLIC_CLOUDFLARE_ANALYTICS_ENABLED: environment === 'production' ? 'true' : 'false',
+        PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN: '49956eb062ca47e2b1c53997795bee44',
+        ASTRO_TELEMETRY_DISABLED: '1', WRANGLER_SEND_METRICS: 'false',
         NODE_OPTIONS: `--require=${offline}`
       }
     });
@@ -68,6 +72,10 @@ for (const name of ['node:http', 'node:https']) {
         assert.deepEqual(metaValues(html, 'googlebot'), [expected], `${environment} ${route} Googlebot`);
         assert.equal([...html.matchAll(/<link\b[^>]*rel="canonical"[^>]*>/g)].length, 1);
         assert.ok(html.includes(`href="${origin}${route}"`), `${environment} ${route} canonical`);
+        assert.deepEqual(metaValues(html, 'smc-cloudflare-analytics-config'), environment === 'production' ? ['49956eb062ca47e2b1c53997795bee44'] : []);
+        assert.deepEqual(metaValues(html, 'smc-analytics-config'), environment === 'production' ? ['GTM-TFQ7BDGX'] : []);
+        // Optional beacons are installed by the consent controller, never hardcoded.
+        assert.doesNotMatch(html, /<script[^>]+src=["'][^"']*cloudflareinsights\.com/);
         assert.deepEqual(metaValues(html, 'twitter:image'), [origin + defaultSocialImage]);
         assert.deepEqual(metaValues(html, 'twitter:image:alt'), [defaultSocialImageAlt]);
         assert.deepEqual(metaValues(html, 'twitter:card'), ['summary_large_image']);

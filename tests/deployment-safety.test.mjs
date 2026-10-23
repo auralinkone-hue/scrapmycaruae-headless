@@ -177,3 +177,29 @@ for (const [name, mutate] of [
     assert.ok(!calls.includes('upload'));
   } finally { rmSync(fixture.dir, { recursive: true, force: true }); }
 });
+
+
+test('Cloudflare analytics cannot activate on staging or without an approved production target', () => {
+  const analytics = { PUBLIC_ANALYTICS_ENABLED: 'true', PUBLIC_GTM_ID: 'GTM-TFQ7BDGX', PUBLIC_CLOUDFLARE_ANALYTICS_ENABLED: 'true', PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN: '49956eb062ca47e2b1c53997795bee44' };
+  assert.throws(() => validateStage({ PUBLIC_CLOUDFLARE_ANALYTICS_ENABLED: 'true' }), /Cloudflare analytics/);
+  assert.throws(() => validateStage({ PUBLIC_CLOUDFLARE_ANALYTICS_ENABLED: 'yes' }), /flag/);
+  assert.throws(() => loadDeployment('production', { ...production, ...analytics }, root), /approved/);
+  assert.equal(validateDeployment('production', { ...production, ...analytics }, approved, prodConfig).environment, 'production');
+  for (const invalid of [{ PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN: '' }, { PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN: 'bad' }, { PUBLIC_ANALYTICS_ENABLED: 'false' }]) {
+    assert.throws(() => validateDeployment('production', { ...production, ...analytics, ...invalid }, approved, prodConfig), /Cloudflare analytics/);
+  }
+});
+
+test('staging generated HTML with analytics activation cannot pass upload guards', () => {
+  const fixture = generatedFixture();
+  try {
+    const file = 'dist/client/contact-us/index.html';
+    const html = readFileSync(join(fixture.dir, file), 'utf8');
+    fixture.write(file, html + `<script>document.querySelector('meta[name="smc-cloudflare-analytics-config"]')</script>`);
+    assert.doesNotThrow(() => verifyDeploymentBuild(validateStage({}), staging, fixture.dir));
+    for (const extra of ['<meta name="smc-cloudflare-analytics-config" content="token">', '<meta name="smc-analytics-config" content="GTM-TFQ7BDGX">', '<script src="https://static.cloudflareinsights.com/beacon.min.js"></script>']) {
+      fixture.write(file, html + extra);
+      assert.throws(() => verifyDeploymentBuild(validateStage({}), staging, fixture.dir), /activate analytics/);
+    }
+  } finally { rmSync(fixture.dir, { recursive: true, force: true }); }
+});

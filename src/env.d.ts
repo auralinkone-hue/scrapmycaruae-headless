@@ -1,6 +1,8 @@
 type Runtime = import("@astrojs/cloudflare").Runtime<Env>;
 
 interface ImportMetaEnv {
+  readonly PUBLIC_CLOUDFLARE_ANALYTICS_ENABLED?: string;
+  readonly PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN?: string;
 	readonly WIX_QUOTE_REQUESTS_COLLECTION_ID?: string;
 }
 

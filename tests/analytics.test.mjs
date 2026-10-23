@@ -4,7 +4,7 @@ import test from 'node:test';
 
 const readProjectFile = (relativePath) => readFile(new URL(`../${relativePath}`, import.meta.url), 'utf8');
 
-test('GTM is the conditional-only analytics loader', async () => {
+test('GTM retains its existing consent-controlled analytics loader', async () => {
   const layout = await readProjectFile('src/layouts/BaseLayout.astro');
 
   assert.match(layout, /PUBLIC_ANALYTICS_ENABLED === 'true'/);
