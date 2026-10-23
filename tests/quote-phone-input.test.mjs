@@ -1,27 +1,27 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import { phoneExample } from '../src/lib/phone.ts';
 import { initialiseQuotePhone } from '../src/lib/quote-phone-input.ts';
 
 class Control extends EventTarget {
   value = ''; textContent = ''; placeholder = '';
 }
 function setup() {
-  const country = new Control(), input = new Control(), flag = new Control(), dial = new Control(), hint = new Control(), status = new Control();
+  const country = new Control(), input = new Control(), flag = new Control(), dial = new Control(), status = new Control();
   country.value = 'AE';
   const nodes = { '[data-phone-country]': country, 'input[name="whatsapp"]': input, '[data-phone-flag]': flag,
-    '[data-phone-dial]': dial, '[data-phone-example]': hint, '[data-phone-status]': status };
+    '[data-phone-dial]': dial, '[data-phone-status]': status };
   const phone = initialiseQuotePhone({ querySelector: selector => nodes[selector] });
   const type = value => { input.value = value; input.dispatchEvent(new Event('input')); };
   const select = value => { country.value = value; country.dispatchEvent(new Event('change')); };
-  return { country, input, flag, dial, hint, status, phone, type, select };
+  return { country, input, flag, dial, status, phone, type, select };
 }
 
-test('shared phone controller defaults to UAE flag, dial code, national placeholder and full example', () => {
+test('shared phone controller defaults to UAE flag, dial code, example inside the national placeholder', () => {
   const ui = setup();
   assert.equal(ui.country.value, 'AE'); assert.equal(ui.flag.src, '/flags/ae.svg');
-  assert.equal(ui.dial.textContent, '+971'); assert.equal(ui.input.placeholder, '50 123 4567');
-  assert.equal(ui.hint.textContent, 'e.g. +971 50 123 4567');
+  assert.equal(ui.dial.textContent, '+971'); assert.equal(ui.input.placeholder, 'e.g. 50 123 4567');
   assert.equal(ui.phone.error(), 'Please enter your phone number.');
 });
 
@@ -33,9 +33,16 @@ test('country changes update visible flag, dial and examples; local UK and Pakis
   ]) {
     ui.select(country); ui.type(input);
     assert.equal(ui.flag.src, `/flags/${country.toLowerCase()}.svg`); assert.equal(ui.dial.textContent, code);
-    assert.ok(ui.hint.textContent.includes(code)); assert.equal(ui.phone.number().e164, expected);
+    assert.equal(ui.input.placeholder, `e.g. ${phoneExample(country).national}`); assert.equal(ui.phone.number().e164, expected);
     assert.equal(ui.phone.error(), '');
   }
+});
+
+test('Saudi selection updates the in-field example without changing entered text', () => {
+  const ui = setup(); ui.type('123'); ui.select('SA');
+  assert.equal(ui.dial.textContent, '+966');
+  assert.equal(ui.input.placeholder, `e.g. ${phoneExample('SA').national}`);
+  assert.equal(ui.input.value, '123');
 });
 
 test('international paste changes the selected country, announces it and does not duplicate the calling code on blur', () => {
@@ -80,7 +87,7 @@ test('native controls preserve keyboard access, labels, autofill, inline error a
   assert.match(source, /selected=\{country.iso === 'AE'\}/);
   assert.match(source, /countryDialOptions.map/); assert.match(source, /countryFlag\(country.iso\)/);
   assert.match(source, /type="tel" inputmode="tel" autocomplete="tel-national"/);
-  assert.match(source, /aria-describedby=\{`\$\{phoneId\}-example \$\{phoneId\}-error`\}/);
+  assert.match(source, /aria-describedby=\{`\$\{phoneId\}-error`\}/);
   assert.match(source, /data-phone-status role="status" aria-live="polite"/);
   assert.match(source, /phone-country:focus-within/);
   assert.match(source, /phone-field.is-invalid/);

@@ -50,12 +50,14 @@ const years = [{year:2014}];
   assert.equal(ids.length, 3); assert.equal(new Set(ids).size, 3);
   for (const id of ids) {
     assert.ok(html.includes(`for="${id}"`));
-    assert.ok(html.includes(`aria-describedby="${id}-example ${id}-error"`));
+    assert.ok(html.includes(`aria-describedby="${id}-error"`));
     assert.ok(html.includes(`id="${id}-error"`));
   }
   assert.equal([...html.matchAll(/autocomplete="tel-national"/g)].length, 3);
-  assert.equal([...html.matchAll(/placeholder="50 123 4567"/g)].length, 3);
-  assert.equal([...html.matchAll(/e.g. \+971 50 123 4567/g)].length, 3);
+  assert.equal([...html.matchAll(/placeholder="e.g. 50 123 4567"/g)].length, 3);
+  assert.ok(!html.includes('data-phone-example'));
+  assert.ok(!html.includes('-example"'));
+  assert.ok(!html.includes('e.g. +971'));
   assert.equal([...html.matchAll(/data-vehicle-models=/g)].length, 3);
   assert.ok(html.includes('CAMRY') && html.includes('CIVIC'));
   assert.equal([...html.matchAll(/src="\/flags\/ae.svg"/g)].length, 3);

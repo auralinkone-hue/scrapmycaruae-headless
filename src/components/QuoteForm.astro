@@ -74,10 +74,7 @@ const isFreeQuote = variant === 'free-quote';
     </div>
 
     <div class="form-field phone-field" data-field="whatsapp">
-      <div class="phone-label-row">
-        <label class="field-label" for={phoneId}>Phone / WhatsApp</label>
-        <span class="phone-example" id={`${phoneId}-example`} data-phone-example>e.g. +971 50 123 4567</span>
-      </div>
+      <label class="field-label" for={phoneId}>Phone / WhatsApp</label>
       <div class="field-control phone-control">
         <span class="phone-country">
           <button type="button" class="phone-country-face" data-country-trigger tabindex="-1" aria-hidden="true" aria-haspopup="dialog" aria-controls={`${phoneId}-country-menu`} aria-expanded="false" aria-label="Change phone country: United Arab Emirates (+971)">
@@ -96,7 +93,7 @@ const isFreeQuote = variant === 'free-quote';
           <p class="country-empty" data-country-empty role="status" hidden>No countries found. Try a name or calling code.</p>
           <span class="phone-status" data-country-results role="status" aria-live="polite"></span>
         </div>
-        <input id={phoneId} name="whatsapp" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="50 123 4567" maxlength="64" aria-describedby={`${phoneId}-example ${phoneId}-error`} required />
+        <input id={phoneId} name="whatsapp" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="e.g. 50 123 4567" maxlength="64" aria-describedby={`${phoneId}-error`} required />
       </div>
       <span class="field-error" id={`${phoneId}-error`} data-error-for="whatsapp" role="alert" hidden></span>
       <span class="phone-status" data-phone-status role="status" aria-live="polite"></span>
@@ -319,8 +316,6 @@ const isFreeQuote = variant === 'free-quote';
   .field-control { position: relative; display: block; min-width: 0; } input, select { width: 100%; min-width: 0; height: 50px; padding: 0 14px; border: 1px solid #d5ded2; border-radius: 12px; outline: none; background: #fff; color: #171a17; font: inherit; font-size: 15px; font-weight: 500; transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease; } select { padding-right: 37px; cursor: pointer; } select:disabled { background: #f3f5f2; color: #8b948a; cursor: not-allowed; }
   .with-icon .ph { position: absolute; z-index: 1; top: 50%; left: 14px; color: #5a8d53; font-size: 18px; pointer-events: none; transform: translateY(-50%); } .with-icon input, .with-icon select { padding-left: 43px; } .with-icon select { padding-right: 37px; } input:focus, select:focus { border-color: #609a59; box-shadow: 0 0 0 3px rgba(62,122,55,.1); } input:focus-visible, select:focus-visible, .submit:focus-visible { outline: 3px solid rgba(47,111,45,.16); outline-offset: 2px; }
   .model-availability { grid-column: 1 / -1; display: inline-flex; align-items: center; gap: 5px; width: fit-content; margin: -3px 0 -1px; color: #477a42; font-size: 11px; font-weight: 760; line-height: 1.2; } .model-availability .ph { font-size: 14px; } .model-availability[hidden] { display: none; } .field-error { display: flex; align-items: center; gap: 5px; color: #b42318; font-size: 11px; font-weight: 680; line-height: 1.25; } .field-error::before { content: ""; width: 5px; height: 5px; flex: 0 0 auto; border-radius: 50%; background: currentColor; } .field-error[hidden] { display: none; } .form-field.is-invalid input, .form-field.is-invalid select { border-color: #dd554c; background: #fff9f8; box-shadow: 0 0 0 3px rgba(221,85,76,.09); } .form-field.is-invalid .with-icon .ph { color: #c5423b; }
-  .phone-label-row { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:3px 8px; }
-  .phone-example { color:#61715f; font-size:10px; line-height:1.2; white-space:nowrap; }
   .phone-control { display:flex; align-items:stretch; }
   .phone-country { position:relative; flex:0 0 110px; min-width:0; }
   .phone-country-face { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:7px; padding:0 10px; border:1px solid #d5ded2; border-right:0; border-radius:11px 0 0 11px; background:#f5f8f3; color:#24372a; font:inherit; font-size:13px; font-weight:650; pointer-events:none; transition:background 160ms ease,box-shadow 160ms ease; }
@@ -361,7 +356,6 @@ const isFreeQuote = variant === 'free-quote';
   .quote-card .phone-control>input { flex:1 1 0; width:0; border-radius:0 12px 12px 0; padding-inline:12px; }
   .phone-country:focus-within .phone-country-face { border-color:#609a59; box-shadow:0 0 0 3px rgba(62,122,55,.14); }
   .phone-field.is-invalid .phone-country-face { border-color:#dd554c; background:#fff0ed; }
-  .quote-card--blog-sidebar .phone-example { color:#d7eadb; }
   .quote-card--blog-sidebar .phone-field .field-error { color:#ffd9d2; }
   .phone-status { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
   .submit { min-height:54px; margin-top:2px; padding:0 9px 0 20px; border:1px solid #174b25; border-radius:999px; background:linear-gradient(135deg,#1b5428,#276d33); color:#fff; font:inherit; font-size:14px; font-weight:700; letter-spacing:.012em; display:inline-flex; align-items:center; justify-content:center; gap:10px; cursor:pointer; box-shadow:0 12px 24px rgba(23,63,29,.18); transition:transform 160ms ease,background 160ms ease,box-shadow 160ms ease,opacity 160ms ease; } .submit .ph { display:grid; width:34px; height:34px; place-items:center; border-radius:50%; background:#b3e69b; color:#174020; font-size:17px; transition:background-color 160ms ease; } .submit:hover { transform:translateY(-1px); background:#163f20; box-shadow:0 15px 28px rgba(23,63,29,.24); } .submit:hover .ph { background:#fff; } .submit:active { transform:translateY(0) scale(.99); } .submit:disabled { opacity:.68; cursor:wait; }

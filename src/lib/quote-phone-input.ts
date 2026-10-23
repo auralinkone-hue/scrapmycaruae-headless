@@ -8,7 +8,6 @@ export function initialiseQuotePhone(root: Element) {
   const input = root.querySelector<HTMLInputElement>('input[name="whatsapp"]')!;
   const flag = root.querySelector<HTMLImageElement>('[data-phone-flag]')!;
   const dial = root.querySelector<HTMLElement>('[data-phone-dial]')!;
-  const hint = root.querySelector<HTMLElement>('[data-phone-example]')!;
   const announcement = root.querySelector<HTMLElement>('[data-phone-status]')!;
   const picker = initialiseCountryPicker(root);
   let previousCountry = country.value;
@@ -17,8 +16,7 @@ export function initialiseQuotePhone(root: Element) {
     const example = phoneExample(country.value);
     flag.src = countryFlagAsset(option.iso);
     dial.textContent = phoneDialCode(option.iso);
-    input.placeholder = example.national;
-    hint.textContent = example.international ? `e.g. ${example.international}` : '';
+    input.placeholder = `e.g. ${example.national}`;
     previousCountry = country.value;
     picker.sync();
   };
