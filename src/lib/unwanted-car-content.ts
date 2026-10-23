@@ -9,6 +9,20 @@ export const unwantedCarConditions = [
   { id: 'deteriorated', icon: 'ph-recycle', label: 'Heavily deteriorated', title: 'Condition helps determine the right route.', text: 'Extensive deterioration, missing parts or several unresolved faults may make a scrap assessment more appropriate. The team reviews the vehicle before discussing a sale, collection or scrapping arrangements.', href: '/scrap-old-car/', link: 'Read the old-car scrap guide', note: 'Useful detail: missing parts and available paperwork.' }
 ] as const;
 
+const sedanPhoto = (base: string, alt: string) => ({
+  src: `/sections/${base}-640.webp`,
+  srcset: `/sections/${base}-640.webp 640w, /sections/${base}-960.webp 960w`,
+  width: 960, height: 640, alt
+});
+export const unwantedConditionPhotos = {
+  drives: sedanPhoto('nissan-altima-workshop', 'Used silver family sedan parked outside a UAE workshop'),
+  parked: sedanPhoto('hyundai-elantra-valuation', 'Older silver sedan with visible wear parked on a UAE forecourt'),
+  repairs: { src: '/sections/gearbox-inspection-workshop.webp', srcset: '', width: 1200, height: 900, alt: 'A worn gearbox being examined on a workshop bench' },
+  body: sedanPhoto('honda-accord-valuation', 'Silver family sedan with a dented front wing and bumper scuffs'),
+  'no-start': sedanPhoto('mitsubishi-lancer-valuation', 'Used silver sedan awaiting a condition assessment at a UAE forecourt'),
+  deteriorated: { src: '/sections/older-worn-car-uae.webp', srcset: '', width: 1536, height: 1024, alt: 'Older silver sedan with faded paint, worn headlights and bumper wear' }
+} as const;
+
 export const unwantedCarFaqs = [
   ['Can I sell an unwanted car that still runs?', 'Yes, you can request a valuation for a running second car or an older vehicle you no longer need. Unwanted describes your circumstances, not a scrap classification. The team assesses its condition before discussing an offer or next steps.'],
   ['Can a car parked for months or years still have value?', 'It may. Make, model, year, completeness and current condition matter alongside time unused. Share how long it has been parked, when it last ran and any known faults. A long parking period does not establish a fixed value.'],

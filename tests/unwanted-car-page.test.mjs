@@ -4,7 +4,7 @@ import { cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/pr
 import path from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { unwantedCarConditions, unwantedCarFaqs, unwantedCarTitle } from '../src/lib/unwanted-car-content.ts';
+import { unwantedCarConditions, unwantedCarFaqs, unwantedCarTitle, unwantedConditionPhotos } from '../src/lib/unwanted-car-content.ts';
 import { initializeUnwantedConditions } from '../src/lib/unwanted-car-interactions.ts';
 import { indexableStaticRoutes } from '../src/lib/site-routes.ts';
 
@@ -86,6 +86,15 @@ test('actual offline page HTML preserves SEO, eight matching FAQs, shared form a
   assert.ok(html.includes('href="/post/scrap-or-sell-the-ultimate-decision-guide-for-dubai-car-owners"'));
   assert.equal((html.match(/data-unwanted-condition=/g)||[]).length,6);
   assert.equal((html.match(/<article[^>]*data-unwanted-panel/g)||[]).length,6);
+  assert.equal((html.match(/<figure class="condition-photo"/g)||[]).length, 6);
+  assert.ok(!html.includes('vehicle-drawing'));
+  for(const condition of unwantedCarConditions){
+    const photo=unwantedConditionPhotos[condition.id];
+    assert.ok(html.includes(`alt="${photo.alt}"`));
+    assert.ok(html.includes(`src="${photo.src}"`));
+    const bytes=await readFile(path.join(root,'public',photo.src));
+    assert.equal(bytes.subarray(8,12).toString(),'WEBP');
+  }
   assert.match(html, /aria-label="UAE collection coverage/);
   assert.match(html, /fetchpriority="high"/);assert.match(html, /srcset="\/sections\/ford-fusion-valuation-640.webp 640w/);
 });
