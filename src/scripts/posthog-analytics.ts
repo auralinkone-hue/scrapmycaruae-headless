@@ -53,7 +53,7 @@ export function filterPostHogEvent(input: EventRecord, href: string): EventRecor
   const original = input.properties || {};
   const properties: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(original)) {
-    if (/email|phone|name|address|contact|value|text|element|href|referrer|search|query|token/i.test(key)) continue;
+    if (key.toLowerCase() === 'name' || /(^|_)(email|phone|customer|full_name|address|contact|value|text|element|href|referrer|search|query|token)(_|$)/i.test(key)) continue;
     if (typeof value === 'string' && /@|\+?\d{8,}/.test(value) && !key.startsWith('$')) continue;
     properties[key] = value;
   }
